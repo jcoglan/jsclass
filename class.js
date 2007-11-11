@@ -9,8 +9,7 @@ Function.prototype.bind = function() {
 };
 
 Function.prototype.callsSuper = function() {
-    var badChar = '[^A-Za-z0-9\\_\\$]';
-    var s = '\\s*';
+    var badChar = '[^A-Za-z0-9\\_\\$]', s = '\\s*';
     var regex = new RegExp(badChar + 'this' + s + '(' +
         '\\.' + s + '_super' + badChar +
     '|' +
@@ -125,34 +124,13 @@ Array.from = function(iterable) {
  * example you could call <tt>Bear.find()</tt>. Class methods also support the use of
  * <tt>this._super</tt>, just like in instance methods.</p>
  *
- * <p>Despite its convenience, <tt>this._super</tt> has problems. To get this to work, JavaScript
- * has to inspect classes and create new functions on the fly to assign to <tt>this._super</tt>,
- * whenever you call one of your class' methods. If you have a class that definitely won't be
- * using <tt>this._super</tt>, add a <tt>noSuper: true</tt> directive to its class definition.
- * If performance is critical, you may find this speeds up your class' methods.</p>
- *
- * <pre><code>    var NoSuperClass = JS.Class({
- *         noSuper: true,
- *         initialize: function() { ... }
- *     });</code></pre></code>
- *
- * <p>Note that <tt>noSuper</tt> only affects methods defined <em>after</em> it is used. Any
- * methods defined before using <tt>noSuper</tt> will still be wrapped in
- * <tt>_super</tt>-generating functions.</p>
- *
- * <pre><code>    var NoSuperClass = JS.Class(Animal, {
- *         initialize: function() {
- *             // This will work...
- *             this._super();
- *         }
- *     });
- *     
- *     NoSuperClass.noSuper = true;
- *     
- *     NoSuperClass.method('speak', function() {
- *         // This will break...
- *         this._super();
- *     });</code></pre></code>
+ * <p>Getting <tt>this._super</tt> to work requires a fairly large performance overhead as
+ * JavaScript has to wrap your methods with other functions that inspect classes, decide whether
+ * there is a <tt>super</tt> method, and assign new functions to <tt>this._super</tt> on the
+ * fly before calling your original function. To get around this, <tt>JS.Class</tt> inspects
+ * your method definitions to see if they contain references to <tt>this._super</tt>. If a
+ * method contains no such reference, it is inserted straight into the class' <tt>prototype</tt>
+ * without wrapping it in another function. This can boost performance quite significantly.</p>
  *
  * <h3>Traversing the inheritance tree</h3>
  *
@@ -314,7 +292,7 @@ JS.Class.bindMethods = function(instance) {
 };
 
 JS.Class.addMethod = function(klass, object, superObject, name, func) {
-    if (typeof func != 'function' || klass.noSuper) return (object[name] = func);
+    if (typeof func != 'function') return (object[name] = func);
     if (!func.callsSuper()) return (object[name] = func);
     
     var method = function() {
@@ -410,10 +388,6 @@ JS.Class.CLASS_METHODS = {
         if (source.bindMethods) {
             this.bindMethods = JS.Class.bindMethods;
             delete source.bindMethods;
-        }
-        if (source.noSuper) {
-            this.noSuper = true;
-            delete source.noSuper;
         }
         for (var method in source)
             this.method(method, source[method]);
