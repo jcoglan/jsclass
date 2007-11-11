@@ -28,7 +28,8 @@ Array.from = function(iterable) {
  * <a href="http://developer.yahoo.com/yui/yahoo/#extend">these examples</a>), resulting in
  * far too much repetition and a lack of clarity.</p>
  *
- * <p>Our inheritance model is based on work by the Prototype team and by Alex Arnell:</p>
+ * <p>Our inheritance model is based on work by the Prototype team and by Alex Arnell. It uses
+ * idioms from Ruby, although it should be reasonably intelligeable to Java programmers too.</p>
  *
  * <ul>
  *      <li><a href="http://prototypejs.org/api/class/create"><tt>Class.create()</tt></a>
@@ -46,14 +47,18 @@ Array.from = function(iterable) {
  *
  * <h3>Basic class definitions</h3>
  *
- * <p>The best way to explain how to use it is with a few examples. Each class definition
- * should have an <tt>initialize</tt> method, which will act as its constructor.</p>
+ * <p>The best way to explain how to use it is with a few examples. Each class definition should
+ * have an <tt>initialize</tt> method, which will act as its constructor. To add class methods,
+ * wrap them up inside an <tt>extend</tt> block.</p>
  *
  * <pre><code>    var Animal = JS.Class({
+ *         extend: {
+ *            find: function(options) { return 'finding...'; },
+ *            findByName: function(name) { return this.find({name: name}); }
+ *         },
  *         initialize: function(name) {
  *             this.name = name;
  *         },
- *         
  *         speak: function() {
  *             alert('My name is ' + this.name);
  *         }
@@ -97,6 +102,10 @@ Array.from = function(iterable) {
  *     
  *     var bee = new Insect('Buzz', 'bee');
  *     // --> bee.name == "Buzz", bee.type == "bee"</code></pre>
+ *
+ * <p>Subclasses inherit all the instance and class methods from the parent, so in the above
+ * example you could call <tt>Bear.find()</tt>. Class methods also support the use of
+ * <tt>this._super</tt>, just like in instance methods.</p>
  *
  * <h3>Traversing the inheritance tree</h3>
  *
@@ -189,8 +198,9 @@ Array.from = function(iterable) {
  *
  * <p>There are a bunch of methods for modifying existing classes, including <tt>subclass</tt>,
  * <tt>include</tt>, <tt>method</tt>, <tt>extend</tt> and <tt>classMethod</tt>. All of these are
- * available on any class created using <tt>JS.Class()</tt>. Read their documentation for more
- * information on how to use them.</p>
+ * available on any class created using <tt>JS.Class()</tt>, and allow you to add methods to
+ * classes and have all their subclasses immediately inherit them. Read their documentation for
+ * more information on how to use them. (Full documentation is included in the download.)</p>
  */
 JS.Class = function() {
     var args = Array.from(arguments), arg;
@@ -361,7 +371,7 @@ JS.Class.CLASS_METHODS = {
     /**
      * <p>Adds a single named instance method to the class and all its child classes. Use
      * <tt>this._super</tt> within the function body to refer to methods from the parent
-     * class.</p>
+     * class. Any subclasses missing the given method name will immediately inherit it.</p>
      * @param {String} name The name of the method
      * @param {Function} func The method function
      */
@@ -402,7 +412,7 @@ JS.Class.CLASS_METHODS = {
     /**
      * <p>Adds a single named class method to the class and all its child classes. Use
      * <tt>this._super</tt> within the function body to refer to methods from the parent
-     * class.</p>
+     * class. Any subclasses missing the given method name will immediately inherit it.</p>
      * @param {String} name The name of the method
      * @param {Function} func The method function
      */
