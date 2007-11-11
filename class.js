@@ -8,6 +8,17 @@ Function.prototype.bind = function() {
     };
 };
 
+Function.prototype.callsSuper = function() {
+    var badChar = '[^A-Za-z0-9\\_\\$]';
+    var s = '\\s*';
+    var regex = new RegExp(badChar + 'this' + s + '(' +
+        '\\.' + s + '_super' + badChar +
+    '|' +
+        '\\[' + s + '(\'_super\'|"_super")' + s + '\\]' +
+    ')');
+    return regex.test(this.toString());
+};
+
 Array.from = function(iterable) {
     if (!iterable) return [];
     if (iterable.toArray) return iterable.toArray();
@@ -304,6 +315,7 @@ JS.Class.bindMethods = function(instance) {
 
 JS.Class.addMethod = function(klass, object, superObject, name, func) {
     if (typeof func != 'function' || klass.noSuper) return (object[name] = func);
+    if (!func.callsSuper()) return (object[name] = func);
     
     var method = function() {
         var _super = superObject[name], args = Array.from(arguments);
