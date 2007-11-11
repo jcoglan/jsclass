@@ -35,6 +35,11 @@
             }
         });
         
+        var NoSuperBear = JS.Class(Bear, {
+            noSuper: true,
+            speak: function() { return this.name.toUpperCase(); }
+        });
+        
         var Koala = JS.Class(Bear, {
             speak: function(stuff) {
                 return "I'm not really a Bear, but I do like " + stuff;
@@ -66,6 +71,10 @@
                 var yogi = new Bear('Yogi');
                 benchmark(function() {
                     yogi.speak();
+                }, 3000);
+                var bobo = new NoSuperBear('Bobo');
+                benchmark(function() {
+                    bobo.speak();
                 }, 3000);
             }},
             

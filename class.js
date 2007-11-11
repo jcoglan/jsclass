@@ -71,7 +71,7 @@ Array.from = function(iterable) {
  *         }
  *     });</code></pre>
  *
- * <h3>Inheritance and subclasses, using <tt>_super</tt></h3>
+ * <h3>Inheritance and subclasses, using <tt>this._super</tt></h3>
  *
  * <p>If you want to create a subclass of <tt>Animal</tt>, pass it in as the first argument to
  * <tt>JS.Class()</tt>. Within the subclass' methods, <tt>this._super</tt> will refer to
@@ -113,6 +113,35 @@ Array.from = function(iterable) {
  * <p>Subclasses inherit all the instance and class methods from the parent, so in the above
  * example you could call <tt>Bear.find()</tt>. Class methods also support the use of
  * <tt>this._super</tt>, just like in instance methods.</p>
+ *
+ * <p>Despite its convenience, <tt>this._super</tt> has problems. To get this to work, JavaScript
+ * has to inspect classes and create new functions on the fly to assign to <tt>this._super</tt>,
+ * whenever you call one of your class' methods. If you have a class that definitely won't be
+ * using <tt>this._super</tt>, add a <tt>noSuper: true</tt> directive to its class definition.
+ * If performance is critical, you may find this speeds up your class' methods.</p>
+ *
+ * <pre><code>    var NoSuperClass = JS.Class({
+ *         noSuper: true,
+ *         initialize: function() { ... }
+ *     });</code></pre></code>
+ *
+ * <p>Note that <tt>noSuper</tt> only affects methods defined <em>after</em> it is used. Any
+ * methods defined before using <tt>noSuper</tt> will still be wrapped in
+ * <tt>_super</tt>-generating functions.</p>
+ *
+ * <pre><code>    var NoSuperClass = JS.Class(Animal, {
+ *         initialize: function() {
+ *             // This will work...
+ *             this._super();
+ *         }
+ *     });
+ *     
+ *     NoSuperClass.noSuper = true;
+ *     
+ *     NoSuperClass.method('speak', function() {
+ *         // This will break...
+ *         this._super();
+ *     });</code></pre></code>
  *
  * <h3>Traversing the inheritance tree</h3>
  *
@@ -274,7 +303,7 @@ JS.Class.bindMethods = function(instance) {
 };
 
 JS.Class.addMethod = function(klass, object, superObject, name, func) {
-    if (typeof func != 'function') return (object[name] = func);
+    if (typeof func != 'function' || klass.noSuper) return (object[name] = func);
     
     var method = function() {
         var _super = superObject[name], args = Array.from(arguments);
@@ -369,6 +398,10 @@ JS.Class.CLASS_METHODS = {
         if (source.bindMethods) {
             this.bindMethods = JS.Class.bindMethods;
             delete source.bindMethods;
+        }
+        if (source.noSuper) {
+            this.noSuper = true;
+            delete source.noSuper;
         }
         for (var method in source)
             this.method(method, source[method]);
