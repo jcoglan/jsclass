@@ -18,6 +18,13 @@ Array.from = function(iterable) {
 
 /**
  * @overview
+ * <p>JS.Class, classical inheritance for JavaScript.<br />
+ * Copyright (c) 2007 James Coglan.<br />
+ * Based on MIT-licensed work by Sam Stephenson and the Prototype team
+ * (<a href="http://prototypejs.org">website</a>) and BSD-licensed work by Alex Arnell
+ * (<a href="http://twologic.com/projects/inheritance/">website</a>).<br />
+ * This work is released under an MIT license.</p>
+ *
  * <h3>Introduction</h3>
  *
  * <p><tt>JS.Class</tt> provides a classical inheritance model for JavaScript, allowing
