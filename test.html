@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>JS.Class tests</title>
+    <script src="prototype.js" type="text/javascript" charset="utf-8"></script>
+    <script src="unittest.js" type="text/javascript" charset="utf-8"></script>
+    <script src="class.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="test.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <script type="text/javascript" charset="utf-8">
+        
+        var Animal = JS.Class({
+            extend: {
+                find: function(thing) { return 'Animal finds ' + thing; },
+                create: function(thing) { return this.find(thing) + ' and Animal creates ' + thing; }
+            },
+            initialize: function(name) {
+                this.name = String(name);
+            },
+            speak: function(stuff) {
+                return 'My name is ' + this.name + ' and I like ' + stuff;
+            }
+        });
+        
+        var Bear = JS.Class(Animal, {
+            extend: {
+                create: function(thing) {
+                    return this._super(thing) + ', but Bear creates other stuff'
+                }
+            },
+            speak: function(stuff) {
+                return this._super(stuff).toUpperCase();
+            }
+        });
+        
+        var Koala = JS.Class(Bear, {
+            speak: function(stuff) {
+                return "I'm not really a Bear, but I do like " + stuff;
+            }
+        });
+        
+        var Dog = JS.Class(Animal, {
+            bindMethods: true,
+            bark: function() { return this.name + ' says WOOF!'; }
+        });
+        
+        var Pitbull = JS.Class(Dog, {
+            speak: function() {
+                return this._super();
+            }
+        });
+        
+    </script>
+</head>
+<body>
+    
+    <div id="testlog"></div>
+    
+    <script type="text/javascript" charset="utf-8">
+        
+        new Test.Unit.Runner({
+            
+            testSuperSpeed: function() { with(this) {
+                var yogi = new Bear('Yogi');
+                benchmark(function() {
+                    yogi.speak();
+                }, 3000);
+            }},
+            
+            testClassDefinition: function() { with(this) {
+                var frog = new Animal('Kermit');
+                assertEqual('My name is Kermit and I like Ms. Piggy', frog.speak('Ms. Piggy'));
+                assertEqual('Animal finds food', Animal.find('food'));
+                assertEqual('Animal finds shelter and Animal creates shelter', Animal.create('shelter'));
+            }},
+            
+            testInheritance: function() { with(this) {
+                var yogi = new Bear('Yogi');
+                assertEqual('MY NAME IS YOGI AND I LIKE PICNICS', yogi.speak('picnics'));
+                assertEqual('Animal finds honey', Bear.find('honey'));
+                assertEqual('Animal finds nothing and Animal creates nothing, but Bear creates other stuff', Bear.create('nothing'));
+            }},
+            
+            testSuperWithNoArguments: function() { with(this) {
+                var brutus = new Pitbull('Brutus');
+                assertEqual('My name is Brutus and I like biting', brutus.speak('biting'));
+            }},
+            
+            testBinding: function() { with(this) {
+                var rex = new Dog('Rex');
+                var bark = rex.bark;
+                assertEqual('Rex says WOOF!', bark());
+                var brutus = new Pitbull('Brutus');
+                assertEqual('Brutus says WOOF!', brutus.bark());
+                bark = brutus.bark;
+                assertEqual(' says WOOF!', bark());
+            }},
+            
+            testHierarchy: function() { with(this) {
+                var rex = new Dog('Rex');
+                assert(rex.is_a(Dog));
+                assert(rex.is_a(Animal));
+                assert(rex.is_a(Object));
+                assert(!rex.is_a(Bear));
+                var yogi = new rex.klass.superclass.subclasses[0]('Yogi');
+                assertEqual('Yogi', yogi.name);
+                assert(yogi.is_a(Bear));
+                assert(!yogi.is_a(Dog));
+            }},
+            
+            testSubclassUpdating: function() { with(this) {
+                var kevin = new Koala('Kevin');
+                Animal.method('shout', function(thing) {
+                    return this.name + ' is loving ' + thing + '!!!';
+                });
+                assertEqual('Kevin is loving trees!!!', kevin.shout('trees'));
+                Animal.classMethod('count', function() { return 6; });
+                assertEqual(4*6, Koala.count() + Bear.count() + Dog.count() + Pitbull.count());
+            }}
+        });
+        
+    </script>
+</body>
+</html>
