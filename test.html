@@ -174,6 +174,12 @@
                 assert(!yogi.is_a(Dog));
             }},
             
+            testSuperclassNotDefined: function() { with(this) {
+                assertRaise('ReferenceError', function() {
+                    var DumbClass = JS.Class(JS.Class.NotDefined, {});
+                });
+            }},
+            
             testSubclassUpdating: function() { with(this) {
                 var kevin = new Koala('Kevin');
                 Animal.method('shout', function(thing) {
