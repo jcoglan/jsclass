@@ -230,7 +230,7 @@ Array.from = function(iterable) {
 JS.Class = function() {
     var args = Array.from(arguments), arg;
     var klass = JS.Class.create();
-    if (typeof args[0] == 'function' && args[0].subclasses) klass.subclass(args.shift());
+    if (typeof args[0] == 'function') klass.subclass(args.shift());
     while (arg = args.shift()) klass.include(arg);
     return klass;
 };
@@ -244,7 +244,8 @@ JS.Class.create = function() {
     var klass = function() {
         this.klass = arguments.callee;
         JS.Class.setup(this);
-        this.initialize.apply(this, arguments);
+        if (typeof this.initialize == 'function')
+            this.initialize.apply(this, arguments);
     };
     JS.Class.ify(klass);
     klass.include(JS.Class.INSTANCE_METHODS);
@@ -261,11 +262,12 @@ JS.Class.create = function() {
  * @param {Function} klass The constructor function to augment
  * @returns {Function} The augmented function
  */
-JS.Class.ify = function(klass) {
+JS.Class.ify = function(klass, noExtend) {
     if (typeof klass != 'function') return;
     klass.superclass        = klass.superclass || Object;
     klass.subclasses        = klass.subclasses || [];
     klass.__classMethods    = klass.__classMethods || [];
+    if (noExtend === false) return klass;
     for (var method in JS.Class.CLASS_METHODS)
         klass[method] = JS.Class.CLASS_METHODS[method];
     return klass;
@@ -356,12 +358,13 @@ JS.Class.CLASS_METHODS = {
         if (typeof superclass != 'function') return;
         if (this.superclass !== Object)
             throw new ReferenceError('A class may only have one superclass');
+        JS.Class.ify(superclass, false);
         this.superclass = superclass;
         if (superclass.subclasses) superclass.subclasses.push(this);
         var bridge = function() {};
         bridge.prototype = superclass.prototype;
         this.prototype = new bridge();
-        this.extend(this.superclass);
+        this.extend(superclass);
         return this;
     },
     

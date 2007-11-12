@@ -81,6 +81,18 @@
             }
         });
         
+        
+        var NativeClass = function() {};
+        NativeClass.prototype = {
+            getName: function() { return 'Native'; }
+        };
+        
+        var ChildOfNativeClass = JS.Class(NativeClass, {
+            getName: function() {
+                return this._super();
+            }
+        });
+        
     </script>
 </head>
 <body>
@@ -125,6 +137,13 @@
             testReassignedSuper: function() { with(this) {
                 var top = new TopClass();
                 assertEqual('TopClass(2) extends SubClass(2) extends BaseClass(2)', top.getName());
+            }},
+            
+            testInheritanceFromNativeClass: function() { with(this) {
+                var nat = new NativeClass();
+                assertEqual('Native', nat.getName());
+                var child = new ChildOfNativeClass();
+                assertEqual('Native', child.getName());
             }},
             
             testBinding: function() { with(this) {
