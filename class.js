@@ -444,7 +444,9 @@ JS.Class.CLASS_METHODS = {
     /**
      * <p>Adds a single named class method to the class and all its child classes. Use
      * <tt>this._super</tt> within the function body to refer to methods from the parent
-     * class. Any subclasses missing the given method name will immediately inherit it.</p>
+     * class. Any subclasses missing the given method name will immediately inherit it.
+     * In order for inheritance to take place, you must use this function rather assigning
+     * new properties directly to the class' constructor.</p>
      * @param {String} name The name of the method
      * @param {Function} func The method function
      */
