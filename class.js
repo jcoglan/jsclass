@@ -237,7 +237,9 @@ JS.Class = function() {
 
 /**
  * <p>Returns a constructor function with all the default class and instance methods in place.
- * Do not use this to build your own classes, use <tt>JS.Class()</tt> instead.</p>
+ * Do not use this to build your own classes, use <tt>JS.Class()</tt> instead. Takes an optional
+ * <tt>parent</tt> parameter as a class to inherit from.</p>
+ * @param {Function} parent
  * @returns {Function}
  */
 JS.Class.extend = function(parent) {
@@ -260,7 +262,10 @@ JS.Class.extend = function(parent) {
  * <pre><code>    JS.Class.ify(Array);
  *     // --> now we get Array.include, Array.extend, etc.</code></pre>
  *
+ * <p>Set <tt>noExtend</tt> to <tt>true</tt> if you just want to add class hierarchy properties
+ * without adding the class methods.</p>
  * @param {Function} klass The constructor function to augment
+ * @param {Boolean} noExtend (optional)
  * @returns {Function} The augmented function
  */
 JS.Class.ify = function(klass, noExtend) {
