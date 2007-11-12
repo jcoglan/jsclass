@@ -448,13 +448,11 @@ JS.Class.CLASS_METHODS = {
      * @param {String} name The name of the method
      * @param {Function} func The method function
      */
-    classMethod: function(name, func) {
+    classMethod: function(name, func, overwrite) {
         if (!this[name]) this.__classMethods.push(name);
-        for (var i = 0, n = this.subclasses.length; i < n; i++) {
-            if (!this.subclasses[i][name])
-                this.subclasses[i].classMethod(name, func);
-        };
-        JS.Class.addMethod(this, this, this.superclass, name, func);
+        for (var i = 0, n = this.subclasses.length; i < n; i++)
+            this.subclasses[i].classMethod(name, func, false);
+        if (!this[name] || overwrite !== false) JS.Class.addMethod(this, this, this.superclass, name, func);
         return this;
     }
 };

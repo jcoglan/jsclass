@@ -178,6 +178,16 @@
                 assertEqual('Kevin is loving trees!!!', kevin.shout('trees'));
                 Animal.classMethod('count', function() { return 6; });
                 assertEqual(4*6, Koala.count() + Bear.count() + Dog.count() + Pitbull.count());
+            }},
+            
+            testClassMethodInheritanceSkipsGenerations: function() { with(this) {
+                Dog.eatFood = function(food) { return 'Dogs eat ' + food; };
+                assertEqual('Dogs eat biscuits', Dog.eatFood('biscuits'));
+                Animal.classMethod('eatFood', function(food) { return 'Animals eat ' + food; });
+                assertEqual('Animals eat people', Pitbull.eatFood('people'));
+                assertEqual('Dogs eat biscuits', Dog.eatFood('biscuits'));
+                Pitbull.classMethod('eatFood', function() { return this._super(); });
+                assertEqual('Dogs eat people', Pitbull.eatFood('people'));
             }}
         });
         
