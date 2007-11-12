@@ -230,7 +230,7 @@ Array.from = function(iterable) {
 JS.Class = function() {
     var args = Array.from(arguments), arg;
     var klass = JS.Class.create();
-    if (typeof args[0] == 'function') klass.subclass(args.shift());
+    if (typeof args[0] == 'function') JS.Class.subclass(args.shift(), klass);
     while (arg = args.shift()) klass.include(arg);
     return klass;
 };
@@ -270,6 +270,34 @@ JS.Class.ify = function(klass, noExtend) {
     if (noExtend === false) return klass;
     for (var method in JS.Class.CLASS_METHODS)
         klass[method] = JS.Class.CLASS_METHODS[method];
+    return klass;
+};
+
+/**
+ * <p>Sets <tt>klass</tt>'s parent class. Each class can only have one parent class, so calling
+ * this repeatedly will cause errors. The child class will inherit all the parent's instance
+ * methods <em>and</em> class methods.</p>
+ *
+ * <p>JavaScript allows subclasses to automatically inherit instance methods added to the
+ * superclass after the initial inheritance event. Unfortunately this involves totally
+ * overwriting the subclass' <tt>prototype</tt> with an instance of the superclass, so be
+ * very careful when using this: you will lose the inheriting class' existing prototype and
+ * its subclasses may break.</p>
+ *
+ * @param {Function} superclass The class to use as the parent
+ * @param {Function} klass The inheriting class
+ */
+JS.Class.subclass = function(superclass, klass) {
+    if (typeof superclass != 'function' || typeof klass != 'function') return;
+    if (klass.superclass && klass.superclass !== Object)
+        throw new ReferenceError('A class may only have one superclass');
+    JS.Class.ify(superclass, false);
+    klass.superclass = superclass;
+    superclass.subclasses.push(klass);
+    var bridge = function() {};
+    bridge.prototype = superclass.prototype;
+    klass.prototype = new bridge();
+    klass.extend(superclass);
     return klass;
 };
 
@@ -337,37 +365,6 @@ JS.Class.INSTANCE_METHODS = {
 };
 
 JS.Class.CLASS_METHODS = {
-    /**
-     * <p>Sets the class' parent class. Each class can only have one parent class, so calling
-     * this repeatedly will cause errors. The child class will inherit all the parent's instance
-     * methods <em>and</em> class methods.</p>
-     *
-     * <p>JavaScript allows subclasses to automatically inherit instance methods added to the
-     * superclass after the initial inheritance event. Unfortunately this involves totally
-     * overwriting the subclass' <tt>prototype</tt> with an instance of the superclass, so be
-     * very careful when using this: you will lose the inheriting class' existing prototype and
-     * its subclasses may break.</p>
-     *
-     * <pre><code>    var Animal = JS.Class(), Bear = JS.Class();
-     *     Bear.subclass(Animal);
-     *     // Bear has all Animal's methods, and Bear.superclass === Animal</code></pre>
-     *
-     * @param {Function} superclass The class to use as the parent
-     */
-    subclass: function(superclass) {
-        if (typeof superclass != 'function') return;
-        if (this.superclass !== Object)
-            throw new ReferenceError('A class may only have one superclass');
-        JS.Class.ify(superclass, false);
-        this.superclass = superclass;
-        if (superclass.subclasses) superclass.subclasses.push(this);
-        var bridge = function() {};
-        bridge.prototype = superclass.prototype;
-        this.prototype = new bridge();
-        this.extend(superclass);
-        return this;
-    },
-    
     /**
      * <p>Adds instance methods to the class. If any of the methods are missing from the class'
      * subclasses, the subclasses will also receive the new instance methods.</p>
