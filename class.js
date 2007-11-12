@@ -338,6 +338,8 @@ JS.Class.addMethod = function(klass, object, superObject, name, func) {
             while (i--) args[i] = arguments[i];
             return _super.apply(this, args);
         };
+        this._super.valueOf = function() { return _super; };
+        this._super.toString = function() { return _super.toString(); };
         var result = func.apply(this, arguments);
         if (currentSuper) this._super = currentSuper;
         else delete this._super;
