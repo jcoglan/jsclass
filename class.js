@@ -230,7 +230,7 @@ Array.from = function(iterable) {
 JS.Class = function() {
     var args = Array.from(arguments), arg;
     var klass = JS.Class.create();
-    if (typeof args[0] == 'function') klass.subclass(args.shift());
+    if (typeof args[0] == 'function' && args[0].subclasses) klass.subclass(args.shift());
     while (arg = args.shift()) klass.include(arg);
     return klass;
 };
@@ -351,10 +351,10 @@ JS.Class.CLASS_METHODS = {
         if (this.superclass !== Object)
             throw new ReferenceError('A class may only have one superclass');
         this.superclass = superclass;
-        this.superclass.subclasses.push(this);
-        var subclass = function() {};
-        subclass.prototype = superclass.prototype;
-        this.include(new subclass());
+        if (superclass.subclasses) superclass.subclasses.push(this);
+        var bridge = function() {};
+        bridge.prototype = superclass.prototype;
+        this.prototype = new bridge();
         this.extend(this.superclass);
         return this;
     },
@@ -403,10 +403,6 @@ JS.Class.CLASS_METHODS = {
      * @param {Function} func The method function
      */
     method: function(name, func) {
-        for (var i = 0, n = this.subclasses.length; i < n; i++) {
-            if (!this.subclasses[i].prototype[name])
-                this.subclasses[i].method(name, func);
-        }
         JS.Class.addMethod(this, this.prototype, this.superclass.prototype, name, func);
         return this;
     },
