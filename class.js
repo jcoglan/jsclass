@@ -296,14 +296,15 @@ JS.Class.addMethod = function(klass, object, superObject, name, func) {
     if (!func.callsSuper()) return (object[name] = func);
     
     var method = function() {
-        var _super = superObject[name], args = Array.from(arguments);
+        var _super = superObject[name], args = Array.from(arguments), currentSuper = this._super;
         if (typeof _super == 'function') this._super = function() {
             var i = arguments.length;
             while (i--) args[i] = arguments[i];
             return _super.apply(this, args);
         };
         var result = func.apply(this, arguments);
-        delete this._super;
+        if (currentSuper) this._super = currentSuper;
+        else delete this._super;
         return result;
     };
     method.valueOf = function() { return func; };

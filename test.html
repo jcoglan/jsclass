@@ -56,6 +56,31 @@
             }
         });
         
+        
+        // Let's implement the classes from here: http://www.ajaxpath.com/javascript-inheritance
+        // and make sure Crockford's problems aren't encountered.
+        
+        var BaseClass = JS.Class({
+            getName: function() { return 'BaseClass(' + this.getId() + ')'; },
+            getId: function() { return 1; }
+        });
+        
+        var SubClass = JS.Class(BaseClass, {
+            getName: function() {
+                return 'SubClass(' + this.getId() + ') extends ' + this._super();
+            },
+            getId: function() { return 2; }
+        });
+        
+        var TopClass = JS.Class(SubClass, {
+            getName: function() {
+                return 'TopClass(' + this.getId() + ') extends ' + this._super();
+            },
+            getId: function() {
+                return this._super();
+            }
+        });
+        
     </script>
 </head>
 <body>
@@ -94,6 +119,12 @@
             testSuperWithNoArguments: function() { with(this) {
                 var brutus = new Pitbull('Brutus');
                 assertEqual('My name is Brutus and I like biting', brutus.speak('biting'));
+            }},
+            
+            // Avoid Crockford's problem: http://www.ajaxpath.com/javascript-inheritance
+            testReassignedSuper: function() { with(this) {
+                var top = new TopClass();
+                assertEqual('TopClass(2) extends SubClass(2) extends BaseClass(2)', top.getName());
             }},
             
             testBinding: function() { with(this) {
