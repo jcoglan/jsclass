@@ -229,8 +229,8 @@ Array.from = function(iterable) {
  */
 JS.Class = function() {
     var args = Array.from(arguments), arg;
-    var klass = JS.Class.create();
-    if (typeof args[0] == 'function') JS.Class.subclass(args.shift(), klass);
+    var parent = (typeof args[0] == 'function') ? args.shift() : null;
+    var klass = JS.Class.extend(parent);
     while (arg = args.shift()) klass.include(arg);
     return klass;
 };
@@ -240,7 +240,7 @@ JS.Class = function() {
  * Do not use this to build your own classes, use <tt>JS.Class()</tt> instead.</p>
  * @returns {Function}
  */
-JS.Class.create = function() {
+JS.Class.extend = function(parent) {
     var klass = function() {
         this.klass = arguments.callee;
         JS.Class.setup(this);
@@ -248,7 +248,8 @@ JS.Class.create = function() {
             this.initialize.apply(this, arguments);
     };
     JS.Class.ify(klass);
-    klass.include(JS.Class.INSTANCE_METHODS);
+    if (typeof parent == 'function') JS.Class.subclass(parent, klass);
+    klass.include(JS.Class.INSTANCE_METHODS, false);
     return klass;
 };
 
@@ -376,8 +377,9 @@ JS.Class.CLASS_METHODS = {
      *     });</code></pre>
      *
      * @param {Object} source A collection of instance methods
+     * @param {Boolean} overwrite Should existing methods be overwritten? Defaults to <tt>true</tt>
      */
-    include: function(source) {
+    include: function(source, overwrite) {
         if (!source) return;
         var modules, i, n;
         if (source.include) {
@@ -397,7 +399,7 @@ JS.Class.CLASS_METHODS = {
             delete source.bindMethods;
         }
         for (var method in source)
-            this.method(method, source[method]);
+            this.method(method, source[method], overwrite);
         return this;
     },
     
@@ -407,9 +409,11 @@ JS.Class.CLASS_METHODS = {
      * class. Any subclasses missing the given method name will immediately inherit it.</p>
      * @param {String} name The name of the method
      * @param {Function} func The method function
+     * @param {Boolean} overwrite Should existing methods be overwritten? Defaults to <tt>true</tt>
      */
-    method: function(name, func) {
-        JS.Class.addMethod(this, this.prototype, this.superclass.prototype, name, func);
+    method: function(name, func, overwrite) {
+        if (!this.prototype[name] || overwrite !== false)
+            JS.Class.addMethod(this, this.prototype, this.superclass.prototype, name, func);
         return this;
     },
     
@@ -424,16 +428,17 @@ JS.Class.CLASS_METHODS = {
      *     });</code></pre>
      *
      * @param {Object} source A collection of instance methods
+     * @param {Boolean} overwrite Should existing methods be overwritten? Defaults to <tt>true</tt>
      */
-    extend: function(source) {
+    extend: function(source, overwrite) {
         if (!source) return;
         if (source.__classMethods) {
             for (var i = 0, n = source.__classMethods.length, method; i < n; i++) {
                 method = source.__classMethods[i];
-                this.classMethod(method, source[method]);
+                this.classMethod(method, source[method], overwrite);
             }
         } else {
-            for (var method in source) this.classMethod(method, source[method]);
+            for (var method in source) this.classMethod(method, source[method], overwrite);
         }
         return this;
     },
@@ -446,12 +451,14 @@ JS.Class.CLASS_METHODS = {
      * new properties directly to the class' constructor.</p>
      * @param {String} name The name of the method
      * @param {Function} func The method function
+     * @param {Boolean} overwrite Should existing methods be overwritten? Defaults to <tt>true</tt>
      */
     classMethod: function(name, func, overwrite) {
         if (!this[name]) this.__classMethods.push(name);
         for (var i = 0, n = this.subclasses.length; i < n; i++)
             this.subclasses[i].classMethod(name, func, false);
-        if (!this[name] || overwrite !== false) JS.Class.addMethod(this, this, this.superclass, name, func);
+        if (!this[name] || overwrite !== false)
+            JS.Class.addMethod(this, this, this.superclass, name, func);
         return this;
     }
 };

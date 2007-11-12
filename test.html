@@ -146,6 +146,10 @@
                 assertEqual('Native', child.getName());
                 NativeClass.prototype.shout = function() { return 'Shouting!!'; };
                 assertEqual('Shouting!!', child.shout());
+                assert(child.is_a(ChildOfNativeClass));
+                assert(child.is_a(NativeClass));
+                assert(child.is_a(Object));
+                assert(!child.is_a(Dog));
             }},
             
             testBinding: function() { with(this) {
