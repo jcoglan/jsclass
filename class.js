@@ -18,6 +18,20 @@ Function.prototype.callsSuper = function() {
     return regex.test(this.toString());
 };
 
+Function.classProperties = function(klass) {
+    if (typeof klass != 'function') return {};
+    var properties = {}, skip, prop;
+    for (var method in klass) {
+        skip = false;
+        for (prop in JS.Class.ify(function(){}))
+            if (method == prop) skip = true;
+        if (method == 'bindMethods') skip = true;
+        if (skip) continue;
+        properties[method] = klass[method];
+    }
+    return properties;
+};
+
 Array.from = function(iterable) {
     if (!iterable) return [];
     if (iterable.toArray) return iterable.toArray();
@@ -273,7 +287,6 @@ JS.Class.ify = function(klass, noExtend) {
     if (typeof klass != 'function') return;
     klass.superclass        = klass.superclass || Object;
     klass.subclasses        = klass.subclasses || [];
-    klass.__classMethods    = klass.__classMethods || [];
     if (noExtend === false) return klass;
     for (var method in JS.Class.CLASS_METHODS)
         klass[method] = JS.Class.CLASS_METHODS[method];
@@ -313,8 +326,9 @@ JS.Class.subclass = function(superclass, klass) {
  * @param {Object} instance
  */
 JS.Class.setup = function(instance) {
-    if (instance.klass.bindMethods)
-        instance.klass.bindMethods(instance);
+    var bind;
+    if (bind = instance.klass.bindMethods)
+        bind(instance);
 };
 
 /**
@@ -440,14 +454,8 @@ JS.Class.CLASS_METHODS = {
      */
     extend: function(source, overwrite) {
         if (!source) return;
-        if (source.__classMethods) {
-            for (var i = 0, n = source.__classMethods.length, method; i < n; i++) {
-                method = source.__classMethods[i];
-                this.classMethod(method, source[method], overwrite);
-            }
-        } else {
-            for (var method in source) this.classMethod(method, source[method], overwrite);
-        }
+        if (typeof source == 'function') source = Function.classProperties(source);
+        for (var method in source) this.classMethod(method, source[method], overwrite);
         return this;
     },
     
@@ -462,7 +470,6 @@ JS.Class.CLASS_METHODS = {
      * @param {Boolean} overwrite Should existing methods be overwritten? Defaults to <tt>true</tt>
      */
     classMethod: function(name, func, overwrite) {
-        if (!this[name]) this.__classMethods.push(name);
         for (var i = 0, n = this.subclasses.length; i < n; i++)
             this.subclasses[i].classMethod(name, func, false);
         if (!this[name] || overwrite !== false)
