@@ -144,6 +144,8 @@
                 assertEqual('Native', nat.getName());
                 var child = new ChildOfNativeClass();
                 assertEqual('Native', child.getName());
+                NativeClass.prototype.shout = function() { return 'Shouting!!'; };
+                assertEqual('Shouting!!', child.shout());
             }},
             
             testBinding: function() { with(this) {
