@@ -340,6 +340,12 @@ JS.Class.CLASS_METHODS = {
      * this repeatedly will cause errors. The child class will inherit all the parent's instance
      * methods <em>and</em> class methods.</p>
      *
+     * <p>JavaScript allows subclasses to automatically inherit instance methods added to the
+     * superclass after the initial inheritance event. Unfortunately this involves totally
+     * overwriting the subclass' <tt>prototype</tt> with an instance of the superclass, so be
+     * very careful when using this: you will lose the inheriting class' existing prototype and
+     * its subclasses may break.</p>
+     *
      * <pre><code>    var Animal = JS.Class(), Bear = JS.Class();
      *     Bear.subclass(Animal);
      *     // Bear has all Animal's methods, and Bear.superclass === Animal</code></pre>
