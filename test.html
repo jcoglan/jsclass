@@ -93,6 +93,41 @@
             }
         });
         
+        
+        var Paginator = JS.Class({
+            initialize: function(n) {
+                this.count = n;
+                this.createItems(n);
+            },
+            createItems: function(n) {
+                this.items = this.items || [];
+                for (var i = 0; i < n; i++)
+                    this.items.push(new this.klass.Item(i));
+            }
+        });
+        
+        Paginator.Item = JS.Class({
+            initialize: function(n) {
+                this.name = 'Item';
+                this.number = n;
+            },
+            getName: function() {
+                return this.name + ' ' + this.getNumber();
+            },
+            getNumber: function() {
+                return this.number;
+            }
+        });
+        
+        var Gallery = JS.Class(Paginator, {
+            createItems: function(n) { this._super(4 * n); }
+        });
+        
+        var ItemInheritor = JS.Class(Gallery);
+        ItemInheritor.Item = JS.Class(Gallery.Item, {
+            getNumber: function() { return this._super() + 7; }
+        });
+        
     </script>
 </head>
 <body>
@@ -198,6 +233,28 @@
                 assertEqual('Dogs eat biscuits', Dog.eatFood('biscuits'));
                 Pitbull.classMethod('eatFood', function() { return this._super(); });
                 assertEqual('Dogs eat people', Pitbull.eatFood('people'));
+            }},
+            
+            testModularInheritance: function() { with(this) {
+                var paginator = new Paginator(12);
+                assert(paginator.is_a(Paginator));
+                assert(paginator.items[6].is_a(Paginator.Item));
+                assert(paginator.items[6].is_a(paginator.items[3].klass));
+                assertEqual('Item 7', paginator.items[7].getName());
+                
+                var gallery = new Gallery(3);
+                assertEqual(12, gallery.items.length);
+                assert(gallery.is_a(Gallery));
+                assert(gallery.is_a(Paginator));
+                assert(gallery.items[5].is_a(Gallery.Item));
+                assert(gallery.items[5].is_a(Paginator.Item));
+                
+                assert(Paginator.Item === Gallery.Item);
+                assert(ItemInheritor.Item !== Gallery.Item);
+                assert(ItemInheritor.Item.superclass === Gallery.Item);
+                
+                var itor = new ItemInheritor(2);
+                assertEqual('Item 13', itor.items[6].getName());
             }}
         });
         
