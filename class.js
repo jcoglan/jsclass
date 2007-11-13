@@ -36,6 +36,27 @@ if (typeof JS == 'undefined') JS = {};
  * not introduce extra method arguments. Arnell's code was itself influenced by Dean Edwards'
  * <a href="http://dean.edwards.name/weblog/2006/03/base/">Base class</a> model.</p>
  *
+ * <h3>Design goals</h3>
+ *
+ * <p>In broad terms, <tt>JS.Class</tt> aims to give a Ruby-like model of classical inheritance
+ * to JavaScript programmers. Ruby and JavaScript share many common features and porting code
+ * between them can be straightforward. Both support mixin-style inheritance, and both have
+ * first-class functions (<tt>Proc</tt> and <tt>lambda</tt> in Ruby). Implementing classical
+ * OOP in JavaScript (as the previously mentioned YU!I example demonstrates) can get very
+ * messy very quickly, resulting in difficult-to-read, repetitive (and therefore brittle) class
+ * definitions. The aims of <tt>JS.Class</tt>, then, are:</p>
+ *
+ * <ul>
+ *      <li>Provide an elegant means of single-parent inheritance of instance and class methods</li>
+ *      <li>Allow subclasses to be augmented instantly with methods added to their parents</li>
+ *      <li>Keep everything as <a href="http://en.wikipedia.org/wiki/Don't_repeat_yourself">DRY</a>
+ *          as possible</li>
+ *      <li>Add <tt>super</tt>, and make its arguments optional (avoid argument repetition)</li>
+ *      <li>Allow instance methods to know which class they are being called in without needing to
+ *          know its name, and to access said class, its methods, properties and parent classes
+ *          (avoid class name repetition)</li>
+ * </ul>
+ *
  * <h3>Basic class definitions</h3>
  *
  * <p>The best way to explain how to use it is with a few examples. Each class definition should
@@ -134,6 +155,92 @@ if (typeof JS == 'undefined') JS = {};
  *     daisy.is_a(Object)  // --> true
  *     daisy.is_a(Bear)    // --> false</code></pre>
  *
+ * <h3>Module design</h3>
+ *
+ * <p>It is common practise in Ruby, in order not to polute the global namespace, to nest classes
+ * within one another. That is, you create one global class, and put the classes used by your
+ * class <em>inside</em>:</p>
+ *
+ * <pre><code>    class Gallery
+ *         class Item
+ *             def initialize(name)
+ *                 # Ignore the backslash, it's there to keep JSDoc happy
+ *                 \@name = name.to_s
+ *             end
+ *         end
+ *         
+ *         def initialize; end
+ *         
+ *         def create_item(name)
+ *             # You can actually just say Item.new('foo')
+ *             # but I'm trying to make a point here...
+ *             return self.class::Item.new(name)
+ *         end
+ *     end</code></pre>
+ *
+ * <p><tt>JS.Class</tt> allows you to create similar module structures without mentioning the
+ * namespace of any class more than once (i.e., when you define it). This is especially useful
+ * if you're putting classes in some obscure namespace somewhere and still want to be able to
+ * read your code, and change namespaces without breaking loads of references. The above example
+ * would look like:</p>
+ *
+ * <pre><code>    // Let's put this in a namespace to demonstrate...
+ *     
+ *     Library.Widget.Tools.Gallery = JS.Class({
+ *         extend: {
+ *             Item: JS.Class({
+ *                 initialize: function(name) {
+ *                     this.name = String(name);
+ *                 }
+ *             })
+ *         },
+ *         
+ *         initialize: function() {},
+ *         
+ *         createItem: function(name) {
+ *             // This would be Library.Widget.Tools.Gallery.Item in raw JavaScript
+ *             return new this.klass.Item(name);
+ *         }
+ *     });
+ *     
+ *     var gal = new Library.Widget.Tools.Gallery();
+ *     var item = gal.createItem();
+ *     
+ *     item.is_a(Library.Widget.Tools.Gallery.Item)
+ *     // --> true</code></pre>
+ *
+ * <p>What happens if you inherit from this?</p>
+ *
+ * <pre><code>    var Sub = JS.Class(Library.Widget.Tools.Gallery, {
+ *         createItem: function(name) {
+ *             return this._super(name.toUpperCase());
+ *         }
+ *     });</code></pre>
+ *
+ * <p>You'll find that the objects returned by <tt>Sub#createItem</tt> are both <tt>Sub.Item</tt>s
+ * and <tt>Gallery.Item</tt>s:</p>
+ *
+ * <pre><code>    var sub = new Sub();
+ *     var item = sub.createItem('cake');   // item.name == 'CAKE'
+ *     
+ *     item.is_a(Library.Widget.Tools.Gallery.Item)     // --> true
+ *     item.is_a(Sub.Item)                              // --> true</code></pre>
+ *
+ * <p>However, you'll also find that <tt>Library.Widget.Tools.Gallery.Item</tt> and <tt>Sub.Item</tt>
+ * have the same superclass: <tt>Object</tt>. In fact, the two classes do not have a parent-child
+ * relationship, they are in fact different references to just one function in memory. (This is
+ * identical to how Ruby would handle subclassing <tt>Gallery</tt> defined above.) If you would
+ * rather subclass, do this instead:</p>
+ *
+ * <pre><code>    var Sub = JS.Class(Library.Widget.Tools.Gallery, {
+ *         extend: {
+ *             Item: JS.Class(Library.Widget.Tools.Gallery.Item)
+ *         },
+ *         createItem: function(name) {
+ *             return this._super(name.toUpperCase());
+ *         }
+ *     });</code></pre>
+ *
  * <h3>Mixins and multiple inheritance</h3>
  *
  * <p>You can also inherit functionality from other objects by using mixins. Mixins are a
@@ -195,11 +302,11 @@ if (typeof JS == 'undefined') JS = {};
  *
  * <h3>Modifying existing classes</h3>
  *
- * <p>There are a bunch of methods for modifying existing classes, including <tt>subclass</tt>,
- * <tt>include</tt>, <tt>method</tt>, <tt>extend</tt> and <tt>classMethod</tt>. All of these are
- * available on any class created using <tt>JS.Class()</tt>, and allow you to add methods to
- * classes and have all their subclasses immediately inherit them. Read their documentation for
- * more information on how to use them. (Full documentation is included in the download.)</p>
+ * <p>There are a bunch of methods for modifying existing classes, including <tt>include</tt>,
+ * <tt>method</tt>, <tt>extend</tt> and <tt>classMethod</tt>. All of these are available on any
+ * class created using <tt>JS.Class()</tt>, and allow you to add methods to classes and have all
+ * their subclasses immediately inherit them. Read their documentation for more information on
+ * how to use them. (Full documentation is included in the download.)</p>
  */
 JS.Class = function() {
     if (typeof arguments[0] == 'undefined') throw new ReferenceError('Parent class is not defined');
