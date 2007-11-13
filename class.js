@@ -475,20 +475,19 @@ JS.Class.CLASS_METHODS = {
             modules = (source.include instanceof Array) ? source.include : [source.include];
             for (i = 0, n = modules.length; i < n; i++)
                 this.include(modules[i]);
-            delete source.include;
         }
         if (source.extend) {
             modules = (source.extend instanceof Array) ? source.extend : [source.extend];
             for (i = 0, n = modules.length; i < n; i++)
                 this.extend(modules[i]);
-            delete source.extend;
         }
         if (source.bindMethods) {
             this.bindMethods = JS.Class.bindMethods;
-            delete source.bindMethods;
         }
-        for (var method in source)
-            this.method(method, source[method], overwrite);
+        for (var method in source) {
+            if (!/^include|extend|bindMethods$/.test(method))
+                this.method(method, source[method], overwrite);
+        }
         return this;
     },
     
