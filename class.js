@@ -1,45 +1,5 @@
 if (typeof JS == 'undefined') JS = {};
 
-Function.prototype.bind = function() {
-    if (arguments.length < 2 && arguments[0] === undefined) return this;
-    var __method = this, args = Array.from(arguments), object = args.shift();
-    return function() {
-        return __method.apply(object, args.concat(Array.from(arguments)));
-    };
-};
-
-Function.prototype.callsSuper = function() {
-    var badChar = '[^A-Za-z0-9\\_\\$]', s = '\\s*';
-    var regex = new RegExp(badChar + 'this' + s + '(' +
-        '\\.' + s + '_super' + badChar +
-    '|' +
-        '\\[' + s + '(\'_super\'|"_super")' + s + '\\]' +
-    ')');
-    return regex.test(this.toString());
-};
-
-Function.classProperties = function(klass) {
-    if (typeof klass != 'function') return {};
-    var properties = {}, skip, prop;
-    for (var method in klass) {
-        skip = false;
-        for (prop in JS.Class.ify(function(){}))
-            if (method == prop) skip = true;
-        if (method == 'bindMethods') skip = true;
-        if (skip) continue;
-        properties[method] = klass[method];
-    }
-    return properties;
-};
-
-Array.from = function(iterable) {
-    if (!iterable) return [];
-    if (iterable.toArray) return iterable.toArray();
-    var length = iterable.length, results = new Array(length);
-    while (length--) results[length] = iterable[length];
-    return results;
-};
-
 /**
  * @overview
  * <p>JS.Class, classical inheritance for JavaScript.<br />
@@ -476,4 +436,45 @@ JS.Class.CLASS_METHODS = {
             JS.Class.addMethod(this, this, this.superclass, name, func);
         return this;
     }
+};
+
+
+Function.prototype.bind = function() {
+    if (arguments.length < 2 && arguments[0] === undefined) return this;
+    var __method = this, args = Array.from(arguments), object = args.shift();
+    return function() {
+        return __method.apply(object, args.concat(Array.from(arguments)));
+    };
+};
+
+Function.prototype.callsSuper = function() {
+    var badChar = '[^A-Za-z0-9\\_\\$]', s = '\\s*';
+    var regex = new RegExp(badChar + 'this' + s + '(' +
+        '\\.' + s + '_super' + badChar +
+    '|' +
+        '\\[' + s + '(\'_super\'|"_super")' + s + '\\]' +
+    ')');
+    return regex.test(this.toString());
+};
+
+Function.classProperties = function(klass) {
+    if (typeof klass != 'function') return {};
+    var properties = {}, skip, prop;
+    for (var method in klass) {
+        skip = false;
+        for (prop in JS.Class.ify(function(){}))
+            if (method == prop) skip = true;
+        if (method == 'bindMethods') skip = true;
+        if (skip) continue;
+        properties[method] = klass[method];
+    }
+    return properties;
+};
+
+Array.from = function(iterable) {
+    if (!iterable) return [];
+    if (iterable.toArray) return iterable.toArray();
+    var length = iterable.length, results = new Array(length);
+    while (length--) results[length] = iterable[length];
+    return results;
 };
