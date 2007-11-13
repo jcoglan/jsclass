@@ -309,7 +309,8 @@ if (typeof JS == 'undefined') JS = {};
  * how to use them. (Full documentation is included in the download.)</p>
  */
 JS.Class = function() {
-    if (typeof arguments[0] == 'undefined') throw new ReferenceError('Parent class is not defined');
+    if (arguments.length > 1 && typeof arguments[0] == 'undefined')
+        throw new ReferenceError('Parent class is not defined');
     var args = Array.from(arguments), arg;
     var parent = (typeof args[0] == 'function') ? args.shift() : null;
     var klass = JS.Class.extend(parent);
