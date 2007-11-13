@@ -403,10 +403,14 @@ JS.Class.setup = function(instance) {
  * @param {Object} instance
  */
 JS.Class.bindMethods = function(instance) {
-    for (var method in instance) {
-        if (typeof instance[method] == 'function' && method != 'klass')
-            instance[method] = instance[method].bind(instance);
-    }
+    for (var methodName in instance)
+        (function(method) {
+            var bound = instance[method];
+            if (typeof bound != 'function' || method == 'klass') return;
+            instance[method] = bound.bind(instance);
+            instance[method].valueOf = function() { return bound; };
+            instance[method].toString = function() { return bound.toString(); };
+        })(methodName);
 };
 
 JS.Class.addMethod = function(klass, object, superObject, name, func) {
