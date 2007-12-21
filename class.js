@@ -494,7 +494,7 @@ JS.Class.CLASS_METHODS = {
             this.bindMethods = JS.Class.bindMethods;
         }
         for (var method in source) {
-            if (!/^include|extend|bindMethods$/.test(method))
+            if (!/^(?:include|extend|bindMethods)$/.test(method))
                 this.method(method, source[method], overwrite);
         }
         return this;
