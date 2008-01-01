@@ -155,6 +155,12 @@
                 assertEqual('Animal finds shelter and Animal creates shelter', Animal.create('shelter'));
             }},
             
+            testEmptyClass: function() { with(this) {
+                var klass = JS.Class();
+                var instance = new klass;
+                assert(instance.is_a(klass));
+            }},
+            
             testInheritance: function() { with(this) {
                 var yogi = new Bear('Yogi');
                 assertEqual('MY NAME IS YOGI AND I LIKE PICNICS', yogi.speak('picnics'));
