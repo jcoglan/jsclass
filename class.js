@@ -59,8 +59,6 @@ JS.Class.addMethod = function(klass, object, superObject, name, func) {
             while (i--) args[i] = arguments[i];
             return _super.apply(this, args);
         };
-        this._super.valueOf = function() { return _super; };
-        this._super.toString = function() { return _super.toString(); };
         var result;
         try { result = func.apply(this, arguments); }
         catch (e) { throw e; }
