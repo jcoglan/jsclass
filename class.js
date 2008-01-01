@@ -160,13 +160,7 @@ Function.prototype.bind = function() {
 };
 
 Function.prototype.callsSuper = function() {
-    var badChar = '[^A-Za-z0-9\\_\\$]', s = '\\s*';
-    var regex = new RegExp(badChar + 'this' + s + '(' +
-        '\\.' + s + '_super' + badChar +
-    '|' +
-        '\\[' + s + '(\'_super\'|"_super")' + s + '\\]' +
-    ')');
-    return regex.test(this.toString());
+    return /\b_super\b/.test(this.toString());
 };
 
 Function.classProperties = function(klass) {
