@@ -151,14 +151,6 @@ JS.Class.CLASS_METHODS = {
 };
 
 
-Function.prototype.bind = function() {
-    if (arguments.length < 2 && arguments[0] === undefined) return this;
-    var __method = this, args = Array.from(arguments), object = args.shift();
-    return function() {
-        return __method.apply(object, args.concat(Array.from(arguments)));
-    };
-};
-
 Function.prototype.callsSuper = function() {
     return /\b_super\b/.test(this.toString());
 };
@@ -175,6 +167,14 @@ Function.classProperties = function(klass) {
         properties[method] = klass[method];
     }
     return properties;
+};
+
+Function.prototype.bind = function() {
+    if (arguments.length < 2 && arguments[0] === undefined) return this;
+    var __method = this, args = Array.from(arguments), object = args.shift();
+    return function() {
+        return __method.apply(object, args.concat(Array.from(arguments)));
+    };
 };
 
 Array.from = function(iterable) {
