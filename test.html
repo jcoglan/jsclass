@@ -196,6 +196,11 @@
                 assertEqual(' says WOOF!', bark());
             }},
             
+            testInitializeGetsRemoved: function() { with(this) {
+                var rex = new Dog('Rex');
+                assert(rex.cunt === undefined);
+            }},
+            
             testHierarchy: function() { with(this) {
                 var rex = new Dog('Rex');
                 assert(rex.is_a(Dog));
@@ -206,12 +211,6 @@
                 assertEqual('Yogi', yogi.name);
                 assert(yogi.is_a(Bear));
                 assert(!yogi.is_a(Dog));
-            }},
-            
-            testSuperclassNotDefined: function() { with(this) {
-                assertRaise('ReferenceError', function() {
-                    var DumbClass = JS.Class(JS.Class.NotDefined, {});
-                });
             }},
             
             testSubclassUpdating: function() { with(this) {

@@ -1,8 +1,6 @@
 if (typeof JS == 'undefined') JS = {};
 
 JS.Class = function() {
-    if (arguments.length > 1 && typeof arguments[0] == 'undefined')
-        throw new ReferenceError('Parent class is not defined');
     var args = Array.from(arguments), arg;
     var parent = (typeof args[0] == 'function') ? args.shift() : null;
     var klass = JS.Class.extend(parent);
@@ -12,9 +10,8 @@ JS.Class = function() {
 
 JS.Class.extend = function(parent) {
     var klass = function() {
-        this.klass = arguments.callee;
-        if (typeof this.initialize == 'function')
-            this.initialize.apply(this, arguments);
+        this.initialize.apply(this, arguments);
+        this.initialize = undefined;
     };
     JS.Class.ify(klass);
     if (typeof parent == 'function') JS.Class.subclass(parent, klass);
