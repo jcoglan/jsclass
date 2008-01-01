@@ -13,12 +13,13 @@ JS.Class = function() {
 JS.Class.extend = function(parent) {
     var klass = function() {
         this.klass = arguments.callee;
-        JS.Class.setup(this);
         if (typeof this.initialize == 'function')
             this.initialize.apply(this, arguments);
     };
     JS.Class.ify(klass);
     if (typeof parent == 'function') JS.Class.subclass(parent, klass);
+    var p = klass.prototype;
+    p.klass = p.constructor = klass;
     klass.include(JS.Class.INSTANCE_METHODS, false);
     return klass;
 };
@@ -45,23 +46,6 @@ JS.Class.subclass = function(superclass, klass) {
     klass.prototype = new bridge();
     klass.extend(superclass);
     return klass;
-};
-
-JS.Class.setup = function(instance) {
-    var bind;
-    if (bind = instance.klass.bindMethods)
-        bind(instance);
-};
-
-JS.Class.bindMethods = function(instance) {
-    for (var methodName in instance)
-        (function(method) {
-            var bound = instance[method];
-            if (typeof bound != 'function' || method == 'klass') return;
-            instance[method] = bound.bind(instance);
-            instance[method].valueOf = function() { return bound; };
-            instance[method].toString = function() { return bound.toString(); };
-        })(methodName);
 };
 
 JS.Class.addMethod = function(klass, object, superObject, name, func) {
@@ -94,11 +78,15 @@ JS.Class.addMethod = function(klass, object, superObject, name, func) {
 JS.Class.INSTANCE_METHODS = {
     initialize: function() {},
     
+    method: function(name) {
+        return this[name].bind(this);
+    },
+    
     is_a: function(klass) {
-        var _klass = this.klass;
-        while (_klass) {
-            if (_klass === klass) return true;
-            _klass = _klass.superclass;
+        var _class = this.klass;
+        while (_class) {
+            if (_class === klass) return true;
+            _class = _class.superclass;
         }
         return false;
     }
@@ -118,11 +106,8 @@ JS.Class.CLASS_METHODS = {
             for (i = 0, n = modules.length; i < n; i++)
                 this.extend(modules[i]);
         }
-        if (source.bindMethods) {
-            this.bindMethods = JS.Class.bindMethods;
-        }
         for (var method in source) {
-            if (!/^(?:include|extend|bindMethods)$/.test(method))
+            if (!/^(?:include|extend)$/.test(method))
                 this.method(method, source[method], overwrite);
         }
         return this;
@@ -162,7 +147,6 @@ Function.classProperties = function(klass) {
         skip = false;
         for (prop in JS.Class.ify(function(){}))
             if (method == prop) skip = true;
-        if (method == 'bindMethods') skip = true;
         if (skip) continue;
         properties[method] = klass[method];
     }

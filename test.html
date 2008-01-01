@@ -46,7 +46,6 @@
         });
         
         var Dog = JS.Class(Animal, {
-            bindMethods: true,
             bark: function() { return this.name + ' says WOOF!'; }
         });
         
@@ -189,7 +188,7 @@
             
             testBinding: function() { with(this) {
                 var rex = new Dog('Rex');
-                var bark = rex.bark;
+                var bark = rex.method('bark');
                 assertEqual('Rex says WOOF!', bark());
                 var brutus = new Pitbull('Brutus');
                 assertEqual('Brutus says WOOF!', brutus.bark());
