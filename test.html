@@ -158,7 +158,7 @@
             testEmptyClass: function() { with(this) {
                 var klass = JS.Class();
                 var instance = new klass;
-                assert(instance.is_a(klass));
+                assert(instance.isA(klass));
             }},
             
             testInheritance: function() { with(this) {
@@ -186,10 +186,10 @@
                 assertEqual('Native', child.getName());
                 NativeClass.prototype.shout = function() { return 'Shouting!!'; };
                 assertEqual('Shouting!!', child.shout());
-                assert(child.is_a(ChildOfNativeClass));
-                assert(child.is_a(NativeClass));
-                assert(child.is_a(Object));
-                assert(!child.is_a(Dog));
+                assert(child.isA(ChildOfNativeClass));
+                assert(child.isA(NativeClass));
+                assert(child.isA(Object));
+                assert(!child.isA(Dog));
             }},
             
             testBinding: function() { with(this) {
@@ -209,14 +209,14 @@
             
             testHierarchy: function() { with(this) {
                 var rex = new Dog('Rex');
-                assert(rex.is_a(Dog));
-                assert(rex.is_a(Animal));
-                assert(rex.is_a(Object));
-                assert(!rex.is_a(Bear));
+                assert(rex.isA(Dog));
+                assert(rex.isA(Animal));
+                assert(rex.isA(Object));
+                assert(!rex.isA(Bear));
                 var yogi = new rex.klass.superclass.subclasses[0]('Yogi');
                 assertEqual('Yogi', yogi.name);
-                assert(yogi.is_a(Bear));
-                assert(!yogi.is_a(Dog));
+                assert(yogi.isA(Bear));
+                assert(!yogi.isA(Dog));
             }},
             
             testSubclassUpdating: function() { with(this) {
@@ -241,17 +241,17 @@
             
             testModularInheritance: function() { with(this) {
                 var paginator = new Paginator(12);
-                assert(paginator.is_a(Paginator));
-                assert(paginator.items[6].is_a(Paginator.Item));
-                assert(paginator.items[6].is_a(paginator.items[3].klass));
+                assert(paginator.isA(Paginator));
+                assert(paginator.items[6].isA(Paginator.Item));
+                assert(paginator.items[6].isA(paginator.items[3].klass));
                 assertEqual('Item 7', paginator.items[7].getName());
                 
                 var gallery = new Gallery(3);
                 assertEqual(12, gallery.items.length);
-                assert(gallery.is_a(Gallery));
-                assert(gallery.is_a(Paginator));
-                assert(gallery.items[5].is_a(Gallery.Item));
-                assert(gallery.items[5].is_a(Paginator.Item));
+                assert(gallery.isA(Gallery));
+                assert(gallery.isA(Paginator));
+                assert(gallery.items[5].isA(Gallery.Item));
+                assert(gallery.items[5].isA(Paginator.Item));
                 
                 assert(Paginator.Item === Gallery.Item);
                 assert(ItemInheritor.Item !== Gallery.Item);

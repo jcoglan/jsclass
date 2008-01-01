@@ -72,7 +72,7 @@ JS.Class.INSTANCE_METHODS = {
         return this[name].bind(this);
     },
     
-    is_a: function(klass) {
+    isA: function(klass) {
         var _class = this.klass;
         while (_class) {
             if (_class === klass) return true;
