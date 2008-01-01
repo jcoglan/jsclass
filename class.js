@@ -93,14 +93,14 @@ JS.Class.INSTANCE_METHODS = {
 JS.Class.CLASS_METHODS = {
     include: function(source, overwrite) {
         if (!source) return;
-        var modules, i, n;
-        if (source.include) {
-            modules = (source.include instanceof Array) ? source.include : [source.include];
+        var modules, i, n, inc = source.include, ext = source.extend;
+        if (inc) {
+            modules = (inc instanceof Array) ? inc : [inc];
             for (i = 0, n = modules.length; i < n; i++)
                 this.include(modules[i]);
         }
-        if (source.extend) {
-            modules = (source.extend instanceof Array) ? source.extend : [source.extend];
+        if (ext) {
+            modules = (ext instanceof Array) ? ext : [ext];
             for (i = 0, n = modules.length; i < n; i++)
                 this.extend(modules[i]);
         }
