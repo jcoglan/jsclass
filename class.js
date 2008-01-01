@@ -3,18 +3,18 @@ if (typeof JS == 'undefined') JS = {};
 JS.Class = function() {
     var args = Array.from(arguments), arg;
     var parent = (typeof args[0] == 'function') ? args.shift() : null;
-    var klass = JS.Class.extend(parent);
+    var klass = JS.Class.create(parent);
     while (arg = args.shift()) klass.include(arg);
     return klass;
 };
 
-JS.Class.extend = function(parent) {
+JS.Class.create = function(parent) {
     var klass = function() {
         this.initialize.apply(this, arguments);
         this.initialize = undefined;
     };
     JS.Class.ify(klass);
-    if (typeof parent == 'function') JS.Class.subclass(parent, klass);
+    if (parent) JS.Class.subclass(parent, klass);
     var p = klass.prototype;
     p.klass = p.constructor = klass;
     klass.include(JS.Class.INSTANCE_METHODS, false);
@@ -22,9 +22,8 @@ JS.Class.extend = function(parent) {
 };
 
 JS.Class.ify = function(klass, noExtend) {
-    if (typeof klass != 'function') return;
-    klass.superclass        = klass.superclass || Object;
-    klass.subclasses        = klass.subclasses || [];
+    klass.superclass = klass.superclass || Object;
+    klass.subclasses = klass.subclasses || [];
     if (noExtend === false) return klass;
     for (var method in JS.Class.CLASS_METHODS)
         klass[method] = JS.Class.CLASS_METHODS[method];
@@ -32,9 +31,6 @@ JS.Class.ify = function(klass, noExtend) {
 };
 
 JS.Class.subclass = function(superclass, klass) {
-    if (typeof superclass != 'function' || typeof klass != 'function') return;
-    if (klass.superclass && klass.superclass !== Object)
-        throw new ReferenceError('A class may only have one superclass');
     JS.Class.ify(superclass, false);
     klass.superclass = superclass;
     superclass.subclasses.push(klass);
@@ -50,13 +46,12 @@ JS.Class.addMethod = function(klass, object, superObject, name, func) {
     if (!func.callsSuper()) return (object[name] = func);
     
     var method = function() {
-        var _super = superObject[name], args = Array.from(arguments), currentSuper = this._super;
+        var _super = superObject[name], args = Array.from(arguments), currentSuper = this._super, result;
         if (typeof _super == 'function') this._super = function() {
             var i = arguments.length;
             while (i--) args[i] = arguments[i];
             return _super.apply(this, args);
         };
-        var result;
         try { result = func.apply(this, arguments); }
         catch (e) { throw e; }
         finally {
@@ -89,7 +84,6 @@ JS.Class.INSTANCE_METHODS = {
 
 JS.Class.CLASS_METHODS = {
     include: function(source, overwrite) {
-        if (!source) return;
         var modules, i, n, inc = source.include, ext = source.extend;
         if (inc) {
             modules = (inc instanceof Array) ? inc : [inc];
@@ -115,7 +109,6 @@ JS.Class.CLASS_METHODS = {
     },
     
     extend: function(source, overwrite) {
-        if (!source) return;
         if (typeof source == 'function') source = Function.classProperties(source);
         for (var method in source) this.classMethod(method, source[method], overwrite);
         return this;
@@ -130,19 +123,15 @@ JS.Class.CLASS_METHODS = {
     }
 };
 
-
 Function.prototype.callsSuper = function() {
     return /\b_super\b/.test(this.toString());
 };
 
 Function.classProperties = function(klass) {
-    if (typeof klass != 'function') return {};
-    var properties = {}, skip, prop;
-    for (var method in klass) {
-        skip = false;
+    var properties = {}, prop;
+    loop: for (var method in klass) {
         for (prop in JS.Class.ify(function(){}))
-            if (method == prop) skip = true;
-        if (skip) continue;
+            if (method == prop) continue loop;
         properties[method] = klass[method];
     }
     return properties;
