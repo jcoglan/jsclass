@@ -136,25 +136,25 @@
         //--------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------
         
-        var ActiveRecord = {
-            included: function(klass) {
-                klass.include(this.INSTANCE_METHODS);
-                klass.extend(this.CLASS_METHODS);
-                delete klass.prototype.INSTANCE_METHODS;
-                delete klass.prototype.CLASS_METHODS;
-            },
-            
-            INSTANCE_METHODS: {
+        var ActiveRecord = (function() {
+            var INSTANCE_METHODS = {
                 save: function() {},
                 validate: function() {},
                 attributes: function() {}
-            },
+            };
             
-            CLASS_METHODS: {
+            var CLASS_METHODS = {
                 find: function() {},
                 create: function() {}
-            }
-        };
+            };
+            
+            return {
+                included: function(klass) {
+                    klass.include(INSTANCE_METHODS);
+                    klass.extend(CLASS_METHODS);
+                }
+            };
+        })();
         
         var BlankClass = JS.Class();
         BlankClass.include(ActiveRecord);
