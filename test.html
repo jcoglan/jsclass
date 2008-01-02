@@ -49,6 +49,8 @@
             bark: function() { return this.name + ' says WOOF!'; }
         });
         
+        Dog.Interface = JS.Interface(['speak', 'bark']);
+        
         var Pitbull = JS.Class(Dog, {
             speak: function() {
                 return this._super();
@@ -209,6 +211,19 @@
                 assertEqual('MY NAME IS YOGI AND I LIKE PICNICS', yogi.speak('picnics'));
                 assertEqual('Animal finds honey', Bear.find('honey'));
                 assertEqual('Animal finds nothing and Animal creates nothing, but Bear creates other stuff', Bear.create('nothing'));
+            }},
+            
+            testInterfaces: function() { with(this) {
+                var test = function() {
+                    try {
+                        JS.Interface.ensure.apply(null, arguments);
+                    } catch (e) {
+                        return false;
+                    }
+                    return true;
+                };
+                assert(test(new Dog('rex'), Dog.Interface));
+                assert(!test({}, Dog.Interface));
             }},
             
             testSuperWithNoArguments: function() { with(this) {
