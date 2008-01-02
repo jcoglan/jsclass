@@ -73,6 +73,7 @@ JS.Class = function() {
         initialize: function() {},
         
         method: function(name) {
+            if (typeof this[name] != 'function') throw new Error('object does not have a ' + name + '() method');
             return this[name].bind(this);
         },
         
@@ -100,9 +101,10 @@ JS.Class = function() {
                     this.extend(modules[i]);
             }
             for (var method in source) {
-                if (!/^(?:include|extend)$/.test(method))
+                if (!/^(?:included?|extend)$/.test(method))
                     this.method(method, source[method], overwrite);
             }
+            if (source.included) source.included(this);
             return this;
         },
         

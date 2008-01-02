@@ -55,6 +55,8 @@
             }
         });
         
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
         
         // Let's implement the classes from here: http://www.ajaxpath.com/javascript-inheritance
         // and make sure Crockford's problems aren't encountered.
@@ -80,6 +82,8 @@
             }
         });
         
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
         
         var NativeClass = function() {};
         NativeClass.prototype = {
@@ -92,6 +96,8 @@
             }
         });
         
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
         
         var Paginator = JS.Class({
             initialize: function(n) {
@@ -126,6 +132,32 @@
         ItemInheritor.Item = JS.Class(Gallery.Item, {
             getNumber: function() { return this._super() + 7; }
         });
+        
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
+        
+        var ActiveRecord = {
+            included: function(klass) {
+                klass.include(this.INSTANCE_METHODS);
+                klass.extend(this.CLASS_METHODS);
+                delete klass.prototype.INSTANCE_METHODS;
+                delete klass.prototype.CLASS_METHODS;
+            },
+            
+            INSTANCE_METHODS: {
+                save: function() {},
+                validate: function() {},
+                attributes: function() {}
+            },
+            
+            CLASS_METHODS: {
+                find: function() {},
+                create: function() {}
+            }
+        };
+        
+        var BlankClass = JS.Class();
+        BlankClass.include(ActiveRecord);
         
     </script>
 </head>
@@ -259,6 +291,15 @@
                 
                 var itor = new ItemInheritor(2);
                 assertEqual('Item 13', itor.items[6].getName());
+            }},
+            
+            testIncludedHook: function() { with(this) {
+                assertEqual('function', typeof BlankClass.find);
+                assertEqual('function', typeof BlankClass.create);
+                var foo = new BlankClass;
+                assertEqual('function', typeof foo.save);
+                assertEqual('function', typeof foo.validate);
+                assertEqual('function', typeof foo.attributes);
             }}
         });
         
