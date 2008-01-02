@@ -159,6 +159,17 @@
         var BlankClass = JS.Class();
         BlankClass.include(ActiveRecord);
         
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
+        
+        var InheritanceCatcher = JS.Class({
+            extend: {
+                inherited: function(klass) {
+                    this.children.push(klass);
+                },
+                children: []
+            }
+        });
     </script>
 </head>
 <body>
@@ -300,6 +311,11 @@
                 assertEqual('function', typeof foo.save);
                 assertEqual('function', typeof foo.validate);
                 assertEqual('function', typeof foo.attributes);
+            }},
+            
+            testInheritedHook: function() { with(this) {
+                var foo = JS.Class(InheritanceCatcher);
+                assertEqual(foo, InheritanceCatcher.children[0]);
             }}
         });
         

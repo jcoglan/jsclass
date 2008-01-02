@@ -42,6 +42,7 @@ JS.Class = function() {
         bridge.prototype = superclass.prototype;
         klass.prototype = new bridge();
         klass.extend(superclass);
+        if (typeof superclass.inherited == 'function') superclass.inherited(klass);
         return klass;
     },
     
@@ -104,7 +105,7 @@ JS.Class = function() {
                 if (!/^(?:included?|extend)$/.test(method))
                     this.method(method, source[method], overwrite);
             }
-            if (source.included) source.included(this);
+            if (typeof source.included == 'function') source.included(this);
             return this;
         },
         
