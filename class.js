@@ -153,10 +153,9 @@ JS.extend(JS.Class, {
     },
     
     properties: function(klass) {
-        var properties = {}, prop;
+        var properties = {}, prop, K = this.ify(function(){});
         loop: for (var method in klass) {
-            for (prop in this.ify(function(){}))
-                if (method == prop) continue loop;
+            for (prop in K) { if (method == prop) continue loop; }
             properties[method] = klass[method];
         }
         return properties;
