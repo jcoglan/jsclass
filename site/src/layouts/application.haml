@@ -1,7 +1,11 @@
 !!!
 %html
   %head
-    %title StaticMatic
-    = stylesheets
+    %meta{'http-equiv' => 'content-type', :content => 'text/html; charset=utf-8'}
+    %title JS.Class - Ruby-like classes for JavaScript
   %body
-    = yield
+    #header
+      %h1
+        =link 'JS.Class', '/'
+    #content
+      = yield
