@@ -149,7 +149,8 @@
             some: function() {},
             
             included: function() {
-                Enum.hasBeenIncluded = true;
+                Enum.hasBeenIncluded = Enum.hasBeenIncluded || 0;
+                Enum.hasBeenIncluded++;
             }
         });
         
@@ -346,7 +347,7 @@
                 assertEqual('function', typeof foo.attributes);
                 assertEqual('function', typeof foo.each);
                 assertEqual('function', typeof foo.some);
-                assert(Enum.hasBeenIncluded === true);
+                assertEqual(1, Enum.hasBeenIncluded);
             }},
             
             testSingleton: function() { with(this) {
