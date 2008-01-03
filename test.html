@@ -279,7 +279,7 @@
             
             testSubclassUpdating: function() { with(this) {
                 var kevin = new Koala('Kevin');
-                Animal.method('shout', function(thing) {
+                Animal.instanceMethod('shout', function(thing) {
                     return this.name + ' is loving ' + thing + '!!!';
                 });
                 assertEqual('Kevin is loving trees!!!', kevin.shout('trees'));

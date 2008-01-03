@@ -121,13 +121,13 @@ JS.extend(JS.Class, {
             }
             for (var method in source) {
                 if (!/^(?:included?|extend)$/.test(method))
-                    this.method(method, source[method], overwrite);
+                    this.instanceMethod(method, source[method], overwrite);
             }
             if (typeof source.included == 'function') source.included(this);
             return this;
         },
         
-        method: function(name, func, overwrite) {
+        instanceMethod: function(name, func, overwrite) {
             if (!this.prototype[name] || overwrite !== false)
                 JS.Class.addMethod(this, this.prototype, this.superclass.prototype, name, func);
             return this;
