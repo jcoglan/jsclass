@@ -73,7 +73,7 @@ JS.extend(JS.Class, {
         return klass;
     },
     
-    addMethod: function(klass, object, superObject, name, func) {
+    addMethod: function(object, superObject, name, func) {
         if (typeof func != 'function') return (object[name] = func);
         if (!func.callsSuper()) return (object[name] = func);
         
@@ -131,7 +131,7 @@ JS.extend(JS.Class, {
         
         instanceMethod: function(name, func, overwrite) {
             if (!this.prototype[name] || overwrite !== false)
-                JS.Class.addMethod(this, this.prototype, this.superclass.prototype, name, func);
+                JS.Class.addMethod(this.prototype, this.superclass.prototype, name, func);
             return this;
         },
         
@@ -145,7 +145,7 @@ JS.extend(JS.Class, {
             for (var i = 0, n = this.subclasses.length; i < n; i++)
                 this.subclasses[i].classMethod(name, func, false);
             if (!this[name] || overwrite !== false)
-                JS.Class.addMethod(this, this, this.superclass, name, func);
+                JS.Class.addMethod(this, this.superclass, name, func);
             return this;
         },
         
