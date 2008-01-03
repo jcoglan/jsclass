@@ -52,6 +52,12 @@
         Dog.Interface = JS.Interface(['speak', 'bark']);
         
         var Pitbull = JS.Class(Dog, {
+            extend: {
+                canBiteYourLegsOff: function() {
+                    return this.biting;
+                },
+                biting: 'Of course it can'
+            },
             speak: function() {
                 return this._super();
             }
@@ -258,6 +264,8 @@
                 assertEqual('Brutus says WOOF!', brutus.bark());
                 bark = brutus.bark;
                 assertEqual(' says WOOF!', bark());
+                var bite = Pitbull.method('canBiteYourLegsOff');
+                assertEqual('Of course it can', bite());
             }},
             
             testInitializeGetsRemoved: function() { with(this) {

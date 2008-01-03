@@ -20,16 +20,21 @@ Function.prototype.callsSuper = function() {
 
 if (typeof JS == 'undefined') JS = {};
 
+JS.extend = function(object, methods) {
+    for (var prop in methods) object[prop] = methods[prop];
+};
+
+JS.method = function(name) {
+    if (typeof this[name] != 'function') throw new Error('object does not have a ' + name + '() method');
+    return this[name].bind(this);
+};
+
 JS.Class = function() {
     var args = Array.from(arguments), arg;
     var parent = (typeof args[0] == 'function') ? args.shift() : null;
     var klass = arguments.callee.create(parent);
     while (arg = args.shift()) klass.include(arg);
     return klass;
-};
-
-JS.extend = function(object, methods) {
-    for (var prop in methods) object[prop] = methods[prop];
 };
 
 JS.extend(JS.Class, {
@@ -91,10 +96,7 @@ JS.extend(JS.Class, {
     INSTANCE_METHODS: {
         initialize: function() {},
         
-        method: function(name) {
-            if (typeof this[name] != 'function') throw new Error('object does not have a ' + name + '() method');
-            return this[name].bind(this);
-        },
+        method: JS.method,
         
         isA: function(klass) {
             var _class = this.klass;
@@ -145,7 +147,9 @@ JS.extend(JS.Class, {
             if (!this[name] || overwrite !== false)
                 JS.Class.addMethod(this, this, this.superclass, name, func);
             return this;
-        }
+        },
+        
+        method: JS.method
     },
     
     properties: function(klass) {
