@@ -49,6 +49,7 @@ JS.extend(JS.Class, {
         var p = klass.prototype;
         p.klass = p.constructor = klass;
         klass.include(this.INSTANCE_METHODS, false);
+        klass.instanceMethod('extend', this.INSTANCE_METHODS.extend, false);
         return klass;
     },
     
@@ -128,7 +129,7 @@ JS.extend(JS.Class, {
                     this.extend(modules[i]);
             }
             for (var method in source) {
-                if (!/^(?:included?|extend)$/.test(method) || typeof source[method] == 'function')
+                if (!/^(?:included?|extend)$/.test(method))
                     this.instanceMethod(method, source[method], overwrite);
             }
             if (typeof source.included == 'function') source.included(this);
