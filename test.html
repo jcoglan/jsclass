@@ -144,25 +144,27 @@
         //--------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------
         
-        var ActiveRecord = (function() {
-            var INSTANCE_METHODS = {
-                save: function() {},
-                validate: function() {},
-                attributes: function() {}
-            };
+        var Enum = JS.Module({
+            each: function() {},
+            some: function() {},
             
-            var CLASS_METHODS = {
+            included: function() {
+                Enum.hasBeenIncluded = true;
+            }
+        });
+        
+        var ActiveRecord = JS.Module({
+            include: Enum,
+            
+            save: function() {},
+            validate: function() {},
+            attributes: function() {},
+            
+            extend: {
                 find: function() {},
                 create: function() {}
-            };
-            
-            return {
-                included: function(klass) {
-                    klass.include(INSTANCE_METHODS);
-                    klass.extend(CLASS_METHODS);
-                }
-            };
-        })();
+            }
+        });
         
         var BlankClass = JS.Class();
         BlankClass.include(ActiveRecord);
@@ -335,13 +337,26 @@
                 assertEqual('Item 13', itor.items[6].getName());
             }},
             
-            testIncludedHook: function() { with(this) {
+            testModule: function() { with(this) {
                 assertEqual('function', typeof BlankClass.find);
                 assertEqual('function', typeof BlankClass.create);
                 var foo = new BlankClass;
                 assertEqual('function', typeof foo.save);
                 assertEqual('function', typeof foo.validate);
                 assertEqual('function', typeof foo.attributes);
+                assertEqual('function', typeof foo.each);
+                assertEqual('function', typeof foo.some);
+                assert(Enum.hasBeenIncluded === true);
+            }},
+            
+            testSingleton: function() { with(this) {
+                var bear = JS.Singleton(Bear, {
+                    roar: function() { return this.noise; },
+                    noise: 'ROAR'
+                });
+                assertEqual(Bear, bear.klass.superclass);
+                var roar = bear.method('roar');
+                assertEqual('ROAR', roar());
             }},
             
             testInheritedHook: function() { with(this) {

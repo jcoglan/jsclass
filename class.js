@@ -191,3 +191,15 @@ JS.Interface = JS.Class({
         }
     }
 });
+
+JS.Singleton = function() {
+    return new (this.Class.apply(this, arguments));
+};
+
+JS.Module = function(source) {
+    return {
+        included: function(klass) {
+            klass.include(source);
+        }
+    };
+};
