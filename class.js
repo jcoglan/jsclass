@@ -1,9 +1,3 @@
-/**
- * @overview
- * <p>Ojay uses <tt>JS.Class</tt> to provide a Ruby-esque object model.
- * More info on the project's website: <a href="http://blog.jcoglan.com/jsclass/">JS.Class</a>.</p>
- */
-
 Function.prototype.bind = function() {
     if (arguments.length < 2 && arguments[0] === undefined) return this;
     var __method = this, args = Array.from(arguments), object = args.shift();
