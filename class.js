@@ -162,29 +162,25 @@ JS.extend(JS.Class, {
     }
 });
 
-JS.Interface = function(methods) {
-    return new arguments.callee.Class(methods);
-};
-
-JS.extend(JS.Interface, {
-    Class: JS.Class({
-        initialize: function(methods) {
-            this.test = function(object, returnName) {
-                var n = methods.length;
-                while (n--) {
-                    if (typeof object[methods[n]] != 'function')
-                        return returnName ? methods[n] : false;
-                }
-                return true;
-            };
-        }
-    }),
+JS.Interface = JS.Class({
+    initialize: function(methods) {
+        this.test = function(object, returnName) {
+            var n = methods.length;
+            while (n--) {
+                if (typeof object[methods[n]] != 'function')
+                    return returnName ? methods[n] : false;
+            }
+            return true;
+        };
+    },
     
-    ensure: function() {
-        var args = Array.from(arguments), object = args.shift(), face, result;
-        while (face = args.shift()) {
-            result = face.test(object, true);
-            if (result !== true) throw new Error('object does not implement ' + result + '()');
+    extend: {
+        ensure: function() {
+            var args = Array.from(arguments), object = args.shift(), face, result;
+            while (face = args.shift()) {
+                result = face.test(object, true);
+                if (result !== true) throw new Error('object does not implement ' + result + '()');
+            }
         }
     }
 });

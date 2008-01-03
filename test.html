@@ -45,11 +45,11 @@
             }
         });
         
-        var Dog = JS.Class(Animal, {
+        var Dog = new JS.Class(Animal, {
             bark: function() { return this.name + ' says WOOF!'; }
         });
         
-        Dog.Interface = JS.Interface(['speak', 'bark']);
+        Dog.Interface = new JS.Interface(['speak', 'bark']);
         
         var Pitbull = JS.Class(Dog, {
             extend: {
