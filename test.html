@@ -219,6 +219,14 @@
                 assertEqual('Animal finds nothing and Animal creates nothing, but Bear creates other stuff', Bear.create('nothing'));
             }},
             
+            testSingletonMethodInheritance: function() { with(this) {
+                var rex = new Bear('rex');
+                rex.extend({speak: function() {
+                    return 'Guess what? ' + this._super();
+                }});
+                assertEqual('Guess what? MY NAME IS REX AND I LIKE WALKS', rex.speak('walks'));
+            }},
+            
             testInterfaces: function() { with(this) {
                 var test = function() {
                     try {

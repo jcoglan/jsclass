@@ -98,6 +98,12 @@ JS.extend(JS.Class, {
         
         method: JS.method,
         
+        extend: function(source) {
+            for (var method in source)
+                JS.Class.addMethod(this, this.klass.prototype, method, source[method]);
+            return this;
+        },
+        
         isA: function(klass) {
             var _class = this.klass;
             while (_class) {
@@ -122,7 +128,7 @@ JS.extend(JS.Class, {
                     this.extend(modules[i]);
             }
             for (var method in source) {
-                if (!/^(?:included?|extend)$/.test(method))
+                if (!/^(?:included?|extend)$/.test(method) || typeof source[method] == 'function')
                     this.instanceMethod(method, source[method], overwrite);
             }
             if (typeof source.included == 'function') source.included(this);
