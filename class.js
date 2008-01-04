@@ -147,12 +147,12 @@ JS.extend(JS.Class, {
     include: function(source, overwrite) {
       var modules, i, n, inc = source.include, ext = source.extend;
       if (inc) {
-        modules = (inc instanceof Array) ? inc : [inc];
+        modules = [].concat(inc);
         for (i = 0, n = modules.length; i < n; i++)
           this.include(modules[i], overwrite);
       }
       if (ext) {
-        modules = (ext instanceof Array) ? ext : [ext];
+        modules = [].concat(ext);
         for (i = 0, n = modules.length; i < n; i++)
           this.extend(modules[i], overwrite);
       }
