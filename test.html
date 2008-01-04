@@ -186,7 +186,7 @@
         //--------------------------------------------------------------------------------
         
         // Object similar to Ruby's Comparable module
-        var Comparable = {
+        var Comparable = new JS.Module({
             extend: {
                 compare: function(a,b) {
                     return a.compareWith(b);
@@ -205,10 +205,10 @@
             gte: function(object) {
                 return this.klass.compare(this, object) > -1;
             },
-            equals: function(object) {
+            eq: function(object) {
                 return this.klass.compare(this, object) == 0;
             }
-        };
+        });
         
         // A 'comparable' class whose instances can be compared and sorted
         var TodoItem = new JS.Class({
