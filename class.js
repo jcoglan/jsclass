@@ -18,6 +18,12 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ *
+ * Parts of this software are derived from the following open-source projects:
+ *
+ * - The Prototype framework, © 2005-2007 Sam Stephenson
+ * - Alex Arnell’s Inheritance library, © 2006, Alex Arnell
+ * - Base, © 2006-7, Dean Edwards
  */
 
 Function.prototype.bind = function() {
