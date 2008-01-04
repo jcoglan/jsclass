@@ -1,0 +1,37 @@
+:textile
+  h3. Singleton methods
+  
+  In Ruby, singleton methods are methods attached to a single object rather than defined in a
+  class. If you add a singleton method to a Ruby object, @super@ refers to the method from
+  the object's class definition. @JS.Class@ allows the same behaviour. Recall our @Animal@
+  class:
+  
+  <pre>
+  var Animal = new JS.Class({
+    initialize: function(name) {
+      this.name = name;
+    },
+    speak: function(things) {
+      return 'My name is ' + this.name + ' and I like ' + things;
+    }
+  });</pre>
+  
+  We can create a new animal and @extend@ it with singleton methods. All @JS.Class@-derived
+  objects have an @extend()@ method for doing this:
+  
+  <pre>
+  var cow = new Animal('Daisy');
+  
+  cow.extend({
+    speak: function(stuff) {
+      return 'Mooo! ' + this._super();
+    },
+    getName: function() {
+      return this.name;
+    }
+  });
+  
+  cow.getName()   // -> "Daisy"
+  
+  cow.speak('grass')
+      // -> "Mooo! My name is Daisy and I like grass"</pre>
