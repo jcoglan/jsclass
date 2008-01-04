@@ -143,12 +143,12 @@ JS.extend(JS.Class, {
             if (inc) {
                 modules = (inc instanceof Array) ? inc : [inc];
                 for (i = 0, n = modules.length; i < n; i++)
-                    this.include(modules[i]);
+                    this.include(modules[i], overwrite);
             }
             if (ext) {
                 modules = (ext instanceof Array) ? ext : [ext];
                 for (i = 0, n = modules.length; i < n; i++)
-                    this.extend(modules[i]);
+                    this.extend(modules[i], overwrite);
             }
             for (var method in source) {
                 if (!/^(?:included?|extend)$/.test(method))
