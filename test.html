@@ -297,7 +297,7 @@
                     });
                 });
                 assertRaise('Error', function() {
-                    var klass = new JS.Class({implement: I,
+                    var klass = new JS.Class({implement: [I],
                         compareWith: function() {}
                     });
                     klass.include(Comparable);
