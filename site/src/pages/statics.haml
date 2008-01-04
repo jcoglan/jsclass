@@ -1,0 +1,47 @@
+:textile
+  h3. Static/class methods
+  
+  Static methods (also known as class methods) are methods that you call on classes themselves,
+  rather than their instances. To add static methods to your class, wrap them up in an @extend@ block:
+  
+  <pre>
+  var User = new JS.Class({
+    extend: {
+      find: function(id) {
+        // Return a User with id
+      },
+      create: function(name) {
+        return new this(name);
+      }
+    },
+    initialize: function(name) {
+      this.username = name;
+    }
+  });</pre>
+  
+  Note that @extend@ (as defined above) will not become an instance method of the class. Within
+  static methods, @this@ refers to the class itself - see the @create()@ method.
+  
+  <pre>
+  var james = User.create('James');
+  james.username    // -> 'James'
+  james.klass       // -> User</pre>
+  
+  When you create a subclass, it will inherit any static methods of its parent, and you can use
+  @_super()@ too:
+  
+  <pre>
+  var LoudUser = new JS.Class(User, {
+    extend: {
+      create: function(name) {
+        return this._super(name.toUpperCase());
+      }
+    }
+  });
+  
+  var me = LoudUser.create('James');
+  me.username   // -> 'JAMES'
+  me.klass      // -> LoudUser</pre>
+  
+  Note how @this@, even in @_super@ methods, always refers to the same thing as in the original
+  method call. We get back a @LoudUser@, not a @User@.
