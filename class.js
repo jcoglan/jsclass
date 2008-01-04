@@ -66,7 +66,6 @@ JS.extend(JS.Class, {
     create: function(parent) {
         var klass = function() {
             this.initialize.apply(this, arguments);
-            this.initialize = undefined;
         };
         this.ify(klass);
         if (parent) this.subclass(parent, klass);
