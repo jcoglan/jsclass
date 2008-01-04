@@ -21,9 +21,9 @@
  *
  * Parts of this software are derived from the following open-source projects:
  *
- * - The Prototype framework, © 2005-2007 Sam Stephenson
- * - Alex Arnell’s Inheritance library, © 2006, Alex Arnell
- * - Base, © 2006-7, Dean Edwards
+ * - The Prototype framework, (c) 2005-2007 Sam Stephenson
+ * - Alex Arnell's Inheritance library, (c) 2006, Alex Arnell
+ * - Base, (c) 2006-7, Dean Edwards
  */
 
 Function.prototype.bind = function() {
