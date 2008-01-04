@@ -181,6 +181,52 @@
                 children: []
             }
         });
+        
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
+        
+        // Object similar to Ruby's Comparable module
+        var Comparable = {
+            extend: {
+                compare: function(a,b) {
+                    return a.compareWith(b);
+                }
+            },
+            
+            lt: function(object) {
+                return this.klass.compare(this, object) == -1;
+            },
+            lte: function(object) {
+                return this.klass.compare(this, object) < 1;
+            },
+            gt: function(object) {
+                return this.klass.compare(this, object) == 1;
+            },
+            gte: function(object) {
+                return this.klass.compare(this, object) > -1;
+            },
+            equals: function(object) {
+                return this.klass.compare(this, object) == 0;
+            }
+        };
+        
+        // A 'comparable' class whose instances can be compared and sorted
+        var TodoItem = new JS.Class({
+            include: Comparable,
+            
+            initialize: function(position) {
+                this.position = position;
+            },
+            
+            compareWith: function(other) {
+                if (this.position < other.position)
+                    return -1;
+                else if (this.position > other.position)
+                    return 1;
+                else
+                    return 0;
+            }
+        });
     </script>
 </head>
 <body>
@@ -363,6 +409,12 @@
             testInheritedHook: function() { with(this) {
                 var foo = JS.Class(InheritanceCatcher);
                 assertEqual(foo, InheritanceCatcher.children[0]);
+            }},
+            
+            testComparableModule: function() { with(this) {
+                var items = [8,2,7,5,3,7,6].map(function(id) { return new TodoItem(id) });
+                var sorted = items.clone().sort(TodoItem.compare);
+                assertEqual('2,3,5,6,7,7,8', sorted.pluck('position').join(','));
             }}
         });
         

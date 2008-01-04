@@ -41,7 +41,9 @@
   
   var me = LoudUser.create('James');
   me.username   // -> 'JAMES'
-  me.klass      // -> LoudUser</pre>
+  me.klass      // -> LoudUser
+  
+  var you = LoudUser.find(24)   // inherited from User</pre>
   
   Note how @this@, even in @_super@ methods, always refers to the same thing as in the original
   method call. We get back a @LoudUser@, not a @User@.
