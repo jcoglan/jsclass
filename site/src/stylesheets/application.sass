@@ -42,7 +42,7 @@ h3
   :color            = !dark_green
   :border-bottom    = 1px dotted !dark_grey
   :font
-    :size           !line_height
+    :size           = !leading
     :family         Georgia, Times New Roman, serif
     :weight         bold
   :line-height      !line_height
@@ -89,14 +89,37 @@ pre
   :display    inline
   :float      right
   :width      = 3 * !column_width + 3 * !gutter_width
+  :margin     = 0 0 (2 * !leading)
+  
+#sidebar
+  :display    inline
+  :float      left
+  :width      = !column_width
+  
+  ul
+    :list-style   none
+    
+    li
+      :list-style     none
+      :margin         0
+      :background     = !light_grey
+      :border-top     = 1px solid !dark_grey
+      
+      a
+        :color        = !dark_grey
+        :display      block
+        :padding      2px 4px
+      
+      a:hover
+        :color        = !white
+        :background   = !dark_grey
 
 #footer
   :clear  both
   :border-top     = 1px dotted !dark_grey
-  :background     = !light_grey
   :font
     :size         12px
-  :margin         = !leading 0
+  :margin         = (2 * !leading) 0 !leading
   :padding        = !leading 14px
   
   p
