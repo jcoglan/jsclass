@@ -289,6 +289,25 @@
                 assert(!Dog.Interface.test({}));
             }},
             
+            testImplement: function() { with(this) {
+                var I = new JS.Interface(['compareWith', 'lt', 'lte', 'gt', 'gte', 'eq']);
+                assertRaise('Error', function() {
+                    var klass = new JS.Class({implement: I,
+                        initialize: function() {}
+                    });
+                });
+                assertRaise('Error', function() {
+                    var klass = new JS.Class({implement: I,
+                        compareWith: function() {}
+                    });
+                    klass.include(Comparable);
+                });
+                var klass = new JS.Class({implement: [I],
+                    include: Comparable,
+                    compareWith: function() {}
+                });
+            }},
+            
             testSuperWithNoArguments: function() { with(this) {
                 var brutus = new Pitbull('Brutus');
                 assertEqual('My name is Brutus and I like biting', brutus.speak('biting'));

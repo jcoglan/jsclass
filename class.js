@@ -60,8 +60,14 @@ JS.method = function(name) {
 JS.Class = function() {
   var args = Array.from(arguments), arg,
       parent = (typeof args[0] == 'function') ? args.shift() : null,
-      klass = arguments.callee.create(parent);
-  while (arg = args.shift()) klass.include(arg);
+      klass = arguments.callee.create(parent),
+      faces = [], I = JS.Interface;
+  while (arg = args.shift()) {
+    klass.include(arg);
+    faces = faces.concat(arg.implement || []);
+  }
+  if (faces.length && I)
+    I.ensure.apply(I, [klass.prototype].concat(faces));
   if (parent && typeof parent.inherited == 'function')
     parent.inherited(klass);
   return klass;
@@ -157,7 +163,7 @@ JS.extend(JS.Class, {
           this.extend(modules[i], overwrite);
       }
       for (var method in source) {
-        if (!/^(?:included?|extend)$/.test(method))
+        if (!/^(?:included?|extend|implement)$/.test(method))
           this.instanceMethod(method, source[method], overwrite);
       }
       if (typeof source.included == 'function') source.included(this);
