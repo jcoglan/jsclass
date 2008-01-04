@@ -1,0 +1,41 @@
+:textile
+  h3. Type-checking and the class tree
+  
+  All objects created from @JS.Class@ classes have a @klass@ property that refers to the class
+  it belongs to. You can use this for type-checking and for accessing static methods on the
+  class. Objects also have an @isA()@ method that can be used to type-check against the whole
+  class tree.
+  
+  <pre>
+  /**
+   * These classes exist...
+   * var Animal = JS.Class({...});
+   * var Dog = JS.Class(Animal, {...});
+   * var Table = JS.Class({...});
+   */
+  
+  var rex = new Dog('rex');
+  rex.isA(Dog)      // -> true
+  rex.isA(Animal)   // -> true
+  rex.isA(Object)   // -> true
+  rex.isA(Table)    // -> false</pre>
+  
+  All classes have a @superclass@ property that refers to their parent class, or @Object@ if they
+  have no parent class.
+  
+  <pre>
+  rex.klass               // -> Dog
+  rex.klass.superclass    // -> Animal</pre>
+  
+  You can use this from within methods to access class constructors, static methods, etc...
+  
+  <pre>
+  var Sheep = new JS.Class(Animal, {
+    // Returns a new Animal with the same name as the sheep
+    clone: function() {
+      return new this.klass.superclass(this.name);
+    }
+  });</pre>
+  
+  Each class also has a @subclasses@ property, which contains an array of its subclasses. This
+  is less useful for programming, but is used to allow static methods to be inherited.
