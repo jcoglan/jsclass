@@ -1,0 +1,51 @@
+:textile
+  h3. Callbacks and hooks
+  
+  Ruby defines a couple of hook methods that you can use to detect when a class in subclassed
+  or when a module is mixed in. These hooks are called @inherited()@ and @included()@.
+  
+  If a class has a static method called @inherited()@ it will be called whenever you create
+  a subclass of it:
+  
+  <pre>
+  var ChildDetector = new JS.Class({
+    extend: {
+      inherited: function(klass) {
+        // Do stuff with child class
+      }
+    }
+  });</pre>
+  
+  The hook receives the new child class as an argument. Note that @class@ is a reserved word
+  in JavaScript and should not be used as a variable name. The child class will have all its methods
+  in place when @inherited()@ gets called, so you can use them within your callback function.
+  
+  In the same vein, if you @include()@ and object that has a method called @included@, that method
+  will be called. You can use this to build modules with complex behaviour inside a closure
+  so they cannot be modified from outside:
+  
+  <pre>
+  var ActiveRecord = (function(){
+    var INSTANCE_METHODS = {
+      save: function() {},
+      validate: function() {},
+      attributes: function() {}
+    };
+    
+    var STATIC_METHODS = {
+      find: function() {},
+      create: function() {}
+    };
+    
+    return {
+      included: function(klass) {
+        klass.include(INSTANCE_METHODS);
+        klass.extend(STATIC_METHODS);
+      }
+    };
+  })();</pre>
+  
+  @ActiveRecord@ is now an object with one public method, @included@, that tells it what to
+  do when it is mixed into a class. The module is secure as no code outside the module can
+  modify its contents. @JS.Class@ actually includes its own module functionality to do precisely
+  this - see "Modules":/modules.html.
