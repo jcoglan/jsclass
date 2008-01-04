@@ -1,0 +1,59 @@
+!white = #fff
+!black = #000
+!dark_grey = #444
+!light_green = #b2e864
+!line_height = 18px
+!font_size = 13px
+
+!columns = 4
+!column_width = 183px
+!gutter_width = 14px
+
+body
+  :background   = !white
+  :color        = !black
+  :margin       0
+  :padding      0
+  :font
+    :size       = !font_size
+    :family     Arial, Helvetica, sans-serif
+  :line-height  = 1.385
+
+#container
+  :width    800px
+  :margin   0 auto
+
+p, ul
+  :margin   = !line_height 0
+
+h1
+  :font
+    :size         = 3 * !line_height
+    :family       Georgia, Times New Roman, serif
+    :weight       normal
+  :line-height    1.0em
+  :height         2.0em
+  :border-bottom  = 1px dotted !dark_grey
+  
+  a
+    :background       = !dark_grey
+    :color            = !white
+    :text-decoration  none
+    :padding          0 12px
+  
+  span
+    :display      block
+    :float        left
+    :font-size    18px
+    :line-height  1em
+    :background   = !light_green
+    :color        = !dark_grey
+    :padding      8px 12px 6px
+
+#content
+  :display    inline
+  :float      right
+  :width      3 * !column_width + 2 * !gutter_width
+
+#footer
+  :clear  both
