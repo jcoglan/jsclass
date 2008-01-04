@@ -58,9 +58,9 @@ JS.method = function(name) {
 };
 
 JS.Class = function() {
-  var args = Array.from(arguments), arg;
-  var parent = (typeof args[0] == 'function') ? args.shift() : null;
-  var klass = arguments.callee.create(parent);
+  var args = Array.from(arguments), arg,
+      parent = (typeof args[0] == 'function') ? args.shift() : null,
+      klass = arguments.callee.create(parent);
   while (arg = args.shift()) klass.include(arg);
   if (parent && typeof parent.inherited == 'function')
     parent.inherited(klass);
