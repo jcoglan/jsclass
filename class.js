@@ -218,7 +218,7 @@ JS.Interface = JS.Class({
 JS.Singleton = function() {
     var klass = JS.Class.apply(JS, arguments), result = new klass();
     klass.instanceMethod('initialize', function() {
-        throw new Error('Singleton classes cannot be reistantiated');
+        throw new Error('Singleton classes cannot be reinstantiated');
     });
     return result;
 };
