@@ -56,6 +56,8 @@ JS.Class = function() {
     var parent = (typeof args[0] == 'function') ? args.shift() : null;
     var klass = arguments.callee.create(parent);
     while (arg = args.shift()) klass.include(arg);
+    if (parent && typeof parent.inherited == 'function')
+        parent.inherited(klass);
     return klass;
 };
 
@@ -92,7 +94,6 @@ JS.extend(JS.Class, {
         bridge.prototype = superclass.prototype;
         klass.prototype = new bridge();
         klass.extend(superclass);
-        if (typeof superclass.inherited == 'function') superclass.inherited(klass);
         return klass;
     },
     
