@@ -216,7 +216,11 @@ JS.Interface = JS.Class({
 });
 
 JS.Singleton = function() {
-    return new (this.Class.apply(this, arguments));
+    var klass = JS.Class.apply(JS, arguments), result = new klass();
+    klass.instanceMethod('initialize', function() {
+        throw new Error('Singleton classes cannot be reistantiated');
+    });
+    return result;
 };
 
 JS.Module = function(source) {

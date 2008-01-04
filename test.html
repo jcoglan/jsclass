@@ -63,6 +63,10 @@
             }
         });
         
+        var Camel = new JS.Singleton(Animal, {
+            fillHumpsWithWater: function() {}
+        });
+        
         //--------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------
         
@@ -405,6 +409,12 @@
                 assertEqual(Bear, bear.klass.superclass);
                 var roar = bear.method('roar');
                 assertEqual('ROAR', roar());
+            }},
+            
+            testSingletonReinstantiation: function() { with(this) {
+                assertRaise('Error', function() {
+                    var foo = new Camel.klass('Cyril');
+                });
             }},
             
             testInheritedHook: function() { with(this) {
