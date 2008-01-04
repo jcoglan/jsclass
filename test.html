@@ -325,11 +325,6 @@
                 assertEqual('Of course it can', bite());
             }},
             
-            testInitializeGetsRemoved: function() { with(this) {
-                var rex = new Dog('Rex');
-                assert(rex.cunt === undefined);
-            }},
-            
             testHierarchy: function() { with(this) {
                 var rex = new Dog('Rex');
                 assert(rex.isA(Dog));
