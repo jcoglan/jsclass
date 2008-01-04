@@ -282,16 +282,11 @@
             }},
             
             testInterfaces: function() { with(this) {
-                var test = function() {
-                    try {
-                        JS.Interface.ensure.apply(null, arguments);
-                    } catch (e) {
-                        return false;
-                    }
-                    return true;
-                };
-                assert(test(new Dog('rex'), Dog.Interface));
-                assert(!test({}, Dog.Interface));
+                assertRaise('Error', function() {
+                  JS.Interface.ensure({}, Dog.Interface);
+                });
+                assert(Dog.Interface.test(new Dog('Rex')));
+                assert(!Dog.Interface.test({}));
             }},
             
             testSuperWithNoArguments: function() { with(this) {
