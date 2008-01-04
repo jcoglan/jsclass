@@ -177,6 +177,7 @@
             extend: {
                 inherited: function(klass) {
                     this.children.push(klass);
+                    klass.log(this);
                 },
                 children: []
             }
@@ -407,7 +408,11 @@
             }},
             
             testInheritedHook: function() { with(this) {
-                var foo = JS.Class(InheritanceCatcher);
+                var foo = JS.Class(InheritanceCatcher, {
+                    extend: {
+                        log: function(klass) {}
+                    }
+                });
                 assertEqual(foo, InheritanceCatcher.children[0]);
             }},
             
