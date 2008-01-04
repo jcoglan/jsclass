@@ -1,8 +1,10 @@
 !white = #fff
 !black = #000
 !dark_grey = #444
+!light_grey = #f4f4f4
 !light_green = #b2e864
-!line_height = 18px
+!dark_green = #6c9334
+!leading = 18px
 !font_size = 13px
 
 !columns = 4
@@ -24,36 +26,79 @@ body
   :margin   0 auto
 
 p, ul
-  :margin   = !line_height 0
+  :margin   = !leading 0
+  :padding  0
 
-h1
+li
+  :margin   0 0 0 32px
+  :padding  0
+
+a
+  :color            = !dark_green
+  :font-weight      bold
+  :text-decoration  none
+
+h3
+  :color            = !dark_green
+  :border-bottom    = 1px dotted !dark_grey
   :font
-    :size         = 3 * !line_height
-    :family       Georgia, Times New Roman, serif
-    :weight       normal
-  :line-height    1.0em
-  :height         2.0em
-  :border-bottom  = 1px dotted !dark_grey
+    :size           !line_height
+    :family         Georgia, Times New Roman, serif
+    :weight         bold
+  :line-height      !line_height
+  :margin           !line_height 0
+
+pre
+  :background   = !light_grey
+  :border
+    :top    = 1px dotted !dark_grey
+    :bottom = 1px dotted !dark_grey
+  :margin   = !leading 0
+  :padding  8px 0
+
+#header
+  :border-bottom    = 1px dotted !dark_grey
+  :margin           = !leading 0
   
-  a
-    :background       = !dark_grey
-    :color            = !white
-    :text-decoration  none
-    :padding          0 12px
-  
-  span
-    :display      block
-    :float        left
-    :font-size    18px
-    :line-height  1em
-    :background   = !light_green
-    :color        = !dark_grey
-    :padding      8px 12px 6px
+  h1
+    :font
+      :size         = 3 * !leading
+      :family       Georgia, Times New Roman, serif
+      :weight       normal
+    :line-height    1.0em
+    :height         2.0em
+    :margin         0
+    
+    a
+      :background       = !dark_grey
+      :color            = !white
+      :text-decoration  none
+      :padding          0 12px
+      :font-weight      normal
+    
+    span
+      :display      block
+      :float        left
+      :font-size    18px
+      :line-height  1em
+      :background   = !light_green
+      :color        = !dark_grey
+      :padding      8px 12px 6px
 
 #content
   :display    inline
   :float      right
-  :width      3 * !column_width + 2 * !gutter_width
+  :width      = 3 * !column_width + 3 * !gutter_width
 
 #footer
   :clear  both
+  :border-top     = 1px dotted !dark_grey
+  :background     = !light_grey
+  :font
+    :size         12px
+  :margin         = !leading 0
+  :padding        = !leading 14px
+  
+  p
+    :margin 0
+  

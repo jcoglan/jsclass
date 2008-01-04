@@ -1,4 +1,49 @@
 :textile
-  @JS.Class@ is a library designed to facilitate object-oriented development in
-  JavaScript.
+  @JS.Class@ is a library designed to facilitate object-oriented development in JavaScript. It
+  uses several idioms borrowed from Ruby to simulate classes, inheritance, mixins and modules.
   
+  h3. Download version 1.0
+  
+  The first major release is now available. The download includes:
+  
+  * @js.class.src.js@ - human-readable source code
+  * @js.class.js@ - a packed version
+  * @js.class.js.gz@ - a gzipped version
+  
+  "Download JS.Class 1.0.0":/assets/JS.Class.1-0-0.zip
+  
+  h3. Documentation
+  
+  More in-depth topics can be found in the sidebar. This is a simple introduction to class creation.
+  All @JS.Class@ classes are defined as follows:
+  
+  <pre>
+  var Animal = new JS.Class({
+    initialize: function(name) {
+      this.name = name;
+    },
+    speak: function(things) {
+      return 'My name is ' + this.name + ' and I like ' + things;
+    }
+  });</pre>
+  
+  All classes should have an @initialize()@ method. That method will get called to instantiate
+  the class' objects. It receives any arguments you use when creating an instance, for example:
+  
+  <pre>
+  var pig = new Animal('Porky');
+  pig.speak('mud')   // -> 'My name is Porky and I like mud'</pre>
+  
+  Any other methods in your class definition become instance methods for the class, as the above
+  example demonstrates. There are a few exceptions to this rule, as you will find out if you
+  read the articles in the sidebar.
+  
+  h3. Acknowledgements
+  
+  @JS.Class@ is inspired by, an partially derived from, the following open-source projects:
+  
+  * The "Prototype":http://prototypejs.org framework, &copy; 2005-2007 Sam Stephenson
+  * Alex Arnell's "Inheritance":http://www.twologic.com/projects/inheritance/ library, &copy; 2006, Alex Arnell
+  * "Base":http://dean.edwards.name/weblog/2006/03/base/, &copy; 2006-7, Dean Edwards
+  
+  Its author was also influenced by techniques demonstrated in "Pro JavaScript Design Patterns":http://www.apress.com/book/view/9781590599082
