@@ -1,0 +1,41 @@
+:textile
+  h3. Modules
+  
+  Ruby modules are collections of methods that can be mixed into classes. The instance methods
+  in a module cannot be accessed from outside it, they can only be used in classes that
+  @include@ the module.
+  
+  @JS.Class@ has some functionality to mimick modules. @JS.Module@ creates objects that have
+  one method - an @included@ hook - that can be mixed into classes but cannot have their
+  instance methods modified. This allows you to create secure mixins.
+  
+  <pre>
+  var Comparable = new JS.Module({
+    extend: {
+      compare: function(a,b) {
+        return a.compareWith(b);
+      }
+    },
+    
+    lt: function(object) {
+      return this.klass.compare(this, object) == -1;
+    },
+    lte: function(object) {
+      return this.klass.compare(this, object) < 1;
+    },
+    gt: function(object) {
+      return this.klass.compare(this, object) == 1;
+    },
+    gte: function(object) {
+      return this.klass.compare(this, object) > -1;
+    },
+    eq: function(object) {
+      return this.klass.compare(this, object) == 0;
+    }
+  });</pre>
+  
+  @Comparable@'s instance methods are now not accessible unless the module is mixed into a class:
+  
+  <pre>
+  TodoItem.include(Comparable);
+  // Now TodoItem has all the methods defined above</pre>
