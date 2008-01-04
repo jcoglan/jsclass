@@ -39,3 +39,14 @@
       #footer
         :textile
           @JS.Class@, &copy; 2007--2008 James Coglan. Released under an MIT-style license.
+    %script{:type => 'text/javascript'}
+      :plain
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    %script{:type => 'text/javascript'}
+      :plain
+        if (!/^http:\/\/localhost[\:\/]/i.test(window.location.href)) {
+          var pageTracker = _gat._getTracker("UA-873493-4");
+          pageTracker._initData();
+          pageTracker._trackPageview();
+        }
