@@ -97,6 +97,27 @@ JS.Enumerable = (function() {
     
     toArray: function() {
       return this.map(function(x) { return x; });
+    },
+    
+    zip: function() {
+      var args = [], counter = 0, n = arguments.length, block, context;
+      if (arguments[n-1] instanceof Function) {
+        block = arguments[n-1]; context = null;
+      }
+      if (arguments[n-2] instanceof Function) {
+        block = arguments[n-2]; context = arguments[n-1];
+      }
+      each.call(arguments, function(arg) {
+        if (arg.toArray) arg = arg.toArray();
+        if (arg instanceof Array) args.push(arg);
+      });
+      var results = this.map(function(item) {
+        var zip = [item];
+        each.call(args, function(arg) { zip.push(arg[counter] || null); });
+        return ++counter && zip;
+      });
+      if (!block) return results;
+      each.call(results, block, context);
     }
   };
   

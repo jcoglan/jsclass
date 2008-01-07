@@ -478,23 +478,13 @@
                     this.assertEqual(foo[i], x);
                 }, this);
                 
-                this.assertEqual(61, collection.inject(40, function(memo, item) {
-                  return memo + item;
-                }));
-                this.assertEqual(36, collection.inject(0, function(memo, item, i) {
-                  return memo + item + i;
-                }));
-                this.assertEqual(21, collection.inject(function(memo, item) {
-                  return memo + item;
-                }));
+                this.assertEqual(61, collection.inject(40, function(memo, item) { return memo + item; }));
+                this.assertEqual(36, collection.inject(0, function(memo, item, i) { return memo + item + i; }));
+                this.assertEqual(21, collection.inject(function(memo, item) { return memo + item; }));
                 
                 this.x = 4;
-                this.assertEqual(81, collection.inject(function(memo, item) {
-                  return memo + this.x * item;
-                }, this));
-                this.assertEqual(24, collection.inject(-60, function(memo, item) {
-                  return memo + this.x * item;
-                }, this));
+                this.assertEqual(81, collection.inject(function(memo, item) { return memo + this.x * item; }, this));
+                this.assertEqual(24, collection.inject(-60, function(memo, item) { return memo + this.x * item; }, this));
                 
                 this.assert(collection.all(function(item, i) { return item == i + 1 }));
                 this.assert(collection.member(4));
@@ -516,6 +506,16 @@
                 this.assertEqual('5,6', collection.select(function(x) { return x > 4 }).join(','));
                 
                 this.assertEqual('1,2,3,4,5,6', collection.entries().join(','));
+                
+                var zip = collection.zip([8,2,7,6], ['cat', 'dog', 'mouse']);
+                results = ['1,8,cat', '2,2,dog', '3,7,mouse', '4,6,', '5,,', '6,,'];
+                collection.each(function(item,i) {
+                    this.assertEqual(results[i], zip[i].join(','));
+                }, this);
+                
+                collection.zip([8,2,7,6], ['cat', 'dog', 'mouse'], function(ary, i) {
+                    this.assertEqual(results[i], ary.join(','));
+                }, this);
             },
             
             testHashes: function() {
