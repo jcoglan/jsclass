@@ -464,6 +464,11 @@
                 var foo = [1,2,3,4,5,6];
                 var collection = new Collection(1,2,3,4,5,6);
                 
+                var results = ['1,2,3,4', '2,3,4,5', '3,4,5,6'];
+                collection.eachCons(4, function(set, i) {
+                    this.assertEqual(results[i], set.join(','));
+                }, this);
+                
                 collection.each(function(x,i) {
                     this.assertEqual(foo[i], x);
                 }, this);

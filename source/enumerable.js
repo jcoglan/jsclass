@@ -32,6 +32,19 @@ JS.Enumerable = (function() {
       });
     },
     
+    eachCons: function(n, block, context) {
+      var size = this.entries().length, limit = size - n, counter = 0, i, len, set;
+      var sets = this.inject([], function(memo, item) {
+        if (counter <= limit) memo[counter] = [];
+        for (i = 1, len = Math.min(++counter, n); i <= len; i++) {
+          set = memo[counter - i];
+          if (set) set.push(item);
+        }
+        return memo;
+      });
+      each.call(sets, block, context);
+    },
+    
     find: function(block, context) {
       var K = {};
       return this.inject(K, function(memo, item, i) {
