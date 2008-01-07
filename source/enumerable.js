@@ -62,13 +62,6 @@ JS.Enumerable = (function() {
       });
     },
     
-    findAll: function(block, context) {
-      return this.inject([], function(memo, item, i) {
-        if (block.call(Null(context), item, i)) memo.push(item);
-        return memo;
-      });
-    },
-    
     map: function(block, context) {
       return this.inject([], function(memo, item, i) {
         memo.push(block.call(Null(context), item, i));
@@ -88,6 +81,20 @@ JS.Enumerable = (function() {
       return [ayes, noes];
     },
     
+    reject: function(block, context) {
+      return this.inject([], function(memo, item, i) {
+        if (!block.call(Null(context), item, i)) memo.push(item);
+        return memo;
+      });
+    },
+    
+    select: function(block, context) {
+      return this.inject([], function(memo, item, i) {
+        if (block.call(Null(context), item, i)) memo.push(item);
+        return memo;
+      });
+    },
+    
     toArray: function() {
       return this.map(function(x) { return x; });
     }
@@ -95,8 +102,8 @@ JS.Enumerable = (function() {
   
   var alias = {
     find:       'detect',
-    findAll:    'select',
     map:        'collect',
+    select:     'findAll',
     toArray:    'entries'
   };
   
