@@ -208,6 +208,15 @@
                     return 0;
             }
         });
+        
+        var Collection = new JS.Class(Array, {
+            include: JS.Enumerable,
+            initialize: function() {
+              this.length = 0;
+              for (var i = 0, n = arguments.length; i < n; i++)
+                this.push(arguments[i]);
+            }
+        });
     </script>
 </head>
 <body>
@@ -421,7 +430,42 @@
                 assert(items[2].gte(items[5]));
                 assert(items[5].eq(items[2]));
                 assert(items[3].between(items[4], items[2]));
-            }}
+            }},
+            
+            testEnumerableModule: function() {
+                var foo = [1,2,3,4,5,6];
+                var collection = new Collection(1,2,3,4,5,6);
+                
+                collection.each(function(x,i) {
+                    this.assertEqual(foo[i], x);
+                }, this);
+                
+                this.assertEqual(61, collection.inject(40, function(memo, item) {
+                  return memo + item;
+                }));
+                this.assertEqual(36, collection.inject(0, function(memo, item, i) {
+                  return memo + item + i;
+                }));
+                this.assertEqual(21, collection.inject(function(memo, item) {
+                  return memo + item;
+                }));
+                
+                this.x = 4;
+                this.assertEqual(81, collection.inject(function(memo, item) {
+                  return memo + this.x * item;
+                }, this));
+                this.assertEqual(24, collection.inject(-60, function(memo, item) {
+                  return memo + this.x * item;
+                }, this));
+                
+                this.assert(collection.all(function(item, i) { return item == i + 1 }));
+                
+                this.assert(collection.any(function(item) { return item == 3 }));
+                this.assert(!collection.any(function(item, i) { return item == i }));
+                this.assert(collection.any(function(item, i) { return item == i + 1 }));
+                this.assert(collection.any(function(item) { return item == this.x }, this));
+                this.assert(!collection.any(function(item) { return item == 9 }));
+            }
         });
         
     </script>
