@@ -45,6 +45,16 @@ JS.Enumerable = (function() {
       each.call(sets, block, context);
     },
     
+    eachSlice: function(n, block, context) {
+      var size = this.entries().length, p = Math.ceil(size/n), sets = new Array(p), counter = 0;
+      each.call(sets, function(x,i) { sets[i] = []; });
+      sets = this.inject(sets, function(memo, item) {
+        memo[Math.floor(counter++ / n)].push(item);
+        return memo;
+      });
+      each.call(sets, block, context);
+    },
+    
     find: function(block, context) {
       var K = {};
       return this.inject(K, function(memo, item, i) {

@@ -209,12 +209,12 @@
             }
         });
         
-        var Collection = new JS.Class(Array, {
+        var Collection = new JS.Class({
             include: JS.Enumerable,
             initialize: function() {
-              this.length = 0;
-              for (var i = 0, n = arguments.length; i < n; i++)
-                this.push(arguments[i]);
+              this.length = arguments.length;
+              for (var i = 0, n = this.length; i < n; i++)
+                this[i] = arguments[i];
             }
         });
         
@@ -461,11 +461,16 @@
             }},
             
             testEnumerableModule: function() {
-                var foo = [1,2,3,4,5,6];
+                var foo = [1,2,3,4,5,6], results;
                 var collection = new Collection(1,2,3,4,5,6);
                 
-                var results = ['1,2,3,4', '2,3,4,5', '3,4,5,6'];
+                results = ['1,2,3,4', '2,3,4,5', '3,4,5,6'];
                 collection.eachCons(4, function(set, i) {
+                    this.assertEqual(results[i], set.join(','));
+                }, this);
+                
+                results = ['1,2,3', '4,5,6', '7,8,9', '10'];
+                new Collection(1,2,3,4,5,6,7,8,9,10).eachSlice(3, function(set, i) {
                     this.assertEqual(results[i], set.join(','));
                 }, this);
                 
