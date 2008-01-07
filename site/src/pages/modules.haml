@@ -7,7 +7,8 @@
   
   @JS.Class@ has some functionality to mimick modules. @JS.Module@ creates objects that have
   one method - an @included@ hook - that can be mixed into classes but cannot have their
-  instance methods modified. This allows you to create secure mixins.
+  instance methods modified. This allows you to create secure mixins. (@JS.Class@ comes with
+  a "@Comparable@":/comparable.html module, so you don't have to write you own.)
   
   <pre>
   var Comparable = new JS.Module({
