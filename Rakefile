@@ -1,10 +1,11 @@
 require 'rake'
 require 'fileutils'
 
-SOURCE_DIR = '.'
+SOURCE_DIR = 'source'
 PACKAGE_DIR = 'build'
 PACKAGES = {
-  'class' => 'class'
+  'class' => 'class',
+  'patterns' => %w()
 }
 
 task :default => :build
