@@ -237,6 +237,12 @@
             each: function(block, context) {
                 for (var key in this._object)
                     block.call(context || null, key, this._object[key]);
+            },
+            keys: function() {
+                return this.map(function(key, value) { return key; });
+            },
+            values: function() {
+                return this.collect(function(key, value) { return value; });
             }
         });
     </script>
@@ -512,6 +518,9 @@
                 this.assert(hash3.any(function(key, value) { return key == value; }));
                 this.assert(!hash3.all(function(key, value) { return key == value; }));
                 this.assert(hash2.all(function(key, value) { return key == value; }));
+                
+                this.assertEqual('bar,fizz,foo', hash3.keys().sort().join(','));
+                this.assertEqual('bar,buzz,foo', hash3.values().sort().join(','));
             }
         });
         
