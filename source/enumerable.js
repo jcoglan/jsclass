@@ -62,6 +62,13 @@ JS.Enumerable = (function() {
       });
     },
     
+    findAll: function(block, context) {
+      return this.inject([], function(memo, item, i) {
+        if (block.call(Null(context), item, i)) memo.push(item);
+        return memo;
+      });
+    },
+    
     map: function(block, context) {
       return this.inject([], function(memo, item, i) {
         memo.push(block.call(Null(context), item, i));
@@ -76,6 +83,7 @@ JS.Enumerable = (function() {
   
   var alias = {
     find:       'detect',
+    findAll:    'select',
     map:        'collect',
     toArray:    'entries'
   };
