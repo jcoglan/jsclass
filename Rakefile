@@ -5,7 +5,7 @@ SOURCE_DIR = 'source'
 PACKAGE_DIR = 'build'
 PACKAGES = {
   'class' => 'class',
-  'patterns' => %w()
+  'patterns' => %w(comparable)
 }
 
 task :default => :build

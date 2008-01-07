@@ -191,34 +191,9 @@
         //--------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------
         
-        // Object similar to Ruby's Comparable module
-        var Comparable = new JS.Module({
-            extend: {
-                compare: function(a,b) {
-                    return a.compareWith(b);
-                }
-            },
-            
-            lt: function(object) {
-                return this.klass.compare(this, object) == -1;
-            },
-            lte: function(object) {
-                return this.klass.compare(this, object) < 1;
-            },
-            gt: function(object) {
-                return this.klass.compare(this, object) == 1;
-            },
-            gte: function(object) {
-                return this.klass.compare(this, object) > -1;
-            },
-            eq: function(object) {
-                return this.klass.compare(this, object) == 0;
-            }
-        });
-        
         // A 'comparable' class whose instances can be compared and sorted
         var TodoItem = new JS.Class({
-            include: Comparable,
+            include: JS.Comparable,
             
             initialize: function(position) {
                 this.position = position;
@@ -301,10 +276,10 @@
                     var klass = new JS.Class({implement: [I],
                         compareWith: function() {}
                     });
-                    klass.include(Comparable);
+                    klass.include(JS.Comparable);
                 });
                 var klass = new JS.Class({implement: [I],
-                    include: Comparable,
+                    include: JS.Comparable,
                     compareWith: function() {}
                 });
             }},
