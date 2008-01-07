@@ -46,12 +46,17 @@ JS.Enumerable = (function() {
         memo.push(block.call(Null(context), item, i));
         return memo;
       });
+    },
+    
+    toArray: function() {
+      return this.map(function(x) { return x; });
     }
   };
   
   var alias = {
-    find:   'detect',
-    map:    'collect'
+    find:       'detect',
+    map:        'collect',
+    toArray:    'entries'
   };
   
   for (var key in alias) methods[alias[key]] = methods[key];

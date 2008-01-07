@@ -497,6 +497,8 @@
                 this.assertEqual(3, collection.detect(function(x) { return x % 3 === 0 }));
                 this.assertEqual(5, collection.find(function(x) { return x % 5 === 0 }));
                 this.assertEqual(4, collection.detect(function(x) { return x * 8 === 32 }));
+                
+                this.assertEqual('1,2,3,4,5,6', collection.entries().join(','));
             },
             
             testHashes: function() {
