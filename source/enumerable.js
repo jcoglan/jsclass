@@ -76,6 +76,18 @@ JS.Enumerable = (function() {
       });
     },
     
+    member: function(needle) {
+      return this.any(function(item) { return item == needle; });
+    },
+    
+    partition: function(block, context) {
+      var ayes = [], noes = [];
+      this.each(function(item, i) {
+        (block.call(Null(context), item, i) ? ayes : noes).push(item);
+      });
+      return [ayes, noes];
+    },
+    
     toArray: function() {
       return this.map(function(x) { return x; });
     }
