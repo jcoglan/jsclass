@@ -509,8 +509,8 @@
                 
                 var zip = collection.zip([8,2,7,6], ['cat', 'dog', 'mouse']);
                 results = ['1,8,cat', '2,2,dog', '3,7,mouse', '4,6,', '5,,', '6,,'];
-                collection.each(function(item,i) {
-                    this.assertEqual(results[i], zip[i].join(','));
+                zip.each(function(item,i) {
+                    this.assertEqual(results[i], item.join(','));
                 }, this);
                 
                 collection.zip([8,2,7,6], ['cat', 'dog', 'mouse'], function(ary, i) {
