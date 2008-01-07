@@ -507,6 +507,11 @@
                 });
                 this.assertEqual('FOO', obj.foo);
                 this.assertEqual('BAR', obj.bar);
+                
+                var hash3 = new KeyValueHash({foo: 'foo', bar: 'bar', fizz: 'buzz'});
+                this.assert(hash3.any(function(key, value) { return key == value; }));
+                this.assert(!hash3.all(function(key, value) { return key == value; }));
+                this.assert(hash2.all(function(key, value) { return key == value; }));
             }
         });
         
