@@ -415,6 +415,12 @@
                 var items = [8,2,7,5,3,7,6].map(function(id) { return new TodoItem(id) });
                 var sorted = items.clone().sort(TodoItem.compare);
                 assertEqual('2,3,5,6,7,7,8', sorted.pluck('position').join(','));
+                assert(items[1].lt(items[6]));
+                assert(items[3].lte(items[2]));
+                assert(items[0].gt(items[4]));
+                assert(items[2].gte(items[5]));
+                assert(items[5].eq(items[2]));
+                assert(items[3].between(items[4], items[2]));
             }}
         });
         

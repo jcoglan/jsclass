@@ -18,5 +18,8 @@ JS.Comparable = JS.Module({
   },
   eq: function(other) {
     return this.compareWith(other) == 0;
+  },
+  between: function(a, b) {
+    return this.gte(a) && this.lte(b);
   }
 });
