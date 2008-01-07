@@ -9,12 +9,12 @@ JS.Enumerable = (function() {
   
   var methods = {
     inject: function(memo, block, context) {
+      var counter = 0, K = {};
       if (typeof memo == 'function') {
-        context = block; block = memo; memo = undefined;
+        context = block; block = memo; memo = K;
       }
-      var counter = 0;
       this.each(function(item, i) {
-        if (!counter++ && memo === undefined) return memo = item;
+        if (!counter++ && memo === K) return memo = item;
         memo = block.call(Null(context), memo, item, i);
       });
       return memo;
