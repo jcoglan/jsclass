@@ -21,13 +21,13 @@ JS.Enumerable = (function() {
     },
     
     all: function(block, context) {
-      return this.inject(true, function(memo, item, i) {
+      return !!this.inject(true, function(memo, item, i) {
         return memo && block.call(Null(context), item, i);
       });
     },
     
     any: function(block, context) {
-      return this.inject(false, function(memo, item, i) {
+      return !!this.inject(false, function(memo, item, i) {
         return memo || block.call(Null(context), item, i);
       });
     },
