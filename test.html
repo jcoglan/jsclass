@@ -217,6 +217,28 @@
                 this.push(arguments[i]);
             }
         });
+        
+        var PairedHash = new JS.Class({
+            include: JS.Enumerable,
+            initialize: function(object) {
+                this._object = object || {};
+            },
+            each: function(block, context) {
+                for (var key in this._object)
+                    block.call(context || null, {key: key, value: this._object[key]});
+            }
+        });
+        
+        var KeyValueHash = new JS.Class({
+            include: JS.Enumerable,
+            initialize: function(object) {
+                this._object = object || {};
+            },
+            each: function(block, context) {
+                for (var key in this._object)
+                    block.call(context || null, key, this._object[key]);
+            }
+        });
     </script>
 </head>
 <body>
@@ -465,6 +487,26 @@
                 this.assert(collection.any(function(item, i) { return item == i + 1 }));
                 this.assert(collection.any(function(item) { return item == this.x }, this));
                 this.assert(!collection.any(function(item) { return item == 9 }));
+            },
+            
+            testHashes: function() {
+                var hash1 = new PairedHash({foo: 'foo', bar: 'bar'});
+                hash1.inject(function(memo, pair, index) {
+                    this.assert(pair.key && typeof pair.value == 'string');
+                    this.assertEqual(undefined, index);
+                }, this);
+                
+                var hash2 = new KeyValueHash({foo: 'foo', bar: 'bar'});
+                hash2.inject(function(memo, key, value) {
+                    this.assert(typeof key == 'string' && typeof value == 'string');
+                }, this);
+                
+                var obj = hash2.inject({}, function(memo, key, value) {
+                    memo[key] = value.toUpperCase();
+                    return memo;
+                });
+                this.assertEqual('FOO', obj.foo);
+                this.assertEqual('BAR', obj.bar);
             }
         });
         
