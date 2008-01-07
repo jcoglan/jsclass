@@ -33,24 +33,22 @@ JS.Enumerable = (function() {
     },
     
     eachCons: function(n, block, context) {
-      var size = this.entries().length, limit = size - n, counter = 0, i, len, set;
-      var sets = this.inject([], function(memo, item) {
-        if (counter <= limit) memo[counter] = [];
+      var size = this.entries().length, limit = size - n, counter = 0, i, len, sets = [], set;
+      this.each(function(item) {
+        if (counter <= limit) sets[counter] = [];
         for (i = 1, len = Math.min(++counter, n); i <= len; i++) {
-          set = memo[counter - i];
+          set = sets[counter - i];
           if (set) set.push(item);
         }
-        return memo;
       });
       each.call(sets, block, context);
     },
     
     eachSlice: function(n, block, context) {
-      var size = this.entries().length, p = Math.ceil(size/n), sets = new Array(p), counter = 0;
+      var size = this.entries().length, sets = new Array(Math.ceil(size/n)), counter = 0;
       each.call(sets, function(x,i) { sets[i] = []; });
-      sets = this.inject(sets, function(memo, item) {
-        memo[Math.floor(counter++ / n)].push(item);
-        return memo;
+      this.each(function(item) {
+        sets[Math.floor(counter++ / n)].push(item);
       });
       each.call(sets, block, context);
     },
