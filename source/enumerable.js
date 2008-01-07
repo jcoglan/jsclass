@@ -102,12 +102,13 @@ JS.Enumerable = (function() {
     zip: function() {
       var args = [], counter = 0, n = arguments.length, block, context;
       if (arguments[n-1] instanceof Function) {
-        block = arguments[n-1]; context = null;
+        block = arguments[n-1]; context = {};
       }
       if (arguments[n-2] instanceof Function) {
         block = arguments[n-2]; context = arguments[n-1];
       }
       each.call(arguments, function(arg) {
+        if (arg == block || arg == context) return;
         if (arg.toArray) arg = arg.toArray();
         if (arg instanceof Array) args.push(arg);
       });
