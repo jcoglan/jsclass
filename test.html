@@ -493,6 +493,10 @@
                 this.assert(collection.any(function(item, i) { return item == i + 1 }));
                 this.assert(collection.any(function(item) { return item == this.x }, this));
                 this.assert(!collection.any(function(item) { return item == 9 }));
+                
+                this.assertEqual(3, collection.detect(function(x) { return x % 3 === 0 }));
+                this.assertEqual(5, collection.find(function(x) { return x % 5 === 0 }));
+                this.assertEqual(4, collection.detect(function(x) { return x * 8 === 32 }));
             },
             
             testHashes: function() {

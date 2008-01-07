@@ -32,6 +32,15 @@ JS.Enumerable = (function() {
       });
     },
     
+    find: function(block, context) {
+      var K = {};
+      return this.inject(K, function(memo, item, i) {
+        return (memo === K)
+            ? (block.call(Null(context), item, i) ? item : memo)
+            : memo;
+      });
+    },
+    
     map: function(block, context) {
       return this.inject([], function(memo, item, i) {
         memo.push(block.call(Null(context), item, i));
@@ -40,7 +49,11 @@ JS.Enumerable = (function() {
     }
   };
   
-  var alias = {map: 'collect'};
+  var alias = {
+    find:   'detect',
+    map:    'collect'
+  };
+  
   for (var key in alias) methods[alias[key]] = methods[key];
   
   return {
