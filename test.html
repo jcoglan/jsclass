@@ -547,6 +547,12 @@
                         collection.sortBy(function(item) { return item; }).pluck('position').join(','));
             },
             
+            testEachConsSpeed: function() { with(this) {
+                benchmark(function() {
+                    new Collection(1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6).eachCons(3, function(){});
+                }, 300);
+            }},
+            
             testHashes: function() {
                 var hash1 = new PairedHash({foo: 'foo', bar: 'bar'});
                 hash1.inject(function(memo, pair, index) {

@@ -23,18 +23,6 @@ JS.Enumerable = (function() {
   });
   
   var methods = {
-    inject: function(memo, block, context) {
-      var counter = 0, K = {};
-      if (typeof memo == 'function') {
-        context = block; block = memo; memo = K;
-      }
-      this.each(function(item, i) {
-        if (!counter++ && memo === K) return memo = item;
-        memo = block.call(Null(context), memo, item, i);
-      });
-      return memo;
-    },
-    
     all: function(block, context) {
       var truth = true;
       this.each(function(item, i) {
@@ -52,24 +40,15 @@ JS.Enumerable = (function() {
     },
     
     eachCons: function(n, block, context) {
-      var size = this.entries().length, limit = size - n, counter = 0, i, len, sets = [], set;
-      this.each(function(item) {
-        if (counter <= limit) sets[counter] = [];
-        for (i = 1, len = Math.min(++counter, n); i <= len; i++) {
-          set = sets[counter - i];
-          if (set) set.push(item);
-        }
-      });
-      each.call(sets, block, context);
+      var entries = this.entries(), size = entries.length, limit = size - n;
+      for (var i = 0; i <= limit; i++)
+        block.call(Null(context), entries.slice(i, i+n), i);
     },
     
     eachSlice: function(n, block, context) {
-      var size = this.entries().length, sets = new Array(Math.ceil(size/n)), counter = 0;
-      each.call(sets, function(x,i) { sets[i] = []; });
-      this.each(function(item) {
-        sets[Math.floor(counter++ / n)].push(item);
-      });
-      each.call(sets, block, context);
+      var entries = this.entries(), size = entries.length, m = Math.ceil(size/n);
+      for (var i = 0; i < m; i++)
+        block.call(Null(context), entries.slice(i*n, (i+1)*n), i);
     },
     
     find: function(block, context) {
@@ -79,6 +58,18 @@ JS.Enumerable = (function() {
             ? (block.call(Null(context), item, i) ? item : memo)
             : memo;
       });
+    },
+    
+    inject: function(memo, block, context) {
+      var counter = 0, K = {};
+      if (typeof memo == 'function') {
+        context = block; block = memo; memo = K;
+      }
+      this.each(function(item, i) {
+        if (!counter++ && memo === K) return memo = item;
+        memo = block.call(Null(context), memo, item, i);
+      });
+      return memo;
     },
     
     map: function(block, context) {
