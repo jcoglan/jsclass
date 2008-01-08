@@ -78,8 +78,18 @@ JS.Enumerable = (function() {
       });
     },
     
+    max: function(block, context) {
+      var list = this.sort(block, context);
+      return list[list.length - 1];
+    },
+    
     member: function(needle) {
       return this.any(function(item) { return item == needle; });
+    },
+    
+    min: function(block, context) {
+      var list = this.sort(block, context);
+      return list[0];
     },
     
     partition: function(block, context) {
