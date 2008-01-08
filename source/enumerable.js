@@ -36,15 +36,19 @@ JS.Enumerable = (function() {
     },
     
     all: function(block, context) {
-      return !!this.inject(true, function(memo, item, i) {
-        return memo && block.call(Null(context), item, i);
+      var truth = true;
+      this.each(function(item, i) {
+        truth = truth && block.call(Null(context), item, i);
       });
+      return truth;
     },
     
     any: function(block, context) {
-      return !!this.inject(false, function(memo, item, i) {
-        return memo || block.call(Null(context), item, i);
+      var truth = false;
+      this.each(function(item, i) {
+        truth = truth || block.call(Null(context), item, i);
       });
+      return truth;
     },
     
     eachCons: function(n, block, context) {
