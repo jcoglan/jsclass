@@ -119,10 +119,13 @@ JS.Enumerable = (function() {
     },
     
     sort: function(block, context) {
-      var comparable = isComparable(this);
-      var entries = this.entries();
-      block = block || (comparable ? function(a,b) { return a.compareWith(b); } : null);
-      return block ? entries.sort(function(a,b) { return block.call(Null(context), a, b); }) : entries.sort();
+      var comparable = isComparable(this), entries = this.entries();
+      block = block || (comparable
+          ? function(a,b) { return a.compareWith(b); }
+          : null);
+      return block
+          ? entries.sort(function(a,b) { return block.call(Null(context), a, b); })
+          : entries.sort();
     },
     
     sortBy: function(block, context) {
