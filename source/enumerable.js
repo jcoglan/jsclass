@@ -7,6 +7,12 @@ JS.Enumerable = (function() {
       block.call(Null(context), this[i], i);
   };
   
+  var isComparable = function(list) {
+    return JS.Comparable && list.all(function(item) {
+      return JS.Interface.Comparable.test(item);
+    });
+  };
+  
   var Collection = JS.Class({
     initialize: function(array) {
       this.length = 0;
@@ -115,9 +121,7 @@ JS.Enumerable = (function() {
     },
     
     sort: function(block, context) {
-      var comparable = JS.Comparable && this.all(function(item) {
-        return JS.Interface.Comparable.test(item);
-      });
+      var comparable = isComparable(this);
       var entries = this.entries();
       block = block || (comparable ? function(a,b) { return a.compareWith(b); } : null);
       return block ? entries.sort(function(a,b) { return block.call(Null(context), a, b); }) : entries.sort();
@@ -125,9 +129,7 @@ JS.Enumerable = (function() {
     
     sortBy: function(block, context) {
       var map = new Collection(this.map(block, context));
-      var comparable = JS.Comparable && map.all(function(item) {
-        return JS.Interface.Comparable.test(item);
-      });
+      var comparable = isComparable(map);
       return new Collection(map.zip(this).sort(function(a, b) {
         a = a[0]; b = b[0];
         return comparable ? a.compareWith(b) : (a < b ? -1 : (a > b ? 1 : 0));
