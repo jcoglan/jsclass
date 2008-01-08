@@ -23,3 +23,7 @@ JS.Comparable = JS.Module({
     return this.gte(a) && this.lte(b);
   }
 });
+
+JS.Interface.Comparable = new JS.Interface([
+  'compareWith', 'lt', 'lte', 'gt', 'gte', 'eq', 'between'
+]);

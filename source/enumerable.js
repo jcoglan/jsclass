@@ -95,6 +95,15 @@ JS.Enumerable = (function() {
       });
     },
     
+    sort: function(block) {
+      var comparable = JS.Comparable && this.all(function(item) {
+        return JS.Interface.Comparable.test(item);
+      });
+      var entries = this.entries();
+      block = block || (comparable ? function(a,b) { return a.compareWith(b); } : null);
+      return block ? entries.sort(block) : entries.sort();
+    },
+    
     toArray: function() {
       return this.map(function(x) { return x; });
     },

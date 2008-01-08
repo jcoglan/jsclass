@@ -516,6 +516,19 @@
                 collection.zip([8,2,7,6], ['cat', 'dog', 'mouse'], function(ary, i) {
                     this.assertEqual(results[i], ary.join(','));
                 }, this);
+                
+                collection = new Collection(
+                    new TodoItem(8),
+                    new TodoItem(5),
+                    new TodoItem(7),
+                    new TodoItem(3),
+                    new TodoItem(4)
+                );
+                
+                this.assertEqual('3,4,5,7,8', collection.sort().pluck('position').join(','));
+                this.assertEqual('8,7,5,4,3', collection.sort(function(a,b) { return b.compareWith(a) }).pluck('position').join(','));
+                this.assertEqual('3,4,5,7,8', new Collection(8,5,7,3,4).sort().join(','));
+                this.assertEqual('8,7,5,4,3', new Collection(8,5,7,3,4).sort(function(a,b) { return (1/a) - (1/b) }).join(','));
             },
             
             testHashes: function() {
