@@ -155,7 +155,9 @@ JS.Enumerable = (function() {
       });
       var results = this.map(function(item) {
         var zip = [item];
-        each.call(args, function(arg) { zip.push(arg[counter] || null); });
+        each.call(args, function(arg) {
+          zip.push(arg[counter] === undefined ? null : arg[counter]);
+        });
         return ++counter && zip;
       });
       if (!block) return results;

@@ -518,6 +518,8 @@
                     this.assertEqual(results[i], ary.join(','));
                 }, this);
                 
+                this.assertIdentical(false, new Collection(1,2,3).zip([true, false, true])[1][1]);
+                
                 collection = new Collection(
                     new TodoItem(8, 'Play golf'),
                     new TodoItem(5, 'Go to work'),
