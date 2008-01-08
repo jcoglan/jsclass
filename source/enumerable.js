@@ -40,7 +40,7 @@ JS.Enumerable = (function() {
       this.each(function(item, i) {
         truth = truth && block.call(Null(context), item, i);
       });
-      return truth;
+      return !!truth;
     },
     
     any: function(block, context) {
@@ -48,7 +48,7 @@ JS.Enumerable = (function() {
       this.each(function(item, i) {
         truth = truth || block.call(Null(context), item, i);
       });
-      return truth;
+      return !!truth;
     },
     
     eachCons: function(n, block, context) {
