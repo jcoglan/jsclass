@@ -8,8 +8,8 @@ JS.Enumerable = (function() {
   };
   
   var isComparable = function(list) {
-    return JS.Comparable && list.all(function(item) {
-      return JS.Interface.Comparable.test(item);
+    return list.all(function(item) {
+      return typeof item.compareWith == 'function';
     });
   };
   
