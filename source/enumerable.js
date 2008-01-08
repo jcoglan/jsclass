@@ -7,6 +7,15 @@ JS.Enumerable = (function() {
       block.call(Null(context), this[i], i);
   };
   
+  var Collection = JS.Class({
+    initialize: function(array) {
+      this.length = 0;
+      each.call(array, function(item) {
+        [].push.call(this, item);
+      }, this);
+    }
+  });
+  
   var methods = {
     inject: function(memo, block, context) {
       var counter = 0, K = {};
@@ -104,6 +113,17 @@ JS.Enumerable = (function() {
       return block ? entries.sort(block) : entries.sort();
     },
     
+    sortBy: function(block, context) {
+      var map = new Collection(this.map(block, context));
+      var comparable = JS.Comparable && map.all(function(item) {
+        return JS.Interface.Comparable.test(item);
+      });
+      return new Collection(map.zip(this).sort(function(a, b) {
+        a = a[0]; b = b[0];
+        return comparable ? a.compareWith(b) : (a < b ? -1 : (a > b ? 1 : 0));
+      })).map(function(item) { return item[1]; });
+    },
+    
     toArray: function() {
       return this.map(function(x) { return x; });
     },
@@ -140,10 +160,13 @@ JS.Enumerable = (function() {
   
   for (var key in alias) methods[alias[key]] = methods[key];
   
-  return {
+  var module = {
     included: function(klass) {
       if (!klass.prototype.each) klass.include({each: each});
       klass.include(methods);
     }
   };
+  
+  Collection.include(module);
+  return module;
 })();

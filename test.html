@@ -195,8 +195,9 @@
         var TodoItem = new JS.Class({
             include: JS.Comparable,
             
-            initialize: function(position) {
+            initialize: function(position, task) {
                 this.position = position;
+                this.task = task || "";
             },
             
             compareWith: function(other) {
@@ -518,17 +519,24 @@
                 }, this);
                 
                 collection = new Collection(
-                    new TodoItem(8),
-                    new TodoItem(5),
-                    new TodoItem(7),
-                    new TodoItem(3),
-                    new TodoItem(4)
+                    new TodoItem(8, 'Play golf'),
+                    new TodoItem(5, 'Go to work'),
+                    new TodoItem(7, 'Make money'),
+                    new TodoItem(3, 'Have nap'),
+                    new TodoItem(4, 'Organise to-do list')
                 );
                 
                 this.assertEqual('3,4,5,7,8', collection.sort().pluck('position').join(','));
                 this.assertEqual('8,7,5,4,3', collection.sort(function(a,b) { return b.compareWith(a) }).pluck('position').join(','));
                 this.assertEqual('3,4,5,7,8', new Collection(8,5,7,3,4).sort().join(','));
                 this.assertEqual('8,7,5,4,3', new Collection(8,5,7,3,4).sort(function(a,b) { return (1/a) - (1/b) }).join(','));
+                
+                this.field = 'task';
+                this.assertEqual("Go to work, Have nap, Make money, Organise to-do list, Play golf",
+                        collection.sortBy(function(item) { return item[this.field]; }, this).pluck('task').join(', '));
+                
+                this.assertEqual("3,4,5,7,8",
+                        collection.sortBy(function(item) { return item; }).pluck('position').join(','));
             },
             
             testHashes: function() {
