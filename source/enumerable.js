@@ -52,12 +52,12 @@ JS.Enumerable = (function() {
     },
     
     find: function(block, context) {
-      var K = {};
-      return this.inject(K, function(memo, item, i) {
-        return (memo === K)
-            ? (block.call(Null(context), item, i) ? item : memo)
-            : memo;
+      var needle = {}, K = needle;
+      this.each(function(item, i) {
+        if (needle != K) return;
+        needle = block.call(Null(context), item, i) ? item : needle;
       });
+      return needle == K ? null : needle;
     },
     
     inject: function(memo, block, context) {
@@ -73,10 +73,11 @@ JS.Enumerable = (function() {
     },
     
     map: function(block, context) {
-      return this.inject([], function(memo, item, i) {
-        memo.push(block.call(Null(context), item, i));
-        return memo;
+      var map = [];
+      this.each(function(item, i) {
+        map.push(block.call(Null(context), item, i));
       });
+      return map;
     },
     
     max: function(block, context) {
@@ -102,17 +103,19 @@ JS.Enumerable = (function() {
     },
     
     reject: function(block, context) {
-      return this.inject([], function(memo, item, i) {
-        if (!block.call(Null(context), item, i)) memo.push(item);
-        return memo;
+      var map = [];
+      this.each(function(item, i) {
+        if (!block.call(Null(context), item, i)) map.push(item);
       });
+      return map;
     },
     
     select: function(block, context) {
-      return this.inject([], function(memo, item, i) {
-        if (block.call(Null(context), item, i)) memo.push(item);
-        return memo;
+      var map = [];
+      this.each(function(item, i) {
+        if (block.call(Null(context), item, i)) map.push(item);
       });
+      return map;
     },
     
     sort: function(block, context) {

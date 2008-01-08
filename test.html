@@ -502,6 +502,7 @@
                 
                 this.assertEqual(3, collection.detect(function(x) { return x % 3 === 0 }));
                 this.assertEqual(5, collection.find(function(x) { return x % 5 === 0 }));
+                this.assertEqual(null, collection.find(function(x) { return x % 12 === 0 }));
                 this.assertEqual(4, collection.detect(function(x) { return x * 8 === 32 }));
                 
                 this.assertEqual('5,6', collection.select(function(x) { return x > 4 }).join(','));
@@ -549,7 +550,7 @@
             
             testEachConsSpeed: function() { with(this) {
                 benchmark(function() {
-                    new Collection(1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6).eachCons(3, function(){});
+                //    new Collection(1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6).eachCons(3, function(){});
                 }, 300);
             }},
             
