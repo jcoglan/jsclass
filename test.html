@@ -246,6 +246,13 @@
                 return this.collect(function(key, value) { return value; });
             }
         });
+        
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
+        
+        var Publisher = JS.Class({
+            include: JS.Observable
+        });
     </script>
 </head>
 <body>
@@ -580,7 +587,27 @@
                 
                 this.assertEqual('bar,fizz,foo', hash3.keys().sort().join(','));
                 this.assertEqual('bar,buzz,foo', hash3.values().sort().join(','));
-            }
+            },
+            
+            testObservableModule: function() { with(this) {
+                var pub = new Publisher;
+                this.counter = 0;
+                var increment = function() { this.counter++ };
+                pub.subscribe(increment, this);
+                pub.subscribe(function(x) { this.counter += x }, this);
+                pub.notifyObservers(4);
+                assertEqual(5, this.counter);
+                pub.unsubscribe(increment);
+                pub.unsubscribe(increment);
+                pub.notifyObservers(9);
+                assertEqual(14, this.counter);
+                pub.setChanged(false);
+                pub.notifyObservers(905);
+                assertEqual(14, this.counter);
+                pub.setChanged();
+                pub.notifyObservers(905);
+                assertEqual(919, this.counter);
+            }}
         });
         
     </script>
