@@ -7,8 +7,9 @@ PACKAGES = {
   'class' => 'class',
   'comparable' => 'comparable',
   'enumerable' => 'enumerable',
+  'method_chain' => 'method_chain',
   
-  'patterns' => %w(comparable enumerable)
+  'patterns' => %w(comparable enumerable method_chain)
 }
 
 task :default => :build
