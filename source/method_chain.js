@@ -1,8 +1,7 @@
 JS.MethodChain = (function() {
   
   var klass = function(base) {
-    var CLASS = arguments.callee,
-        queue = [], baseObject = base || {};
+    var queue = [], baseObject = base || {};
     
     this.____ = function(method, args) {
       queue.push({func: method, args: args});
@@ -21,7 +20,7 @@ JS.MethodChain = (function() {
       var object = base || baseObject, method, property;
       loop: for (var i = 0, n = queue.length; i < n; i++) {
         method = queue[i];
-        if (object instanceof CLASS) {
+        if (object instanceof klass) {
           object.____(method.func, method.args);
           continue;
         }
@@ -39,8 +38,8 @@ JS.MethodChain = (function() {
     
     this.toFunction = function() {
       var chain = this;
-      if (it instanceof CLASS) it = new CLASS;
-      if (its instanceof CLASS) its = new CLASS;
+      if (it instanceof klass) it = new klass;
+      if (its instanceof klass) its = new klass;
       return function(object) { return chain.fire(object); };
     };
   };
