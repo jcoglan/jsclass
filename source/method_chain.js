@@ -38,8 +38,6 @@ JS.MethodChain = (function() {
     
     this.toFunction = function() {
       var chain = this;
-      if (it instanceof klass) it = new klass;
-      if (its instanceof klass) its = new klass;
       return function(object) { return chain.fire(object); };
     };
   };
@@ -126,4 +124,4 @@ JS.MethodChain.addMethods([
   "usemap", "valign", "value", "valueOf", "valuetype", "version", "vlink", "vspace", "watch", "width"
 ]);
 
-var it = its = new JS.MethodChain;
+var it = its = function() { return new JS.MethodChain; };
