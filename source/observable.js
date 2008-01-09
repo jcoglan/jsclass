@@ -48,3 +48,8 @@ JS.Observable = (function() {
   
   return JS.Module(methods);
 })();
+
+JS.Interface.Observable = new JS.Interface([
+  'addObserver', 'subscribe', 'deleteObserver', 'unsubscribe', 'deleteObservers',
+  'countObservers', 'notifyObservers', 'setChanged', 'isChanged'
+]);

@@ -466,6 +466,8 @@
                 assert(items[2].gte(items[5]));
                 assert(items[5].eq(items[2]));
                 assert(items[3].between(items[4], items[2]));
+                
+                assert(JS.Interface.Comparable.test(items[1]));
             }},
             
             testEnumerableModule: function() {
@@ -591,6 +593,7 @@
             
             testObservableModule: function() { with(this) {
                 var pub = new Publisher;
+                assert(JS.Interface.Observable.test(pub));
                 this.counter = 0;
                 var increment = function() { this.counter++ };
                 pub.subscribe(increment, this);
