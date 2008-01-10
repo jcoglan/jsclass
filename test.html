@@ -200,7 +200,7 @@
                 this.task = task || "";
             },
             
-            compareWith: function(other) {
+            compareTo: function(other) {
                 if (this.position < other.position)
                     return -1;
                 else if (this.position > other.position)
@@ -311,7 +311,7 @@
             }},
             
             testImplement: function() { with(this) {
-                var I = new JS.Interface(['compareWith', 'lt', 'lte', 'gt', 'gte', 'eq']);
+                var I = new JS.Interface(['compareTo', 'lt', 'lte', 'gt', 'gte', 'eq']);
                 assertRaise('Error', function() {
                     var klass = new JS.Class({implement: I,
                         initialize: function() {}
@@ -319,13 +319,13 @@
                 });
                 assertRaise('Error', function() {
                     var klass = new JS.Class({implement: [I],
-                        compareWith: function() {}
+                        compareTo: function() {}
                     });
                     klass.include(JS.Comparable);
                 });
                 var klass = new JS.Class({implement: [I],
                     include: JS.Comparable,
-                    compareWith: function() {}
+                    compareTo: function() {}
                 });
             }},
             
@@ -544,7 +544,7 @@
                     new TodoItem(4, 'Organise to-do list')
                 );
                 
-                this.method = 'compareWith';
+                this.method = 'compareTo';
                 this.assertEqual('3,4,5,7,8', collection.sort().pluck('position').join(','));
                 this.assertEqual('Have nap', collection.min().task);
                 this.assertEqual('Play golf', collection.max().task);
@@ -562,12 +562,6 @@
                 this.assertEqual("3,4,5,7,8",
                         collection.sortBy(function(item) { return item; }).pluck('position').join(','));
             },
-            
-            testEachConsSpeed: function() { with(this) {
-                benchmark(function() {
-                //    new Collection(1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6).eachCons(3, function(){});
-                }, 300);
-            }},
             
             testHashes: function() {
                 var hash1 = new PairedHash({foo: 'foo', bar: 'bar'});

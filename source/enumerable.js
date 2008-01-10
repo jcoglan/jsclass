@@ -9,7 +9,7 @@ JS.Enumerable = (function() {
   
   var isComparable = function(list) {
     return list.all(function(item) {
-      return typeof item.compareWith == 'function';
+      return typeof item.compareTo == 'function';
     });
   };
   
@@ -121,7 +121,7 @@ JS.Enumerable = (function() {
     sort: function(block, context) {
       var comparable = isComparable(this), entries = this.entries();
       block = block || (comparable
-          ? function(a,b) { return a.compareWith(b); }
+          ? function(a,b) { return a.compareTo(b); }
           : null);
       return block
           ? entries.sort(function(a,b) { return block.call(Null(context), a, b); })
@@ -133,7 +133,7 @@ JS.Enumerable = (function() {
       var comparable = isComparable(map);
       return new Collection(map.zip(this).sort(function(a, b) {
         a = a[0]; b = b[0];
-        return comparable ? a.compareWith(b) : (a < b ? -1 : (a > b ? 1 : 0));
+        return comparable ? a.compareTo(b) : (a < b ? -1 : (a > b ? 1 : 0));
       })).map(function(item) { return item[1]; });
     },
     
