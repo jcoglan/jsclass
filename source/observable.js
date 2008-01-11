@@ -6,7 +6,7 @@ JS.Observable = (function() {
       this._observers.push({block: observer, context: context || null});
     },
     
-    deleteObserver: function(observer) {
+    removeObserver: function(observer) {
       this._observers = this._observers || [];
       for (var i = 0, n = this.countObservers(); i < n; i++) {
         if (this._observers[i].block == observer) {
@@ -16,7 +16,7 @@ JS.Observable = (function() {
       }
     },
     
-    deleteObservers: function() {
+    removeObservers: function() {
       this._observers = [];
     },
     
@@ -44,7 +44,7 @@ JS.Observable = (function() {
   };
   
   methods.subscribe   = methods.addObserver;
-  methods.unsubscribe = methods.deleteObserver;
+  methods.unsubscribe = methods.removeObserver;
   
   return JS.Module(methods);
 })();
