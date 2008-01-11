@@ -80,6 +80,8 @@ JS.MethodChain = (function() {
   return klass;
 })();
 
+var it = its = function() { return new JS.MethodChain; };
+
 JS.MethodChain.addMethods([
   "abbr", "abs", "accept", "acceptCharset", "accesskey", "acos", "action", "addEventListener", 
   "adjacentNode", "align", "alignWithTop", "alink", "alt", "anchor", "appendChild", "appendedNode", 
@@ -123,5 +125,3 @@ JS.MethodChain.addMethods([
   "toSource", "toString", "toUTCString", "toUpperCase", "type", "unshift", "unwatch", "useCapture", 
   "usemap", "valign", "value", "valueOf", "valuetype", "version", "vlink", "vspace", "watch", "width"
 ]);
-
-var it = its = function() { return new JS.MethodChain; };
