@@ -1,3 +1,5 @@
+if (typeof JS == 'undefined') JS = {};
+
 JS.MethodChain = (function() {
   
   var klass = function(base) {
