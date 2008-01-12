@@ -4,7 +4,7 @@
   @Comparable@ is a module that helps you manipulate objects that can be ordered relative
   to each other. It is designed to work exactly like @Comparable@ in Ruby, only without the
   nice method names like @"<="@ that Ruby allows. To use it, your class must define an
-  instance method called @compareWith@, that tells it how to compare itself to other
+  instance method called @compareTo@, that tells it how to compare itself to other
   objects. As an example, let's create a class to represent to-do list items. These can be
   ordered according to their priority.
   
@@ -19,7 +19,7 @@
     
     // Must return -1 if this object is 'less than' other,
     // +1 if it is 'greater than' other, or 0 if they are equal
-    compareWith: function(other) {
+    compareTo: function(other) {
       if (this.priority < other.priority) return -1;
       if (this.priority > other.priority) return 1;
       return 0;
@@ -34,7 +34,7 @@
   * @gte(other)@ - returns @true@ iff the receiver is greater than or equal to @other@
   * @eq(other)@ - returns @true@ iff the receiver is equal to @other@
   * @between(a,b)@ - returns @true@ iff the receiver is between @a@ and @b@ inclusive
-  * @compareWith(other)@ - returns @-1@/@0@/@1@ to indicate result of comparison
+  * @compareTo(other)@ - returns @-1@/@0@/@1@ to indicate result of comparison
   
   @TodoItem@ also has a static method called @compare@ that you should use for sorting.
   
