@@ -53,8 +53,11 @@ JS.extend = function(object, methods) {
 };
 
 JS.method = function(name) {
-  if (typeof this[name] != 'function') throw new Error('object does not have a ' + name + '() method');
-  return this[name].bind(this);
+  var cache = this._methodCache = this._methodCache || {};
+  if (cache[name] && cache[name].func == this[name])
+    return cache[name].bound;
+  cache[name] = {func: this[name], bound: this[name].bind(this)};
+  return cache[name].bound;
 };
 
 JS.Class = function() {
