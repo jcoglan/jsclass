@@ -365,6 +365,20 @@
                 assertEqual('Of course it can', bite());
             }},
             
+            testMethodMemoization: function() { with(this) {
+                var dog = new Dog('Oscar');
+                var bark = dog.method('bark');
+                assertEqual(bark, dog.method('bark'));
+                dog.extend({
+                  bark: function() {
+                    return this._super() + ' and has his own bark() method.';
+                  }
+                });
+                assertEqual('Oscar says WOOF! and has his own bark() method.', dog.bark());
+                assert(dog.method('bark') != bark);
+                assert(dog.method('bark') == dog.method('bark'));
+            }},
+            
             testHierarchy: function() { with(this) {
                 var rex = new Dog('Rex');
                 assert(rex.isA(Dog));
