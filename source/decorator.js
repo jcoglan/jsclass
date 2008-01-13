@@ -1,6 +1,6 @@
 JS.Decorator = function() {
   var args = Array.from(arguments), klass = args.shift(), arg;
-  var decorator = JS.Class();
+  var decorator = JS.Class(), method, func;
   
   var forward = function(name) {
     return function() {
@@ -8,7 +8,7 @@ JS.Decorator = function() {
     };
   };
   
-  for (var method in klass.prototype) {
+  for (method in klass.prototype) {
     func = klass.prototype[method];
     if (typeof func == 'function') func = forward(method);
     decorator.instanceMethod(method, func);
@@ -30,7 +30,8 @@ JS.Decorator = function() {
    
   decorator.instanceMethod('extend', function(source) {
     this.component.extend(source);
-    for (var method in source) {
+    var method, func;
+    for (method in source) {
       func = source[method];
       if (typeof func == 'function') func = forward(method);
       this[method] = func;
