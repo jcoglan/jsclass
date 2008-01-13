@@ -112,6 +112,8 @@ JS.extend(JS.Class, {
   },
   
   addMethod: function(object, superObject, name, func) {
+    if (JS.MethodChain) JS.MethodChain.addMethods([name]);
+    
     if (typeof func != 'function') return (object[name] = func);
     if (!func.callsSuper()) return (object[name] = func);
     

@@ -476,6 +476,21 @@
                         .join(", ").replace(/[aeiou]/ig, "_");
                 assertEqual("F__, B_R", chain.fire());
                 assertEqual("S_M_TH_NG, _LS_", chain.fire(['something', 'else']));
+                
+                var SillyNames = JS.Class({
+                    initialize: function() {
+                        this.name = arguments[0];
+                    },
+                    wollaWollaBingBang: function() {
+                        return this.name;
+                    }
+                });
+                
+                var instance = new SillyNames('something');
+                var chain = new JS.MethodChain;
+                
+                chain.wollaWollaBingBang();
+                assertEqual('something', chain.fire(instance));
             }},
             
             testComparableModule: function() { with(this) {
