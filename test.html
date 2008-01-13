@@ -275,6 +275,15 @@
                 return 5 + this.component.getPrice();
             }
         });
+        
+        var PedalsDecorator = JS.Decorator(Bicycle, {
+            getPrice: function() {
+                return 24 + this.component.getPrice();
+            },
+            rotatePedals: function() {
+                return 'Turning the pedals';
+            }
+        });
     </script>
 </head>
 <body>
@@ -668,6 +677,16 @@
                 assertEqual(10, bike.getPrice());
                 assertEqual(15, bikeWithHeadlights.getPrice());
                 assertEqual('BMX', bikeWithHeadlights.getModel());
+                
+                var mtb = new Bicycle('Mountain bike', 24);
+                var mtbWithLights = new HeadlightDecorator(new HeadlightDecorator(mtb));
+                assertEqual(250, mtbWithLights.getPrice());
+                
+                var mtbWithPedalsAndLights = new HeadlightDecorator(new PedalsDecorator(mtb));
+                assertEqual(269, mtbWithPedalsAndLights.getPrice());
+                assertEqual('Turning the pedals', mtbWithPedalsAndLights.rotatePedals());
+                assertEqual(Bicycle, mtbWithPedalsAndLights.klass);
+                assertEqual(Bicycle, mtbWithPedalsAndLights.constructor);
             }},
             
             testVirtualProxy: function() { with(this) {
