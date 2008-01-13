@@ -34,8 +34,7 @@ JS.Proxy.Virtual = function(klass) {
   });
    
   proxy.instanceMethod('extend', function(source) {
-    var subject = this._getSubject();
-    subject.extend(source);
+    this._getSubject().extend(source);
     for (var method in source) {
       func = source[method];
       if (typeof func == 'function') func = forward(method);
