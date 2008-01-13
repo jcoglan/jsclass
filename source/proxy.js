@@ -32,7 +32,7 @@ JS.Proxy.Virtual = function(klass) {
     klass: klass,
     constructor: klass
   });
-   
+  
   proxy.instanceMethod('extend', function(source) {
     this._getSubject().extend(source);
     for (var method in source) {
