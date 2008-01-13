@@ -253,6 +253,28 @@
         var Publisher = JS.Class({
             include: JS.Observable
         });
+        
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
+        
+        var Bicycle = JS.Class({
+            initialize: function(model, gears) {
+                this.model = model;
+                this.gears = gears;
+            },
+            getModel: function() {
+                return this.model;
+            },
+            getPrice: function() {
+                return 10 * this.gears;
+            }
+        });
+        
+        var HeadlightDecorator = JS.Decorator(Bicycle, {
+            getPrice: function() {
+                return 5 + this.component.getPrice();
+            }
+        });
     </script>
 </head>
 <body>
@@ -638,6 +660,14 @@
                 pub.setChanged();
                 pub.notifyObservers(905);
                 assertEqual(919, this.counter);
+            }},
+            
+            testDecorator: function() { with(this) {
+                var bike = new Bicycle('BMX', 1);
+                var bikeWithHeadlights = new HeadlightDecorator(bike);
+                assertEqual(10, bike.getPrice());
+                assertEqual(15, bikeWithHeadlights.getPrice());
+                assertEqual('BMX', bikeWithHeadlights.getModel());
             }},
             
             testVirtualProxy: function() { with(this) {

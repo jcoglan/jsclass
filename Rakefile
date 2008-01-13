@@ -9,9 +9,10 @@ PACKAGES = {
   'enumerable' => 'enumerable',
   'observable' => 'observable',
   'method_chain' => 'method_chain',
+  'decorator' => 'decorator',
   'proxy' => 'proxy',
   
-  'patterns' => %w(comparable enumerable observable method_chain proxy)
+  'patterns' => %w(comparable enumerable observable method_chain decorator proxy)
 }
 
 task :default => :build
