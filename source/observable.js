@@ -6,10 +6,11 @@ JS.Observable = (function() {
       this._observers.push({block: observer, context: context || null});
     },
     
-    removeObserver: function(observer) {
+    removeObserver: function(observer, context) {
       this._observers = this._observers || [];
+      context = context || null;
       for (var i = 0, n = this.countObservers(); i < n; i++) {
-        if (this._observers[i].block == observer) {
+        if (this._observers[i].block == observer && this._observers[i].context == context) {
           this._observers.splice(i,1);
           return;
         }
