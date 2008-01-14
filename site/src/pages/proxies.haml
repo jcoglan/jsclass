@@ -1,0 +1,25 @@
+:textile
+  h3. @JS.Proxy@
+  
+  <pre>
+  var Dog = JS.Class({
+    extend: {
+      instances: 0
+    },
+    initialize: function(name) {
+      this.name = name;
+      this.klass.instances++;
+    },
+    bark: function() {
+      return this.name + ' says WOOF!';
+    }
+  });
+  
+  var DogProxy = JS.Proxy.Virtual(Dog);
+  
+  var rex = new DogProxy('Rex');
+  Dog.instances   // -> 0
+  
+  rex.bark()  // -> "Rex says WOOF!"
+  Dog.instances   // -> 1</pre>
+  
