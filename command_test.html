@@ -29,7 +29,7 @@
         ctx.fillRect(0,0,W,Y);
       });
       
-      var STACK = new JS.Command.Stack({redo: CLEAR_CANVAS});
+      var DRAW_STACK = new JS.Command.Stack({redo: CLEAR_CANVAS});
       
       var DrawCircleCommand = JS.Class(JS.Command, {
         initialize: function() {
@@ -41,7 +41,7 @@
               ctx.arc(x,y,r,0,2*Math.PI,true);
               ctx.fill();
             },
-            stack: STACK
+            stack: DRAW_STACK
           });
         }
       });
@@ -54,7 +54,7 @@
               ctx.fillStyle = 'rgb(0,0,255)';
               ctx.fillRect(x,y,r,r);
             },
-            stack: STACK
+            stack: DRAW_STACK
           });
         }
       });
@@ -71,14 +71,60 @@
       
       $('drawUndo').observe('click', function(e) {
         e.stop();
-        STACK.undo();
+        DRAW_STACK.undo();
       });
       
       $('drawRedo').observe('click', function(e) {
         e.stop();
-        STACK.redo();
+        DRAW_STACK.redo();
       });
       
     </script>
+    
+    <ul id="list">
+      <li>List item list item list item</li>
+      <li>List item list item list item</li>
+      <li>List item list item list item</li>
+      <li>List item list item list item</li>
+      <li>List item list item list item</li>
+      <li>List item list item list item</li>
+    </ul>
+    <input type="submit" id="listUndo" value="Undo" />
+    <input type="submit" id="listRedo" value="Redo" />
+    
+    <script type="text/javascript" charset="utf-8">
+      
+      var LIST_STACK = new JS.Command.Stack;
+      
+      var ListCommand = new JS.Class(JS.Command, {
+        initialize: function(li) {
+          this._super({
+            execute: function() {
+              li.setStyle({color: 'red'});
+            },
+            undo: function() {
+              li.setStyle({color: ''});
+            },
+            stack: LIST_STACK
+          });
+        }
+      });
+      
+      $$('ul#list li').invoke('observe', 'click', function(e) {
+        new ListCommand(this).execute();
+      });
+      
+      $('listUndo').observe('click', function(e) {
+        e.stop();
+        LIST_STACK.undo();
+      });
+      
+      $('listRedo').observe('click', function(e) {
+        e.stop();
+        LIST_STACK.redo();
+      });
+      
+    </script>
+    
 </body>
 </html>
