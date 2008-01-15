@@ -19,15 +19,12 @@
       
       var canvas = $('canvas'), ctx = canvas.getContext('2d');
       
-      var STACK = new JS.Command.Stack;
-      
-      var CLEAR_CANVAS = new JS.Command({
-        execute: function() {
-          ctx.fillStyle = 'rgb(255,255,255)';
-          ctx.fillRect(0,0,800,600);
-        },
-        stack: STACK
+      var CLEAR_CANVAS = new JS.Command(function() {
+        ctx.fillStyle = 'rgb(255,255,255)';
+        ctx.fillRect(0,0,800,600);
       });
+      
+      var STACK = new JS.Command.Stack({redo: CLEAR_CANVAS});
       
       var DrawCircleCommand = JS.Class(JS.Command, {
         initialize: function() {

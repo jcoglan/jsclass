@@ -7,9 +7,9 @@ JS.Command = JS.Class({
   },
   
   execute: function(push) {
+    if (this._stack && push !== false) this._stack.push(this);
     var exec = this._functions.execute;
     if (exec) exec.apply(this);
-    if (this._stack && push !== false) this._stack.push(this);
   },
   
   undo: function() {
@@ -21,7 +21,7 @@ JS.Command = JS.Class({
     Stack: JS.Class({
       initialize: function(options) {
         options = options || {};
-        this._undo = options.method || 'redo';
+        this._redo = options.redo || null;
         this.clear();
       },
       
@@ -34,6 +34,8 @@ JS.Command = JS.Class({
         this._stack.splice(this._counter, this._stack.length);
         this._stack.push(command);
         this._counter = this._stack.length;
+        if (this._counter == 1 && this._redo && this._redo.execute)
+          this._redo.execute();
       },
       
       stepTo: function(position) {
@@ -47,15 +49,13 @@ JS.Command = JS.Class({
             break;
           
           case position < this._counter :
-            switch (this._undo) {
-              case 'undo':
-                for (i = 0, n = this._counter - position; i < n; i++)
-                  this._stack[this._counter - i - 1].undo();
-                break;
-              case 'redo':
-                for (i = 0, n = position; i < n; i++)
-                  this._stack[i].execute(false);
-                break;
+            if (this._redo && this._redo.execute) {
+              this._redo.execute();
+              for (i = 0, n = position; i < n; i++)
+                this._stack[i].execute(false);
+            } else {
+              for (i = 0, n = this._counter - position; i < n; i++)
+                this._stack[this._counter - i - 1].undo();
             }
             break;
         }
