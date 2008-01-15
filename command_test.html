@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>JS.Class tests: Command</title>
+    <script src="prototype.js" type="text/javascript" charset="utf-8"></script>
+    <script src="unittest.js" type="text/javascript" charset="utf-8"></script>
+    <script src="build/class.js" type="text/javascript" charset="utf-8"></script>
+    <script src="build/patterns.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="test.css" type="text/css" media="screen" title="no title" charset="utf-8">
+</head>
+<body>
+    
+    <canvas id="canvas" style="border: 1px solid #999" width="800" height="600"></canvas>
+    
+    <script type="text/javascript" charset="utf-8">
+      
+      var canvas = $('canvas'), ctx = canvas.getContext('2d');
+      
+      var STACK = new JS.Command.Stack;
+      
+      var CLEAR_CANVAS = new JS.Command({
+        execute: function() {
+          ctx.fillStyle = 'rgb(255,255,255)';
+          ctx.fillRect(0,0,800,600);
+        },
+        stack: STACK
+      });
+      
+      var DrawCircleCommand = JS.Class(JS.Command, {
+        initialize: function() {
+          var x = Math.random() * 800, y = Math.random() * 600, r = Math.random() * 100;
+          this._super({
+            execute: function() {
+              ctx.fillStyle = 'rgb(255,0,0)';
+              ctx.beginPath();
+              ctx.arc(x,y,r,0,2*Math.PI,true);
+              ctx.fill();
+            },
+            stack: STACK
+          });
+        }
+      });
+      
+      var DrawSquareCommand = JS.Class(JS.Command, {
+        initialize: function() {
+          var x = Math.random() * 800, y = Math.random() * 600, r = Math.random() * 80;
+          this._super({
+            execute: function() {
+              ctx.fillStyle = 'rgb(0,0,255)';
+              ctx.fillRect(x,y,r,r);
+            },
+            stack: STACK
+          });
+        }
+      });
+      
+    </script>
+</body>
+</html>
