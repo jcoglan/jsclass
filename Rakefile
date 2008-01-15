@@ -13,7 +13,7 @@ PACKAGES = {
   'proxy' => 'proxy',
   'command' => 'command',
   
-  'patterns' => %w(comparable enumerable observable method_chain decorator proxy)
+  'patterns' => %w(comparable enumerable observable method_chain decorator proxy command)
 }
 
 task :default => :build
