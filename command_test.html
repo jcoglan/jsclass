@@ -13,22 +13,27 @@
 </head>
 <body>
     
-    <canvas id="canvas" style="border: 1px solid #999" width="800" height="600"></canvas>
+    <canvas id="canvas" style="border: 1px solid #999" width="600" height="400"></canvas><br />
+    <input type="submit" id="drawCircle" value="Draw circle" />
+    <input type="submit" id="drawSquare" value="Draw square" />
+    <input type="submit" id="drawUndo" value="Undo" />
+    <input type="submit" id="drawRedo" value="Redo" />
     
     <script type="text/javascript" charset="utf-8">
       
       var canvas = $('canvas'), ctx = canvas.getContext('2d');
+      var W = 600, Y = 400;
       
       var CLEAR_CANVAS = new JS.Command(function() {
         ctx.fillStyle = 'rgb(255,255,255)';
-        ctx.fillRect(0,0,800,600);
+        ctx.fillRect(0,0,W,Y);
       });
       
       var STACK = new JS.Command.Stack({redo: CLEAR_CANVAS});
       
       var DrawCircleCommand = JS.Class(JS.Command, {
         initialize: function() {
-          var x = Math.random() * 800, y = Math.random() * 600, r = Math.random() * 100;
+          var x = Math.random() * W, y = Math.random() * Y, r = Math.random() * 100;
           this._super({
             execute: function() {
               ctx.fillStyle = 'rgb(255,0,0)';
@@ -43,7 +48,7 @@
       
       var DrawSquareCommand = JS.Class(JS.Command, {
         initialize: function() {
-          var x = Math.random() * 800, y = Math.random() * 600, r = Math.random() * 80;
+          var x = Math.random() * W, y = Math.random() * Y, r = Math.random() * 80;
           this._super({
             execute: function() {
               ctx.fillStyle = 'rgb(0,0,255)';
@@ -52,6 +57,26 @@
             stack: STACK
           });
         }
+      });
+      
+      $('drawCircle').observe('click', function(e) {
+        e.stop();
+        new DrawCircleCommand().execute();
+      });
+      
+      $('drawSquare').observe('click', function(e) {
+        e.stop();
+        new DrawSquareCommand().execute();
+      });
+      
+      $('drawUndo').observe('click', function(e) {
+        e.stop();
+        STACK.undo();
+      });
+      
+      $('drawRedo').observe('click', function(e) {
+        e.stop();
+        STACK.redo();
       });
       
     </script>
