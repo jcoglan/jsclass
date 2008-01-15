@@ -11,6 +11,7 @@ PACKAGES = {
   'method_chain' => 'method_chain',
   'decorator' => 'decorator',
   'proxy' => 'proxy',
+  'command' => 'command',
   
   'patterns' => %w(comparable enumerable observable method_chain decorator proxy)
 }
@@ -24,7 +25,7 @@ task :build => [:create_directory, :destroy] do
     unless ENV['d']
       code = Packr.pack(code, :shrink_vars => true)
       base62 = Packr.pack(code, :base62 => true)
-    #  code = base62 if code.size > base62.size
+      code = base62 if code.size > base62.size
     end
     filename = "#{PACKAGE_DIR}/#{name}.js"
     File.open(filename, 'wb') { |f| f.write code }
