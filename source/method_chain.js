@@ -9,15 +9,6 @@ JS.MethodChain = (function() {
       queue.push({func: method, args: args});
     };
     
-    this._ = function() {
-      var func = arguments[0], args = [];
-      if (!/^(?:function|object)$/.test(typeof func)) return this;
-      for (var i = 1, n = arguments.length; i < n; i++)
-        args.push(arguments[i]);
-      this.____(func, args);
-      return this;
-    };
-    
     this.fire = function(base) {
       var object = base || baseObject, method, property;
       loop: for (var i = 0, n = queue.length; i < n; i++) {
@@ -37,11 +28,22 @@ JS.MethodChain = (function() {
       }
       return object;
     };
+  };
+  
+  klass.prototype = {
+    _: function() {
+      var func = arguments[0], args = [];
+      if (!/^(?:function|object)$/.test(typeof func)) return this;
+      for (var i = 1, n = arguments.length; i < n; i++)
+        args.push(arguments[i]);
+      this.____(func, args);
+      return this;
+    },
     
-    this.toFunction = function() {
+    toFunction: function() {
       var chain = this;
       return function(object) { return chain.fire(object); };
-    };
+    }
   };
   
   var reserved = (function() {

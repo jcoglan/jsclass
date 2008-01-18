@@ -522,6 +522,9 @@
                 
                 chain.wollaWollaBingBang();
                 assertEqual('something', chain.fire(instance));
+                
+                chain = new JS.MethodChain;
+                assertEqual('THE TEXT', chain._(new String('the text')).toUpperCase().fire());
             }},
             
             testComparableModule: function() { with(this) {
