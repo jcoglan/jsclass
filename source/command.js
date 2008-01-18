@@ -27,47 +27,47 @@ JS.Command = JS.Class({
       
       clear: function() {
         this._stack = [];
-        this._counter = 0;
+        this.length = this.pointer = 0;
       },
       
       push: function(command) {
-        this._stack.splice(this._counter, this._stack.length);
+        this._stack.splice(this.pointer, this.length);
         this._stack.push(command);
-        this._counter = this._stack.length;
-        if (this._counter == 1 && this._redo && this._redo.execute)
+        this.length = this.pointer = this._stack.length;
+        if (this.pointer == 1 && this._redo && this._redo.execute)
           this._redo.execute();
       },
       
       stepTo: function(position) {
-        if (position < 0 || position > this._stack.length) return;
+        if (position < 0 || position > this.length) return;
         var i, n;
         
         switch (true) {
-          case position > this._counter :
-            for (i = this._counter, n = position; i < n; i++)
+          case position > this.pointer :
+            for (i = this.pointer, n = position; i < n; i++)
               this._stack[i].execute(false);
             break;
           
-          case position < this._counter :
+          case position < this.pointer :
             if (this._redo && this._redo.execute) {
               this._redo.execute();
               for (i = 0, n = position; i < n; i++)
                 this._stack[i].execute(false);
             } else {
-              for (i = 0, n = this._counter - position; i < n; i++)
-                this._stack[this._counter - i - 1].undo();
+              for (i = 0, n = this.pointer - position; i < n; i++)
+                this._stack[this.pointer - i - 1].undo();
             }
             break;
         }
-        this._counter = position;
+        this.pointer = position;
       },
       
       undo: function() {
-        this.stepTo(this._counter - 1);
+        this.stepTo(this.pointer - 1);
       },
       
       redo: function() {
-        this.stepTo(this._counter + 1);
+        this.stepTo(this.pointer + 1);
       }
     })
   }
