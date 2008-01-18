@@ -77,6 +77,23 @@
   individual @DrawCircleCommand@ instance ought to do the same thing every time it is
   executed.
   
+  *Important:* do not overwrite the @execute()@ or @undo()@ methods in a @Command@ sublcass.
+  They contain hooks for talking to command stacks and must not be modified. Always use
+  @_super()@ as shown above to set up your commands. Do not do this:
+  
+  <pre>
+  var BrokenCommand = new JS.Class(JS.Command, {
+    execute: function() {
+      doSomething();
+    },
+    undo: function() {
+      undoSomething();
+    }
+  });</pre>
+  
+  This command will not work properly if you try to hook it up to a command stack as
+  described below.
+  
   h3. @JS.Command.Stack@
   
   If you have actions that can be undone and you want to store the command history so you
@@ -196,6 +213,8 @@
               },
               stack: drawingStack
           });
+          
+          this.name = 'Draw square at ' + x + ', ' + y;
       }
   });</pre>
   
@@ -214,3 +233,75 @@
   many different types of drawing command as you like without complicating the
   mechanism for undoing them - you just get all your commands to notify a
   single command stack and use that stack to revert changes.
+  
+  Notice how the command gives itself a @name@ property inside its @initialize()@
+  method - this will allow us to represent the command in the GUI in the next example.
+  
+  h3. @length@ and @pointer@
+  
+  All stacks have a @length@ property that tells you how many commands they
+  contain at any point in time. This property only changes when a new command
+  is @push()@-ed onto the stack - an @undo()@ or @redo()@ does not change the
+  stack length. What does change is the stack's @pointer@ - this number tells
+  you what point in the stack the most recently executed command is. For example:
+  
+  <pre>
+  var stack = new JS.Command.Stack();
+  var command = new JS.Command({
+    execute: function() { ... }
+  });
+  
+  // stack.length == 0
+  // stack.pointer == 0
+  
+  stack.push(command);
+  stack.push(command);
+  stack.push(command);
+  
+  // stack.length == 3
+  // stack.pointer == 3
+  
+  stack.undo();
+  stack.undo();
+  
+  // stack.length == 3
+  // stack.pointer == 1
+  
+  stack.push(command);
+  
+  // stack gets truncated
+  // stack.length == 2
+  // stack.pointer == 2</pre>
+  
+  h3. They're @Observable@ and @Enumerable@
+  
+  @JS.Command.Stack@ mixes in the "@Observable@":/observable.html and
+  "@Enumerable@":/enumerable.html modules if they are included in your code
+  _before_ you include the @Command@ code. (If you're using the @patterns.js@
+  bundle, this is done for you. If you're using individual files, include
+  @observable.js@ and @enumeralbe.js@, then include @command.js@.) This means
+  you can implement a Photoshop-style action history with barely any code
+  at all by observing the stack:
+  
+  <pre>
+  HTML:
+  <ul id="drawHistory"></ul>
+  
+  SCRIPT:
+  drawingStack.subscribe(function(stack) {
+    var list = document.getElementById('drawHistory'), str = '';
+    stack.each(function(command, i) {
+      var color = (i >= stack.pointer) ? '#999' : '#000';
+      str += '<li style="color: ' + color + ';">' + command.name + '</li>';
+    });
+    list.innerHTML = str;
+  });</pre>
+  
+  This creates a list that updates itself in response to stack changes. Your
+  @subscribe@ callback is passed a reference to the stack whenever the stack
+  executes a new command or undoes/redoes a command. Stacks have a @pointer@
+  property that tells you what point in the stack the most recent command is.
+  So you can work out whether each command has been undone or not, and assign
+  a greyed-out color to commands after the current @pointer@ position. Your
+  @each@ callback is passed each command in the stack in turn, along with its
+  position in the stack (beginning at 0).
