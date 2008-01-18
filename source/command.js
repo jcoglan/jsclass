@@ -19,10 +19,17 @@ JS.Command = JS.Class({
   
   extend: {
     Stack: JS.Class({
+      include: [JS.Observable || {}, JS.Enumerable || {}],
+      
       initialize: function(options) {
         options = options || {};
         this._redo = options.redo || null;
         this.clear();
+      },
+      
+      each: function(block, context) {
+        for (var i = 0, n = this._stack.length; i < n; i++)
+          block.call(context || null, this._stack[i], i);
       },
       
       clear: function() {
@@ -36,6 +43,7 @@ JS.Command = JS.Class({
         this.length = this.pointer = this._stack.length;
         if (this.pointer == 1 && this._redo && this._redo.execute)
           this._redo.execute();
+        if (this.notifyObservers) this.notifyObservers();
       },
       
       stepTo: function(position) {
@@ -60,6 +68,7 @@ JS.Command = JS.Class({
             break;
         }
         this.pointer = position;
+        if (this.notifyObservers) this.notifyObservers();
       },
       
       undo: function() {
