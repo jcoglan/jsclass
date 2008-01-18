@@ -13,6 +13,7 @@
 </head>
 <body>
     
+    <ul id="drawingStack" style="float: right;"></ul>
     <canvas id="canvas" style="border: 1px solid #999" width="600" height="400"></canvas><br />
     <input type="submit" id="drawCircle" value="Draw circle" />
     <input type="submit" id="drawSquare" value="Draw square" />
@@ -43,6 +44,7 @@
             },
             stack: DRAW_STACK
           });
+          this.name = 'Draw circle at ' + x + ', ' + y;
         }
       });
       
@@ -56,6 +58,7 @@
             },
             stack: DRAW_STACK
           });
+          this.name = 'Draw square at ' + x + ', ' + y;
         }
       });
       
@@ -77,6 +80,14 @@
       $('drawRedo').observe('click', function(e) {
         e.stop();
         DRAW_STACK.redo();
+      });
+      
+      DRAW_STACK.subscribe(function(stack) {
+        var list = $('drawingStack'), str = '';
+        stack.each(function(command, i) {
+          str += '<li style="color: ' + (i >= stack.pointer ? '#999' : '#000') + ';">' + command.name + '</li>';
+        });
+        list.innerHTML = str;
       });
       
     </script>

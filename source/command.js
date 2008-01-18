@@ -43,7 +43,7 @@ JS.Command = JS.Class({
         this.length = this.pointer = this._stack.length;
         if (this.pointer == 1 && this._redo && this._redo.execute)
           this._redo.execute();
-        if (this.notifyObservers) this.notifyObservers();
+        if (this.notifyObservers) this.notifyObservers(this);
       },
       
       stepTo: function(position) {
@@ -68,7 +68,7 @@ JS.Command = JS.Class({
             break;
         }
         this.pointer = position;
-        if (this.notifyObservers) this.notifyObservers();
+        if (this.notifyObservers) this.notifyObservers(this);
       },
       
       undo: function() {
