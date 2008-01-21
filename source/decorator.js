@@ -2,7 +2,7 @@ JS.Decorator = function() {
   var args = Array.from(arguments), klass = args.shift(), arg;
   var decorator = JS.Class(), method, func;
   
-  var forward = function(name) {
+  var delegate = function(name) {
     return function() {
       return this.component[name].apply(this.component, arguments);
     };
@@ -10,7 +10,7 @@ JS.Decorator = function() {
   
   for (method in klass.prototype) {
     func = klass.prototype[method];
-    if (typeof func == 'function') func = forward(method);
+    if (typeof func == 'function') func = delegate(method);
     decorator.instanceMethod(method, func);
   }
   
@@ -22,7 +22,7 @@ JS.Decorator = function() {
       for (method in component) {
         if (this[method]) continue;
         func = component[method];
-        if (typeof func == 'function') func = forward(method);
+        if (typeof func == 'function') func = delegate(method);
         this[method] = func;
       }
     }
@@ -33,7 +33,7 @@ JS.Decorator = function() {
     var method, func;
     for (method in source) {
       func = source[method];
-      if (typeof func == 'function') func = forward(method);
+      if (typeof func == 'function') func = delegate(method);
       this[method] = func;
     }
   });
