@@ -1,41 +1,60 @@
 (function() {
-  var interfaces = !!(typeof JS != 'undefined' && JS.Interface);
-
-  var signaturesMatch = function(expected, actual) {
-    var n = expected.length, valid, a, b;
-    for (var i = 0; i < n; i++) {
-      a = actual[i]; b = expected[i]; valid = true;
+  
+  var TypeMatcher = JS.Class({
+    initialize: function(type) {
+      this.type = type;
       switch (true) {
-        case b instanceof Function :
-          try { valid = a.isA(b); }
-          catch (e) { valid = (a instanceof b); }
+        case type instanceof Function :
+          this.test = this.testClass;
           break;
-        case interfaces && b instanceof JS.Interface :
-          valid = b.test(a);
+        case type instanceof JS.Interface :
+          this.test = this.testInterface;
           break;
-        case typeof b == 'string' || b instanceof String :
-          valid = (typeof a == b);
+        case typeof type == 'string' || type instanceof String :
+          this.test = this.testType;
           break;
       }
-      if (!valid) return false;
+    },
+    testClass: function(data) {
+      return data ? (data.isA ? data.isA(this.type) : (data instanceof this.type)) : false;
+    },
+    testInterface: function(data) {
+      return this.type.test(data);
+    },
+    testType: function(data) {
+      return (typeof data == this.type);
+    },
+    extend: {
+      arrayFrom: function(array) {
+        var list = [], i, n = array.length;
+        for (i = 0; i < n; i++)
+          list.push(new this(array[i]));
+        return list;
+      }
+    }
+  });
+  
+  var signaturesMatch = function(types, values) {
+    for (var i = 0, n = types.length, a, b; i < n; i++) {
+      if (!types[i].test(values[i])) return false;
     }
     return true;
   };
 
   Function.prototype.expects = function() {
-    var method = this, args = arguments;
+    var method = this, types = TypeMatcher.arrayFrom(arguments);
     return function() {
-      if (!signaturesMatch(args, arguments))
+      if (!signaturesMatch(types, arguments))
         throw new Error('Invalid argument types');
       return method.apply(this, arguments);
     };
   };
 
   Function.prototype.returns = function(type) {
-    var method = this;
+    var method = this, types = [new TypeMatcher(type)];
     return function() {
       var result = method.apply(this, arguments);
-      if (!signaturesMatch([type], [result]))
+      if (!signaturesMatch(types, [result]))
         throw new Error('Invalid return type');
       return result;
     };

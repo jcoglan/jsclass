@@ -312,12 +312,12 @@
                 
                 var pitbull = new Pitbull('Grrr');
                 
-                benchmark(function() { foo(pitbull, {}, 'foo') }, 400);
+                benchmark(function() { foo(pitbull, pitbull, pitbull, 'foo') }, 3000);
                 
-                foo = foo.expects(Animal, Object, 'string')
+                foo = foo.expects(Animal, Pitbull, Dog, 'string', Array)
                         .returns('string');
                 
-                benchmark(function() { foo(pitbull, {}, 'foo') }, 400);
+                benchmark(function() { foo(pitbull, pitbull, pitbull, 'foo', []) }, 3000);
             }},
             
             testClassDefinition: function() { with(this) {
