@@ -42,22 +42,24 @@
     }
   });
   
-  Function.prototype.expects = function() {
-    var method = this, types = new Type.Collection(arguments);
-    return function() {
-      if (!types.test(arguments))
-        throw new Error('Invalid argument types');
-      return method.apply(this, arguments);
-    };
-  };
-
-  Function.prototype.returns = function(type) {
-    var method = this, types = new Type.Collection([type]);
-    return function() {
-      var result = method.apply(this, arguments);
-      if (!types.test([result]))
-        throw new Error('Invalid return type');
-      return result;
-    };
-  };
+  JS.extend(Function.prototype, {
+    expects: function() {
+      var method = this, types = new Type.Collection(arguments);
+      return function() {
+        if (!types.test(arguments))
+          throw new Error('Invalid argument types');
+        return method.apply(this, arguments);
+      };
+    },
+    
+    returns: function(type) {
+      var method = this, types = new Type.Collection([type]);
+      return function() {
+        var result = method.apply(this, arguments);
+        if (!types.test([result]))
+          throw new Error('Invalid return type');
+        return result;
+      };
+    }
+  });
 })();
