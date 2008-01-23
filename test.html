@@ -305,6 +305,21 @@
                 }, 3000);
             }},
             
+            testStaticTyping: function() { with(this) {
+                var foo = function(animal) {
+                    return 'something';
+                };
+                
+                var pitbull = new Pitbull('Grrr');
+                
+                benchmark(function() { foo(pitbull, {}, 'foo') }, 400);
+                
+                foo = foo.expects(Animal, Object, 'string')
+                        .returns('string');
+                
+                benchmark(function() { foo(pitbull, {}, 'foo') }, 400);
+            }},
+            
             testClassDefinition: function() { with(this) {
                 var frog = new Animal('Kermit');
                 assertEqual('My name is Kermit and I like Ms. Piggy', frog.speak('Ms. Piggy'));
