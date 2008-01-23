@@ -1,6 +1,6 @@
 (function() {
   
-  var TypeMatcher = JS.Class({
+  var Type = JS.Class({
     initialize: function(type) {
       this.type = type;
       switch (true) {
@@ -25,36 +25,37 @@
       return (typeof data == this.type);
     },
     extend: {
-      arrayFrom: function(array) {
-        var list = [], i, n = array.length;
-        for (i = 0; i < n; i++)
-          list.push(new this(array[i]));
-        return list;
-      }
+      Collection: JS.Class({
+        initialize: function(array) {
+          var list = [], i, n = array.length;
+          for (i = 0; i < n; i++)
+            list.push(new Type(array[i]));
+          this.list = list;
+        },
+        test: function(values) {
+          for (var i = 0, n = this.list.length; i < n; i++) {
+            if (!this.list[i].test(values[i])) return false;
+          }
+          return true;
+        }
+      })
     }
   });
   
-  var signaturesMatch = function(types, values) {
-    for (var i = 0, n = types.length, a, b; i < n; i++) {
-      if (!types[i].test(values[i])) return false;
-    }
-    return true;
-  };
-
   Function.prototype.expects = function() {
-    var method = this, types = TypeMatcher.arrayFrom(arguments);
+    var method = this, types = new Type.Collection(arguments);
     return function() {
-      if (!signaturesMatch(types, arguments))
+      if (!types.test(arguments))
         throw new Error('Invalid argument types');
       return method.apply(this, arguments);
     };
   };
 
   Function.prototype.returns = function(type) {
-    var method = this, types = [new TypeMatcher(type)];
+    var method = this, types = new Type.Collection([type]);
     return function() {
       var result = method.apply(this, arguments);
-      if (!signaturesMatch(types, [result]))
+      if (!types.test([result]))
         throw new Error('Invalid return type');
       return result;
     };
