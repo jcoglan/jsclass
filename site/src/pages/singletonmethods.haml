@@ -24,7 +24,7 @@
   
   cow.extend({
     speak: function(stuff) {
-      return 'Mooo! ' + this._super();
+      return 'Mooo! ' + this.callSuper();
     },
     getName: function() {
       return this.name;

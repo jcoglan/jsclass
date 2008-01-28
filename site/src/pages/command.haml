@@ -53,7 +53,7 @@
           y = Math.random() * 300,
           r = Math.random() * 50;
       
-      this._super({
+      this.callSuper({
         execute: function() {
           ctx.fillStyle = 'rgb(255,0,0)';
           ctx.beginPath();
@@ -71,7 +71,7 @@
   
   Note the general pattern here: we create a subclass of @JS.Command@. This new subclass
   accepts a drawing context to instantiate it (@ctx@), chooses some random drawing points, then
-  uses @this._super@ to pass some command properties up to the @JS.Command@ @initialize()@
+  uses @this.callSuper@ to pass some command properties up to the @JS.Command@ @initialize()@
   method. Note that the random numbers are generated once, rather than every time the
   command is executed: each @new DrawCircleCommand@ does something different, but an
   individual @DrawCircleCommand@ instance ought to do the same thing every time it is
@@ -79,7 +79,7 @@
   
   *Important:* do not overwrite the @execute()@ or @undo()@ methods in a @Command@ sublcass.
   They contain hooks for talking to command stacks and must not be modified. Always use
-  @_super()@ as shown above to set up your commands. Do not do this:
+  @callSuper()@ as shown above to set up your commands. Do not do this:
   
   <pre>
   var BrokenCommand = new JS.Class(JS.Command, {
@@ -206,7 +206,7 @@
                   y = Math.random() * H,
                   r = Math.random() * 30;
           
-          this._super({
+          this.callSuper({
               execute: function() {
                   ctx.fillStyle = 'rgb(0,0,255)';
                   ctx.fillRect(x, y, r, r);

@@ -110,14 +110,14 @@
   });</pre>
   
   If you do use arrays, bear in mind that methods defined in later mixins override those in earlier
-  mixins. Unlike in Ruby, you cannot use @_super()@ to refer to mixed-in methods (mixins do not act
-  like parent classes), although methods _in_ mixins can use @_super()@ to refer to super-methods
+  mixins. Unlike in Ruby, you cannot use @callSuper()@ to refer to mixed-in methods (mixins do not act
+  like parent classes), although methods _in_ mixins can use @callSuper()@ to refer to super-methods
   in the context of the classes they are mixed into.
   
   <pre>
   var Reversible = {
     compareWith: function(other) {
-      return -1 * this._super();
+      return -1 * this.callSuper();
     }
   };
   

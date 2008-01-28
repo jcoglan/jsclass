@@ -28,13 +28,13 @@
   james.klass       // -> User</pre>
   
   When you create a subclass, it will inherit any static methods of its parent, and you can use
-  @_super()@ too:
+  @callSuper()@ too:
   
   <pre>
   var LoudUser = new JS.Class(User, {
     extend: {
       create: function(name) {
-        return this._super(name.toUpperCase());
+        return this.callSuper(name.toUpperCase());
       }
     }
   });
@@ -45,5 +45,5 @@
   
   var you = LoudUser.find(24)   // inherited from User</pre>
   
-  Note how @this@, even in @_super@ methods, always refers to the same thing as in the original
+  Note how @this@, even in @callSuper@ methods, always refers to the same thing as in the original
   method call. We get back a @LoudUser@, not a @User@.
