@@ -43,7 +43,7 @@ Array.from = function(iterable) {
 };
 
 Function.prototype.callsSuper = function() {
-  return /\b_super\b/.test(this.toString());
+  return /\bcallSuper\b/.test(this.toString());
 };
 
 if (typeof JS == 'undefined') JS = {};
@@ -118,14 +118,14 @@ JS.extend(JS.Class, {
     if (!func.callsSuper()) return (object[name] = func);
     
     var method = function() {
-      var _super = superObject[name], args = Array.from(arguments), currentSuper = this._super, result;
-      if (typeof _super == 'function') this._super = function() {
+      var _super = superObject[name], args = Array.from(arguments), currentSuper = this.callSuper, result;
+      if (typeof _super == 'function') this.callSuper = function() {
         var i = arguments.length;
         while (i--) args[i] = arguments[i];
         return _super.apply(this, args);
       };
       result = func.apply(this, arguments);
-      currentSuper ? this._super = currentSuper : delete this._super;
+      currentSuper ? this.callSuper = currentSuper : delete this.callSuper;
       return result;
     };
     method.valueOf = function() { return func; };

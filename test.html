@@ -28,11 +28,11 @@
         var Bear = JS.Class(Animal, {
             extend: {
                 create: function(thing) {
-                    return this._super(thing) + ', but Bear creates other stuff'
+                    return this.callSuper(thing) + ', but Bear creates other stuff'
                 }
             },
             speak: function(stuff) {
-                return this._super(stuff).toUpperCase();
+                return this.callSuper(stuff).toUpperCase();
             }
         });
         
@@ -60,7 +60,7 @@
                 biting: 'Of course it can'
             },
             speak: function() {
-                return this._super();
+                return this.callSuper();
             }
         });
         
@@ -81,17 +81,17 @@
         
         var SubClass = JS.Class(BaseClass, {
             getName: function() {
-                return 'SubClass(' + this.getId() + ') extends ' + this._super();
+                return 'SubClass(' + this.getId() + ') extends ' + this.callSuper();
             },
             getId: function() { return 2; }
         });
         
         var TopClass = JS.Class(SubClass, {
             getName: function() {
-                return 'TopClass(' + this.getId() + ') extends ' + this._super();
+                return 'TopClass(' + this.getId() + ') extends ' + this.callSuper();
             },
             getId: function() {
-                return this._super();
+                return this.callSuper();
             }
         });
         
@@ -105,7 +105,7 @@
         
         var ChildOfNativeClass = JS.Class(NativeClass, {
             getName: function() {
-                return this._super();
+                return this.callSuper();
             }
         });
         
@@ -138,12 +138,12 @@
         });
         
         var Gallery = JS.Class(Paginator, {
-            createItems: function(n) { this._super(4 * n); }
+            createItems: function(n) { this.callSuper(4 * n); }
         });
         
         var ItemInheritor = JS.Class(Gallery);
         ItemInheritor.Item = JS.Class(Gallery.Item, {
-            getNumber: function() { return this._super() + 7; }
+            getNumber: function() { return this.callSuper() + 7; }
         });
         
         //--------------------------------------------------------------------------------
@@ -343,7 +343,7 @@
             testSingletonMethodInheritance: function() { with(this) {
                 var rex = new Bear('rex');
                 rex.extend({speak: function() {
-                    return 'Guess what? ' + this._super();
+                    return 'Guess what? ' + this.callSuper();
                 }});
                 assertEqual('Guess what? MY NAME IS REX AND I LIKE WALKS', rex.speak('walks'));
             }},
@@ -417,7 +417,7 @@
                 assertEqual(bark, dog.method('bark'));
                 dog.extend({
                   bark: function() {
-                    return this._super() + ' and has his own bark() method.';
+                    return this.callSuper() + ' and has his own bark() method.';
                   }
                 });
                 assertEqual('Oscar says WOOF! and has his own bark() method.', dog.bark());
@@ -453,7 +453,7 @@
                 Animal.classMethod('eatFood', function(food) { return 'Animals eat ' + food; });
                 assertEqual('Animals eat people', Pitbull.eatFood('people'));
                 assertEqual('Dogs eat biscuits', Dog.eatFood('biscuits'));
-                Pitbull.classMethod('eatFood', function() { return this._super(); });
+                Pitbull.classMethod('eatFood', function() { return this.callSuper(); });
                 assertEqual('Dogs eat people', Pitbull.eatFood('people'));
             }},
             
@@ -752,7 +752,7 @@
                 
                 car.extend({
                     getName: function() {
-                        return this._super().replace(/[aeiou]/ig, '_');
+                        return this.callSuper().replace(/[aeiou]/ig, '_');
                     }
                 });
                 
