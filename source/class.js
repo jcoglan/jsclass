@@ -95,8 +95,10 @@ JS.extend(JS.Class, {
     klass.superclass = klass.superclass || Object;
     klass.subclasses = klass.subclasses || [];
     if (noExtend === false) return klass;
-    for (var method in this.CLASS_METHODS)
-      klass[method] = this.CLASS_METHODS[method];
+    for (var method in this.CLASS_METHODS) {
+      if (this.CLASS_METHODS.hasOwnProperty(method))
+        klass[method] = this.CLASS_METHODS[method];
+    }
     return klass;
   },
   
@@ -139,8 +141,10 @@ JS.extend(JS.Class, {
     method: JS.method,
     
     extend: function(source) {
-      for (var method in source)
-        JS.Class.addMethod(this, this.klass.prototype, method, source[method]);
+      for (var method in source) {
+        if (source.hasOwnProperty(method))
+          JS.Class.addMethod(this, this.klass.prototype, method, source[method]);
+      }
       return this;
     },
     
@@ -183,7 +187,10 @@ JS.extend(JS.Class, {
     
     extend: function(source, overwrite) {
       if (typeof source == 'function') source = JS.Class.properties(source);
-      for (var method in source) this.classMethod(method, source[method], overwrite);
+      for (var method in source) {
+        if (source.hasOwnProperty(method))
+          this.classMethod(method, source[method], overwrite);
+      }
       return this;
     },
     

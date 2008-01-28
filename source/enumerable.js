@@ -166,14 +166,10 @@ JS.Enumerable = (function() {
     }
   };
   
-  var alias = {
-    find:       'detect',
-    map:        'collect',
-    select:     'findAll',
-    toArray:    'entries'
-  };
-  
-  for (var key in alias) methods[alias[key]] = methods[key];
+  methods.collect   = methods.map;
+  methods.detect    = methods.find;
+  methods.entries   = methods.toArray;
+  methods.findAll   = methods.select;
   
   var module = {
     included: function(klass) {
