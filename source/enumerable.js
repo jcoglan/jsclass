@@ -2,7 +2,7 @@ JS.Enumerable = (function() {
   
   var Null = function(context) { return context || null; };
   
-  var each = function(block, context) {
+  var forEach = function(block, context) {
     for (var i = 0, n = this.length; i < n; i++)
       block.call(Null(context), this[i], i);
   };
@@ -16,7 +16,7 @@ JS.Enumerable = (function() {
   var Collection = JS.Class({
     initialize: function(array) {
       this.length = 0;
-      each.call(array, function(item) {
+      forEach.call(array, function(item) {
         [].push.call(this, item);
       }, this);
     }
@@ -25,7 +25,7 @@ JS.Enumerable = (function() {
   var methods = {
     all: function(block, context) {
       var truth = true;
-      this.each(function(item, i) {
+      this.forEach(function(item, i) {
         truth = truth && block.call(Null(context), item, i);
       });
       return !!truth;
@@ -33,7 +33,7 @@ JS.Enumerable = (function() {
     
     any: function(block, context) {
       var truth = false;
-      this.each(function(item, i) {
+      this.forEach(function(item, i) {
         truth = truth || block.call(Null(context), item, i);
       });
       return !!truth;
@@ -53,7 +53,7 @@ JS.Enumerable = (function() {
     
     find: function(block, context) {
       var needle = {}, K = needle;
-      this.each(function(item, i) {
+      this.forEach(function(item, i) {
         if (needle != K) return;
         needle = block.call(Null(context), item, i) ? item : needle;
       });
@@ -65,7 +65,7 @@ JS.Enumerable = (function() {
       if (typeof memo == 'function') {
         context = block; block = memo; memo = K;
       }
-      this.each(function(item, i) {
+      this.forEach(function(item, i) {
         if (!counter++ && memo === K) return memo = item;
         memo = block.call(Null(context), memo, item, i);
       });
@@ -74,7 +74,7 @@ JS.Enumerable = (function() {
     
     map: function(block, context) {
       var map = [];
-      this.each(function(item, i) {
+      this.forEach(function(item, i) {
         map.push(block.call(Null(context), item, i));
       });
       return map;
@@ -96,7 +96,7 @@ JS.Enumerable = (function() {
     
     partition: function(block, context) {
       var ayes = [], noes = [];
-      this.each(function(item, i) {
+      this.forEach(function(item, i) {
         (block.call(Null(context), item, i) ? ayes : noes).push(item);
       });
       return [ayes, noes];
@@ -104,7 +104,7 @@ JS.Enumerable = (function() {
     
     reject: function(block, context) {
       var map = [];
-      this.each(function(item, i) {
+      this.forEach(function(item, i) {
         if (!block.call(Null(context), item, i)) map.push(item);
       });
       return map;
@@ -112,7 +112,7 @@ JS.Enumerable = (function() {
     
     select: function(block, context) {
       var map = [];
-      this.each(function(item, i) {
+      this.forEach(function(item, i) {
         if (block.call(Null(context), item, i)) map.push(item);
       });
       return map;
@@ -149,31 +149,34 @@ JS.Enumerable = (function() {
       if (arguments[n-2] instanceof Function) {
         block = arguments[n-2]; context = arguments[n-1];
       }
-      each.call(arguments, function(arg) {
+      forEach.call(arguments, function(arg) {
         if (arg == block || arg == context) return;
         if (arg.toArray) arg = arg.toArray();
         if (arg instanceof Array) args.push(arg);
       });
       var results = this.map(function(item) {
         var zip = [item];
-        each.call(args, function(arg) {
+        forEach.call(args, function(arg) {
           zip.push(arg[counter] === undefined ? null : arg[counter]);
         });
         return ++counter && zip;
       });
       if (!block) return results;
-      each.call(results, block, context);
+      forEach.call(results, block, context);
     }
   };
   
+  // http://developer.mozilla.org/en/docs/index.php?title=Core_JavaScript_1.5_Reference:Global_Objects:Array&oldid=58326
   methods.collect   = methods.map;
   methods.detect    = methods.find;
   methods.entries   = methods.toArray;
-  methods.findAll   = methods.select;
+  methods.every     = methods.all;
+  methods.findAll = methods.filter = methods.select;
+  methods.some      = methods.any;
   
   var module = {
     included: function(klass) {
-      if (!klass.prototype.each) klass.include({each: each});
+      if (!klass.prototype.forEach) klass.include({forEach: forEach});
       klass.include(methods);
     }
   };

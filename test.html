@@ -224,7 +224,7 @@
             initialize: function(object) {
                 this._object = object || {};
             },
-            each: function(block, context) {
+            forEach: function(block, context) {
                 for (var key in this._object)
                     block.call(context || null, {key: key, value: this._object[key]});
             }
@@ -235,7 +235,7 @@
             initialize: function(object) {
                 this._object = object || {};
             },
-            each: function(block, context) {
+            forEach: function(block, context) {
                 for (var key in this._object)
                     block.call(context || null, key, this._object[key]);
             },
@@ -568,7 +568,7 @@
                     this.assertEqual(results[i], set.join(','));
                 }, this);
                 
-                collection.each(function(x,i) {
+                collection.forEach(function(x,i) {
                     this.assertEqual(foo[i], x);
                 }, this);
                 
