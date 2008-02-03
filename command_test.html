@@ -35,7 +35,7 @@
       var DrawCircleCommand = JS.Class(JS.Command, {
         initialize: function() {
           var x = Math.random() * W, y = Math.random() * Y, r = Math.random() * 100;
-          this._super({
+          this.callSuper({
             execute: function() {
               ctx.fillStyle = 'rgb(255,0,0)';
               ctx.beginPath();
@@ -51,7 +51,7 @@
       var DrawSquareCommand = JS.Class(JS.Command, {
         initialize: function() {
           var x = Math.random() * W, y = Math.random() * Y, r = Math.random() * 80;
-          this._super({
+          this.callSuper({
             execute: function() {
               ctx.fillStyle = 'rgb(0,0,255)';
               ctx.fillRect(x,y,r,r);
@@ -109,7 +109,7 @@
       
       var ListCommand = new JS.Class(JS.Command, {
         initialize: function(li) {
-          this._super({
+          this.callSuper({
             execute: function() {
               li.setStyle({color: 'red'});
             },
