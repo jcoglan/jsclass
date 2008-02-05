@@ -50,8 +50,8 @@ JS.LinkedList = (function() {
     }
   });
   
-  klass.extend({
-    Doubly: JS.Class(klass, {
+  klass.
+    Doubly = JS.Class(klass, {
       insertAt: function(n, newNode) {
         if (n < 0 || n >= this.length) return;
         this.insertBefore(this.at(n), newNode);
@@ -64,8 +64,7 @@ JS.LinkedList = (function() {
       },
       
       insertBefore: stub
-    })
-  });
+    });
   
   var insertTemplate = function(prev, next, pos) {
     return function(node, newNode) {
@@ -79,38 +78,38 @@ JS.LinkedList = (function() {
     };
   };
   
-  klass.Doubly.extend({
-    Circular: JS.Class(klass.Doubly, {
-      insertAfter: insertTemplate('prev', 'next', 'last'),
-      insertBefore: insertTemplate('next', 'prev', 'first'),
-      
-      push: function(newNode) {
-        if (this.length)
-          return this.insertAfter(this.last, newNode);
+  klass.
+    Doubly.
+      Circular = JS.Class(klass.Doubly, {
+        insertAfter: insertTemplate('prev', 'next', 'last'),
+        insertBefore: insertTemplate('next', 'prev', 'first'),
         
-        this.first = this.last =
-            newNode.prev = newNode.next = newNode;
+        push: function(newNode) {
+          if (this.length)
+            return this.insertAfter(this.last, newNode);
+          
+          this.first = this.last =
+              newNode.prev = newNode.next = newNode;
+          
+          newNode.list = this;
+          this.length = 1;
+        },
         
-        newNode.list = this;
-        this.length = 1;
-      },
-      
-      remove: function(removed) {
-        if (removed.list != this) return null;
-        if (this.length > 1) {
-          removed.prev.next = removed.next;
-          removed.next.prev = removed.prev;
-          if (removed == this.first) this.first = removed.next;
-          if (removed == this.last) this.last = removed.prev;
-        } else {
-          this.first = this.last = null;
+        remove: function(removed) {
+          if (removed.list != this) return null;
+          if (this.length > 1) {
+            removed.prev.next = removed.next;
+            removed.next.prev = removed.prev;
+            if (removed == this.first) this.first = removed.next;
+            if (removed == this.last) this.last = removed.prev;
+          } else {
+            this.first = this.last = null;
+          }
+          removed.prev = removed.next = removed.list = null;
+          this.length--;
+          return removed;
         }
-        removed.prev = removed.next = removed.list = null;
-        this.length--;
-        return removed;
-      }
-    })
-  });
+      });
   
   return klass;
 })();
