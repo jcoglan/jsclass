@@ -557,6 +557,7 @@
             testEnumerableModule: function() {
                 var foo = [1,2,3,4,5,6], results;
                 var collection = new Collection(1,2,3,4,5,6);
+                var collection2 = new Collection(5,6,7,8);
                 
                 results = ['1,2,3,4', '2,3,4,5', '3,4,5,6'];
                 collection.eachCons(4, function(set, i) {
@@ -610,6 +611,12 @@
                 
                 collection.zip([8,2,7,6], ['cat', 'dog', 'mouse'], function(ary, i) {
                     this.assertEqual(results[i], ary.join(','));
+                }, this);
+                
+                zip = collection.zip(collection2);
+                results = ['1,5', '2,6', '3,7', '4,8', '5,', '6,'];
+                zip.each(function(item,i) {
+                    this.assertEqual(results[i], item.join(','));
                 }, this);
                 
                 this.assertIdentical(false, new Collection(1,2,3).zip([true, false, true])[1][1]);
