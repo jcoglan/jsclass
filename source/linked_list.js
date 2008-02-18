@@ -14,9 +14,10 @@ JS.LinkedList = (function() {
     },
     
     forEach: function(block, context) {
-      for (var node = this.first, i = 0, n = this.length; i < n; i++) {
+      for (var node = this.first, next, i = 0, n = this.length; i < n; i++) {
+        next = node.next;
         block.call(context || null, node, i);
-        node = node.next;
+        node = next;
       }
     },
     
@@ -96,7 +97,7 @@ JS.LinkedList = (function() {
         },
         
         remove: function(removed) {
-          if (removed.list != this) return null;
+          if (removed.list != this || this.length == 0) return null;
           if (this.length > 1) {
             removed.prev.next = removed.next;
             removed.next.prev = removed.prev;

@@ -1,0 +1,79 @@
+:textile
+  h3. @JS.LinkedList@
+  
+  A "linked list":/http://en.wikipedia.org/wiki/Linked_list is a data structure used to represent
+  sequences of objects. It's a bit like an array, except than, instead of each item being indexed
+  using a number, each item has a pointer to the item after it (and sometimes the one before as well).
+  The only type implemented in this library is the doubly circular type. This is the most 'general',
+  but the code has been constructed in such a way that you can build on part of this library to
+  create singly-linked and linear lists.
+  
+  h3. @JS.LinkedList.Doubly.Circular@
+  
+  This is the only concrete list type fully implemented in this library. The class structure is
+  as follows, should you wish to build other list types:
+  
+  * @JS.LinkedList@ implements methods common to all linked lists
+  * @JS.LinkedList.Doubly@ implements methods common to linear and circular doubly-linked lists
+  
+  If you're curious, I recommend reading "the source code":http://svn.jcoglan.com/jsclass/trunk/source/linked_list.js.
+  
+  h3. Using linked lists
+  
+  To use a linked list, you create it as follows and add objects to it:
+  
+  <pre>
+  var list = new JS.LinkedList.Doubly.Circular();
+  var foo = {}, bar = {}, baz = {};
+  list.push(foo);
+  list.push(bar);
+  list.push(baz);
+  
+  // list.first == foo
+  // list.first.next == bar
+  // list.first.next.next == foo.last == baz
+  
+  // circular list, so...
+  // list.first.prev == baz
+  // list.last.next == foo</pre>
+  
+  The objects you add to a list are given @prev@ and @next@ properties to refer to their neighbours
+  by. Note that the things you add to a linked list must be _objects_ (not numbers, strings, etc)
+  or the list will not work properly.
+  
+  h3. Available methods
+  
+  The linked list API looks like this:
+  
+  * @at(n)@ - returns the object at index @n@ in the list.
+  * @push(object)@ - appends @object@ to the list.
+  * @pop()@ - removes the last item in the list and returns it.
+  * @shift()@ removed the first item in the list and returns it.
+  * @unshift(object)@ - adds @object@ to the start of the list.
+  * @insertAt(n, object)@ - inserts @object@ at position @n@ in the list.
+  * @insertAfter(node, object)@ - inserts @object@ into the list after @node@.
+  * @insertBefore(node, object)@ - inserts @object@ into the list before @node@.
+  * @remove(object)@ - removes @object@ from the list.
+  
+  h3. @JS.LinkedList.Node@
+  
+  Each node in a linked list can only belong to that list - it cannot have multiple @prev@/@next@
+  pointers. If you want to add an object to several lists, you can wrap it in a node object before
+  adding it to each list:
+  
+  <pre>
+  var listA = new JS.LinkedList.Doubly.Circular();
+  var listB = new JS.LinkedList.Doubly.Circular();
+  
+  var obj = {name: 'Jimmy'};
+  listA.push(new JS.LinkedList.Node(obj));
+  listB.push(new JS.LinkedList.Node(obj));
+  
+  listA.first.data.name   // -> "Jimmy"
+  listB.first.data.name   // -> "Jimmy"
+  
+  listA.first == listB.first    // -> false
+  listA.first.data == listB.first.data    // -> true</pre>
+  
+  Each node object is distinct, put has a @data@ pointer to the object it wraps. This also lets you
+  add the same object to a list multiple times.
