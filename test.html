@@ -214,8 +214,13 @@
             include: JS.Enumerable,
             initialize: function() {
               this.length = arguments.length;
+              this._list = [];
               for (var i = 0, n = this.length; i < n; i++)
-                this[i] = arguments[i];
+                this._list.push(arguments[i]);
+            },
+            forEach: function(block, context) {
+              for (var i = 0, n = this._list.length; i < n; i++)
+                block.call(context || null, this._list[i], i);
             }
         });
         
