@@ -16,8 +16,9 @@ JS.Enumerable = (function() {
   var Collection = JS.Class({
     initialize: function(array) {
       this.length = 0;
+      var push = Array.prototype.push;
       forEach.call(array, function(item) {
-        [].push.call(this, item);
+        push.call(this, item);
       }, this);
     }
   });
@@ -39,13 +40,13 @@ JS.Enumerable = (function() {
       return !!truth;
     },
     
-    eachCons: function(n, block, context) {
+    forEachCons: function(n, block, context) {
       var entries = this.entries(), size = entries.length, limit = size - n;
       for (var i = 0; i <= limit; i++)
         block.call(Null(context), entries.slice(i, i+n), i);
     },
     
-    eachSlice: function(n, block, context) {
+    forEachSlice: function(n, block, context) {
       var entries = this.entries(), size = entries.length, m = Math.ceil(size/n);
       for (var i = 0; i < m; i++)
         block.call(Null(context), entries.slice(i*n, (i+1)*n), i);

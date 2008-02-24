@@ -565,12 +565,12 @@
                 var collection2 = new Collection(5,6,7,8);
                 
                 results = ['1,2,3,4', '2,3,4,5', '3,4,5,6'];
-                collection.eachCons(4, function(set, i) {
+                collection.forEachCons(4, function(set, i) {
                     this.assertEqual(results[i], set.join(','));
                 }, this);
                 
                 results = ['1,2,3', '4,5,6', '7,8,9', '10'];
-                new Collection(1,2,3,4,5,6,7,8,9,10).eachSlice(3, function(set, i) {
+                new Collection(1,2,3,4,5,6,7,8,9,10).forEachSlice(3, function(set, i) {
                     this.assertEqual(results[i], set.join(','));
                 }, this);
                 
