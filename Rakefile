@@ -20,7 +20,13 @@ PACKAGES = {
   )
 }
 
-task :default => :build
+task :default do
+  if ENV['q']
+    Rake::Task[:grape].invoke
+  else
+    Rake::Task[:build].invoke
+  end
+end
 
 task :build => [:create_directory, :destroy] do
   require 'packr'
@@ -47,4 +53,17 @@ task :destroy do
     file = "#{PACKAGE_DIR}/#{name}.js"
     File.delete(file) if File.file?(file)
   end
+end
+
+desc "Searches all project files and lists those whose contents match the regexp"
+task :grape do
+  require 'grape'
+  grape = Grape.new(:dir => '.', :excluded_dirs => %w(build releases),
+      :extensions => %w(js html haml))
+  results = grape.search(ENV['q'],
+    :case_sensitive => !!ENV['cs'],
+    :verbose => !!ENV['v'],
+    :window => ENV['v']
+  )
+  grape.print_results(results)
 end
