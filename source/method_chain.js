@@ -86,7 +86,8 @@ JS.MethodChain = (function() {
 
 var it = its = function() { return new JS.MethodChain; };
 
-JS.Class.INSTANCE_METHODS.wait = function(time) {
+JS.Class.INSTANCE_METHODS.wait =
+JS.Class.CLASS_METHODS.wait = function(time) {
   var chain = new JS.MethodChain;
   switch (true) {
     case typeof time == 'number' :
