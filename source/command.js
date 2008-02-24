@@ -7,9 +7,10 @@ JS.Command = JS.Class({
   },
   
   execute: function(push) {
-    if (this._stack && push !== false) this._stack.push(this);
+    if (this._stack) this._stack._restart();
     var exec = this._functions.execute;
     if (exec) exec.apply(this);
+    if (this._stack && push !== false) this._stack.push(this);
   },
   
   undo: function() {
@@ -37,12 +38,15 @@ JS.Command = JS.Class({
         this.length = this.pointer = 0;
       },
       
+      _restart: function() {
+        if (this.pointer == 0 && this._redo && this._redo.execute)
+          this._redo.execute();
+      },
+      
       push: function(command) {
         this._stack.splice(this.pointer, this.length);
         this._stack.push(command);
         this.length = this.pointer = this._stack.length;
-        if (this.pointer == 1 && this._redo && this._redo.execute)
-          this._redo.execute();
         if (this.notifyObservers) this.notifyObservers(this);
       },
       
