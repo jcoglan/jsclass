@@ -53,7 +53,7 @@ JS.extend = function(object, methods) {
 };
 
 JS.method = function(name) {
-  var cache = this._methodCache = this._methodCache || {};
+  var cache = this._methods = this._methods || {};
   if (cache[name] && cache[name].func == this[name])
     return cache[name].bound;
   cache[name] = {func: this[name], bound: this[name].bind(this)};
