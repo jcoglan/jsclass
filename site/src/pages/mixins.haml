@@ -13,7 +13,7 @@
   var Comparable = {
     extend: {
       compare: function(a,b) {
-        return a.compareWith(b);
+        return a.compareTo(b);
       }
     },
     
@@ -45,7 +45,7 @@
       this.position = position;
     },
     
-    compareWith: function(other) {
+    compareTo: function(other) {
       if (this.position < other.position)
         return -1;
       else if (this.position > other.position)
@@ -56,7 +56,7 @@
   });</pre>
   
   Now @TodoItem@ has a @compare()@ static method, and instance methods @lt()@, @lte()@, @gt()@, @gte()@,
-  and @eq()@. Its @compareWith()@ instance method tells it how its intances should be ordered relative to
+  and @eq()@. Its @compareTo()@ instance method tells it how its intances should be ordered relative to
   each other. Now you can do:
   
   <pre>
@@ -83,7 +83,7 @@
   var MyClass = new JS.Class({
     include: [Enumerable, Clickable, Comparable],
     
-    compareWith: function(other) { /* ... */ }
+    compareTo: function(other) { /* ... */ }
   });</pre>
   
   The same applies to @extend@, for mixing in static methods:
@@ -116,7 +116,7 @@
   
   <pre>
   var Reversible = {
-    compareWith: function(other) {
+    compareTo: function(other) {
       return -1 * this.callSuper();
     }
   };
