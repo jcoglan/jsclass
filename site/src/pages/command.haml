@@ -150,6 +150,7 @@
   this point are discarded. For example:
   
   <pre>
+  someCounter = 0;
   counterStack.clear();         // 0 commands in stack
   
   incrementCounter.execute();   // 1 command
@@ -277,11 +278,8 @@
   
   @JS.Command.Stack@ mixes in the "@Observable@":/observable.html and
   "@Enumerable@":/enumerable.html modules if they are included in your code
-  _before_ you include the @Command@ code. (If you're using the @patterns.js@
-  bundle, this is done for you. If you're using individual files, include
-  @observable.js@ and @enumeralbe.js@, then include @command.js@.) This means
-  you can implement a Photoshop-style action history with barely any code
-  at all by observing the stack:
+  _before_ you include the @Command@ code. This means you can implement a
+  Photoshop-style action history with barely any code at all by observing the stack:
   
   <pre>
   HTML:

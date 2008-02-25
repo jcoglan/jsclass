@@ -11,7 +11,7 @@
   
   <pre>
   var IntComparable = new JS.Interface([
-    'compareWith', 'lt', 'lte', 'gt', 'gte', 'eq'
+    'compareTo', 'lt', 'lte', 'gt', 'gte', 'eq'
   ]);
   
   var IntStateMachine = new JS.Interface([
@@ -35,12 +35,12 @@
   
   <pre>
   var IntComparable = new JS.Interface([
-    'compareWith', 'lt', 'lte', 'gt', 'gte', 'eq'
+    'compareTo', 'lt', 'lte', 'gt', 'gte', 'eq'
   ]);
   
   var TodoItem = new JS.Class({implement: IntComparable,
     include: Comparable,
-    compareWith: function() {}
+    compareTo: function() {}
   });</pre>
   
   But this will not, since @Comparable@ is included after the @implement@ check is made inside
@@ -48,7 +48,7 @@
   
   <pre>
   var TodoItem = new JS.Class({implement: IntComparable,
-    compareWith: function() {}
+    compareTo: function() {}
   });
   
   TodoItem.include(Comparable);</pre>
