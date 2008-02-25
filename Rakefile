@@ -16,7 +16,7 @@ PACKAGES = {
   
   'patterns' => %w(
     comparable enumerable observable method_chain
-    decorator proxy command linked_list static_typing
+    decorator proxy command linked_list
   )
 }
 
