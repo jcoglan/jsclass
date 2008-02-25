@@ -1,10 +1,6 @@
 :textile
   h3. @JS.MethodChain@
   
-  *Note:* @MethodChain@ is written to be independant of @JS.Class@, so you can use @MethodChain@
-  on its own if you like. @JS.Class@ automatically adds all methods from classes you define
-  to @MethodChain@'s list of methods.
-  
   @MethodChain@ provides a mechanism for storing a sequence of method calls and then executing
   that sequence on any object you like. Here's a quick example:
   
@@ -86,6 +82,29 @@
   <pre>
   var func = chain.toFunction();
   func(['foo', 'bar'])    // -> "F__, B_R"</pre>
+  
+  h3. The @wait()@ method
+  
+  @JS.MethodChain@ adds a method called @wait()@ as an instance method and a class method
+  to all classes and objects created with @JS.Class@. This method allows you to delay execution
+  of a chain against an object for a given about of time.
+  
+  <pre>
+  var Fiddle = new JS.Class({
+    initialize: function(quantity) {
+      this.size = quantity;
+    },
+    
+    proclaim: function(thing) {
+      console.log('I have ' + this.size + ' ' + thing + 's!');
+    }
+  });
+  
+  var fid = new Fiddle(99);
+  
+  // Call proclaim() after 5 seconds
+  // prints "I have 99 problems!"
+  fid.wait(5).proclaim('problem');</pre>
   
   h3. Further reading
   
