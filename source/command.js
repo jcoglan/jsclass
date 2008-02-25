@@ -28,7 +28,7 @@ JS.Command = JS.Class({
         this.clear();
       },
       
-      each: function(block, context) {
+      forEach: function(block, context) {
         for (var i = 0, n = this._stack.length; i < n; i++)
           block.call(context || null, this._stack[i], i);
       },

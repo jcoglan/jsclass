@@ -84,7 +84,7 @@
       
       DRAW_STACK.subscribe(function(stack) {
         var list = $('drawingStack'), str = '';
-        stack.each(function(command, i) {
+        stack.forEach(function(command, i) {
           str += '<li style="color: ' + (i >= stack.pointer ? '#999' : '#000') + ';">' + command.name + '</li>';
         });
         list.innerHTML = str;

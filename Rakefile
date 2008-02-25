@@ -34,8 +34,10 @@ task :build => [:create_directory, :destroy] do
     code = files.inject('') { |memo, source_file| memo << File.read("#{SOURCE_DIR}/#{source_file}.js") + "\n" }
     unless ENV['d']
       code = Packr.pack(code, :shrink_vars => true)
-      base62 = Packr.pack(code, :base62 => true)
-      code = base62 if code.size > base62.size
+      unless ENV['gzip']
+        base62 = Packr.pack(code, :base62 => true)
+        code = base62 if code.size > base62.size
+      end
     end
     filename = "#{PACKAGE_DIR}/#{name}.js"
     File.open(filename, 'wb') { |f| f.write code }

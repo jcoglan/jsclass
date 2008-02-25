@@ -288,7 +288,7 @@
   SCRIPT:
   drawingStack.subscribe(function(stack) {
     var list = document.getElementById('drawHistory'), str = '';
-    stack.each(function(command, i) {
+    stack.forEach(function(command, i) {
       var color = (i >= stack.pointer) ? '#999' : '#000';
       str += '<li style="color: ' + color + ';">' + command.name + '</li>';
     });
@@ -301,5 +301,5 @@
   property that tells you what point in the stack the most recent command is.
   So you can work out whether each command has been undone or not, and assign
   a greyed-out color to commands after the current @pointer@ position. Your
-  @each@ callback is passed each command in the stack in turn, along with its
+  @forEach@ callback is passed each command in the stack in turn, along with its
   position in the stack (beginning at 0).
