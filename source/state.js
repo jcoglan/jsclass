@@ -16,8 +16,8 @@ JS.State = (function() {
     _getState: function(state) {
       var object = this.klass.prototype._state;
       switch (typeof state) {
-        case 'object':  return state;                                           break;
-        case 'string':  return (this.states && this.states[state]) || object;   break;
+        case 'object':  return state;                         break;
+        case 'string':  return this.states[state] || object;  break;
         default:        return object;
       }
     },
