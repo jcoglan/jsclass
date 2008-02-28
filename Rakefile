@@ -12,11 +12,12 @@ PACKAGES = {
   'decorator' => 'decorator',
   'proxy' => 'proxy',
   'command' => 'command',
+  'state' => 'state',
   'linked_list' => 'linked_list',
   
   'patterns' => %w(
     comparable enumerable observable method_chain
-    decorator proxy command linked_list
+    decorator proxy command state linked_list
   )
 }
 

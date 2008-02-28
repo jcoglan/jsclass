@@ -289,6 +289,34 @@
                 return 'Turning the pedals';
             }
         });
+        
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
+        
+        var Fiddler = JS.Class({
+            include: JS.State,
+            
+            initialize: function() {
+                this.count = 0;
+                this.setState('optimism');
+            },
+            
+            states: {
+                optimism: {
+                    stepForward: function() {
+                        this.count += 2;
+                    },
+                    laughOutLoud: function() {
+                        return 'Ha-ha!'
+                    }
+                },
+                pessimism: {
+                    stepForward: function() {
+                        this.count -= 1;
+                    }
+                }
+            }
+        });
     </script>
 </head>
 <body>
@@ -775,6 +803,31 @@
                 });
                 
                 assertEqual('th_s, _s, my, n_m_', car.getName());
+            }},
+            
+            testStatePattern: function() { with(this) {
+                var fiddler = new Fiddler();
+                assertEqual(0, fiddler.count);
+                fiddler.stepForward();
+                fiddler.stepForward();
+                assertEqual(4, fiddler.count);
+                assertEqual('Ha-ha!', fiddler.laughOutLoud());
+                fiddler.setState('pessimism');
+                assertIdentical(fiddler, fiddler.laughOutLoud());
+                fiddler.stepForward();
+                fiddler.stepForward();
+                assertEqual(2, fiddler.count);
+                fiddler.setState(Fiddler.prototype.states.optimism);
+                fiddler.stepForward();
+                fiddler.stepForward();
+                assertEqual(6, fiddler.count);
+                fiddler.setState(Fiddler.prototype.states.pessimism);
+                assert(fiddler.inState(Fiddler.prototype.states.pessimism));
+                assert(fiddler.inState('pessimism'));
+                assert(!fiddler.inState('optimism'));
+                fiddler.stepForward();
+                fiddler.stepForward();
+                assertEqual(4, fiddler.count);
             }}
         });
         
