@@ -77,10 +77,6 @@ JS.MethodChain = (function() {
       this.addMethods(object.prototype);
   };
   
-  klass.inherited = function() {
-    throw new Error('MethodChain cannot be subclassed');
-  };
-  
   return klass;
 })();
 
