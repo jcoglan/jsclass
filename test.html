@@ -547,6 +547,10 @@
                 
                 chain = new JS.MethodChain;
                 assertEqual('THE TEXT', chain._(new String('the text')).toUpperCase().fire());
+                
+                var racoon = new Animal('Racoon');
+                assertEqual('THE TEXT', racoon._(new String('the text')).toUpperCase());
+                assertEqual('Racoon hides in your TV', racoon._(function(thing) { return this.name + ' ' + thing; }, 'hides in your TV'));
             }},
             
             testComparableModule: function() { with(this) {

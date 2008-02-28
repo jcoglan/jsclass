@@ -30,11 +30,13 @@ JS.MethodChain = (function() {
   
   klass.prototype = {
     _: function() {
-      var func = arguments[0], args = [];
-      if (!/^(?:function|object)$/.test(typeof func)) return this;
-      for (var i = 1, n = arguments.length; i < n; i++)
-        args.push(arguments[i]);
-      this.____(func, args);
+      var base = arguments[0], args, i, n;
+      switch (typeof base) {
+        case 'object': case 'function':
+          args = [];
+          for (i = 1, n = arguments.length; i < n; i++) args.push(arguments[i]);
+          this.____(base, args);
+      }
       return this;
     },
     
@@ -84,21 +86,35 @@ JS.MethodChain = (function() {
 
 var it = its = function() { return new JS.MethodChain; };
 
-JS.Class.INSTANCE_METHODS.wait =
-JS.Class.CLASS_METHODS.wait = function(time) {
-  var chain = new JS.MethodChain;
-  switch (true) {
-    case typeof time == 'number' :
-      setTimeout(chain.fire.bind(chain, this), time * 1000);
-      break;
-    case this.forEach && typeof time == 'function' :
-      this.forEach(function() {
-        setTimeout(chain.fire.bind(chain, arguments[0]), time.apply(this, arguments) * 1000);
-      });
-      break;
+(function(methods) {
+  JS.extend(JS.Class.INSTANCE_METHODS, methods);
+  JS.extend(JS.Class.CLASS_METHODS, methods);
+})({
+  wait: function(time) {
+    var chain = new JS.MethodChain;
+    switch (true) {
+      case typeof time == 'number' :
+        setTimeout(chain.fire.bind(chain, this), time * 1000);
+        break;
+      case this.forEach && typeof time == 'function' :
+        this.forEach(function() {
+          setTimeout(chain.fire.bind(chain, arguments[0]), time.apply(this, arguments) * 1000);
+        });
+        break;
+    }
+    return chain;
+  },
+  
+  _: function() {
+    var base = arguments[0], args = [], i, n;
+    for (i = 1, n = arguments.length; i < n; i++) args.push(arguments[i]);
+    switch (typeof base) {
+      case 'object':    return base;                    break;
+      case 'function':  return base.apply(this, args);  break;
+      default:          return this;
+    }
   }
-  return chain;
-};
+});
 
 JS.MethodChain.addMethods([
   "abbr", "abs", "accept", "acceptCharset", "accesskey", "acos", "action", "addEventListener", 
