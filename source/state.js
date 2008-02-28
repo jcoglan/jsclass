@@ -32,6 +32,10 @@ JS.State = (function() {
         if (this._state == this._getState(arguments[i])) return true;
       }
       return false;
+    },
+    
+    included: function(klass) {
+      klass.include({states: {}}, false);
     }
   });
 })();
