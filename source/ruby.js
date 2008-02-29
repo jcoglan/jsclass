@@ -1,4 +1,4 @@
-JS.RubyClass = (function() {
+JS.Ruby = (function() {
   
   var extendDSL = function(builder, source) {
     for (var method in source) {
@@ -19,12 +19,7 @@ JS.RubyClass = (function() {
     };
   };
   
-  return function(parent, definition) {
-    definition = arguments[arguments.length - 1];
-    if (definition == parent) parent = null;
-    
-    var klass = JS.Class(parent || {});
-    definition(new ClassBuilder(klass));
-    return klass;
+  return function(klass, define) {
+    define(new ClassBuilder(klass));
   };
 })();

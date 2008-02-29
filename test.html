@@ -335,7 +335,8 @@
         //--------------------------------------------------------------------------------
         //--------------------------------------------------------------------------------
         
-        var Rails = new JS.RubyClass(function(Ruby) { with(Ruby) {
+        var Rails = JS.Class();
+        JS.Ruby(Rails, function(Ruby) { with(Ruby) {
             
             include(JS.Observable);
             extend(JS.Forwardable);
