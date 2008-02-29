@@ -2,7 +2,7 @@ JS.Ruby = (function() {
   
   var extendDSL = function(builder, source) {
     for (var method in source) {
-      if (typeof source[method] == 'function')
+      if (!builder[method] && typeof source[method] == 'function')
         builder[method] = source[method].bind(source);
     }
   };
