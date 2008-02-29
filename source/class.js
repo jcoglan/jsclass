@@ -188,9 +188,10 @@ JS.extend(JS.Class, {
     extend: function(source, overwrite) {
       if (typeof source == 'function') source = JS.Class.properties(source);
       for (var method in source) {
-        if (source.hasOwnProperty(method))
+        if (source.hasOwnProperty(method) && method != 'extended')
           this.classMethod(method, source[method], overwrite);
       }
+      if (typeof source.extended == 'function') source.extended(this);
       return this;
     },
     

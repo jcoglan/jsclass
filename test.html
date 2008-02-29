@@ -301,6 +301,8 @@
                 this.setState('optimism');
             },
             
+            getCount: function() { return this.count; },
+            
             states: {
                 optimism: {
                     stepForward: function() {
@@ -317,6 +319,19 @@
                 }
             }
         });
+        
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
+        
+        var Forwarder = JS.Class({
+            extend: JS.Forwardable,
+            initialize: function() {
+                this.fiddler = new Fiddler;
+            }
+        });
+        Forwarder.defineDelegators('fiddler', 'setState', 'stepForward');
+        Forwarder.defineDelegator('fiddler', 'getCount', 'count');
+        
     </script>
 </head>
 <body>
@@ -828,6 +843,20 @@
                 fiddler.stepForward();
                 fiddler.stepForward();
                 assertEqual(4, fiddler.count);
+            }},
+            
+            testForwardable: function() { with(this) {
+                var forward = new Forwarder();
+                forward.setState('pessimism');
+                forward.stepForward();
+                forward.stepForward();
+                forward.stepForward();
+                assertEqual(-3, forward.count());
+                forward.setState('optimism');
+                forward.stepForward();
+                forward.stepForward();
+                forward.stepForward();
+                assertEqual(3, forward.count());
             }}
         });
         

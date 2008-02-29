@@ -8,6 +8,7 @@ PACKAGES = {
   'comparable' => 'comparable',
   'enumerable' => 'enumerable',
   'observable' => 'observable',
+  'forwardable' => 'forwardable',
   'method_chain' => 'method_chain',
   'decorator' => 'decorator',
   'proxy' => 'proxy',
@@ -16,8 +17,8 @@ PACKAGES = {
   'linked_list' => 'linked_list',
   
   'patterns' => %w(
-    comparable enumerable observable method_chain
-    decorator proxy command state linked_list
+    comparable enumerable observable forwardable
+    method_chain decorator proxy command state linked_list
   )
 }
 
