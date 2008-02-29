@@ -26,12 +26,17 @@ JS.Ruby = (function() {
       alias: alias(klass)
     };
     
-    extendDSL(this, klass);
-    
     this.extend = function(source) {
       klass.extend(source);
       extendDSL(this, klass);
     };
+    
+    this.instanceMethod = function(name) {
+      var method = klass.prototype[name];
+      return (typeof method == 'function') ? method : null;
+    };
+    
+    extendDSL(this, klass);
   };
   
   return function(klass, define) {
