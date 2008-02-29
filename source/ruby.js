@@ -21,8 +21,8 @@ JS.Ruby = (function() {
     this.self = {
       def: function(name, method) {
         klass.classMethod(name, method);
-        extendDSL(klass);
-      },
+        extendDSL(this, klass);
+      }.bind(this),
       alias: alias(klass)
     };
     
