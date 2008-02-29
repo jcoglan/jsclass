@@ -332,6 +332,35 @@
         Forwarder.defineDelegators('fiddler', 'setState', 'stepForward');
         Forwarder.defineDelegator('fiddler', 'getCount', 'count');
         
+        //--------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------
+        
+        var Rails = new JS.RubyClass(function(Ruby) { with(Ruby) {
+            
+            include(JS.Observable);
+            extend(JS.Forwardable);
+            
+            def('initialize', function() {
+                this.attributes = {};
+            });
+            
+            def('updateAttributes', function(attrs) {
+                for (var key in attrs)
+                    this.attributes[key] = attrs[key];
+                this.notifyObservers(this);
+            });
+            
+            defineDelegator('attributes', 'name', 'getName');
+            
+            with (self) {
+                def('create', function(attrs) {
+                    var rails = new this;
+                    rails.updateAttributes(attrs || {});
+                    return rails;
+                });
+            }
+        }});
+        
     </script>
 </head>
 <body>

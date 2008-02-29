@@ -5,8 +5,10 @@ JS.Forwardable = {
       defineDelegator: function(subject, method, alias) {
         alias = alias || method;
         this.instanceMethod(alias, function() {
-          var object = this[subject];
-          return object[method].apply(object, arguments);
+          var object = this[subject], property = object[method];
+          return typeof property == 'function'
+              ? property.apply(object, arguments)
+              : property;
         });
       },
       
