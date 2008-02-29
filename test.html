@@ -352,6 +352,7 @@
             });
             
             defineDelegator('attributes', 'name', 'getName');
+            alias('itsName', 'getName');
             
             with (self) {
                 def('create', function(attrs) {
@@ -359,6 +360,8 @@
                     rails.updateAttributes(attrs || {});
                     return rails;
                 });
+                
+                alias('make', 'create');
             }
         }});
         

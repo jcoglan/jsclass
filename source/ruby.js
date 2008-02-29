@@ -7,9 +7,24 @@ JS.Ruby = (function() {
     }
   };
   
+  var alias = function(object) {
+    return function(newName, oldName) {
+      var old = object[oldName];
+      if (old !== undefined) this.def(newName, old);
+    };
+  };
+  
   var ClassBuilder = function(klass) {
-    this.def  = klass.method('instanceMethod');
-    this.self = {def: klass.method('classMethod')};
+    this.def    = klass.method('instanceMethod');
+    this.alias  = alias(klass.prototype);
+    
+    this.self = {
+      def: function(name, method) {
+        klass.classMethod(name, method);
+        extendDSL(klass);
+      },
+      alias: alias(klass)
+    };
     
     extendDSL(this, klass);
     
