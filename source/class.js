@@ -32,11 +32,11 @@ JS = {
   }
 };
 
-(function(list, JS, extend, method) {
+(function(list, JS, extend, method, lambda) {
   
   var Class = JS.Class = function() {
     var args = list(arguments), arg,
-        parent = (typeof args[0] == 'function') ? args.shift() : null,
+        parent = lambda(args[0]) ? args.shift() : null,
         klass = Class.create(parent),
         faces = [], I = JS.Interface;
     
@@ -48,7 +48,7 @@ JS = {
     faces.length && I &&
       I.ensure.apply(I, [klass.prototype].concat(faces));
     
-    parent && typeof parent.inherited == 'function' &&
+    parent && lambda(parent.inherited) &&
       parent.inherited(klass);
     
     return klass;
@@ -104,12 +104,12 @@ JS = {
     addMethod: function(object, superObject, name, func) {
       if (JS.MethodChain) JS.MethodChain.addMethods([name]);
       
-      if (typeof func != 'function') return (object[name] = func);
+      if (!lambda(func)) return (object[name] = func);
       if (!func.callsSuper()) return (object[name] = func);
       
       var method = function() {
         var _super = superObject[name], args = list(arguments), currentSuper = this.callSuper, result;
-        typeof _super == 'function' && (this.callSuper = function() {
+        lambda(_super) && (this.callSuper = function() {
           var i = arguments.length;
           while (i--) args[i] = arguments[i];
           return _super.apply(this, args);
@@ -162,7 +162,7 @@ JS = {
           !/^(?:included?|extend|implement)$/.test(method) &&
             this.instanceMethod(method, source[method], overwrite);
         }
-        typeof source.included == 'function' && source.included(this);
+        lambda(source.included) && source.included(this);
         return this;
       },
       
@@ -173,12 +173,12 @@ JS = {
       },
       
       extend: function(source, overwrite) {
-        typeof source == 'function' && (source = Class.properties(source));
+        lambda(source) && (source = Class.properties(source));
         for (var method in source) {
           source.hasOwnProperty(method) && method != 'extended' &&
             this.classMethod(method, source[method], overwrite);
         }
-        typeof source.extended == 'function' && source.extended(this);
+        lambda(source.extended) && source.extended(this);
         return this;
       },
       
@@ -208,7 +208,7 @@ JS = {
       this.test = function(object, returnName) {
         var n = methods.length;
         while (n--) {
-          if (typeof object[methods[n]] != 'function')
+          if (!lambda(object[methods[n]]))
             return returnName ? methods[n] : false;
         }
         return true;
@@ -257,5 +257,9 @@ JS = {
     var self = this, cache = self._methods = self._methods || {};
     if ((cache[name] || {}).fn == self[name]) return cache[name].bd;
     return (cache[name] = {fn: self[name], bd: self[name].bind(self)}).bd;
+  },
+  
+  function(object) {
+    return typeof object == 'function';
   }
 );
