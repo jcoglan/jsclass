@@ -27,31 +27,3 @@
   @JS.Interface.ensure@ tests its first argument against all the supplied interfaces. If it fails
   one of the tests, an error is thrown that tells you the name of the first method found to be
   missing from the object.
-  
-  You can use the @implement@ directive when defining a class to make sure the class defines the
-  required interfaces. Note that this only works if all the required methods are public instance
-  methods and defined at the same time as the @implements@ directive. So, for example, this works
-  (see "Mixins":/mixins.html for the @Comparable@ module):
-  
-  <pre>
-  var IntComparable = new JS.Interface([
-    'compareTo', 'lt', 'lte', 'gt', 'gte', 'eq'
-  ]);
-  
-  var TodoItem = new JS.Class({implement: IntComparable,
-    include: Comparable,
-    compareTo: function() {}
-  });</pre>
-  
-  But this will not, since @Comparable@ is included after the @implement@ check is made inside
-  @JS.Class@:
-  
-  <pre>
-  var TodoItem = new JS.Class({implement: IntComparable,
-    compareTo: function() {}
-  });
-  
-  TodoItem.include(Comparable);</pre>
-  
-  It is called @implement@ because @implements@ is a reserved word. If your class fails to implement
-  the given interfaces, an error is thrown when trying to define it.

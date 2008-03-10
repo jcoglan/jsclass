@@ -23,8 +23,4 @@
   
   @JS.Singleton@ just creates a class with the arguments you give it, immediately instantiates
   this new class and returns the instance. You can access the class through @Camel.klass@ as
-  shown above, but trying to create new instances of it will throw an error:
-  
-  <pre>
-  var thing = new Camel.klass('Cyril');
-      // -> throws an Error()</pre>
+  shown above.
