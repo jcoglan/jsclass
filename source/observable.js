@@ -1,46 +1,46 @@
-JS.Observable = (function() {
+JS.Observable = (function(observers, changed) {
   
   var methods = {
     addObserver: function(observer, context) {
-      this._observers = this._observers || [];
-      this._observers.push({block: observer, context: context || null});
+      this[observers] = this[observers] || [];
+      this[observers].push({bk: observer, cx: context || null});
     },
     
     removeObserver: function(observer, context) {
-      this._observers = this._observers || [];
+      this[observers] = this[observers] || [];
       context = context || null;
       for (var i = 0, n = this.countObservers(); i < n; i++) {
-        if (this._observers[i].block == observer && this._observers[i].context == context) {
-          this._observers.splice(i,1);
+        if (this[observers][i].bk == observer && this[observers][i].cx == context) {
+          this[observers].splice(i,1);
           return;
         }
       }
     },
     
     removeObservers: function() {
-      this._observers = [];
+      this[observers] = [];
     },
     
     countObservers: function() {
-      this._observers = this._observers || [];
-      return this._observers.length;
+      this[observers] = this[observers] || [];
+      return this[observers].length;
     },
     
     notifyObservers: function() {
       if (!this.isChanged()) return;
       for (var i = 0, n = this.countObservers(), observer; i < n; i++) {
-        observer = this._observers[i];
-        observer.block.apply(observer.context, arguments);
+        observer = this[observers][i];
+        observer.bk.apply(observer.cx, arguments);
       }
     },
     
     setChanged: function(state) {
-      this._changed = !(state === false);
+      this[changed] = !(state === false);
     },
     
     isChanged: function() {
-      if (this._changed === undefined) this._changed = true;
-      return !!this._changed;
+      if (this[changed] === undefined) this[changed] = true;
+      return !!this[changed];
     }
   };
   
@@ -48,4 +48,4 @@ JS.Observable = (function() {
   methods.unsubscribe = methods.removeObserver;
   
   return JS.Module(methods);
-})();
+})('_observers', '_changed');

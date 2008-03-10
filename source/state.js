@@ -14,12 +14,10 @@ JS.State = (function() {
     _state: {},
     
     _getState: function(state) {
-      var object = this.klass.prototype._state;
-      switch (typeof state) {
-        case 'object':  return state;                         break;
-        case 'string':  return this.states[state] || object;  break;
-        default:        return object;
-      }
+      var object = this.klass.prototype._state, type = typeof state;
+      return  (type == 'object' && state) ||
+              (type == 'string' && (this.states[state] || object)) ||
+              object;
     },
     
     setState: function(state) {
