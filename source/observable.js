@@ -2,8 +2,7 @@ JS.Observable = (function(observers, changed) {
   
   var methods = {
     addObserver: function(observer, context) {
-      this[observers] = this[observers] || [];
-      this[observers].push({bk: observer, cx: context || null});
+      (this[observers] = this[observers] || []).push({bk: observer, cx: context || null});
     },
     
     removeObserver: function(observer, context) {
@@ -22,8 +21,7 @@ JS.Observable = (function(observers, changed) {
     },
     
     countObservers: function() {
-      this[observers] = this[observers] || [];
-      return this[observers].length;
+      return (this[observers] = this[observers] || []).length;
     },
     
     notifyObservers: function() {
