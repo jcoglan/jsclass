@@ -56,13 +56,12 @@ JS.MethodChain = (function(Class) {
     var methods = [], property, i, n,
         self = this.prototype;
     
-    for (property in object) {
-      if (Number(property) != property) methods.push(property);
-    }
+    for (property in object)
+      Number(property) != property && methods.push(property);
+    
     if (object instanceof Array) {
-      for (i = 0, n = object.length; i < n; i++) {
-        if (typeof object[i] == 'string') methods.push(object[i]);
-      }
+      for (i = 0, n = object.length; i < n; i++)
+        typeof object[i] == 'string' && methods.push(object[i]);
     }
     for (i = 0, n = methods.length; i < n; i++)
       (function(name) {
@@ -73,7 +72,7 @@ JS.MethodChain = (function(Class) {
         };
       })(methods[i]);
     
-    if (object.prototype)
+    object.prototype &&
       this.addMethods(object.prototype);
   };
   
@@ -92,27 +91,24 @@ JS.MethodChain = (function(Class) {
   })({
     wait: function(time) {
       var chain = new klass;
-      switch (true) {
-        case typeof time == 'number' :
-          setTimeout(chain.fire.bind(chain, this), time * 1000);
-          break;
-        case this.forEach && typeof time == 'function' :
-          this.forEach(function() {
-            setTimeout(chain.fire.bind(chain, arguments[0]), time.apply(this, arguments) * 1000);
-          });
-          break;
-      }
+      
+      typeof time == 'number' &&
+        setTimeout(chain.fire.bind(chain, this), time * 1000);
+      
+      this.forEach && typeof time == 'function' &&
+        this.forEach(function() {
+          setTimeout(chain.fire.bind(chain, arguments[0]), time.apply(this, arguments) * 1000);
+        });
+      
       return chain;
     },
     
     _: function() {
       var base = arguments[0], args = [], i, n;
       for (i = 1, n = arguments.length; i < n; i++) args.push(arguments[i]);
-      switch (typeof base) {
-        case 'object':    return base;                    break;
-        case 'function':  return base.apply(this, args);  break;
-        default:          return this;
-      }
+      return  (typeof base == 'object' && base) ||
+              (typeof base == 'function' && base.apply(this, args)) ||
+              this;
     }
   });
   
