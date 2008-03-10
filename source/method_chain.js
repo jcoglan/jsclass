@@ -1,4 +1,4 @@
-JS.MethodChain = (function() {
+JS.MethodChain = (function(Class) {
   
   var klass = function(base) {
     var queue = [], baseObject = base || {};
@@ -77,40 +77,47 @@ JS.MethodChain = (function() {
       this.addMethods(object.prototype);
   };
   
-  return klass;
-})();
-
-var it = its = function() { return new JS.MethodChain; };
-
-(function(methods) {
-  JS.extend(JS.Class.INSTANCE_METHODS, methods);
-  JS.extend(JS.Class.CLASS_METHODS, methods);
-})({
-  wait: function(time) {
-    var chain = new JS.MethodChain;
-    switch (true) {
-      case typeof time == 'number' :
-        setTimeout(chain.fire.bind(chain, this), time * 1000);
-        break;
-      case this.forEach && typeof time == 'function' :
-        this.forEach(function() {
-          setTimeout(chain.fire.bind(chain, arguments[0]), time.apply(this, arguments) * 1000);
-        });
-        break;
-    }
-    return chain;
-  },
+  Class.addMethod = (function(wrapped) {
+    return function() {
+      klass.addMethods([arguments[2]]);
+      return wrapped.apply(Class, arguments);
+    };
+  })(Class.addMethod);
   
-  _: function() {
-    var base = arguments[0], args = [], i, n;
-    for (i = 1, n = arguments.length; i < n; i++) args.push(arguments[i]);
-    switch (typeof base) {
-      case 'object':    return base;                    break;
-      case 'function':  return base.apply(this, args);  break;
-      default:          return this;
+  it = its = function() { return new klass; };
+  
+  (function(methods) {
+    JS.extend(Class.INSTANCE_METHODS, methods);
+    JS.extend(Class.CLASS_METHODS, methods);
+  })({
+    wait: function(time) {
+      var chain = new klass;
+      switch (true) {
+        case typeof time == 'number' :
+          setTimeout(chain.fire.bind(chain, this), time * 1000);
+          break;
+        case this.forEach && typeof time == 'function' :
+          this.forEach(function() {
+            setTimeout(chain.fire.bind(chain, arguments[0]), time.apply(this, arguments) * 1000);
+          });
+          break;
+      }
+      return chain;
+    },
+    
+    _: function() {
+      var base = arguments[0], args = [], i, n;
+      for (i = 1, n = arguments.length; i < n; i++) args.push(arguments[i]);
+      switch (typeof base) {
+        case 'object':    return base;                    break;
+        case 'function':  return base.apply(this, args);  break;
+        default:          return this;
+      }
     }
-  }
-});
+  });
+  
+  return klass;
+})(JS.Class);
 
 JS.MethodChain.addMethods([
   "abbr", "abs", "accept", "acceptCharset", "accesskey", "acos", "action", "addEventListener", 

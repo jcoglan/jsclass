@@ -102,8 +102,6 @@ JS = {
     },
     
     addMethod: function(object, superObject, name, func) {
-      if (JS.MethodChain) JS.MethodChain.addMethods([name]);
-      
       if (!lambda(func)) return (object[name] = func);
       if (!func.callsSuper()) return (object[name] = func);
       
