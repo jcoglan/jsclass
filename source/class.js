@@ -32,7 +32,7 @@ JS = {
   }
 };
 
-(function(list, JS, extend, method, lambda) {
+(function(list, JS, extend, INSTANCE_METHODS, CLASS_METHODS, method, lambda) {
   
   var Class = JS.Class = function() {
     var args = list(arguments), arg,
@@ -75,8 +75,8 @@ JS = {
       parent && Class.subclass(parent, klass);
       var p = klass.prototype;
       p.klass = p.constructor = klass;
-      klass.include(Class.INSTANCE_METHODS, false);
-      klass.instanceMethod('extend', Class.INSTANCE_METHODS.extend, false);
+      klass.include(Class[INSTANCE_METHODS], false);
+      klass.instanceMethod('extend', Class[INSTANCE_METHODS].extend, false);
       return klass;
     },
     
@@ -84,9 +84,9 @@ JS = {
       klass.superclass = klass.superclass || Object;
       klass.subclasses = klass.subclasses || [];
       if (noExtend === false) return klass;
-      for (var method in Class.CLASS_METHODS)
-        Class.CLASS_METHODS.hasOwnProperty(method) &&
-          (klass[method] = Class.CLASS_METHODS[method]);
+      for (var method in Class[CLASS_METHODS])
+        Class[CLASS_METHODS].hasOwnProperty(method) &&
+          (klass[method] = Class[CLASS_METHODS][method]);
       return klass;
     },
     
@@ -123,76 +123,6 @@ JS = {
       object[name] = method;
     },
     
-    INSTANCE_METHODS: {
-      initialize: function() {},
-      
-      method: method,
-      
-      extend: function(source) {
-        for (var method in source)
-          source.hasOwnProperty(method) &&
-            Class.addMethod(this, this.klass.prototype, method, source[method]);
-        return this;
-      },
-      
-      isA: function(klass) {
-        var _class = this.klass;
-        while (_class) {
-          if (_class === klass) return true;
-          _class = _class.superclass;
-        }
-        return false;
-      }
-    },
-    
-    CLASS_METHODS: {
-      include: function(source, overwrite) {
-        var modules, i, n, inc = source.include, ext = source.extend;
-        if (inc) {
-          modules = [].concat(inc);
-          for (i = 0, n = modules.length; i < n; i++)
-            this.include(modules[i], overwrite);
-        }
-        if (ext) {
-          modules = [].concat(ext);
-          for (i = 0, n = modules.length; i < n; i++)
-            this.extend(modules[i], overwrite);
-        }
-        for (var method in source) {
-          !/^(?:included?|extend|implement)$/.test(method) &&
-            this.instanceMethod(method, source[method], overwrite);
-        }
-        lambda(source.included) && source.included(this);
-        return this;
-      },
-      
-      instanceMethod: function(name, func, overwrite) {
-        if (!this.prototype[name] || overwrite !== false)
-          Class.addMethod(this.prototype, this.superclass.prototype, name, func);
-        return this;
-      },
-      
-      extend: function(source, overwrite) {
-        lambda(source) && (source = Class.properties(source));
-        for (var method in source) {
-          source.hasOwnProperty(method) && method != 'extended' &&
-            this.classMethod(method, source[method], overwrite);
-        }
-        lambda(source.extended) && source.extended(this);
-        return this;
-      },
-      
-      classMethod: function(name, func, overwrite) {
-        for (var i = 0, n = this.subclasses.length; i < n; i++)
-          this.subclasses[i].classMethod(name, func, false);
-        (!this[name] || overwrite !== false) &&
-          Class.addMethod(this, this.superclass, name, func);
-        return this;
-      },
-      
-      method: method
-    },
-    
     properties: function(klass) {
       var properties = {}, prop, K = Class.ify(function(){});
       loop: for (var method in klass) {
@@ -203,44 +133,116 @@ JS = {
     }
   });
   
-  JS.Interface = Class({
-    initialize: function(methods) {
-      this.test = function(object, returnName) {
-        var n = methods.length;
-        while (n--) {
-          if (!lambda(object[methods[n]]))
-            return returnName ? methods[n] : false;
-        }
-        return true;
-      };
+  Class[INSTANCE_METHODS] = {
+    initialize: function() {},
+    
+    method: method,
+    
+    extend: function(source) {
+      for (var method in source)
+        source.hasOwnProperty(method) &&
+          Class.addMethod(this, this.klass.prototype, method, source[method]);
+      return this;
     },
     
-    extend: {
-      ensure: function() {
-        var args = list(arguments), object = args.shift(), face, result;
-        while (face = args.shift()) {
-          result = face.test(object, true);
-          if (result !== true) throw new Error('object does not implement ' + result + '()');
+    isA: function(klass) {
+      var _class = this.klass;
+      while (_class) {
+        if (_class === klass) return true;
+        _class = _class.superclass;
+      }
+      return false;
+    }
+  };
+  
+  Class[CLASS_METHODS] = {
+    include: function(source, overwrite) {
+      var modules, i, n, inc = source.include, ext = source.extend;
+      if (inc) {
+        modules = [].concat(inc);
+        for (i = 0, n = modules.length; i < n; i++)
+          this.include(modules[i], overwrite);
+      }
+      if (ext) {
+        modules = [].concat(ext);
+        for (i = 0, n = modules.length; i < n; i++)
+          this.extend(modules[i], overwrite);
+      }
+      for (var method in source) {
+        !/^(?:included?|extend|implement)$/.test(method) &&
+          this.instanceMethod(method, source[method], overwrite);
+      }
+      lambda(source.included) && source.included(this);
+      return this;
+    },
+    
+    instanceMethod: function(name, func, overwrite) {
+      if (!this.prototype[name] || overwrite !== false)
+        Class.addMethod(this.prototype, this.superclass.prototype, name, func);
+      return this;
+    },
+    
+    extend: function(source, overwrite) {
+      lambda(source) && (source = Class.properties(source));
+      for (var method in source) {
+        source.hasOwnProperty(method) && method != 'extended' &&
+          this.classMethod(method, source[method], overwrite);
+      }
+      lambda(source.extended) && source.extended(this);
+      return this;
+    },
+    
+    classMethod: function(name, func, overwrite) {
+      for (var i = 0, n = this.subclasses.length; i < n; i++)
+        this.subclasses[i].classMethod(name, func, false);
+      (!this[name] || overwrite !== false) &&
+        Class.addMethod(this, this.superclass, name, func);
+      return this;
+    },
+    
+    method: method
+  };
+  
+  extend(JS, {
+    Interface: Class({
+      initialize: function(methods) {
+        this.test = function(object, returnName) {
+          var n = methods.length;
+          while (n--) {
+            if (!lambda(object[methods[n]]))
+              return returnName ? methods[n] : false;
+          }
+          return true;
+        };
+      },
+      
+      extend: {
+        ensure: function() {
+          var args = list(arguments), object = args.shift(), face, result;
+          while (face = args.shift()) {
+            result = face.test(object, true);
+            if (result !== true) throw new Error('object does not implement ' + result + '()');
+          }
         }
       }
+    }),
+    
+    Singleton: function() {
+      var klass = Class.apply(JS, arguments), result = new klass();
+      klass.instanceMethod('initialize', function() {
+        throw new Error('Singleton classes cannot be reinstantiated');
+      });
+      return result;
+    },
+    
+    Module: function(source) {
+      return {
+        included: function(klass) {
+          klass.include(source);
+        }
+      };
     }
   });
-  
-  JS.Singleton = function() {
-    var klass = Class.apply(JS, arguments), result = new klass();
-    klass.instanceMethod('initialize', function() {
-      throw new Error('Singleton classes cannot be reinstantiated');
-    });
-    return result;
-  };
-  
-  JS.Module = function(source) {
-    return {
-      included: function(klass) {
-        klass.include(source);
-      }
-    };
-  };
   
 })(
   Array.from = function(iterable) {
@@ -252,6 +254,7 @@ JS = {
   },
   
   JS, JS.extend,
+  'INSTANCE_METHODS', 'CLASS_METHODS',
   
   function(name) {
     var self = this, cache = self._methods = self._methods || {};
