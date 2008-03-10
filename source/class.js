@@ -37,16 +37,10 @@ JS = {
   var Class = JS.Class = function() {
     var args = list(arguments), arg,
         parent = lambda(args[0]) ? args.shift() : null,
-        klass = Class.create(parent),
-        faces = [], I = JS.Interface;
+        klass = Class.create(parent);
     
-    while (arg = args.shift()) {
+    while (arg = args.shift())
       klass.include(arg);
-      faces = faces.concat(arg.implement || []);
-    }
-    
-    faces.length && I &&
-      I.ensure.apply(I, [klass.prototype].concat(faces));
     
     parent && lambda(parent.inherited) &&
       parent.inherited(klass);
@@ -167,7 +161,7 @@ JS = {
           this.extend(modules[i], overwrite);
       }
       for (var method in source) {
-        !/^(?:included?|extend|implement)$/.test(method) &&
+        !/^(?:included?|extend)$/.test(method) &&
           this.instanceMethod(method, source[method], overwrite);
       }
       lambda(source.included) && source.included(this);
@@ -226,11 +220,7 @@ JS = {
     }),
     
     Singleton: function() {
-      var klass = Class.apply(JS, arguments), result = new klass();
-      klass.instanceMethod('initialize', function() {
-        throw new Error('Singleton classes cannot be reinstantiated');
-      });
-      return result;
+      return new (Class.apply(JS, arguments));
     },
     
     Module: function(source) {
