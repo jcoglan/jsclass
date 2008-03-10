@@ -32,7 +32,7 @@ JS = {
   }
 };
 
-(function(list, JS, extend, INSTANCE_METHODS, CLASS_METHODS, method, lambda) {
+(function(list, JS, extend, INSTANCE_METHODS, CLASS_METHODS, prototype, superclass, subclasses, addMethod, method, lambda) {
   
   var Class = JS.Class = function() {
     var args = list(arguments), arg,
@@ -48,7 +48,7 @@ JS = {
     return klass;
   };
   
-  extend(Function.prototype, {
+  extend(Function[prototype], {
     bind: function() {
       var __method = this, args = list(arguments), object = args.shift() || null;
       return function() {
@@ -67,7 +67,7 @@ JS = {
       };
       Class.ify(klass);
       parent && Class.subclass(parent, klass);
-      var p = klass.prototype;
+      var p = klass[prototype];
       p.klass = p.constructor = klass;
       klass.include(Class[INSTANCE_METHODS], false);
       klass.instanceMethod('extend', Class[INSTANCE_METHODS].extend, false);
@@ -75,8 +75,8 @@ JS = {
     },
     
     ify: function(klass, noExtend) {
-      klass.superclass = klass.superclass || Object;
-      klass.subclasses = klass.subclasses || [];
+      klass[superclass] = klass[superclass] || Object;
+      klass[subclasses] = klass[subclasses] || [];
       if (noExtend === false) return klass;
       for (var method in Class[CLASS_METHODS])
         Class[CLASS_METHODS].hasOwnProperty(method) &&
@@ -84,35 +84,15 @@ JS = {
       return klass;
     },
     
-    subclass: function(superclass, klass) {
-      Class.ify(superclass, false);
-      klass.superclass = superclass;
-      superclass.subclasses.push(klass);
+    subclass: function(superklass, klass) {
+      Class.ify(superklass, false);
+      klass[superclass] = superklass;
+      superklass[subclasses].push(klass);
       var bridge = function() {};
-      bridge.prototype = superclass.prototype;
-      klass.prototype = new bridge();
-      klass.extend(superclass);
+      bridge[prototype] = superklass[prototype];
+      klass[prototype] = new bridge();
+      klass.extend(superklass);
       return klass;
-    },
-    
-    addMethod: function(object, superObject, name, func) {
-      if (!lambda(func)) return (object[name] = func);
-      if (!func.callsSuper()) return (object[name] = func);
-      
-      var method = function() {
-        var _super = superObject[name], args = list(arguments), currentSuper = this.callSuper, result;
-        lambda(_super) && (this.callSuper = function() {
-          var i = arguments.length;
-          while (i--) args[i] = arguments[i];
-          return _super.apply(this, args);
-        });
-        result = func.apply(this, arguments);
-        currentSuper ? this.callSuper = currentSuper : delete this.callSuper;
-        return result;
-      };
-      method.valueOf = function() { return func; };
-      method.toString = function() { return func.toString(); };
-      object[name] = method;
     },
     
     properties: function(klass) {
@@ -125,6 +105,26 @@ JS = {
     }
   });
   
+  Class[addMethod] = function(object, superObject, name, func) {
+    if (!lambda(func)) return (object[name] = func);
+    if (!func.callsSuper()) return (object[name] = func);
+    
+    var method = function() {
+      var _super = superObject[name], args = list(arguments), currentSuper = this.callSuper, result;
+      lambda(_super) && (this.callSuper = function() {
+        var i = arguments.length;
+        while (i--) args[i] = arguments[i];
+        return _super.apply(this, args);
+      });
+      result = func.apply(this, arguments);
+      currentSuper ? this.callSuper = currentSuper : delete this.callSuper;
+      return result;
+    };
+    method.valueOf = function() { return func; };
+    method.toString = function() { return func.toString(); };
+    object[name] = method;
+  };
+  
   Class[INSTANCE_METHODS] = {
     initialize: function() {},
     
@@ -133,7 +133,7 @@ JS = {
     extend: function(source) {
       for (var method in source)
         source.hasOwnProperty(method) &&
-          Class.addMethod(this, this.klass.prototype, method, source[method]);
+          Class[addMethod](this, this.klass[prototype], method, source[method]);
       return this;
     },
     
@@ -141,7 +141,7 @@ JS = {
       var _class = this.klass;
       while (_class) {
         if (_class === klass) return true;
-        _class = _class.superclass;
+        _class = _class[superclass];
       }
       return false;
     }
@@ -169,8 +169,8 @@ JS = {
     },
     
     instanceMethod: function(name, func, overwrite) {
-      if (!this.prototype[name] || overwrite !== false)
-        Class.addMethod(this.prototype, this.superclass.prototype, name, func);
+      if (!this[prototype][name] || overwrite !== false)
+        Class[addMethod](this[prototype], this[superclass][prototype], name, func);
       return this;
     },
     
@@ -185,10 +185,10 @@ JS = {
     },
     
     classMethod: function(name, func, overwrite) {
-      for (var i = 0, n = this.subclasses.length; i < n; i++)
-        this.subclasses[i].classMethod(name, func, false);
+      for (var i = 0, n = this[subclasses].length; i < n; i++)
+        this[subclasses][i].classMethod(name, func, false);
       (!this[name] || overwrite !== false) &&
-        Class.addMethod(this, this.superclass, name, func);
+        Class[addMethod](this, this[superclass], name, func);
       return this;
     },
     
@@ -243,6 +243,7 @@ JS = {
   
   JS, JS.extend,
   'INSTANCE_METHODS', 'CLASS_METHODS',
+  'prototype', 'superclass', 'subclasses', 'addMethod',
   
   function(name) {
     var self = this, cache = self._methods = self._methods || {};
