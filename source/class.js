@@ -32,7 +32,8 @@ JS = {
   }
 };
 
-(function(list, JS, extend, INSTANCE_METHODS, CLASS_METHODS, prototype, superclass, subclasses, addMethod, method, lambda) {
+(function(list, JS, extend, INSTANCE_METHODS, CLASS_METHODS,
+    prototype, superclass, subclasses, addMethod, excluded, method, lambda) {
   
   var Class = JS.Class = function() {
     var args = list(arguments), arg,
@@ -161,7 +162,7 @@ JS = {
           this.extend(modules[i], overwrite);
       }
       for (var method in source) {
-        !/^(?:included?|extend)$/.test(method) &&
+        !excluded.test(method) &&
           this.instanceMethod(method, source[method], overwrite);
       }
       lambda(source.included) && source.included(this);
@@ -177,7 +178,7 @@ JS = {
     extend: function(source, overwrite) {
       lambda(source) && (source = Class.properties(source));
       for (var method in source) {
-        source.hasOwnProperty(method) && method != 'extended' &&
+        source.hasOwnProperty(method) && !excluded.test(method) &&
           this.classMethod(method, source[method], overwrite);
       }
       lambda(source.extended) && source.extended(this);
@@ -225,9 +226,8 @@ JS = {
     
     Module: function(source) {
       return {
-        included: function(klass) {
-          klass.include(source);
-        }
+        included: function(klass) { klass.include(source); },
+        extended: function(klass) { klass.extend(source); }
       };
     }
   });
@@ -244,6 +244,7 @@ JS = {
   JS, JS.extend,
   'INSTANCE_METHODS', 'CLASS_METHODS',
   'prototype', 'superclass', 'subclasses', 'addMethod',
+  /^(included?|extend(ed)?)$/,
   
   function(name) {
     var self = this, cache = self._methods = self._methods || {};
