@@ -1,5 +1,35 @@
 JS.State = (function(Class) {
   
+  var stub = function() { return this; };
+  
+  var buildStubs = function(stubs, collection, states) {
+    var state, method;
+    for (state in states) {
+      collection[state] = {};
+      for (method in states[state]) stubs[method] = stub;
+  } };
+  
+  var buildStateCollection = function(addMethod, proto, superproto, states) {
+    var stubs = {}, collection = {}, superstates = superproto.states || {};
+    buildStubs(stubs, collection, states);
+    buildStubs(stubs, collection, superstates);
+    var state, klass;
+    for (state in collection) {
+      klass = (superstates[state]||{}).klass;
+      klass = klass ? Class(klass, states[state]) : Class(states[state]);
+      klass.include(stubs, false);
+      collection[state] = new klass;
+    }
+    return addMethod.call(Class, proto, superproto, 'states', collection);
+  };
+  
+  Class.addMethod = (function(wrapped) {
+    return function(object, superObject, name, block) {
+      if (name != 'states' || typeof block != 'object') return wrapped.apply(Class, arguments);
+      return buildStateCollection(wrapped, object, superObject, block);
+    };
+  })(Class.addMethod);
+  
   var addStateMethods = function(state, klass) {
     for (var method in state)
       (function(methodName) {
@@ -9,25 +39,6 @@ JS.State = (function(Class) {
         }, false);
       })(method);
   };
-  
-  var buildStateCollection = function(collection, superStates, states) {
-    var state, method;
-    for (state in states) {
-      collection[state] = collection[state] || {};
-      for (method in states[state])
-        Class.addMethod(collection[state], superStates[state], method, states[state][method]);
-    }
-  };
-  
-  Class.addMethod = (function(wrapped) {
-    return function(object, superObject, name, func) {
-      if (name != 'states' || typeof func != 'object') return wrapped.apply(Class, arguments);
-      var collection = {}, superStates = superObject.states || {};
-      buildStateCollection(collection, superStates, superStates);
-      buildStateCollection(collection, superStates, func);
-      return wrapped.call(Class, object, superObject, 'states', collection);
-    };
-  })(Class.addMethod);
   
   return JS.Module({
     _getState: function(state) {
