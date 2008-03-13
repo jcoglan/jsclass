@@ -74,6 +74,29 @@
   If you insert a function into the chain, its return value will be used as the receiving
   object for the next method call in the chain.
   
+  h3. @it()@ and @its()@
+  
+  @it()@ and @its()@ are two global functions created by @MethodChain@ that just act as
+  shorthand for returning new @MethodChain@ objects. You could use them to improve syntax
+  in conjunction with @toFunction()@ for methods in your code that take functions as arguments.
+  An example from "Ojay":http://ojay.othermedia.org:
+  
+  <pre>
+  [some, bunch, of, elements].forEach(it().addClass('foo'));</pre>
+  
+  @forEach@ converts its argument to an iterator function before using it. The more long-winded
+  way to write the above would be:
+  
+  <pre>
+  [some, bunch, of, elements].forEach(function(element) {
+    element.addClass('foo');
+  });</pre>
+  
+  These functions (and indeed the whole idea of @MethodChain@) were inspired by
+  "Methodphitamine":http://jicksta.com/articles/2007/08/04/the-methodphitamine,
+  a Ruby library for collecting method calls and turning them into <tt>Proc</tt>s -
+  look to that library if you want more usage ideas.
+  
   h3. @toFunction()@
   
   The @toFunction@ method returns a function that fires the chain against its argument.
