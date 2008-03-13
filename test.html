@@ -325,11 +325,12 @@
             
             initialize: function() {
                 this.setState('doggies');
+                this.name = 'Alice';
             },
             
             states: {
                 ponies: {
-                    speak: function() { return 'ponies!' }
+                    speak: function() { return this.name + ' likes ponies!' }
                 },
                 doggies: {
                     speak: function() { return 'doggies!' }
@@ -354,6 +355,9 @@
         });
         
         var AnotherChildStateMachine = JS.Class(ChildStateMachine, {
+            initialize: function() {
+                this.name = 'Jenny';
+            },
             states: {
                 ponies: {
                     speak: function() {
@@ -899,12 +903,12 @@
             testStateInheritance: function() { with(this) {
                 var child = new ChildStateMachine();
                 child.setState('ponies');
-                assertEqual("ponies!", child.speak());
+                assertEqual("Alice likes ponies!", child.speak());
                 child.setState('doggies');
                 assertEqual("doggies! aren't they cute?", child.speak());
                 child = new AnotherChildStateMachine();
                 child.setState('ponies');
-                assertEqual("ponies! aren't they cute?", child.speak());
+                assertEqual("Jenny likes ponies! aren't they cute?", child.speak());
                 child.setState('poundingTechnoMusic');
                 assertEqual('Do you know where your children are?', child.speak());
             }},
