@@ -2,7 +2,7 @@
   h3. Callbacks and hooks
   
   Ruby defines a couple of hook methods that you can use to detect when a class is subclassed
-  or when a module is mixed in. These hooks are called @inherited()@ and @included()@.
+  or when a module is mixed in. These hooks are called @inherited()@, @included()@ and @extended()@.
   
   If a class has a static method called @inherited()@ it will be called whenever you create
   a subclass of it:
@@ -49,3 +49,6 @@
   do when it is mixed into a class. The module is secure as no code outside the module can
   modify its contents. @JS.Class@ actually includes its own module functionality to do precisely
   this - see "Modules":/modules.html.
+  
+  The @extended()@ hook works in much the same way as @included()@, except that it will be
+  called when the object is used to @extend()@ a class.

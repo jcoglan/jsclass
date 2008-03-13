@@ -3,12 +3,11 @@
   
   Ruby modules are collections of methods that can be mixed into classes. The instance methods
   in a module cannot be accessed from outside it, they can only be used in classes that
-  @include@ the module.
+  @include@ or @extend@ using the module.
   
   @JS.Class@ has some functionality to mimick modules. @JS.Module@ creates objects that have
-  one method - an @included@ hook - that can be mixed into classes but cannot have their
-  instance methods modified. This allows you to create secure mixins. (@JS.Class@ comes with
-  a "@Comparable@":/comparable.html module, so you don't have to write you own.)
+  just two methods - an @included()@ and an @extended()@ hook - that can be mixed into classes
+  but cannot have their instance methods modified. This allows you to create secure mixins.
   
   <pre>
   var Comparable = new JS.Module({
@@ -34,6 +33,8 @@
       return this.klass.compare(this, object) == 0;
     }
   });</pre>
+  
+  (@JS.Class@ comes with a "@Comparable@":/comparable.html module, so you don't have to write you own.)
   
   @Comparable@'s instance methods are now not accessible unless the module is mixed into a class:
   
