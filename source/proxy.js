@@ -2,21 +2,14 @@ if (JS.Proxy === undefined) JS.Proxy = {};
 
 JS.Proxy.Virtual = function(klass) {
   
-  var bridge = function() {};
+  var bridge = function() {}, self = arguments.callee;
   bridge.prototype = klass.prototype;
   
   var proxy = JS.Class(), func;
   
-  var forward = function(name) {
-    return function() {
-      var subject = this._getSubject();
-      return subject[name].apply(subject, arguments);
-    };
-  };
-  
   for (var method in klass.prototype) {
     func = klass.prototype[method];
-    if (typeof func == 'function') func = forward(method);
+    if (Function.is(func)) func = self.forward(method);
     proxy.instanceMethod(method, func);
   }
   
@@ -33,15 +26,26 @@ JS.Proxy.Virtual = function(klass) {
     constructor: klass
   });
   
-  proxy.instanceMethod('extend', function(source) {
+  proxy.instanceMethod('extend', self.extend);
+  
+  return proxy;
+};
+
+JS.extend(JS.Proxy.Virtual, {
+  forward: function(name) {
+    return function() {
+      var subject = this._getSubject();
+      return subject[name].apply(subject, arguments);
+    };
+  },
+  
+  extend: function(source) {
     this._getSubject().extend(source);
     var method, func;
     for (method in source) {
       func = source[method];
-      if (typeof func == 'function') func = forward(method);
+      if (Function.is(func)) func = JS.Proxy.Virtual.forward(method);
       this[method] = func;
     }
-  });
-  
-  return proxy;
-};
+  }
+});

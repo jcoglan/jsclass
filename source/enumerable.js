@@ -9,7 +9,7 @@ JS.Enumerable = (function() {
   
   var isComparable = function(list) {
     return list.all(function(item) {
-      return typeof item.compareTo == 'function';
+      return Function.is(item.compareTo);
     });
   };
   
@@ -63,7 +63,7 @@ JS.Enumerable = (function() {
     
     inject: function(memo, block, context) {
       var counter = 0, K = {};
-      if (typeof memo == 'function') {
+      if (Function.is(memo)) {
         context = block; block = memo; memo = K;
       }
       this.forEach(function(item, i) {

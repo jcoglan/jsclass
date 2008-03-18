@@ -1,6 +1,6 @@
 JS.Command = JS.Class({
   initialize: function(functions) {
-    if (typeof functions == 'function')
+    if (Function.is(functions))
       functions = {execute: functions};
     this._functions = functions;
     this._stack = this._functions.stack || null;

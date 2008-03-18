@@ -3,7 +3,7 @@ JS.Forwardable = JS.Module({
     alias = alias || method;
     this.instanceMethod(alias, function() {
       var object = this[subject], property = object[method];
-      return typeof property == 'function'
+      return Function.is(property)
           ? property.apply(object, arguments)
           : property;
     });
