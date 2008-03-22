@@ -2,12 +2,14 @@
   @JS.Class@ is a library designed to facilitate object-oriented development in JavaScript. It
   uses several idioms borrowed from Ruby to simulate classes, inheritance, mixins and modules.
   
-  h3. Download version 1.5
+  h3. Download version 1.6
   
-  1.5 is a major update from 1.0. There have been minor changes to the core class API, but the
-  major change is the addition of a library of design patterns, modules and utility classes.
+  1.6 adds the @Forwardable@ and @State@ modules, and makes some small changes to the modules
+  API. All @Module@ objects now have both @included@ and @extended@ methods, and a new @extended@
+  hook has been implemented to allow objects to run code when they are added to classes using
+  @extend()@.
   
-  "Download JS.Class 1.5.0":/assets/JS.Class.1-5-0.zip
+  "Download JS.Class 1.6.0":/assets/JS.Class.1-6-0.zip
   
   h3. Documentation
   
