@@ -6,24 +6,28 @@ JS.MethodChain = function(base) {
   };
   
   this.fire = function(base) {
-    var object = base || baseObject, method, property;
-    loop: for (var i = 0, n = queue.length; i < n; i++) {
-      method = queue[i];
-      if (object instanceof JS.MethodChain) {
-        object.____(method.func, method.args);
-        continue;
-      }
-      switch (typeof method.func) {
-        case 'string':    property = object[method.func];       break;
-        case 'function':  property = method.func;               break;
-        case 'object':    object = method.func; continue loop;  break;
-      }
-      object = (typeof property == 'function')
-          ? property.apply(object, method.args)
-          : property;
-    }
-    return object;
+    return JS.MethodChain.fire(queue, base || baseObject);
   };
+};
+
+JS.MethodChain.fire = function(queue, object) {
+  var method, property, i, n;
+  loop: for (i = 0, n = queue.length; i < n; i++) {
+    method = queue[i];
+    if (object instanceof JS.MethodChain) {
+      object.____(method.func, method.args);
+      continue;
+    }
+    switch (typeof method.func) {
+      case 'string':    property = object[method.func];       break;
+      case 'function':  property = method.func;               break;
+      case 'object':    object = method.func; continue loop;  break;
+    }
+    object = (typeof property == 'function')
+        ? property.apply(object, method.args)
+        : property;
+  }
+  return object;
 };
 
 JS.MethodChain.prototype = {
