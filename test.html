@@ -383,10 +383,25 @@
         //--------------------------------------------------------------------------------
         
         var Rails = JS.Class();
-        JS.Ruby(Rails, function(Ruby) { with(Ruby) {
+        var RailsModule = JS.Module({
+            extend: {
+                setValue: function(value) {
+                    this.numericValue = value;
+                }
+            }
+        });
+        
+        JS.Ruby(Rails, function() { with(this) {
             
             include(JS.Observable);
             extend(JS.Forwardable);
+            
+            // test DSL extension
+            include(RailsModule);
+            with (self) {
+                alias('myValueIs', 'setValue');
+            }
+            myValueIs(27);
             
             def('initialize', function() {
                 this.attributes = {};
@@ -411,6 +426,8 @@
                 alias('make', 'create');
             }
         }});
+        
+        window.console && console.log(Rails.numericValue);
         
     </script>
 </head>

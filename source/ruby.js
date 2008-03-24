@@ -1,45 +1,51 @@
-JS.Ruby = (function() {
-  
-  var extendDSL = function(builder, source) {
+JS.Ruby = function(klass, define) {
+  define.call(new JS.Ruby.ClassBuilder(klass));
+};
+
+JS.extend(JS.Ruby, {
+  extendDSL: function(builder, source) {
     for (var method in source) {
-      if (!builder[method] && typeof source[method] == 'function')
-        builder[method] = source[method].bind(source);
+      if (!builder[method] && typeof Function.is(source[method]))
+        (function(methodName) {
+          builder[methodName] = function() {
+            var result = source[methodName].apply(source, arguments);
+            JS.Ruby.extendDSL(builder, source);
+            return result;
+          };
+        })(method);
     }
-  };
+  },
   
-  var alias = function(object) {
+  alias: function(object, builder) {
     return function(newName, oldName) {
       var old = object[oldName];
       if (old !== undefined) this.def(newName, old);
+      if (builder) JS.Ruby.extendDSL(builder, object);
     };
-  };
+  },
   
-  var ClassBuilder = function(klass) {
+  ClassBuilder: function(klass) {
     this.def    = klass.method('instanceMethod');
-    this.alias  = alias(klass.prototype);
+    this.alias  = JS.Ruby.alias(klass.prototype);
     
     this.self = {
       def: function(name, method) {
         klass.classMethod(name, method);
-        extendDSL(this, klass);
+        JS.Ruby.extendDSL(this, klass);
       }.bind(this),
-      alias: alias(klass)
+      alias: JS.Ruby.alias(klass, this)
     };
     
     this.extend = function(source) {
       klass.extend(source);
-      extendDSL(this, klass);
+      JS.Ruby.extendDSL(this, klass);
     };
     
     this.instanceMethod = function(name) {
       var method = klass.prototype[name];
-      return (typeof method == 'function') ? method : null;
+      return (Function.is(method)) ? method : null;
     };
     
-    extendDSL(this, klass);
-  };
-  
-  return function(klass, define) {
-    define(new ClassBuilder(klass));
-  };
-})();
+    JS.Ruby.extendDSL(this, klass);
+  }
+});

@@ -1,0 +1,187 @@
+:textile
+  h3. @JS.Ruby@
+  
+  This module is experimental and should be treated as such. It is provided as a 'toy' to
+  allow me to experiment with program and language design. It has great syntactic power but
+  is likely to perform badly at this stage and is not reccommended for production use.
+  
+  @JS.Ruby@ is an implementation of a small part of Ruby's syntax, based on @JS.Class@.
+  While @JS.Class@ implements an approximation of Ruby's underlying object model, @JS.Ruby@
+  tries to implement its syntax. Specifically, it focuses on the idea that a class definition
+  is a procedure rather than a static template. For example, consider this Ruby code:
+  
+  <pre>
+  class RubyClass
+    extend Forwardable
+    def_delegator :@list, :<<, :add
+    
+    attr_reader :list
+    
+    def initialize
+      @list = []
+    end
+  end
+  
+  r = RubyClass.new
+  r.add 4
+  r.add 67
+  r.list    # => [4, 67]</pre>
+  
+  Notice that @def_delegator@ and @attr_reader@ are class methods, but you can call them
+  at any point during the class definition. Also notice that @def_delegator@ is added by
+  the call to @extend Forwardable@, and I can use it immediately. The open class is just
+  like any other part of the program: statements are executed in order and you have access
+  to the whole language while defining the class. For example I can store values in order
+  to redefine methods:
+  
+  <pre>
+  class RubyClass
+    old_add = instance_method :add
+    
+    define_method :add do |value|
+      old_add.bind(self).call(2 * value)
+    end
+  end
+  
+  r = RubyClass.new
+  r.add 13
+  r.list    # => [26]</pre>
+  
+  With vanilla @JS.Class@, such things are not possible. You would need to write all the
+  above as:
+  
+  <pre>
+  var RubyClass = new JS.Class({
+    extend: JS.Forwardable,
+    
+    initialize: function() {
+      this.list = [];
+    }
+  });
+  
+  RubyClass.defineDelegator('list', 'push', 'add');
+  
+  var r = new RubyClass();
+  r.add(4);
+  r.add(67);
+  r.list;    // -> [4, 67]
+  
+  (function() {
+    var old_add = RubyClass.prototype.add;
+    RubyClass.include({
+      add: function(value) {
+        return old_add.call(this, 2 * value);
+      }
+    });
+  })();
+  
+  r = new RubyClass();
+  r.add(13);
+  r.list;   // -> [26]</pre>
+  
+  Not quite as clean - we need to complete a class definition, then call some class methods,
+  then use a closure to modify the class without creating new global variables. @JS.Ruby@ is
+  designed to let you get as close as possible to the Ruby way of doing things as possible:
+  
+  <pre>
+  var RubyClass = new JS.Class();
+  JS.Ruby(RubyClass, function() { with(this) {
+    extend(JS.Forwardable);
+    defineDelegator('list', 'push', 'add');
+    
+    def('initialize', function() {
+      this.list = [];
+    });
+    
+    var old_add = instanceMethod('add');
+    
+    def('add', function(value) {
+      return old_add.call(this, 2 * value);
+    });
+  }});
+  
+  var r = new RubyClass();
+  r.add(9);
+  r.list;   // -> [18]</pre>
+  
+  h3. Features
+  
+  @JS.Ruby@ has a minimal feature set designed to provide a broadly useful Ruby-ish experience.
+  It supports the following keywords and class methods:
+  
+  * @def@
+  * @alias@
+  * @include@ and @extend@
+  * @instanceMethod@
+  * @class << self@
+  
+  As we've seen, any existing class methods can be called from inside the class definition.
+  @JS.Ruby@ allows any class to be 'reopened' and modified. It does not support modules or nested
+  classes at this time, and it only works with classes created using @JS.Class@. The basic call
+  structure is:
+  
+  <pre>
+  JS.Ruby(SomeExistingClass, function() { with(this) {
+    // code here
+  }});</pre>
+  
+  h3. @def@ and @alias@
+  
+  These are fairly straightforward: @def@ defines a new instance method, and @alias@ ands
+  a new alias for an instance method. The following code adds two methods, @get@ and @fetch@,
+  that both do the same thing:
+  
+  <pre>
+  JS.Ruby(RubyClass, function() { with(this) {
+    def('get', function(index) {
+      return this.list[index];
+    });
+    alias('fetch', 'get');
+  }});
+  
+  var r = new RubyClass();
+  r.add(5); r.add(27);
+  r.fetch(1);   // -> 54</pre>
+  
+  h3. @include@ and @extend@
+  
+  These are fairly self-explanatory: they work just like they do under @JS.Class@, except
+  that calling them will make sure that any new class methods are available to call inside
+  your @JS.Ruby@ code.
+  
+  <pre>
+  var EventClass = new JS.Class();
+  JS.Ruby(EventClass, function() { with(this) {
+    
+    // adds instance methods 'addObserver' et all
+    include(JS.Observable);
+    
+    // adds class method 'defineDelegator'
+    extend(JS.Forwardable);
+    defineDelegator('subject', 'method', 'alias');
+  }});</pre>
+  
+  h3. @instanceMethod@
+  
+  This function returns a reference to the named instance method from the current class,
+  allowing you to retain references to old methods before overwriting them with new
+  implementations. See above for example usage.
+  
+  h3. @class << self@
+  
+  @JS.Ruby@ supports something analogous to @class << self ... end@ for defining class methods.
+  In JavaScript, the syntax is @with (self) { ... }@, and you may use @def@ and @alias@ within
+  such a block for creating and aliasing class methods.
+  
+  <pre>
+  JS.Ruby(RubyClass, function() { with(this) {
+    with (self) {
+      def('create', function() {
+        return new this();
+      });
+      alias('make', 'create');
+    }
+  }});
+  
+  var r = RubyClass.make();
+  r.add(9);</pre>
