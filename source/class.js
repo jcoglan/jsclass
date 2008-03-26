@@ -35,7 +35,9 @@ JS = {
     var self = this, cache = self._methods = self._methods || {};
     if ((cache[name] || {}).fn == self[name]) return cache[name].bd;
     return (cache[name] = {fn: self[name], bd: self[name].bind(self)}).bd;
-  }
+  },
+  
+  util: {}
 };
 
 Array.from = function(iterable) {
