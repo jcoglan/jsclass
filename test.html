@@ -930,6 +930,17 @@
                 assertEqual('Do you know where your children are?', child.speak());
             }},
             
+            testStateMethodAvailability: function() { with(this) {
+                var klass = JS.Class({
+                    states: {
+                        foo: {
+                            add: function() {}
+                        }
+                    }
+                });
+                assertEqual('function', typeof new klass().add);
+            }},
+            
             testForwardable: function() { with(this) {
                 var forward = new Forwarder();
                 forward.setState('pessimism');

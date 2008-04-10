@@ -38,6 +38,7 @@ JS.util.State = {
       klass = klass ? JS.Class(klass, states[state]) : JS.Class(states[state]);
       klass.include(stubs, false);
       collection[state] = new klass;
+      JS.util.State.addMethods(collection[state], proto.klass);
     }
     return addMethod.call(JS.Class, proto, superproto, 'states', collection);
   },
