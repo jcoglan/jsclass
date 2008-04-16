@@ -9,7 +9,7 @@ JS.Proxy.Virtual = function(klass) {
   
   for (var method in klass.prototype) {
     func = klass.prototype[method];
-    if (Function.is(func)) func = self.forward(method);
+    if (Function.is(func) && func != klass) func = self.forward(method);
     proxy.instanceMethod(method, func);
   }
   

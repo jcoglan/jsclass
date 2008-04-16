@@ -4,7 +4,7 @@ JS.Decorator = function() {
   
   for (method in klass.prototype) {
     func = klass.prototype[method];
-    if (Function.is(func)) func = self.delegate(method);
+    if (Function.is(func) && func != klass) func = self.delegate(method);
     decorator.instanceMethod(method, func);
   }
    

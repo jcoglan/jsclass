@@ -320,6 +320,22 @@
             }
         });
         
+        var DecoratedFiddler = JS.Decorator(Fiddler, {
+            stepForward: function() {
+                this.component.stepForward();
+                this.component.count += 100;
+            },
+            laughOutLoud: function() {
+                var result = this.component.laughOutLoud();
+                return (typeof result == 'string') ? result.toUpperCase() : 'WRONG';
+            },
+            count: function() {
+                return this.component.count;
+            }
+        });
+        
+        var ProxiedFiddler = JS.Proxy.Virtual(Fiddler);
+        
         var InheritableStateMachine = JS.Class({
             include: JS.State,
             
@@ -838,6 +854,8 @@
                 assertEqual(15, bikeWithHeadlights.getPrice());
                 assertEqual('BMX', bikeWithHeadlights.getModel());
                 
+                assert(Bicycle == bikeWithHeadlights.klass);
+                
                 var mtb = new Bicycle('Mountain bike', 24);
                 var mtbWithLights = new HeadlightDecorator(new HeadlightDecorator(mtb));
                 assertEqual(250, mtbWithLights.getPrice());
@@ -868,6 +886,7 @@
                 var CarProxy = JS.Proxy.Virtual(Car);
                 
                 var car = new CarProxy('Ferrari');
+                assert(car.klass == Car);
                 assertEqual(0, instances);
                 assertEqual('Ferrari is a car', car.getName(' is a car'));
                 assertEqual(1, instances);
@@ -928,6 +947,34 @@
                 assertEqual("Jenny likes ponies! aren't they cute?", child.speak());
                 child.setState('poundingTechnoMusic');
                 assertEqual('Do you know where your children are?', child.speak());
+            }},
+            
+            testDecoratedStateClass: function() { with(this) {
+                var fiddler = new DecoratedFiddler( new Fiddler() );
+                assertEqual(0, fiddler.count());
+                fiddler.stepForward();
+                fiddler.stepForward();
+                assertEqual(204, fiddler.count());
+                assertEqual('HA-HA!', fiddler.laughOutLoud());
+                fiddler.setState('pessimism');
+                assertIdentical('WRONG', fiddler.laughOutLoud());
+                fiddler.stepForward();
+                fiddler.stepForward();
+                assertEqual(402, fiddler.count());
+                fiddler.setState(DecoratedFiddler.prototype.states.optimism);
+                fiddler.stepForward();
+                fiddler.stepForward();
+                assertEqual(606, fiddler.count());
+                fiddler.setState(DecoratedFiddler.prototype.states.pessimism);
+                assert(fiddler.inState(DecoratedFiddler.prototype.states.pessimism));
+                assert(!fiddler.inState('pessimism'));
+                fiddler.setState('pessimism');
+                assert(fiddler.inState(Fiddler.prototype.states.pessimism));
+                assert(fiddler.inState('pessimism'));
+                assert(!fiddler.inState('optimism'));
+                fiddler.stepForward();
+                fiddler.stepForward();
+                assertEqual(804, fiddler.count());
             }},
             
             testStateMethodAvailability: function() { with(this) {
