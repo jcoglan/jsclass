@@ -134,19 +134,23 @@ JS.extend(JS.Class.prototype, {
   },
   
   include: function() {
-    return this.__mod__.include.apply(this.__mod__, arguments);
+    var mod = this.__mod__;
+    return mod.include.apply(mod, arguments);
   },
   
   lookup: function() {
-    return this.__mod__.lookup.apply(this.__mod__, arguments);
+    var mod = this.__mod__;
+    return mod.lookup.apply(mod, arguments);
   },
   
   make: function() {
-    return this.__mod__.make.apply(this.__mod__, arguments);
+    var mod = this.__mod__;
+    return mod.make.apply(mod, arguments);
   },
   
   resolve: function() {
-    return this.__mod__.resolve.apply(this.__mod__, arguments);
+    var mod = this.__mod__;
+    return mod.resolve.apply(mod, arguments);
   }
 });
 
