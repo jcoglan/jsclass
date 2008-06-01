@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>JS.Class tests</title>
+    <script src="prototype.js" type="text/javascript" charset="utf-8"></script>
+    <script src="unittest.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/class.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="test.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <script type="text/javascript" charset="utf-8">
+    
+    //================================================================
+    // Test that method inheritance works as it does in Ruby.
+    // See module.rb for equivalent Ruby code
+    //================================================================
+    
+    var ModA = new JS.Module({
+        speak: function() {
+            return "speak() in ModA";
+        }
+    });
+    
+    var ModB = new JS.Module({
+        speak: function() {
+            return "speak() in ModB, " + this.callSuper();
+        }
+    });
+    
+    var ModC = new JS.Module();
+    ModC.include(ModA);
+    ModC.include({
+        speak: function() {
+            return this.callSuper() + ", and in ModC";
+        }
+    });
+    ModC.include(ModB);
+    
+    var InheritanceTester = new JS.Class({
+        speak: function() {
+            return this.callSuper() + ", and in class Foo";
+        }
+    });
+    InheritanceTester.include(ModC);
+    
+    </script>
+</head>
+<body>
+    
+    <div id="testlog"></div>
+    
+    <script type="text/javascript" charset="utf-8">
+        
+    new Test.Unit.Runner({
+        testRubyishInheritance: function() { with(this) {
+            var tester = new InheritanceTester();
+            assertEqual("speak() in ModB, speak() in ModA, and in ModC, and in class Foo", tester.speak());
+        }}
+    });
+        
+    </script>
+</body>
+</html>
