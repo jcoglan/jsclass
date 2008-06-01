@@ -28,13 +28,21 @@
 
 JS = {
   extend: function(object, methods) {
+    methods = methods || {};
     for (var prop in methods) object[prop] = methods[prop];
+    return object;
   },
   
   method: function(name) {
-    var self = this, cache = self._methods = self._methods || {};
+    var self = this, cache = self.__mcache__ = self.__mcache__ || {};
     if ((cache[name] || {}).fn == self[name]) return cache[name].bd;
     return (cache[name] = {fn: self[name], bd: self[name].bind(self)}).bd;
+  },
+  
+  makeFn: function() {
+    return function() {
+      return this.initialize.apply(this, arguments) || this;
+    };
   },
   
   util: {}
@@ -57,193 +65,90 @@ JS.extend(Function.prototype, {
   },
   callsSuper: function() {
     return /\bcallSuper\b/.test(this.toString());
-  },
-  is: function(object) {
-    return typeof object == 'function';
   }
 });
 
-JS.Class = function() {
-  var args = Array.from(arguments), arg,
-      parent = Function.is(args[0]) ? args.shift() : null,
-      klass = JS.Class.create(parent);
-  
-  while (arg = args.shift())
-    klass.include(arg);
-  
-  parent && Function.is(parent.inherited) &&
-    parent.inherited(klass);
-  
-  return klass;
+Function.is = function(object) {
+  return typeof object == 'function';
 };
 
-JS.extend(JS.Class, {
-  create: function(parent) {
-    var klass = function() {
-      this.initialize.apply(this, arguments);
-    };
-    this.ify(klass);
-    parent && this.subclass(parent, klass);
-    var p = klass.prototype;
-    p.klass = p.constructor = klass;
-    klass.include(this.INSTANCE_METHODS, false);
-    klass.instanceMethod('extend', this.INSTANCE_METHODS.extend, false);
-    return klass;
+JS.Module = JS.makeFn();
+JS.extend(JS.Module.prototype, {
+  initialize: function(methods, options) {
+    options = options || {};
+    this.__inc__ = [];
+    this.__fns__ = {};
+    this.__res__ = options.resolve || {};
+    this.include(methods || {});
   },
   
-  ify: function(klass, noExtend) {
-    klass.superclass = klass.superclass || Object;
-    klass.subclasses = klass.subclasses || [];
-    if (noExtend === false) return klass;
-    for (var method in this.CLASS_METHODS)
-      this.CLASS_METHODS.hasOwnProperty(method) &&
-        (klass[method] = this.CLASS_METHODS[method]);
-    return klass;
+  include: function(module) {
+    var isMod = (module instanceof JS.Module), key;
+    isMod ? this.__inc__.push(module)
+          : JS.extend(this.__fns__, module);
+    this.resolve();
   },
   
-  subclass: function(superklass, klass) {
-    this.ify(superklass, false);
-    klass.superclass = superklass;
-    superklass.subclasses.push(klass);
-    var bridge = function() {};
-    bridge.prototype = superklass.prototype;
-    klass.prototype = new bridge();
-    klass.extend(superklass);
-    return klass;
+  lookup: function(name, lookInSelf) {
+    var results = [], found, i, n;
+    for (i = 0, n = this.__inc__.length; i < n; i++)
+      results = results.concat(this.__inc__[i].lookup(name));
+    if (lookInSelf !== false && (found = this.__fns__[name]))
+      results.push(found);
+    return results;
   },
   
-  properties: function(klass) {
-    var properties = {}, prop, K = this.ify(function(){});
-    loop: for (var method in klass) {
-      for (prop in K) { if (method == prop) continue loop; }
-      properties[method] = klass[method];
-    }
-    return properties;
-  },
-  
-  addMethod: function(object, superObject, name, func) {
-    if (!Function.is(func)) return (object[name] = func);
-    if (!func.callsSuper()) return (object[name] = func);
-    
-    var method = function() {
-      var _super = superObject[name], args = Array.from(arguments), currentSuper = this.callSuper, result;
-      Function.is(_super) && (this.callSuper = function() {
+  make: function(name, func) {
+    if (!func.callsSuper()) return func;
+    var module = this;
+    return function() {
+      var supers = module.lookup(name, false), currentSuper = this.callSuper,
+          args = Array.from(arguments), result;
+      this.callSuper = function() {
         var i = arguments.length;
         while (i--) args[i] = arguments[i];
-        return _super.apply(this, args);
-      });
+        return supers.pop().apply(this, args);
+      };
       result = func.apply(this, arguments);
       currentSuper ? this.callSuper = currentSuper : delete this.callSuper;
       return result;
     };
-    method.valueOf = function() { return func; };
-    method.toString = function() { return func.toString(); };
-    object[name] = method;
   },
   
-  INSTANCE_METHODS: {
-    initialize: function() {},
-    
-    method: JS.method,
-    
-    extend: function(source) {
-      for (var method in source)
-        source.hasOwnProperty(method) &&
-          JS.Class.addMethod(this, this.klass.prototype, method, source[method]);
-      return this;
-    },
-    
-    isA: function(klass) {
-      var _class = this.klass;
-      while (_class) {
-        if (_class === klass) return true;
-        _class = _class.superclass;
-      }
-      return false;
-    }
-  },
-  
-  CLASS_METHODS: {
-    include: function(source, overwrite) {
-      var modules, i, n, inc = source.include, ext = source.extend;
-      if (inc) {
-        modules = [].concat(inc);
-        for (i = 0, n = modules.length; i < n; i++)
-          this.include(modules[i], overwrite);
-      }
-      if (ext) {
-        modules = [].concat(ext);
-        for (i = 0, n = modules.length; i < n; i++)
-          this.extend(modules[i], overwrite);
-      }
-      for (var method in source) {
-        !/^(included?|extend(ed)?)$/.test(method) &&
-          this.instanceMethod(method, source[method], overwrite);
-      }
-      Function.is(source.included) && source.included(this);
-      return this;
-    },
-    
-    instanceMethod: function(name, func, overwrite) {
-      if (!this.prototype[name] || overwrite !== false)
-        JS.Class.addMethod(this.prototype, this.superclass.prototype, name, func);
-      return this;
-    },
-    
-    extend: function(source, overwrite) {
-      Function.is(source) && (source = JS.Class.properties(source));
-      for (var method in source) {
-        source.hasOwnProperty(method) && !/^(included?|extend(ed)?)$/.test(method) &&
-          this.classMethod(method, source[method], overwrite);
-      }
-      Function.is(source.extended) && source.extended(this);
-      return this;
-    },
-    
-    classMethod: function(name, func, overwrite) {
-      for (var i = 0, n = this.subclasses.length; i < n; i++)
-        this.subclasses[i].classMethod(name, func, false);
-      (!this[name] || overwrite !== false) &&
-        JS.Class.addMethod(this, this.superclass, name, func);
-      return this;
-    },
-    
-    method: JS.method
+  resolve: function(target) {
+    var target = target || this, resolved = target.__res__, i, n, key;
+    for (i = 0, n = this.__inc__.length; i < n; i++)
+      this.__inc__[i].resolve(target);
+    for (key in this.__fns__)
+      resolved[key] = target.make(key, this.__fns__[key]);
   }
 });
 
-JS.extend(JS, {
-  Interface: JS.Class({
-    initialize: function(methods) {
-      this.test = function(object, returnName) {
-        var n = methods.length;
-        while (n--) {
-          if (!Function.is(object[methods[n]]))
-            return returnName ? methods[n] : false;
-        }
-        return true;
-      };
-    },
-    
-    extend: {
-      ensure: function() {
-        var args = Array.from(arguments), object = args.shift(), face, result;
-        while (face = args.shift()) {
-          result = face.test(object, true);
-          if (result !== true) throw new Error('object does not implement ' + result + '()');
-        }
-      }
-    }
-  }),
-  
-  Singleton: function() {
-    return new (JS.Class.apply(JS, arguments));
+JS.Class = JS.makeFn();
+JS.extend(JS.Class.prototype, {
+  initialize: function(methods) {
+    var klass = JS.extend(JS.makeFn(), this);
+    klass.__mod__ = new JS.Module({}, {resolve: klass.prototype});
+    klass.include(methods);
+    return klass;
   },
   
-  Module: function(source) {
-    return {
-      included: function(klass) { klass.include(source); },
-      extended: function(klass) { klass.extend(source); }
-    };
+  include: function() {
+    return this.__mod__.include.apply(this.__mod__, arguments);
+  },
+  
+  lookup: function() {
+    return this.__mod__.lookup.apply(this.__mod__, arguments);
+  },
+  
+  make: function() {
+    return this.__mod__.make.apply(this.__mod__, arguments);
+  },
+  
+  resolve: function() {
+    return this.__mod__.resolve.apply(this.__mod__, arguments);
   }
 });
+
+JS.Module = new JS.Class(JS.Module.prototype);
+JS.Class = new JS.Class(JS.Class.prototype);

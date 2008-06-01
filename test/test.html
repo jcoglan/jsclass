@@ -38,6 +38,8 @@
     ModC.include(ModB);
     
     var InheritanceTester = new JS.Class({
+        initialize: function() {},
+        
         speak: function() {
             return this.callSuper() + ", and in class Foo";
         }
