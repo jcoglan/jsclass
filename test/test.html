@@ -22,6 +22,16 @@
         }
     });
     
+    ModA.included = function(mod) {
+        this.incs = this.incs || [];
+        this.incs.push(mod);
+    };
+    
+    ModA.extended = function(mod) {
+        this.exts = this.exts || [];
+        this.exts.push(mod);
+    };
+    
     var ModB = new JS.Module({
         speak: function() {
             return "speak() in ModB, " + this.callSuper();
@@ -29,13 +39,14 @@
     });
     
     var ModC = new JS.Module();
-    ModC.include(ModA);
     ModC.include({
+        include: ModA,
         speak: function() {
             return this.callSuper() + ", and in ModC";
         }
     });
     ModC.include(ModB);
+    ModC.included = ModA.included;
     
     var InheritanceTester = new JS.Class({
         include: ModC,
@@ -247,6 +258,17 @@
             assertEqual('__meta__', keys[0]);
             assertEqual('speak', keys[1]);
             assertEqual("sp__k() _n M_dB, sp__k() _n M_d_, _nd _n M_dC, _nd _n cl_ss F__", obj.speak());
+        }},
+        
+        testHooks: function() { with(this) {
+            assertEqual(1, ModA.incs.length);
+            assertEqual(ModC, ModA.incs[0]);
+            var obj = new JS.Interface(['foo']);
+            obj.extend(ModA);
+            assertEqual(1, ModA.exts.length);
+            assertEqual(obj, ModA.exts[0]);
+            assertEqual(1, ModC.incs.length);
+            assertEqual(InheritanceTester, ModC.incs[0]);
         }},
         
         testClassDefinition: function() { with(this) {

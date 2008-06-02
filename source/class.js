@@ -92,14 +92,19 @@ JS.extend(JS.Module.prototype, {
     this.include(methods || {});
   },
   
-  include: function(module) {
+  include: function(module, options) {
     if (!module) return;
+    options = options || {};
     var inc = module.include, modules, i, n;
-    if (module.__inc__ && module.__fns__) this.__inc__.push(module);
+    if (module.__inc__ && module.__fns__) {
+      this.__inc__.push(module);
+      if (module.extended && options.extended) module.extended(options.extended);
+      else module.included && module.included(options.included || this);
+    }
     else {
       if (typeof inc == 'object') {
         modules = [].concat(inc);
-        for (i = 0, n = modules.length; i < n; i++) this.include(modules[i]);
+        for (i = 0, n = modules.length; i < n; i++) this.include(modules[i], options);
       }
       JS.extend(this.__fns__, module, {exclude: JS.util.ignore});
     }
@@ -162,7 +167,7 @@ JS.ObjectMethods = new JS.Module({
   },
   
   extend: function(module) {
-    return this.__eigen__().include(module);
+    return this.__eigen__().include(module, {extended: this});
   },
   
   isA: function(moduleOrClass) {
@@ -201,9 +206,10 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     this.include(klass.__mod__ || new JS.Module(klass.prototype));
   },
   
-  include: function() {
-    var mod = this.__mod__;
-    return mod.include.apply(mod, arguments);
+  include: function(module, options) {
+    var mod = this.__mod__, options = options || {};
+    options.included = this;
+    return mod.include(module, options);
   },
   
   includes: function() {
