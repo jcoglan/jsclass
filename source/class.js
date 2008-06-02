@@ -40,7 +40,9 @@ JS = {
   
   makeFunction: function() {
     return function() {
-      return this.initialize.apply(this, arguments) || this;
+      return this.initialize
+          ? (this.initialize.apply(this, arguments) || this)
+          : this;
     };
   },
   
@@ -252,8 +254,9 @@ JS.extend(JS, {
   }),
   
   Singleton: new JS.Class({
-    initialize: function() {
-      return new (JS.Class.apply(JS, arguments));
-    }  })
+    initialize: function(parent, methods) {
+      return new (new JS.Class(parent, methods));
+    }
+  })
 });
 
