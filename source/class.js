@@ -45,31 +45,30 @@ JS = {
     return new bridge;
   },
   
-  util: {}
-};
-
-Array.from = function(iterable) {
-  if (!iterable) return [];
-  if (iterable.toArray) return iterable.toArray();
-  var length = iterable.length, results = [];
-  while (length--) results[length] = iterable[length];
-  return results;
-};
-
-JS.extend(Function.prototype, {
-  bind: function() {
-    var __method = this, args = Array.from(arguments), object = args.shift() || null;
-    return function() {
-      return __method.apply(object, args.concat(Array.from(arguments)));
-    };
-  },
-  callsSuper: function() {
-    return /\bcallSuper\b/.test(this.toString());
+  util: {
+    bind: function() {
+      var args = JS.util.array(arguments), method = args.shift(), object = args.shift() || null;
+      return function() {
+        return method.apply(object, args.concat(JS.util.array(arguments)));
+      };
+    },
+    
+    callsSuper: function(func) {
+      return /\bcallSuper\b/.test(func.toString());
+    },
+    
+    array: function(iterable) {
+      if (!iterable) return [];
+      if (iterable.toArray) return iterable.toArray();
+      var length = iterable.length, results = [];
+      while (length--) results[length] = iterable[length];
+      return results;
+    },
+    
+    isFn: function(object) {
+      return object instanceof Function;
+    }
   }
-});
-
-Function.is = function(object) {
-  return typeof object == 'function';
 };
 
 JS.Module = JS.makeFunction();
@@ -109,11 +108,11 @@ JS.extend(JS.Module.prototype, {
   },
   
   make: function(name, func) {
-    if (!Function.is(func) || !func.callsSuper()) return func;
+    if (!JS.util.isFn(func) || !JS.util.callsSuper(func)) return func;
     var module = this;
     return function() {
       var supers = module.lookup(name, false), currentSuper = this.callSuper,
-          args = Array.from(arguments), result;
+          args = JS.util.array(arguments), result;
       this.callSuper = function() {
         var i = arguments.length;
         while (i--) args[i] = arguments[i];
@@ -155,7 +154,7 @@ JS.ObjectMethods = new JS.Module({
   method: function(name) {
     var self = this, cache = self.__mcache__ = self.__mcache__ || {};
     if ((cache[name] || {}).fn == self[name]) return cache[name].bd;
-    return (cache[name] = {fn: self[name], bd: self[name].bind(self)}).bd;
+    return (cache[name] = {fn: self[name], bd: JS.util.bind(self[name], self)}).bd;
   }
 });
 
@@ -164,7 +163,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   initialize: function(parent, methods) {
     var klass = JS.extend(JS.makeFunction(), this);
     klass.klass = klass.constructor = JS.Class;
-    if (!Function.is(parent)) {
+    if (!JS.util.isFn(parent)) {
       methods = parent;
       parent = Object;
     }
@@ -218,7 +217,7 @@ JS.extend(JS, {
       this.test = function(object, returnName) {
         var n = methods.length;
         while (n--) {
-          if (!Function.is(object[methods[n]]))
+          if (!JS.util.isFn(object[methods[n]]))
             return returnName ? methods[n] : false;
         }
         return true;
@@ -227,7 +226,7 @@ JS.extend(JS, {
     
     extend: {
       ensure: function() {
-        var args = Array.from(arguments), object = args.shift(), face, result;
+        var args = JS.util.array(arguments), object = args.shift(), face, result;
         while (face = args.shift()) {
           result = face.test(object, true);
           if (result !== true) throw new Error('object does not implement ' + result + '()');
