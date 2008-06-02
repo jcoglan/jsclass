@@ -200,10 +200,9 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   }
 });
 
-JS.Module = new JS.Class(JS.Module.prototype);
-JS.Class = new JS.Class(JS.Module, JS.Class.prototype);
+JS.Module = JS.extend(new JS.Class(JS.Module.prototype), JS.ObjectMethods.__fns__);
+JS.Module.include(JS.ObjectMethods);
+JS.Class = JS.extend(new JS.Class(JS.Module, JS.Class.prototype), JS.ObjectMethods.__fns__);
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
 JS.ObjectMethods = new JS.Module(JS.ObjectMethods.__fns__);
-JS.extend(JS.Module, JS.ObjectMethods.__fns__);
-JS.extend(JS.Class, JS.ObjectMethods.__fns__);

@@ -102,6 +102,7 @@
             assert(obj.isA(ModC));
             assert(obj.isA(JS.ObjectMethods));
             assert(obj.isA(Object));
+            
             obj = new Special();
             assert(obj.isA(Special));
             assert(obj.isA(InheritanceTester));
@@ -110,12 +111,19 @@
             assert(obj.isA(ModC));
             assert(obj.isA(JS.ObjectMethods));
             assert(obj.isA(Object));
+            
             assert(!obj.isA(JS.Class));
             assert(!obj.isA(JS.Module));
+            
             var SomeClass = new JS.Class({ initialize: function(){} });
             assert(SomeClass.isA(JS.Class));
             assert(SomeClass.isA(JS.Module));
             assert(!(new SomeClass).isA(InheritanceTester));
+            
+            assert(JS.Module.isA(JS.Module));
+            assert(JS.Module.isA(JS.Class));
+            assert(JS.Class.isA(JS.Module));
+            assert(JS.Class.isA(JS.Class));
         }},
         
         testExtend: function() { with(this) {
