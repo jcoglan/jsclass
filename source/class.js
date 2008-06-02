@@ -189,6 +189,11 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     return mod.include.apply(mod, arguments);
   },
   
+  includes: function() {
+    var mod = this.__mod__;
+    return mod.includes.apply(mod, arguments);
+  },
+  
   lookup: function() {
     var mod = this.__mod__;
     return mod.lookup.apply(mod, arguments);
@@ -206,3 +211,34 @@ JS.Class = JS.extend(new JS.Class(JS.Module, JS.Class.prototype), JS.ObjectMetho
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
 JS.ObjectMethods = new JS.Module(JS.ObjectMethods.__fns__);
+
+JS.extend(JS, {
+  Interface: new JS.Class({
+    initialize: function(methods) {
+      this.test = function(object, returnName) {
+        var n = methods.length;
+        while (n--) {
+          if (!Function.is(object[methods[n]]))
+            return returnName ? methods[n] : false;
+        }
+        return true;
+      };
+    },
+    
+    extend: {
+      ensure: function() {
+        var args = Array.from(arguments), object = args.shift(), face, result;
+        while (face = args.shift()) {
+          result = face.test(object, true);
+          if (result !== true) throw new Error('object does not implement ' + result + '()');
+        }
+      }
+    }
+  }),
+  
+  Singleton: new JS.Class({
+    initialize: function() {
+      return new (JS.Class.apply(JS, arguments));
+    }  })
+});
+

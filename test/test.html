@@ -58,6 +58,107 @@
         }
     });
     
+    //================================================================
+    //================================================================
+    
+    var Animal = new JS.Class({
+        extend: {
+            find: function(thing) { return 'Animal finds ' + thing; },
+            create: function(thing) { return this.find(thing) + ' and Animal creates ' + thing; }
+        },
+        initialize: function(name) {
+            this.name = String(name);
+        },
+        speak: function(stuff) {
+            return 'My name is ' + this.name + ' and I like ' + stuff;
+        }
+    });
+
+    var Bear = new JS.Class(Animal, {
+        extend: {
+            create: function(thing) {
+                return this.callSuper(thing) + ', but Bear creates other stuff'
+            }
+        },
+        speak: function(stuff) {
+            return this.callSuper(stuff).toUpperCase();
+        }
+    });
+
+    var NoSuperBear = new JS.Class(Bear, {
+        speak: function() { return this.name.toUpperCase(); }
+    });
+
+    var Koala = new JS.Class(Bear, {
+        speak: function(stuff) {
+            return "I'm not really a Bear, but I do like " + stuff;
+        }
+    });
+
+    var Dog = new JS.Class(Animal, {
+        bark: function() { return this.name + ' says WOOF!'; }
+    });
+
+    Dog.Interface = new JS.Interface(['speak', 'bark']);
+
+    var Pitbull = new JS.Class(Dog, {
+        extend: {
+            canBiteYourLegsOff: function() {
+                return this.biting;
+            },
+            biting: 'Of course it can'
+        },
+        speak: function() {
+            return this.callSuper();
+        }
+    });
+
+    var Camel = new JS.Singleton(Animal, {
+        fillHumpsWithWater: function() {}
+    });
+
+    //================================================================
+    // Let's implement the classes from here: http://www.ajaxpath.com/javascript-inheritance
+    // and make sure Crockford's problems aren't encountered.
+    //================================================================
+    
+    var BaseClass = new JS.Class({
+        initialize: function() {},
+        getName: function() { return 'BaseClass(' + this.getId() + ')'; },
+        getId: function() { return 1; }
+    });
+
+    var SubClass = new JS.Class(BaseClass, {
+        getName: function() {
+            return 'SubClass(' + this.getId() + ') extends ' + this.callSuper();
+        },
+        getId: function() { return 2; }
+    });
+
+    var TopClass = new JS.Class(SubClass, {
+        getName: function() {
+            return 'TopClass(' + this.getId() + ') extends ' + this.callSuper();
+        },
+        getId: function() {
+            return this.callSuper();
+        }
+    });
+
+    //================================================================
+    //================================================================
+
+    var NativeClass = function() {};
+    NativeClass.prototype = {
+        getName: function() { return 'Native'; }
+    };
+
+    var ChildOfNativeClass = new JS.Class(NativeClass, {
+        initialize: function() {},
+        getName: function() {
+            return this.callSuper();
+        }
+    });
+    
     </script>
 </head>
 <body>
@@ -116,8 +217,10 @@
             assert(!obj.isA(JS.Module));
             
             var SomeClass = new JS.Class({ initialize: function(){} });
-            assert(SomeClass.isA(JS.Class));
-            assert(SomeClass.isA(JS.Module));
+            assert(InheritanceTester.isA(JS.Class));
+            assert(InheritanceTester.isA(JS.Module));
+            assert(Special.isA(JS.Class));
+            assert(Special.isA(JS.Module));
             assert(!(new SomeClass).isA(InheritanceTester));
             
             assert(JS.Module.isA(JS.Module));
@@ -143,6 +246,26 @@
             assertEqual('__meta__', keys[0]);
             assertEqual('speak', keys[1]);
             assertEqual("sp__k() _n M_dB, sp__k() _n M_d_, _nd _n M_dC, _nd _n cl_ss F__", obj.speak());
+        }},
+        
+        testClassDefinition: function() { with(this) {
+            var frog = new Animal('Kermit');
+            assertEqual('My name is Kermit and I like Ms. Piggy', frog.speak('Ms. Piggy'));
+            assertEqual('Animal finds food', Animal.find('food'));
+            assertEqual('Animal finds shelter and Animal creates shelter', Animal.create('shelter'));
+        }},
+        
+        testEmptyClass: function() { with(this) {
+            var klass = new JS.Class({ initialize: function(){} });
+            var instance = new klass;
+            assert(instance.isA(klass));
+        }},
+        
+        testInheritance: function() { with(this) {
+            var yogi = new Bear('Yogi');
+            assertEqual('MY NAME IS YOGI AND I LIKE PICNICS', yogi.speak('picnics'));
+            assertEqual('Animal finds honey', Bear.find('honey'));
+            assertEqual('Animal finds nothing and Animal creates nothing, but Bear creates other stuff', Bear.create('nothing'));
         }}
     });
         
