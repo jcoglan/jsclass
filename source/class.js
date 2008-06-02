@@ -93,7 +93,7 @@ JS.extend(JS.Module.prototype, {
   },
   
   include: function(module, options) {
-    if (!module) return;
+    if (!module) return this.resolve();
     options = options || {};
     var inc = module.include, modules, i, n;
     if (module.__inc__ && module.__fns__) {
@@ -203,13 +203,33 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     p.klass = p.constructor = this;
     this.__mod__ = new JS.Module({}, {resolve: this.prototype});
     this.include(JS.ObjectMethods);
-    this.include(klass.__mod__ || new JS.Module(klass.prototype));
+    this.include(klass.__mod__ || new JS.Module(klass.prototype, {resolve: klass.prototype}));
   },
   
   include: function(module, options) {
+    if (!module) return;
     var mod = this.__mod__, options = options || {};
     options.included = this;
+    var ext = module.extend, modules, i, n;
+    if (typeof ext == 'object') {
+      modules = [].concat(ext);
+      for (i = 0, n = modules.length; i < n; i++) this.extend(modules[i]);
+    }
     return mod.include(module, options);
+  },
+  
+  __eigen__: function() {
+    if (this.__meta__) return this.__meta__;
+    var module = this.callSuper();
+    var parent = this.superclass;
+    module.include(parent.__eigen__ ? parent.__eigen__() : new JS.Module(parent.prototype));
+    return module;
+  },
+  
+  extend: function(module) {
+    this.callSuper();
+    for (var i = 0, n = this.subclasses.length; i < n; i++)
+      this.subclasses[i].extend();
   },
   
   includes: function() {
@@ -265,4 +285,3 @@ JS.extend(JS, {
     }
   })
 });
-

@@ -135,7 +135,6 @@
     //================================================================
     
     var BaseClass = new JS.Class({
-        initialize: function() {},
         getName: function() { return 'BaseClass(' + this.getId() + ')'; },
         getId: function() { return 1; }
     });
@@ -165,7 +164,6 @@
     };
 
     var ChildOfNativeClass = new JS.Class(NativeClass, {
-        initialize: function() {},
         getName: function() {
             return this.callSuper();
         }
@@ -269,6 +267,11 @@
             assertEqual(obj, ModA.exts[0]);
             assertEqual(1, ModC.incs.length);
             assertEqual(InheritanceTester, ModC.incs[0]);
+            var klass = new JS.Class();
+            klass.extend(ModA);
+            assertEqual('speak() in ModA', klass.speak());
+            assertEqual(2, ModA.exts.length);
+            assertEqual(klass, ModA.exts[1]);
         }},
         
         testClassDefinition: function() { with(this) {
@@ -279,7 +282,7 @@
         }},
         
         testEmptyClass: function() { with(this) {
-            var klass = new JS.Class({ initialize: function(){} });
+            var klass = new JS.Class();
             var instance = new klass;
             assert(instance.isA(klass));
         }},
@@ -289,6 +292,104 @@
             assertEqual('MY NAME IS YOGI AND I LIKE PICNICS', yogi.speak('picnics'));
             assertEqual('Animal finds honey', Bear.find('honey'));
             assertEqual('Animal finds nothing and Animal creates nothing, but Bear creates other stuff', Bear.create('nothing'));
+        }},
+        
+        testSingletonMethodInheritance: function() { with(this) {
+            var rex = new Bear('rex');
+            rex.extend({speak: function() {
+                return 'Guess what? ' + this.callSuper();
+            }});
+            assertEqual('Guess what? MY NAME IS REX AND I LIKE WALKS', rex.speak('walks'));
+        }},
+        
+        testInterfaces: function() { with(this) {
+            assertRaise('Error', function() {
+              JS.Interface.ensure({}, Dog.Interface);
+            });
+            assert(Dog.Interface.test(new Dog('Rex')));
+            assert(!Dog.Interface.test({}));
+        }},
+        
+        testSuperWithNoArguments: function() { with(this) {
+            var brutus = new Pitbull('Brutus');
+            assertEqual('My name is Brutus and I like biting', brutus.speak('biting'));
+        }},
+        
+        // Avoid Crockford's problem: http://www.ajaxpath.com/javascript-inheritance
+        testReassignedSuper: function() { with(this) {
+            var top = new TopClass();
+            assertEqual('TopClass(2) extends SubClass(2) extends BaseClass(2)', top.getName());
+        }},
+        
+        testInheritanceFromNativeClass: function() { with(this) {
+            var nat = new NativeClass();
+            assertEqual('Native', nat.getName());
+            child = new ChildOfNativeClass();
+            assertEqual('Native', child.getName());
+            NativeClass.prototype.shout = function() { return 'Shouting!!'; };
+            assertEqual('Shouting!!', child.shout());
+            assert(child.isA(ChildOfNativeClass));
+            assert(child.isA(NativeClass));
+            assert(child.isA(Object));
+            assert(!child.isA(Dog));
+        }},
+        
+        testBinding: function() { with(this) {
+            var rex = new Dog('Rex');
+            var bark = rex.method('bark');
+            assertEqual('Rex says WOOF!', bark());
+            var brutus = new Pitbull('Brutus');
+            assertEqual('Brutus says WOOF!', brutus.bark());
+            bark = brutus.bark;
+            assertEqual(' says WOOF!', bark());
+            var bite = Pitbull.method('canBiteYourLegsOff');
+            assertEqual('Of course it can', bite());
+        }},
+        
+        testMethodMemoization: function() { with(this) {
+            var dog = new Dog('Oscar');
+            var bark = dog.method('bark');
+            assertEqual(bark, dog.method('bark'));
+            dog.extend({
+              bark: function() {
+                return this.callSuper() + ' and has his own bark() method.';
+              }
+            });
+            assertEqual('Oscar says WOOF! and has his own bark() method.', dog.bark());
+            assert(dog.method('bark') != bark);
+            assert(dog.method('bark') == dog.method('bark'));
+        }},
+        
+        testHierarchy: function() { with(this) {
+            var rex = new Dog('Rex');
+            assert(rex.isA(Dog));
+            assert(rex.isA(Animal));
+            assert(rex.isA(Object));
+            assert(!rex.isA(Bear));
+            var yogi = new rex.klass.superclass.subclasses[0]('Yogi');
+            assertEqual('Yogi', yogi.name);
+            assert(yogi.isA(Bear));
+            assert(!yogi.isA(Dog));
+        }},
+        
+        testSubclassUpdating: function() { with(this) {
+            var kevin = new Koala('Kevin');
+            Animal.include({shout: function(thing) {
+                return this.name + ' is loving ' + thing + '!!!';
+            }});
+            assertEqual('Kevin is loving trees!!!', kevin.shout('trees'));
+            Animal.extend({count: function() { return 6; }});
+            assertEqual(4*6, Koala.count() + Bear.count() + Dog.count() + Pitbull.count());
+        }},
+        
+        testClassMethodInheritanceSkipsGenerations: function() { with(this) {
+            Dog.eatFood = function(food) { return 'Dogs eat ' + food; };
+            assertEqual('Dogs eat biscuits', Dog.eatFood('biscuits'));
+            Animal.extend({eatFood: function(food) { return 'Animals eat ' + food; }});
+            assertEqual('Animals eat people', Pitbull.eatFood('people'));
+            assertEqual('Dogs eat biscuits', Dog.eatFood('biscuits'));
+            Pitbull.extend({eatFood: function() { return this.callSuper(); }});
+            assertEqual('Dogs eat people', Pitbull.eatFood('people'));
         }}
     });
         
