@@ -95,7 +95,7 @@ JS.extend(JS.Module.prototype, {
   include: function(module, options) {
     if (!module) return this.resolve();
     options = options || {};
-    var inc = module.include, modules, i, n;
+    var inc = module.include, ext = module.extend, modules, i, n;
     if (module.__inc__ && module.__fns__) {
       this.__inc__.push(module);
       if (module.extended && options.extended) module.extended(options.extended);
@@ -104,7 +104,13 @@ JS.extend(JS.Module.prototype, {
     else {
       if (typeof inc == 'object') {
         modules = [].concat(inc);
-        for (i = 0, n = modules.length; i < n; i++) this.include(modules[i], options);
+        for (i = 0, n = modules.length; i < n; i++)
+          this.include(modules[i], options);
+      }
+      if (typeof ext == 'object') {
+        modules = [].concat(ext);
+        for (i = 0, n = modules.length; i < n; i++)
+          (options.included || this).extend(modules[i]);
       }
       JS.extend(this.__fns__, module, {exclude: JS.util.ignore});
     }
@@ -210,11 +216,6 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     if (!module) return;
     var mod = this.__mod__, options = options || {};
     options.included = this;
-    var ext = module.extend, modules, i, n;
-    if (typeof ext == 'object') {
-      modules = [].concat(ext);
-      for (i = 0, n = modules.length; i < n; i++) this.extend(modules[i]);
-    }
     return mod.include(module, options);
   },
   

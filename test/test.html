@@ -19,18 +19,19 @@
     var ModA = new JS.Module({
         speak: function() {
             return "speak() in ModA";
+        },
+        extend: {
+            included: function(mod) {
+                this.incs = this.incs || [];
+                this.incs.push(mod);
+            },
+            
+            extended: function(mod) {
+                this.exts = this.exts || [];
+                this.exts.push(mod);
+            }
         }
     });
-    
-    ModA.included = function(mod) {
-        this.incs = this.incs || [];
-        this.incs.push(mod);
-    };
-    
-    ModA.extended = function(mod) {
-        this.exts = this.exts || [];
-        this.exts.push(mod);
-    };
     
     var ModB = new JS.Module({
         speak: function() {
