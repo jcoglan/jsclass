@@ -27,9 +27,14 @@
  */
 
 JS = {
-  extend: function(object, methods) {
+  extend: function(object, methods, options) {
     methods = methods || {};
-    for (var prop in methods) object[prop] = methods[prop];
+    options = options || {};
+    for (var prop in methods) {
+      if (object[prop] == methods[prop]) continue;
+      if (options.exclude && options.exclude(prop, methods[prop])) continue;
+      object[prop] = methods[prop];
+    }
     return object;
   },
   
@@ -67,6 +72,10 @@ JS = {
     
     isFn: function(object) {
       return object instanceof Function;
+    },
+    
+    ignore: function(key, object) {
+      return /^(include|extend)$/.test(key) && typeof object == 'object';
     }
   }
 };
@@ -83,8 +92,15 @@ JS.extend(JS.Module.prototype, {
   
   include: function(module) {
     if (!module) return;
+    var inc = module.include, modules, i, n;
     if (module.__inc__ && module.__fns__) this.__inc__.push(module);
-    else JS.extend(this.__fns__, module);
+    else {
+      if (typeof inc == 'object') {
+        modules = [].concat(inc);
+        for (i = 0, n = modules.length; i < n; i++) this.include(modules[i]);
+      }
+      JS.extend(this.__fns__, module, {exclude: JS.util.ignore});
+    }
     this.resolve();
   },
   
