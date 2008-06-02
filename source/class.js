@@ -39,10 +39,18 @@ JS = {
     return (cache[name] = {fn: self[name], bd: self[name].bind(self)}).bd;
   },
   
-  makeFn: function() {
-    return function() {
+  makeFunction: function() {
+    var func = function() {
       return this.initialize.apply(this, arguments) || this;
-    };
+    }, p = func.prototype;
+    p.klass = p.constructor = func;
+    return func;
+  },
+  
+  makeBridge: function(klass) {
+    var bridge = function() {};
+    bridge.prototype = klass.prototype;
+    return new bridge;
   },
   
   util: {}
@@ -72,7 +80,7 @@ Function.is = function(object) {
   return typeof object == 'function';
 };
 
-JS.Module = JS.makeFn();
+JS.Module = JS.makeFunction();
 JS.extend(JS.Module.prototype, {
   initialize: function(methods, options) {
     options = options || {};
@@ -83,9 +91,9 @@ JS.extend(JS.Module.prototype, {
   },
   
   include: function(module) {
-    var isMod = (module instanceof JS.Module), key;
-    isMod ? this.__inc__.push(module)
-          : JS.extend(this.__fns__, module);
+    if (!module) return;
+    if (module.__inc__ && module.__fns__) this.__inc__.push(module);
+    else JS.extend(this.__fns__, module);
     this.resolve();
   },
   
@@ -99,7 +107,7 @@ JS.extend(JS.Module.prototype, {
   },
   
   make: function(name, func) {
-    if (!func.callsSuper()) return func;
+    if (!Function.is(func) || !func.callsSuper()) return func;
     var module = this;
     return function() {
       var supers = module.lookup(name, false), currentSuper = this.callSuper,
@@ -124,13 +132,27 @@ JS.extend(JS.Module.prototype, {
   }
 });
 
-JS.Class = JS.makeFn();
-JS.extend(JS.Class.prototype, {
-  initialize: function(methods) {
-    var klass = JS.extend(JS.makeFn(), this);
-    klass.__mod__ = new JS.Module({}, {resolve: klass.prototype});
+JS.Class = JS.makeFunction();
+JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
+  initialize: function(parent, methods) {
+    var klass = JS.extend(JS.makeFunction(), this);
+    klass.klass = klass.constructor = JS.Class;
+    if (!Function.is(parent)) {
+      methods = parent;
+      parent = Object;
+    }
+    klass.inherit(parent);
     klass.include(methods);
     return klass;
+  },
+  
+  inherit: function(klass) {
+    this.superclass = klass;
+    this.subclasses = [];
+    (klass.subclasses || []).push(this);
+    this.prototype = JS.makeBridge(klass);
+    this.__mod__ = new JS.Module({}, {resolve: this.prototype});
+    this.__mod__.include(klass.__mod__ || new JS.Module(klass.prototype));
   },
   
   include: function() {
@@ -143,11 +165,6 @@ JS.extend(JS.Class.prototype, {
     return mod.lookup.apply(mod, arguments);
   },
   
-  make: function() {
-    var mod = this.__mod__;
-    return mod.make.apply(mod, arguments);
-  },
-  
   resolve: function() {
     var mod = this.__mod__;
     return mod.resolve.apply(mod, arguments);
@@ -155,4 +172,6 @@ JS.extend(JS.Class.prototype, {
 });
 
 JS.Module = new JS.Class(JS.Module.prototype);
-JS.Class = new JS.Class(JS.Class.prototype);
+JS.Class = new JS.Class(JS.Module, JS.Class.prototype);
+JS.Module.klass = JS.Module.constructor =
+JS.Class.klass = JS.Class.constructor = JS.Class;

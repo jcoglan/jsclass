@@ -46,6 +46,18 @@
     });
     InheritanceTester.include(ModC);
     
+    var SpecialClass = new JS.Class(JS.Class, {
+        make: function(name, func) {
+            return [name, this.callSuper()];
+        }
+    });
+    
+    var Special = new SpecialClass(InheritanceTester, {
+        speak: function() {
+            return this.callSuper().toUpperCase();
+        }
+    });
+    
     </script>
 </head>
 <body>
@@ -58,6 +70,28 @@
         testRubyishInheritance: function() { with(this) {
             var tester = new InheritanceTester();
             assertEqual("speak() in ModB, speak() in ModA, and in ModC, and in class Foo", tester.speak());
+        }},
+        
+        testCoreClasses: function() { with(this) {
+            assertEqual(JS.Class, JS.Module.klass);
+            assertEqual(JS.Class, JS.Class.klass);
+            assertEqual(1, JS.Module.subclasses.length);
+            assertEqual(JS.Class, JS.Module.subclasses[0]);
+            assertEqual(Object, JS.Module.superclass);
+            assertEqual(1, JS.Class.subclasses.length);
+            assertEqual(SpecialClass, JS.Class.subclasses[0]);
+            assertEqual(JS.Module, JS.Class.superclass);
+        }},
+        
+        testInheritanceFromClass: function() { with(this) {
+            assertEqual(JS.Class, SpecialClass.klass);
+            assertEqual(JS.Class, SpecialClass.superclass);
+            assertEqual(JS.Class, Special.klass);
+            assertEqual(InheritanceTester, Special.superclass)
+            var things = Special.make('something', function() { return 'else' });
+            assertEqual('something', things[0]);
+            assertEqual('else', things[1]());
+            assertEqual("speak() in ModB, speak() in ModA, and in ModC, and in class Foo".toUpperCase(), new Special().speak());
         }}
     });
         
