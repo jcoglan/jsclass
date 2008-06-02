@@ -40,11 +40,9 @@ JS = {
   },
   
   makeFunction: function() {
-    var func = function() {
+    return function() {
       return this.initialize.apply(this, arguments) || this;
-    }, p = func.prototype;
-    p.klass = p.constructor = func;
-    return func;
+    };
   },
   
   makeBridge: function(klass) {
@@ -97,6 +95,16 @@ JS.extend(JS.Module.prototype, {
     this.resolve();
   },
   
+  includes: function(moduleOrClass) {
+    if (Object == moduleOrClass || this == moduleOrClass || this.__res__ == moduleOrClass.prototype)
+      return true;
+    for (var i = 0, n = this.__inc__.length; i < n; i++) {
+      if (this.__inc__[i].includes(moduleOrClass))
+        return true;
+    }
+    return false;
+  },
+  
   lookup: function(name, lookInSelf) {
     var results = [], found, i, n;
     for (i = 0, n = this.__inc__.length; i < n; i++)
@@ -124,11 +132,30 @@ JS.extend(JS.Module.prototype, {
   },
   
   resolve: function(target) {
-    var target = target || this, resolved = target.__res__, i, n, key;
+    var target = target || this, resolved = target.__res__, i, n, key, made;
     for (i = 0, n = this.__inc__.length; i < n; i++)
       this.__inc__[i].resolve(target);
-    for (key in this.__fns__)
-      resolved[key] = target.make(key, this.__fns__[key]);
+    for (key in this.__fns__) {
+      made = target.make(key, this.__fns__[key]);
+      if (resolved[key] != made) resolved[key] = made;
+    }
+  }
+});
+
+JS.ObjectMethods = new JS.Module({
+  __eigen__: function() {
+    if (this.__meta__) return this.__meta__;
+    var module = this.__meta__ = new JS.Module({}, {resolve: this});
+    module.include(this.klass.__mod__);
+    return module;
+  },
+  
+  extend: function(module) {
+    return this.__eigen__().include(module);
+  },
+  
+  isA: function(moduleOrClass) {
+    return this.__eigen__().includes(moduleOrClass);
   }
 });
 
@@ -150,9 +177,11 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     this.superclass = klass;
     this.subclasses = [];
     (klass.subclasses || []).push(this);
-    this.prototype = JS.makeBridge(klass);
+    var p = this.prototype = JS.makeBridge(klass);
+    p.klass = p.constructor = this;
     this.__mod__ = new JS.Module({}, {resolve: this.prototype});
-    this.__mod__.include(klass.__mod__ || new JS.Module(klass.prototype));
+    this.include(JS.ObjectMethods);
+    this.include(klass.__mod__ || new JS.Module(klass.prototype));
   },
   
   include: function() {
@@ -175,3 +204,6 @@ JS.Module = new JS.Class(JS.Module.prototype);
 JS.Class = new JS.Class(JS.Module, JS.Class.prototype);
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
+JS.ObjectMethods = new JS.Module(JS.ObjectMethods.__fns__);
+JS.extend(JS.Module, JS.ObjectMethods.__fns__);
+JS.extend(JS.Class, JS.ObjectMethods.__fns__);

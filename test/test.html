@@ -92,6 +92,49 @@
             assertEqual('something', things[0]);
             assertEqual('else', things[1]());
             assertEqual("speak() in ModB, speak() in ModA, and in ModC, and in class Foo".toUpperCase(), new Special().speak());
+        }},
+        
+        testIsA: function() { with(this) {
+            var obj = new InheritanceTester();
+            assert(obj.isA(InheritanceTester));
+            assert(obj.isA(ModA));
+            assert(obj.isA(ModB));
+            assert(obj.isA(ModC));
+            assert(obj.isA(JS.ObjectMethods));
+            assert(obj.isA(Object));
+            obj = new Special();
+            assert(obj.isA(Special));
+            assert(obj.isA(InheritanceTester));
+            assert(obj.isA(ModA));
+            assert(obj.isA(ModB));
+            assert(obj.isA(ModC));
+            assert(obj.isA(JS.ObjectMethods));
+            assert(obj.isA(Object));
+            assert(!obj.isA(JS.Class));
+            assert(!obj.isA(JS.Module));
+            var SomeClass = new JS.Class({ initialize: function(){} });
+            assert(SomeClass.isA(JS.Class));
+            assert(SomeClass.isA(JS.Module));
+            assert(!(new SomeClass).isA(InheritanceTester));
+        }},
+        
+        testExtend: function() { with(this) {
+            var obj = new InheritanceTester();
+            var i = 0;
+            for (var key in obj) { if (obj.hasOwnProperty(key)) i++; }
+            assertEqual(0, i);
+            obj.extend({
+                speak: function() {
+                    return this.callSuper().replace(/[aeiou]/ig, '_');
+                }
+            });
+            var keys = [];
+            for (var key in obj) { if (obj.hasOwnProperty(key)) keys.push(key); }
+            assertEqual(2, keys.length);
+            keys.sort();
+            assertEqual('__meta__', keys[0]);
+            assertEqual('speak', keys[1]);
+            assertEqual("sp__k() _n M_dB, sp__k() _n M_d_, _nd _n M_dC, _nd _n cl_ss F__", obj.speak());
         }}
     });
         
