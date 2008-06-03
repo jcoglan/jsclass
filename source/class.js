@@ -92,8 +92,8 @@ JS.extend(JS.Module.prototype, {
     this.include(methods || {});
   },
   
-  include: function(module, options) {
-    if (!module) return this.resolve();
+  include: function(module, options, resolve) {
+    if (!module) return resolve && this.resolve();
     options = options || {};
     var inc = module.include, ext = module.extend, modules, i, n;
     if (module.__inc__ && module.__fns__) {
@@ -110,11 +110,12 @@ JS.extend(JS.Module.prototype, {
       if (typeof ext == 'object') {
         modules = [].concat(ext);
         for (i = 0, n = modules.length; i < n; i++)
-          (options.included || this).extend(modules[i]);
+          (options.included || this).extend(modules[i], false);
+        (options.included || this).extend();
       }
       JS.extend(this.__fns__, module, {exclude: JS.util.ignore});
     }
-    this.resolve();
+    resolve && this.resolve();
   },
   
   includes: function(moduleOrClass) {
@@ -172,8 +173,8 @@ JS.ObjectMethods = new JS.Module({
     return module;
   },
   
-  extend: function(module) {
-    return this.__eigen__().include(module, {extended: this});
+  extend: function(module, resolve) {
+    return this.__eigen__().include(module, {extended: this}, resolve !== false);
   },
   
   isA: function(moduleOrClass) {
@@ -211,16 +212,16 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     var p = this.prototype = JS.makeBridge(klass);
     p.klass = p.constructor = this;
     this.__mod__ = new JS.Module({}, {resolve: this.prototype});
-    this.include(JS.ObjectMethods);
+    this.include(JS.ObjectMethods, null, false);
     this.include(klass.__mod__ || new JS.Module(klass.prototype, {resolve: klass.prototype}));
     this.extend();
   },
   
-  include: function(module, options) {
+  include: function(module, options, resolve) {
     if (!module) return;
     var mod = this.__mod__, options = options || {};
     options.included = this;
-    return mod.include(module, options);
+    return mod.include(module, options, resolve !== false);
   },
   
   __eigen__: function() {
