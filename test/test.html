@@ -170,6 +170,91 @@
         }
     });
     
+    //================================================================
+    //================================================================
+
+    var Paginator = new JS.Class({
+        initialize: function(n) {
+            this.count = n;
+            this.createItems(n);
+        },
+        createItems: function(n) {
+            this.items = this.items || [];
+            for (var i = 0; i < n; i++)
+                this.items.push(new this.klass.Item(i));
+        }
+    });
+    
+    Paginator.extend({Item: new JS.Class({
+        initialize: function(n) {
+            this.name = 'Item';
+            this.number = n;
+        },
+        getName: function() {
+            return this.name + ' ' + this.getNumber();
+        },
+        getNumber: function() {
+            return this.number;
+        }
+    }) });
+    
+    var Gallery = new JS.Class(Paginator, {
+        createItems: function(n) { this.callSuper(4 * n); }
+    });
+    
+    var ItemInheritor = new JS.Class(Gallery);
+    ItemInheritor.Item = new JS.Class(Gallery.Item, {
+        getNumber: function() { return this.callSuper() + 7; }
+    });
+    
+    //================================================================
+    //================================================================
+
+    var Enum = new JS.Module({
+        each: function() {},
+        some: function() {},
+        
+        extend: {
+            included: function() {
+                this.hasBeenIncluded = this.hasBeenIncluded || 0;
+                this.hasBeenIncluded++;
+            }
+        }
+    });
+    
+    var ActiveRecord = new JS.Module({
+        include: Enum,
+        
+        save: function() {},
+        validate: function() {},
+        attributes: function() {},
+        
+        extend: {
+            included: function(base) {
+                base.extend({
+                    find: function() {},
+                    create: function() {}
+                });
+            }
+        }
+    });
+    
+    var BlankClass = new JS.Class();
+    BlankClass.include(ActiveRecord);
+    
+    //================================================================
+    //================================================================
+
+    var InheritanceCatcher = new JS.Class({
+        extend: {
+            inherited: function(klass) {
+                this.children.push(klass);
+                klass.log(this);
+            },
+            children: []
+        }
+    });
+    
     </script>
 </head>
 <body>
@@ -391,6 +476,59 @@
             assertEqual('Dogs eat biscuits', Dog.eatFood('biscuits'));
             Pitbull.extend({eatFood: function() { return this.callSuper(); }});
             assertEqual('Dogs eat people', Pitbull.eatFood('people'));
+        }},
+        
+        testModularInheritance: function() { with(this) {
+            var paginator = new Paginator(12);
+            assert(paginator.isA(Paginator));
+            assert(paginator.items[6].isA(Paginator.Item));
+            assert(paginator.items[6].isA(paginator.items[3].klass));
+            assertEqual('Item 7', paginator.items[7].getName());
+            
+            var gallery = new Gallery(3);
+            assertEqual(12, gallery.items.length);
+            assert(gallery.isA(Gallery));
+            assert(gallery.isA(Paginator));
+            assert(gallery.items[5].isA(Gallery.Item));
+            assert(gallery.items[5].isA(Paginator.Item));
+            
+            assert(Paginator.Item === Gallery.Item);
+            assert(ItemInheritor.Item !== Gallery.Item);
+            assert(ItemInheritor.Item.superclass === Gallery.Item);
+            
+            var itor = new ItemInheritor(2);
+            assertEqual('Item 13', itor.items[6].getName());
+        }},
+        
+        testModule: function() { with(this) {
+            assertEqual('function', typeof BlankClass.find);
+            assertEqual('function', typeof BlankClass.create);
+            var foo = new BlankClass;
+            assertEqual('function', typeof foo.save);
+            assertEqual('function', typeof foo.validate);
+            assertEqual('function', typeof foo.attributes);
+            assertEqual('function', typeof foo.each);
+            assertEqual('function', typeof foo.some);
+            assertEqual(1, Enum.hasBeenIncluded);
+        }},
+        
+        testSingleton: function() { with(this) {
+            var bear = new JS.Singleton(Bear, {
+                roar: function() { return this.noise; },
+                noise: 'ROAR'
+            });
+            assertEqual(Bear, bear.klass.superclass);
+            var roar = bear.method('roar');
+            assertEqual('ROAR', roar());
+        }},
+        
+        testInheritedHook: function() { with(this) {
+            var foo = new JS.Class(InheritanceCatcher, {
+                extend: {
+                    log: function(klass) {}
+                }
+            });
+            assertEqual(foo, InheritanceCatcher.children[0]);
         }}
     });
         

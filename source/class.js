@@ -198,6 +198,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     }
     klass.inherit(parent);
     klass.include(methods);
+    parent.inherited && parent.inherited(klass);
     return klass;
   },
   
@@ -210,6 +211,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     this.__mod__ = new JS.Module({}, {resolve: this.prototype});
     this.include(JS.ObjectMethods);
     this.include(klass.__mod__ || new JS.Module(klass.prototype, {resolve: klass.prototype}));
+    this.extend();
   },
   
   include: function(module, options) {
@@ -228,6 +230,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   },
   
   extend: function(module) {
+    if (!this.callSuper) return;
     this.callSuper();
     for (var i = 0, n = this.subclasses.length; i < n; i++)
       this.subclasses[i].extend();
