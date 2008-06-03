@@ -891,6 +891,50 @@
             assertEqual('Turning the pedals', mtbWithPedalsAndLights.rotatePedals());
             assertEqual(Bicycle, mtbWithPedalsAndLights.klass);
             assertEqual(Bicycle, mtbWithPedalsAndLights.constructor);
+        }},
+        
+        testVirtualProxy: function() { with(this) {
+            var instances = 0;
+            
+            var Car = new JS.Class({
+                initialize: function(name) {
+                    this.name = name;
+                    ++instances;
+                },
+                getName: function(text) {
+                    return this.name + (text || '');
+                },
+                setName: function() {
+                    this.name = $A(arguments).join(', ');
+                }
+            });
+            
+            var CarProxy = new JS.Proxy.Virtual(Car);
+            
+            var car = new CarProxy('Ferrari');
+            assert(car.klass == Car);
+            assertEqual(0, instances);
+            assertEqual('Ferrari is a car', car.getName(' is a car'));
+            assertEqual(1, instances);
+            car.setName('this', 'is', 'my', 'name');
+            assertEqual('this, is, my, name', car.getName());
+            assertEqual(1, instances);
+            
+            car.extend({
+                getUpperCaseName: function() {
+                    return this.name.toUpperCase();
+                }
+            });
+            
+            assertEqual('THIS, IS, MY, NAME', car.getUpperCaseName());
+            
+            car.extend({
+                getName: function() {
+                    return this.callSuper().replace(/[aeiou]/ig, '_');
+                }
+            });
+            
+            assertEqual('th_s, _s, my, n_m_', car.getName());
         }}
     });
         
