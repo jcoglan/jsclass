@@ -66,6 +66,12 @@
         }
     });
     
+    var SingletonMethodTester = new JS.Class({
+        speak: function() {
+            return "speak() in class Bar";
+        }
+    });
+    
     var SpecialClass = new JS.Class(JS.Class, {
         make: function(name, func) {
             return [name, this.callSuper()];
@@ -270,6 +276,15 @@
         testRubyishInheritance: function() { with(this) {
             var tester = new InheritanceTester();
             assertEqual("speak() in ModB, speak() in ModA, and in ModC, and in class Foo", tester.speak());
+            
+            tester = new SingletonMethodTester();
+            assertEqual('speak() in class Bar', tester.speak());
+            tester.extend({speak: function() {
+                return this.callSuper().toUpperCase()
+            } });
+            assertEqual('SPEAK() IN CLASS BAR', tester.speak());
+            tester.extend(ModB);
+            assertEqual('SPEAK() IN MODB, SPEAK() IN CLASS BAR', tester.speak());
         }},
         
         testCoreClasses: function() { with(this) {

@@ -26,3 +26,17 @@ class Foo
 end
 
 puts Foo.new.speak
+class Bar
+  def speak
+    "speak() in class Bar"
+  end
+end
+
+b = Bar.new
+def b.speak
+  super.upcase
+end
+puts b.speak
+b.extend(ModB)
+puts b.speak
+
