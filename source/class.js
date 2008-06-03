@@ -198,7 +198,9 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     }
     klass.inherit(parent);
     klass.include(methods);
-    parent.inherited && parent.inherited(klass);
+    do {
+      parent.inherited && parent.inherited(klass);
+    } while (parent = parent.superclass);
     return klass;
   },
   

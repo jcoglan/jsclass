@@ -56,6 +56,13 @@
         
         speak: function() {
             return this.callSuper() + ", and in class Foo";
+        },
+        
+        extend: {
+            children: [],
+            inherited: function(klass) {
+                this.children.push(klass);
+            }
         }
     });
     
@@ -68,6 +75,15 @@
     var Special = new SpecialClass(InheritanceTester, {
         speak: function() {
             return this.callSuper().toUpperCase();
+        }
+    });
+    
+    var HookTester = new JS.Class(InheritanceTester);
+    
+    JS.extend(Object, {
+        children: [],
+        inherited: function(klass) {
+            this.children.push(klass);
         }
     });
     
@@ -241,19 +257,6 @@
     
     var BlankClass = new JS.Class();
     BlankClass.include(ActiveRecord);
-    
-    //================================================================
-    //================================================================
-
-    var InheritanceCatcher = new JS.Class({
-        extend: {
-            inherited: function(klass) {
-                this.children.push(klass);
-                klass.log(this);
-            },
-            children: []
-        }
-    });
     
     </script>
 </head>
@@ -523,12 +526,15 @@
         }},
         
         testInheritedHook: function() { with(this) {
-            var foo = new JS.Class(InheritanceCatcher, {
+            var foo = new JS.Class(HookTester, {
                 extend: {
                     log: function(klass) {}
                 }
             });
-            assertEqual(foo, InheritanceCatcher.children[0]);
+            assert(Object.children.length > 0);
+            assertEqual(Special, InheritanceTester.children[0]);
+            assertEqual(HookTester, InheritanceTester.children[1]);
+            assertEqual(foo, InheritanceTester.children[2]);
         }}
     });
         
