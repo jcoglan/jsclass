@@ -34,6 +34,8 @@ JS = {
       if (object[prop] == methods[prop]) continue;
       if (options.exclude && options.exclude(prop, methods[prop])) continue;
       object[prop] = methods[prop];
+      if (JS.Module.__notify__ && options.notify && this.util.isFn(object[prop]))
+        JS.Module.__notify__(prop, options.notify);
     }
     return object;
   },
@@ -113,7 +115,8 @@ JS.extend(JS.Module.prototype, {
           (options.included || this).extend(modules[i], false);
         (options.included || this).extend();
       }
-      JS.extend(this.__fns__, module, {exclude: JS.util.ignore});
+      JS.extend(this.__fns__, module, {exclude: JS.util.ignore,
+          notify: options.included || options.extended});
     }
     resolve && this.resolve();
   },
@@ -261,6 +264,18 @@ JS.Class = JS.extend(new JS.Class(JS.Module, JS.Class.prototype), JS.ObjectMetho
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
 JS.ObjectMethods = new JS.Module(JS.ObjectMethods.__fns__);
+
+JS.Module.extend({
+  __obs__: [],
+  methodAdded: function(block, context) {
+    this.__obs__.push([block, context]);
+  },
+  __notify__: function(name, object) {
+    var obs = this.__obs__;
+    for (var i = 0, n = obs.length; i < n; i++)
+      obs[i][0].call(obs[i][1] || null, name, object);
+  }
+});
 
 JS.extend(JS, {
   Interface: new JS.Class({

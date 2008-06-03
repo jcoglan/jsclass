@@ -81,12 +81,9 @@ JS.MethodChain.addMethods = function(object) {
 
 it = its = function() { return new JS.MethodChain; };
 
-JS.Module.include({include: (function(wrapped) {
-  return function(module) {
-    for (var key in module) JS.MethodChain.addMethod(key);
-    return wrapped.apply(this, arguments);
-  };
-})(JS.Module.prototype.include) });
+JS.Module.methodAdded(function(name) {
+  JS.MethodChain.addMethod(name);
+});
 
 JS.ObjectMethods.include({
   wait: function(time) {
