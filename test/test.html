@@ -347,6 +347,24 @@
             assertEqual("sp__k() _n M_dB, sp__k() _n M_d_, _nd _n M_dC, _nd _n cl_ss F__", obj.speak());
         }},
         
+        testTypeDetectionOnExtendedObjects: function() { with(this) {
+            var mod = new JS.Module({
+                jabba: function() { return 'It says JABBA!' }
+            });
+            var klass = new JS.Class();
+            assert(!klass.isA(mod));
+            klass.extend(mod);
+            assert(klass.isA(mod));
+            assertEqual('It says JABBA!', klass.jabba());
+            var obj = new klass;
+            assertEqual(undefined, obj.jabba);
+            assert(!obj.isA(mod));
+            assert(obj.isA(klass));
+            obj.extend(mod);
+            assert(obj.isA(mod));
+            assertEqual('It says JABBA!', obj.jabba());
+        }},
+        
         testHooks: function() { with(this) {
             assertEqual(1, ModA.incs.length);
             assertEqual(ModC, ModA.incs[0]);
