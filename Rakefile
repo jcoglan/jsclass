@@ -19,6 +19,7 @@ PACKAGES = {
   
   'patterns' => %w(
     method_chain comparable enumerable observable forwardable
+    decorator
   )
 }
 
