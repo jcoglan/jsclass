@@ -7,8 +7,15 @@
     <title>JS.Class tests</title>
     <script src="prototype.js" type="text/javascript" charset="utf-8"></script>
     <script src="unittest.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      timeA = Number(new Date);
+    </script>
     <script src="build/class.js" type="text/javascript" charset="utf-8"></script>
     <script src="build/patterns.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      timeB = Number(new Date);
+      window.console && console.log((timeB - timeA) / 1000);
+    </script>
     <link rel="stylesheet" href="test.css" type="text/css" media="screen" title="no title" charset="utf-8">
     <script type="text/javascript" charset="utf-8">
         
@@ -446,6 +453,11 @@
         window.console && console.log(Rails.numericValue);
         
     </script>
+    <script type="text/javascript" charset="utf-8">
+      timeB = Number(new Date);
+      window.console && console.log((timeB - timeA) / 1000);
+    </script>
+    
 </head>
 <body>
     
