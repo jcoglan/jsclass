@@ -1,4 +1,4 @@
-JS.Observable = {
+JS.Observable = new JS.Module({
   addObserver: function(observer, context) {
     (this._observers = this._observers || []).push({bk: observer, cx: context || null});
   },
@@ -38,8 +38,9 @@ JS.Observable = {
     if (this._changed === undefined) this._changed = true;
     return !!this._changed;
   }
-};
+});
 
-JS.Observable.subscribe   = JS.Observable.addObserver;
-JS.Observable.unsubscribe = JS.Observable.removeObserver;
-JS.Observable = JS.Module(JS.Observable);
+JS.Observable.include({
+  subscribe:    JS.Observable.__fns__.addObserver,
+  unsubscribe:  JS.Observable.__fns__.removeObserver
+});

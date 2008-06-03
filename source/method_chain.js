@@ -81,17 +81,14 @@ JS.MethodChain.addMethods = function(object) {
 
 it = its = function() { return new JS.MethodChain; };
 
-JS.Class.addMethod = (function(wrapped) {
-  return function() {
-    JS.MethodChain.addMethods([arguments[2]]);
-    return wrapped.apply(JS.Class, arguments);
+JS.Module.include({include: (function(wrapped) {
+  return function(module) {
+    for (var key in module) JS.MethodChain.addMethod(key);
+    return wrapped.apply(this, arguments);
   };
-})(JS.Class.addMethod);
+})(JS.Module.prototype.include) });
 
-(function(methods) {
-  JS.extend(JS.Class.INSTANCE_METHODS, methods);
-  JS.extend(JS.Class.CLASS_METHODS, methods);
-})({
+JS.ObjectMethods.include({
   wait: function(time) {
     var chain = new JS.MethodChain;
     

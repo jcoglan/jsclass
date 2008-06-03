@@ -1,4 +1,4 @@
-JS.Forwardable = JS.Module({
+JS.Forwardable = new JS.Module({
   defineDelegator: function(subject, method, alias) {
     alias = alias || method;
     this.instanceMethod(alias, function() {

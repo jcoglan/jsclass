@@ -18,9 +18,7 @@ PACKAGES = {
   'ruby' => 'ruby',
   
   'patterns' => %w(
-    comparable enumerable observable forwardable
-    method_chain decorator proxy command state
-    linked_list ruby
+    method_chain comparable enumerable observable forwardable
   )
 }
 

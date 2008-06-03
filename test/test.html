@@ -7,7 +7,15 @@
     <title>JS.Class tests</title>
     <script src="prototype.js" type="text/javascript" charset="utf-8"></script>
     <script src="unittest.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      timeA = Number(new Date);
+    </script>
     <script src="../build/class.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/patterns.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      timeB = Number(new Date);
+      window.console && console.log((timeB - timeA) / 1000);
+    </script>
     <link rel="stylesheet" href="test.css" type="text/css" media="screen" title="no title" charset="utf-8">
     <script type="text/javascript" charset="utf-8">
     
@@ -263,6 +271,77 @@
     
     var BlankClass = new JS.Class();
     BlankClass.include(ActiveRecord);
+    
+    //================================================================
+    //================================================================
+
+    // A 'comparable' class whose instances can be compared and sorted
+    var TodoItem = new JS.Class({
+        include: JS.Comparable,
+        
+        initialize: function(position, task) {
+            this.position = position;
+            this.task = task || "";
+        },
+        
+        compareTo: function(other) {
+            if (this.position < other.position)
+                return -1;
+            else if (this.position > other.position)
+                return 1;
+            else
+                return 0;
+        }
+    });
+    
+    var Collection = new JS.Class({
+        include: JS.Enumerable,
+        initialize: function() {
+          this.length = arguments.length;
+          this._list = [];
+          for (var i = 0, n = this.length; i < n; i++)
+            this._list.push(arguments[i]);
+        },
+        forEach: function(block, context) {
+          for (var i = 0, n = this._list.length; i < n; i++)
+            block.call(context || null, this._list[i], i);
+        }
+    });
+    
+    var PairedHash = new JS.Class({
+        include: JS.Enumerable,
+        initialize: function(object) {
+            this._object = object || {};
+        },
+        forEach: function(block, context) {
+            for (var key in this._object)
+                block.call(context || null, {key: key, value: this._object[key]});
+        }
+    });
+    
+    var KeyValueHash = new JS.Class({
+        include: JS.Enumerable,
+        initialize: function(object) {
+            this._object = object || {};
+        },
+        forEach: function(block, context) {
+            for (var key in this._object)
+                block.call(context || null, key, this._object[key]);
+        },
+        keys: function() {
+            return this.map(function(key, value) { return key; });
+        },
+        values: function() {
+            return this.collect(function(key, value) { return value; });
+        }
+    });
+    
+    //================================================================
+    //================================================================
+
+    var Publisher = new JS.Class({
+        include: JS.Observable
+    });
     
     </script>
 </head>
@@ -568,6 +647,199 @@
             assertEqual(Special, InheritanceTester.children[0]);
             assertEqual(HookTester, InheritanceTester.children[1]);
             assertEqual(foo, InheritanceTester.children[2]);
+        }},
+        
+        testMethodChain: function() { with(this) {
+            var chain = new JS.MethodChain(['foo', 'bar']);
+            chain.map(function(s) { return s.toUpperCase() })
+                    .join(", ").replace(/[aeiou]/ig, "_");
+            assertEqual("F__, B_R", chain.fire());
+            assertEqual("S_M_TH_NG, _LS_", chain.fire(['something', 'else']));
+            
+            var SillyNames = new JS.Class({
+                initialize: function() {
+                    this.name = arguments[0];
+                },
+                wollaWollaBingBang: function() {
+                    return this.name;
+                }
+            });
+            
+            var instance = new SillyNames('something');
+            var chain = new JS.MethodChain;
+            
+            chain.wollaWollaBingBang();
+            assertEqual('something', chain.fire(instance));
+            
+            chain = new JS.MethodChain;
+            assertEqual('THE TEXT', chain._(new String('the text')).toUpperCase().fire());
+            
+            var racoon = new Animal('Racoon');
+            assertEqual('THE TEXT', racoon._(new String('the text')).toUpperCase());
+            assertEqual('Racoon hides in your TV', racoon._(function(thing) { return this.name + ' ' + thing; }, 'hides in your TV'));
+        }},
+        
+        testComparableModule: function() { with(this) {
+            var items = [8,2,7,5,3,7,6].map(function(id) { return new TodoItem(id) });
+            var sorted = items.clone().sort(TodoItem.compare);
+            assertEqual('2,3,5,6,7,7,8', sorted.pluck('position').join(','));
+            assert(items[1].lt(items[6]));
+            assert(items[3].lte(items[2]));
+            assert(items[0].gt(items[4]));
+            assert(items[2].gte(items[5]));
+            assert(items[5].eq(items[2]));
+            assert(items[3].between(items[4], items[2]));
+        }},
+        
+        testEnumerableModule: function() {
+            var foo = [1,2,3,4,5,6], results;
+            var collection = new Collection(1,2,3,4,5,6);
+            var collection2 = new Collection(5,6,7,8);
+            
+            results = ['1,2,3,4', '2,3,4,5', '3,4,5,6'];
+            collection.forEachCons(4, function(set, i) {
+                this.assertEqual(results[i], set.join(','));
+            }, this);
+            
+            results = ['1,2,3', '4,5,6', '7,8,9', '10'];
+            new Collection(1,2,3,4,5,6,7,8,9,10).forEachSlice(3, function(set, i) {
+                this.assertEqual(results[i], set.join(','));
+            }, this);
+            
+            collection.forEach(function(x,i) {
+                this.assertEqual(foo[i], x);
+            }, this);
+            
+            this.assertEqual(61, collection.inject(40, function(memo, item) { return memo + item; }));
+            this.assertEqual(36, collection.inject(0, function(memo, item, i) { return memo + item + i; }));
+            this.assertEqual(21, collection.inject(function(memo, item) { return memo + item; }));
+            
+            this.x = 4;
+            this.assertEqual(81, collection.inject(function(memo, item) { return memo + this.x * item; }, this));
+            this.assertEqual(24, collection.inject(-60, function(memo, item) { return memo + this.x * item; }, this));
+            
+            this.assert(collection.all(function(item, i) { return item == i + 1 }));
+            this.assert(collection.member(4));
+            this.assert(!collection.member('jam'));
+            
+            this.assertEqual('1,2', collection.partition(function(x) { return x <= 2 })[0].join(','));
+            this.assertEqual('3,4,5,6', collection.partition(function(x) { return x <= 2 })[1].join(','));
+            
+            this.assert(collection.any(function(item) { return item == 3 }));
+            this.assert(!collection.any(function(item, i) { return item == i }));
+            this.assert(collection.any(function(item, i) { return item == i + 1 }));
+            this.assert(collection.any(function(item) { return item == this.x }, this));
+            this.assert(!collection.any(function(item) { return item == 9 }));
+            
+            this.assertEqual(3, collection.detect(function(x) { return x % 3 === 0 }));
+            this.assertEqual(5, collection.find(function(x) { return x % 5 === 0 }));
+            this.assertEqual(null, collection.find(function(x) { return x % 12 === 0 }));
+            this.assertEqual(4, collection.detect(function(x) { return x * 8 === 32 }));
+            
+            this.assertEqual('5,6', collection.select(function(x) { return x > 4 }).join(','));
+            
+            this.assertEqual('1,2,3,4,5,6', collection.entries().join(','));
+            
+            var zip = collection.zip([8,2,7,6], ['cat', 'dog', 'mouse']);
+            results = ['1,8,cat', '2,2,dog', '3,7,mouse', '4,6,', '5,,', '6,,'];
+            zip.each(function(item,i) {
+                this.assertEqual(results[i], item.join(','));
+            }, this);
+            
+            collection.zip([8,2,7,6], ['cat', 'dog', 'mouse'], function(ary, i) {
+                this.assertEqual(results[i], ary.join(','));
+            }, this);
+            
+            zip = collection.zip(collection2);
+            results = ['1,5', '2,6', '3,7', '4,8', '5,', '6,'];
+            zip.each(function(item,i) {
+                this.assertEqual(results[i], item.join(','));
+            }, this);
+            
+            this.assertIdentical(false, new Collection(1,2,3).zip([true, false, true])[1][1]);
+            
+            collection = new Collection(
+                new TodoItem(8, 'Play golf'),
+                new TodoItem(5, 'Go to work'),
+                new TodoItem(7, 'Make money'),
+                new TodoItem(3, 'Have nap'),
+                new TodoItem(4, 'Organise to-do list')
+            );
+            
+            this.method = 'compareTo';
+            this.assertEqual('3,4,5,7,8', collection.sort().pluck('position').join(','));
+            this.assertEqual('Have nap', collection.min().task);
+            this.assertEqual('Play golf', collection.max().task);
+            this.assertEqual('8,7,5,4,3', collection.sort(function(a,b) { return b[this.method](a) }, this).pluck('position').join(','));
+            this.assertEqual(3, collection.max(function(a,b) { return b[this.method](a) }, this).position);
+            this.assertEqual(8, new Collection(1,8,3,7,5).max());
+            this.assertEqual('comes', new Collection('something', 'wicked', 'comes', 'this', 'way').min());
+            this.assertEqual('3,4,5,7,8', new Collection(8,5,7,3,4).sort().join(','));
+            this.assertEqual('8,7,5,4,3', new Collection(8,5,7,3,4).sort(function(a,b) { return (1/a) - (1/b) }).join(','));
+            
+            this.field = 'task';
+            this.assertEqual("Go to work, Have nap, Make money, Organise to-do list, Play golf",
+                    collection.sortBy(function(item) { return item[this.field]; }, this).pluck('task').join(', '));
+            
+            this.assertEqual("3,4,5,7,8",
+                    collection.sortBy(function(item) { return item; }).pluck('position').join(','));
+        },
+        
+        testHashes: function() {
+            var hash1 = new PairedHash({foo: 'foo', bar: 'bar'});
+            hash1.inject(function(memo, pair, index) {
+                this.assert(pair.key && typeof pair.value == 'string');
+                this.assertEqual(undefined, index);
+            }, this);
+            
+            var hash2 = new KeyValueHash({foo: 'foo', bar: 'bar'});
+            hash2.inject(function(memo, key, value) {
+                this.assert(typeof key == 'string' && typeof value == 'string');
+            }, this);
+            
+            var obj = hash2.inject({}, function(memo, key, value) {
+                memo[key] = value.toUpperCase();
+                return memo;
+            });
+            this.assertEqual('FOO', obj.foo);
+            this.assertEqual('BAR', obj.bar);
+            
+            var hash3 = new KeyValueHash({foo: 'foo', bar: 'bar', fizz: 'buzz'});
+            this.assert(hash3.any(function(key, value) { return key == value; }));
+            this.assert(!hash3.all(function(key, value) { return key == value; }));
+            this.assert(hash2.all(function(key, value) { return key == value; }));
+            
+            this.assertEqual('bar,fizz,foo', hash3.keys().sort().join(','));
+            this.assertEqual('bar,buzz,foo', hash3.values().sort().join(','));
+        },
+        
+        testObservableModule: function() { with(this) {
+            var pub = new Publisher;
+            this.counter = 0;
+            var increment = function() { this.counter++ };
+            pub.subscribe(increment, this);
+            pub.subscribe(function(x) { this.counter += x }, this);
+            pub.notifyObservers(4);
+            assertEqual(5, this.counter);
+            pub.unsubscribe(increment, this);
+            pub.unsubscribe(increment, this);
+            pub.notifyObservers(9);
+            assertEqual(14, this.counter);
+            pub.setChanged(false);
+            pub.notifyObservers(905);
+            assertEqual(14, this.counter);
+            pub.setChanged();
+            pub.notifyObservers(905);
+            assertEqual(919, this.counter);
+            pub.subscribe(increment, this);
+            pub.notifyObservers(4);
+            assertEqual(924, this.counter);
+            pub.unsubscribe(increment);
+            pub.notifyObservers(4);
+            assertEqual(929, this.counter);
+            pub.unsubscribe(increment, this);
+            pub.notifyObservers(4);
+            assertEqual(933, this.counter);
         }}
     });
         

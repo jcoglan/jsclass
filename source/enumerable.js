@@ -6,11 +6,11 @@ JS.util.Enum = {
   
   isComparable: function(list) {
     return list.all(function(item) {
-      return Function.is(item.compareTo);
+      return JS.util.isFn(item.compareTo);
     });
   },
   
-  Collection: JS.Class({
+  Collection: new JS.Class({
     initialize: function(array) {
       this.length = 0;
       var push = Array.prototype.push;
@@ -22,6 +22,8 @@ JS.util.Enum = {
 };
 
 JS.util.Enum.methods = {
+  forEach: JS.util.Enum.forEach,
+  
   all: function(block, context) {
     var truth = true;
     this.forEach(function(item, i) {
@@ -61,7 +63,7 @@ JS.util.Enum.methods = {
   
   inject: function(memo, block, context) {
     var counter = 0, K = {};
-    if (Function.is(memo)) {
+    if (JS.util.isFn(memo)) {
       context = block; block = memo; memo = K;
     }
     this.forEach(function(item, i) {
@@ -178,11 +180,5 @@ JS.extend(JS.util.Enum.methods, {
   some:     JS.util.Enum.methods.any
 });
 
-JS.Enumerable = {
-  included: function(klass) {
-    klass.include({forEach: JS.util.Enum.forEach}, false);
-    klass.include(JS.util.Enum.methods);
-  }
-};
-  
+JS.Enumerable = new JS.Module(JS.util.Enum.methods);
 JS.util.Enum.Collection.include(JS.Enumerable);
