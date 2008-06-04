@@ -201,7 +201,8 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
       parent = Object;
     }
     klass.inherit(parent);
-    klass.include(methods);
+    klass.include(methods, null, false);
+    klass.resolve();
     do {
       parent.inherited && parent.inherited(klass);
     } while (parent = parent.superclass);
@@ -216,7 +217,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     p.klass = p.constructor = this;
     this.__mod__ = new JS.Module({}, {resolve: this.prototype});
     this.include(JS.ObjectMethods, null, false);
-    this.include(klass.__mod__ || new JS.Module(klass.prototype, {resolve: klass.prototype}));
+    this.include(klass.__mod__ || new JS.Module(klass.prototype, {resolve: klass.prototype}), null, false);
     this.extend();
   },
   
