@@ -374,6 +374,99 @@
         }
     });
     
+    //================================================================
+    //================================================================
+
+    var Fiddler = new JS.Class({
+        include: JS.State,
+        
+        initialize: function() {
+            this.count = 0;
+            this.setState('optimism');
+        },
+        
+        getCount: function() { return this.count; },
+        
+        states: {
+            optimism: {
+                stepForward: function() {
+                    this.count += 2;
+                },
+                laughOutLoud: function() {
+                    return 'Ha-ha!'
+                }
+            },
+            pessimism: {
+                stepForward: function() {
+                    this.count -= 1;
+                }
+            }
+        }
+    });
+    
+    var DecoratedFiddler = new JS.Decorator(Fiddler, {
+        stepForward: function() {
+            this.component.stepForward();
+            this.component.count += 100;
+        },
+        laughOutLoud: function() {
+            var result = this.component.laughOutLoud();
+            return (typeof result == 'string') ? result.toUpperCase() : 'WRONG';
+        },
+        count: function() {
+            return this.component.count;
+        }
+    });
+    
+    var ProxiedFiddler = new JS.Proxy.Virtual(Fiddler);
+    
+    var InheritableStateMachine = new JS.Class({
+        include: JS.State,
+        
+        initialize: function() {
+            this.setState('doggies');
+            this.name = 'Alice';
+        },
+        
+        states: {
+            ponies: {
+                speak: function() { return this.name + ' likes ponies!' }
+            },
+            doggies: {
+                speak: function() { return 'doggies!' }
+            }
+        }
+    });
+    
+    var ChildStateMachine = new JS.Class(InheritableStateMachine, {
+        states: {
+            doggies: {
+                speak: function() {
+                    return this.callSuper() + " aren't they cute?";
+                }
+            },
+            
+            poundingTechnoMusic: {
+                speak: function() {
+                    return 'Do you know where your children are?';
+                }
+            }
+        }
+    });
+    
+    var AnotherChildStateMachine = new JS.Class(ChildStateMachine, {
+        initialize: function() {
+            this.name = 'Jenny';
+        },
+        states: {
+            ponies: {
+                speak: function() {
+                    return this.callSuper() + " aren't they cute?";
+                }
+            }
+        }
+    });
+    
     </script>
     <script type="text/javascript" charset="utf-8">
       timeB = Number(new Date);
@@ -940,6 +1033,83 @@
             });
             
             assertEqual('th_s, _s, my, n_m_', car.getName());
+        }},
+        
+        testStatePattern: function() { with(this) {
+            var fiddler = new Fiddler();
+            assertEqual(0, fiddler.count);
+            fiddler.stepForward();
+            fiddler.stepForward();
+            assertEqual(4, fiddler.count);
+            assertEqual('Ha-ha!', fiddler.laughOutLoud());
+            fiddler.setState('pessimism');
+            assertIdentical(fiddler, fiddler.laughOutLoud());
+            fiddler.stepForward();
+            fiddler.stepForward();
+            assertEqual(2, fiddler.count);
+            fiddler.setState(Fiddler.prototype.states.optimism);
+            fiddler.stepForward();
+            fiddler.stepForward();
+            assertEqual(6, fiddler.count);
+            fiddler.setState(Fiddler.prototype.states.pessimism);
+            assert(fiddler.inState(Fiddler.prototype.states.pessimism));
+            assert(fiddler.inState('pessimism'));
+            assert(!fiddler.inState('optimism'));
+            fiddler.stepForward();
+            fiddler.stepForward();
+            assertEqual(4, fiddler.count);
+        }},
+        
+        testStateInheritance: function() { with(this) {
+            var child = new ChildStateMachine();
+            child.setState('ponies');
+            assertEqual("Alice likes ponies!", child.speak());
+            child.setState('doggies');
+            assertEqual("doggies! aren't they cute?", child.speak());
+            child = new AnotherChildStateMachine();
+            child.setState('ponies');
+            assertEqual("Jenny likes ponies! aren't they cute?", child.speak());
+            child.setState('poundingTechnoMusic');
+            assertEqual('Do you know where your children are?', child.speak());
+        }},
+        
+        testDecoratedStateClass: function() { with(this) {
+            var fiddler = new DecoratedFiddler( new Fiddler() );
+            assertEqual(0, fiddler.count());
+            fiddler.stepForward();
+            fiddler.stepForward();
+            assertEqual(204, fiddler.count());
+            assertEqual('HA-HA!', fiddler.laughOutLoud());
+            fiddler.setState('pessimism');
+            assertIdentical('WRONG', fiddler.laughOutLoud());
+            fiddler.stepForward();
+            fiddler.stepForward();
+            assertEqual(402, fiddler.count());
+            fiddler.setState(DecoratedFiddler.prototype.states.optimism);
+            fiddler.stepForward();
+            fiddler.stepForward();
+            assertEqual(606, fiddler.count());
+            fiddler.setState(DecoratedFiddler.prototype.states.pessimism);
+            assert(fiddler.inState(DecoratedFiddler.prototype.states.pessimism));
+            assert(!fiddler.inState('pessimism'));
+            fiddler.setState('pessimism');
+            assert(fiddler.inState(Fiddler.prototype.states.pessimism));
+            assert(fiddler.inState('pessimism'));
+            assert(!fiddler.inState('optimism'));
+            fiddler.stepForward();
+            fiddler.stepForward();
+            assertEqual(804, fiddler.count());
+        }},
+        
+        testStateMethodAvailability: function() { with(this) {
+            var klass = new JS.Class({
+                states: {
+                    foo: {
+                        add: function() {}
+                    }
+                }
+            });
+            assertEqual('function', typeof new klass().add);
         }}
     });
         

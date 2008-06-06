@@ -1,63 +1,69 @@
-JS.State = JS.Module({
-  _getState: function(state) {
+JS.State = new JS.Module({
+  __getState__: function(state) {
     return  (typeof state == 'object' && state) ||
             (typeof state == 'string' && ((this.states || {})[state] || {})) ||
             {};
   },
   
   setState: function(state) {
-    this._state = this._getState(state);
-    JS.util.State.addMethods(this._state, this.klass);
+    this.__state__ = this.__getState__(state);
+    JS.State.addMethods(this.__state__, this.klass);
   },
   
   inState: function() {
     for (var i = 0, n = arguments.length; i < n; i++) {
-      if (this._state == this._getState(arguments[i])) return true;
+      if (this.__state__ == this.__getState__(arguments[i])) return true;
     }
     return false;
+  },
+  
+  extend: {
+    stub: function() { return this; },
+    
+    buildStubs: function(stubs, collection, states) {
+      var state, method;
+      for (state in states) {
+        collection[state] = {};
+        for (method in states[state]) stubs[method] = this.stub;
+    } },
+    
+    buildCollection: function(module, states) {
+      var stubs = {}, collection = {}, superstates = module.lookup('states', false).pop() || {};
+      this.buildStubs(stubs, collection, states);
+      this.buildStubs(stubs, collection, superstates);
+      var state, klass, methods, name;
+      for (state in collection) {
+        klass = (superstates[state]||{}).klass;
+        klass = klass ? new JS.Class(klass, states[state]) : new JS.Class(states[state]);
+        methods = {};
+        for (name in stubs) { if (!klass.prototype[name]) methods[name] = stubs[name]; }
+        klass.include(methods);
+        collection[state] = new klass;
+      }
+      this.addMethods(stubs, module.__res__.klass);
+      return collection;
+    },
+    
+    addMethods: function(state, klass) {
+      var methods = {}, p = klass.prototype;
+      for (var method in state) {
+        if (p[method]) continue;
+        p[method] = klass.__mod__.__fns__[method] = this.wrapped(method);
+      }
+    },
+    
+    wrapped: function(method) {
+      return function() {
+        var func = (this.__state__ || {})[method];
+        return func ? func.apply(this, arguments): this;
+      };
+    }
   }
 });
 
-JS.util.State = {
-  stub: function() { return this; },
-  
-  buildStubs: function(stubs, collection, states) {
-    var state, method;
-    for (state in states) {
-      collection[state] = {};
-      for (method in states[state]) stubs[method] = this.stub;
-  } },
-  
-  buildCollection: function(addMethod, proto, superproto, states) {
-    var stubs = {}, collection = {}, superstates = superproto.states || {};
-    this.buildStubs(stubs, collection, states);
-    this.buildStubs(stubs, collection, superstates);
-    var state, klass;
-    for (state in collection) {
-      klass = (superstates[state]||{}).klass;
-      klass = klass ? JS.Class(klass, states[state]) : JS.Class(states[state]);
-      klass.include(stubs, false);
-      collection[state] = new klass;
-      JS.util.State.addMethods(collection[state], proto.klass);
-    }
-    return addMethod.call(JS.Class, proto, superproto, 'states', collection);
-  },
-  
-  addMethods: function(state, klass) {
-    for (var method in state) this.addMethod(klass, method);
-  },
-  
-  addMethod: function(klass, method) {
-    klass.instanceMethod(method, function() {
-      var func = (this._state || {})[method];
-      return func ? func.apply(this, arguments): this;
-    }, false);
-  }
-};
-
-JS.Class.addMethod = (function(wrapped) {
-  return function(object, superObject, name, block) {
-    if (name != 'states' || typeof block != 'object') return wrapped.apply(JS.Class, arguments);
-    return JS.util.State.buildCollection(wrapped, object, superObject, block);
+JS.Module.include({make: (function(wrapped) {
+  return function(name, block) {
+    if (name != 'states' || typeof block != 'object') return wrapped.apply(this, arguments);
+    else return JS.State.buildCollection(this, block);
   };
-})(JS.Class.addMethod);
+})(JS.Module.prototype.make)});
