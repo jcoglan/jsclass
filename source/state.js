@@ -45,6 +45,7 @@ JS.State = new JS.Module({
     },
     
     addMethods: function(state, klass) {
+      if (!klass) return;
       var methods = {}, p = klass.prototype;
       for (var method in state) {
         if (p[method]) continue;
@@ -61,9 +62,10 @@ JS.State = new JS.Module({
   }
 });
 
-JS.Module.include({make: (function(wrapped) {
+JS.Module.include({define: (function(wrapped) {
   return function(name, block) {
-    if (name != 'states' || typeof block != 'object') return wrapped.apply(this, arguments);
-    else return JS.State.buildCollection(this, block);
+    if (name == 'states' && typeof block == 'object')
+      arguments[1] = JS.State.buildCollection(this, block);
+    return wrapped.apply(this, arguments);
   };
-})(JS.Module.prototype.make)});
+})(JS.Module.prototype.define)});

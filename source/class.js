@@ -27,15 +27,11 @@
  */
 
 JS = {
-  extend: function(object, methods, options) {
+  extend: function(object, methods) {
     methods = methods || {};
-    options = options || {};
     for (var prop in methods) {
       if (object[prop] == methods[prop]) continue;
-      if (options.exclude && options.exclude(prop, methods[prop])) continue;
       object[prop] = methods[prop];
-      if (JS.Module.__notify__ && options.notify && this.util.isFn(object[prop]))
-        JS.Module.__notify__(prop, options.notify);
     }
     return object;
   },
@@ -94,10 +90,17 @@ JS.extend(JS.Module.prototype, {
     this.include(methods || {});
   },
   
+  define: function(name, func, options) {
+    options = options || {};
+    this.__fns__[name] = func;
+    if (JS.Module.__notify__ && options.notify && JS.util.isFn(func))
+        JS.Module.__notify__(name, options.notify);
+  },
+  
   include: function(module, options, resolve) {
     if (!module) return resolve && this.resolve();
     options = options || {};
-    var inc = module.include, ext = module.extend, modules, i, n;
+    var inc = module.include, ext = module.extend, modules, i, n, method;
     if (module.__inc__ && module.__fns__) {
       this.__inc__.push(module);
       if (module.extended && options.extended) module.extended(options.extended);
@@ -115,8 +118,10 @@ JS.extend(JS.Module.prototype, {
           (options.included || this).extend(modules[i], false);
         (options.included || this).extend();
       }
-      JS.extend(this.__fns__, module, {exclude: JS.util.ignore,
-          notify: options.included || options.extended});
+      for (method in module) {
+        if (JS.util.ignore(method, module[method])) continue;
+        this.define(method, module[method], {notify: options.included || options.extended});
+      }
     }
     resolve && this.resolve();
   },
@@ -241,6 +246,11 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     this.callSuper();
     for (var i = 0, n = this.subclasses.length; i < n; i++)
       this.subclasses[i].extend();
+  },
+  
+  define: function() {
+    var mod = this.__mod__;
+    return mod.define.apply(mod, arguments);
   },
   
   includes: function() {
