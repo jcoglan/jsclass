@@ -144,7 +144,7 @@ JS.extend(JS.Module.prototype, {
       results.push(found);
     return results;
   },
-  
+  /*
   make: function(name, func) {
     if (!JS.util.isFn(func) || !JS.util.callsSuper(func)) return func;
     var module = this;
@@ -160,6 +160,34 @@ JS.extend(JS.Module.prototype, {
       currentSuper ? this.callSuper = currentSuper : delete this.callSuper;
       return result;
     };
+  },
+  */
+  make: function(name, func) {
+    if (!JS.util.isFn(func) || !JS.util.callsSuper(func)) return func;
+    var module = this;
+    return function() {
+      var callees = module.chain(name);
+      return callees.pop().apply(this, arguments);
+    };
+  },
+  
+  chain: function(name) {
+    var callees = this.lookup(name), n = callees.length;
+    while (--n) (function(func, x) {
+      if (!JS.util.callsSuper(func)) return n = 1;
+      callees[x] = function() {
+        var args = JS.util.array(arguments), currentSuper = this.callSuper, result;
+        this.callSuper = function() {
+          var i = arguments.length;
+          while (i--) args[i] = arguments[i];
+          return callees[x-1].apply(this, args);
+        };
+        result = func.apply(this, arguments);
+        currentSuper ? this.callSuper = currentSuper : delete this.callSuper;
+        return result;
+      };
+    })(callees[n], n);
+    return callees;
   },
   
   resolve: function(target) {
