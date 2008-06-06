@@ -1,6 +1,6 @@
 JS.Command = new JS.Class({
   initialize: function(functions) {
-    if (JS.util.isFn(functions))
+    if (JS.isFn(functions))
       functions = {execute: functions};
     this._functions = functions;
     this._stack = this._functions.stack || null;

@@ -6,7 +6,7 @@ JS.util.Enum = {
   
   isComparable: function(list) {
     return list.all(function(item) {
-      return JS.util.isFn(item.compareTo);
+      return JS.isFn(item.compareTo);
     });
   },
   
@@ -63,7 +63,7 @@ JS.util.Enum.methods = {
   
   inject: function(memo, block, context) {
     var counter = 0, K = {};
-    if (JS.util.isFn(memo)) {
+    if (JS.isFn(memo)) {
       context = block; block = memo; memo = K;
     }
     this.forEach(function(item, i) {

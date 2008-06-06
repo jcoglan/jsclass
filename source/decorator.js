@@ -5,7 +5,7 @@ JS.Decorator = new JS.Class({
     
     for (method in decoree.prototype) {
       func = decoree.prototype[method];
-      if (JS.util.isFn(func) && func != decoree) func = this.klass.delegate(method);
+      if (JS.isFn(func) && func != decoree) func = this.klass.delegate(method);
       delegators[method] = func;
     }
     
@@ -30,7 +30,7 @@ JS.Decorator = new JS.Class({
         for (method in component) {
           if (this[method]) continue;
           func = component[method];
-          if (JS.util.isFn(func)) func = JS.Decorator.delegate(method);
+          if (JS.isFn(func)) func = JS.Decorator.delegate(method);
           this[method] = func;
         }
       },
@@ -40,7 +40,7 @@ JS.Decorator = new JS.Class({
         var method, func;
         for (method in source) {
           func = source[method];
-          if (JS.util.isFn(func)) func = JS.Decorator.delegate(method);
+          if (JS.isFn(func)) func = JS.Decorator.delegate(method);
           this[method] = func;
         }
       }

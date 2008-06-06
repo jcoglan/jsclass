@@ -50,34 +50,40 @@ JS = {
     return new bridge;
   },
   
-  util: {
-    bind: function() {
-      var args = JS.util.array(arguments), method = args.shift(), object = args.shift() || null;
-      return function() {
-        return method.apply(object, args.concat(JS.util.array(arguments)));
-      };
-    },
-    
-    callsSuper: function(func) {
-      return /\bcallSuper\b/.test(func.toString());
-    },
-    
-    array: function(iterable) {
-      if (!iterable) return [];
-      if (iterable.toArray) return iterable.toArray();
-      var length = iterable.length, results = [];
-      while (length--) results[length] = iterable[length];
-      return results;
-    },
-    
-    isFn: function(object) {
-      return object instanceof Function;
-    },
-    
-    ignore: function(key, object) {
-      return /^(include|extend)$/.test(key) && typeof object == 'object';
-    }
-  }
+  delegate: function(property, method) {
+    return function() {
+      return this[property][method].apply(this[property], arguments);
+    };
+  },
+  
+  bind: function() {
+    var args = JS.array(arguments), method = args.shift(), object = args.shift() || null;
+    return function() {
+      return method.apply(object, args.concat(JS.array(arguments)));
+    };
+  },
+  
+  callsSuper: function(func) {
+    return /\bcallSuper\b/.test(func.toString());
+  },
+  
+  array: function(iterable) {
+    if (!iterable) return [];
+    if (iterable.toArray) return iterable.toArray();
+    var length = iterable.length, results = [];
+    while (length--) results[length] = iterable[length];
+    return results;
+  },
+  
+  isFn: function(object) {
+    return object instanceof Function;
+  },
+  
+  ignore: function(key, object) {
+    return /^(include|extend)$/.test(key) && typeof object == 'object';
+  },
+  
+  util: {}
 };
 
 JS.Module = JS.makeFunction();
@@ -93,7 +99,7 @@ JS.extend(JS.Module.prototype, {
   define: function(name, func, options) {
     options = options || {};
     this.__fns__[name] = func;
-    if (JS.Module.__notify__ && options.notify && JS.util.isFn(func))
+    if (JS.Module.__notify__ && options.notify && JS.isFn(func))
         JS.Module.__notify__(name, options.notify);
   },
   
@@ -119,7 +125,7 @@ JS.extend(JS.Module.prototype, {
         (options.included || this).extend();
       }
       for (method in module) {
-        if (JS.util.ignore(method, module[method])) continue;
+        if (JS.ignore(method, module[method])) continue;
         this.define(method, module[method], {notify: options.included || options.extended});
       }
     }
@@ -146,11 +152,11 @@ JS.extend(JS.Module.prototype, {
   },
   /*
   make: function(name, func) {
-    if (!JS.util.isFn(func) || !JS.util.callsSuper(func)) return func;
+    if (!JS.isFn(func) || !JS.callsSuper(func)) return func;
     var module = this;
     return function() {
       var supers = module.lookup(name, false), currentSuper = this.callSuper,
-          args = JS.util.array(arguments), result;
+          args = JS.array(arguments), result;
       this.callSuper = function() {
         var i = arguments.length;
         while (i--) args[i] = arguments[i];
@@ -163,7 +169,7 @@ JS.extend(JS.Module.prototype, {
   },
   */
   make: function(name, func) {
-    if (!JS.util.isFn(func) || !JS.util.callsSuper(func)) return func;
+    if (!JS.isFn(func) || !JS.callsSuper(func)) return func;
     var module = this;
     return function() {
       var callees = module.chain(name);
@@ -174,9 +180,9 @@ JS.extend(JS.Module.prototype, {
   chain: function(name) {
     var callees = this.lookup(name), n = callees.length;
     while (--n) (function(func, x) {
-      if (!JS.util.callsSuper(func)) return n = 1;
+      if (!JS.callsSuper(func)) return n = 1;
       callees[x] = function() {
-        var args = JS.util.array(arguments), currentSuper = this.callSuper, result;
+        var args = JS.array(arguments), currentSuper = this.callSuper, result;
         this.callSuper = function() {
           var i = arguments.length;
           while (i--) args[i] = arguments[i];
@@ -220,7 +226,7 @@ JS.ObjectMethods = new JS.Module({
   method: function(name) {
     var self = this, cache = self.__mcache__ = self.__mcache__ || {};
     if ((cache[name] || {}).fn == self[name]) return cache[name].bd;
-    return (cache[name] = {fn: self[name], bd: JS.util.bind(self[name], self)}).bd;
+    return (cache[name] = {fn: self[name], bd: JS.bind(self[name], self)}).bd;
   }
 });
 
@@ -229,7 +235,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   initialize: function(parent, methods) {
     var klass = JS.extend(JS.makeFunction(), this);
     klass.klass = klass.constructor = JS.Class;
-    if (!JS.util.isFn(parent)) {
+    if (!JS.isFn(parent)) {
       methods = parent;
       parent = Object;
     }
@@ -276,25 +282,10 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
       this.subclasses[i].extend();
   },
   
-  define: function() {
-    var mod = this.__mod__;
-    return mod.define.apply(mod, arguments);
-  },
-  
-  includes: function() {
-    var mod = this.__mod__;
-    return mod.includes.apply(mod, arguments);
-  },
-  
-  lookup: function() {
-    var mod = this.__mod__;
-    return mod.lookup.apply(mod, arguments);
-  },
-  
-  resolve: function() {
-    var mod = this.__mod__;
-    return mod.resolve.apply(mod, arguments);
-  }
+  define:   JS.delegate('__mod__', 'define'),
+  includes: JS.delegate('__mod__', 'includes'),
+  lookup:   JS.delegate('__mod__', 'lookup'),
+  resolve:  JS.delegate('__mod__', 'resolve')
 });
 
 JS.Module = JS.extend(new JS.Class(JS.Module.prototype), JS.ObjectMethods.__fns__);
@@ -322,7 +313,7 @@ JS.extend(JS, {
       this.test = function(object, returnName) {
         var n = methods.length;
         while (n--) {
-          if (!JS.util.isFn(object[methods[n]]))
+          if (!JS.isFn(object[methods[n]]))
             return returnName ? methods[n] : false;
         }
         return true;
@@ -331,7 +322,7 @@ JS.extend(JS, {
     
     extend: {
       ensure: function() {
-        var args = JS.util.array(arguments), object = args.shift(), face, result;
+        var args = JS.array(arguments), object = args.shift(), face, result;
         while (face = args.shift()) {
           result = face.test(object, true);
           if (result !== true) throw new Error('object does not implement ' + result + '()');
