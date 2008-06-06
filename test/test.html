@@ -479,6 +479,18 @@
         }
     });
     
+    //================================================================
+    //================================================================
+
+    var Forwarder = new JS.Class({
+        extend: JS.Forwardable,
+        initialize: function() {
+            this.fiddler = new Fiddler;
+        }
+    });
+    Forwarder.defineDelegators('fiddler', 'setState', 'stepForward');
+    Forwarder.defineDelegator('fiddler', 'getCount', 'count');
+    
     </script>
     <script type="text/javascript" charset="utf-8">
       timeB = Number(new Date);
@@ -1160,6 +1172,20 @@
                 }
             });
             assertEqual('function', typeof new klass().add);
+        }},
+        
+        testForwardable: function() { with(this) {
+            var forward = new Forwarder();
+            forward.setState('pessimism');
+            forward.stepForward();
+            forward.stepForward();
+            forward.stepForward();
+            assertEqual(-3, forward.count());
+            forward.setState('optimism');
+            forward.stepForward();
+            forward.stepForward();
+            forward.stepForward();
+            assertEqual(3, forward.count());
         }}
     });
         

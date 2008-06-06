@@ -282,7 +282,12 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
       this.subclasses[i].extend();
   },
   
-  define:   JS.delegate('__mod__', 'define'),
+  define: function() {
+    var module = this.__mod__;
+    module.define.apply(module, arguments);
+    module.resolve();
+  },
+  
   includes: JS.delegate('__mod__', 'includes'),
   lookup:   JS.delegate('__mod__', 'lookup'),
   resolve:  JS.delegate('__mod__', 'resolve')
