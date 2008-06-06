@@ -491,6 +491,58 @@
     Forwarder.defineDelegators('fiddler', 'setState', 'stepForward');
     Forwarder.defineDelegator('fiddler', 'getCount', 'count');
     
+    //================================================================
+    //================================================================
+
+    var Rails = new JS.Class();
+    var RailsModule = new JS.Module({
+        setValue: function(value) {
+            this.numericValue = value;
+        }
+    });
+    
+    JS.Ruby(Rails, function() { with(this) {
+        
+        include(JS.Observable);
+        extend(JS.Forwardable);
+        
+        // test DSL extension
+        extend(RailsModule);
+        with (self) {
+            alias('myValueIs', 'setValue');
+        }
+        myValueIs(27);
+        
+        def('initialize', function() {
+            this.attributes = {};
+        });
+        
+        def('updateAttributes', function(attrs) {
+            for (var key in attrs)
+                this.attributes[key] = attrs[key];
+            this.notifyObservers(this);
+        });
+        
+        defineDelegator('attributes', 'name', 'getName');
+        alias('itsName', 'getName');
+        
+        with (self) {
+            def('create', function(attrs) {
+                var rails = new this;
+                rails.updateAttributes(attrs || {});
+                return rails;
+            });
+            
+            alias('make', 'create');
+        }
+        
+        var r = make({name: 'Rails instance'});
+        window.console && console.log(instanceMethod('updateAttributes').toString());
+        window.console && console.log(r.itsName());
+    }});
+    
+    window.console && console.log(Rails.numericValue);
+    
     </script>
     <script type="text/javascript" charset="utf-8">
       timeB = Number(new Date);

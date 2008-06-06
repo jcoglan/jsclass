@@ -5,7 +5,7 @@ JS.Ruby = function(klass, define) {
 JS.extend(JS.Ruby, {
   extendDSL: function(builder, source) {
     for (var method in source) {
-      if (!builder[method] && typeof Function.is(source[method]))
+      if (!builder[method] && JS.isFn(source[method]))
         (function(methodName) {
           builder[methodName] = function() {
             var result = source[methodName].apply(source, arguments);
@@ -25,14 +25,15 @@ JS.extend(JS.Ruby, {
   },
   
   ClassBuilder: function(klass) {
-    this.def    = klass.method('instanceMethod');
+    this.def    = klass.method('define');
     this.alias  = JS.Ruby.alias(klass.prototype);
     
     this.self = {
-      def: function(name, method) {
-        klass.classMethod(name, method);
+      def: JS.bind(function(name, method) {
+        var def = {}; def[name] = method;
+        klass.extend(def);
         JS.Ruby.extendDSL(this, klass);
-      }.bind(this),
+      }, this),
       alias: JS.Ruby.alias(klass, this)
     };
     
@@ -42,8 +43,8 @@ JS.extend(JS.Ruby, {
     };
     
     this.instanceMethod = function(name) {
-      var method = klass.prototype[name];
-      return (Function.is(method)) ? method : null;
+      var method = klass.lookup(name).pop();
+      return (JS.isFn(method)) ? method : null;
     };
     
     JS.Ruby.extendDSL(this, klass);
