@@ -5,15 +5,17 @@ JS.Ruby = function(klass, define) {
 JS.extend(JS.Ruby, {
   extendDSL: function(builder, source) {
     for (var method in source) {
-      if (!builder[method] && JS.isFn(source[method]))
-        (function(methodName) {
-          builder[methodName] = function() {
-            var result = source[methodName].apply(source, arguments);
-            JS.Ruby.extendDSL(builder, source);
-            return result;
-          };
-        })(method);
+      if (builder[method] || !JS.isFn(source[method])) continue;
+      this.addMethod(builder, source, method);
     }
+  },
+  
+  addMethod: function(builder, source, method) {
+    builder[method] = function() {
+      var result = source[method].apply(source, arguments);
+      JS.Ruby.extendDSL(builder, source);
+      return result;
+    };
   },
   
   alias: function(object, builder) {
