@@ -1,6 +1,6 @@
-JS.Command = JS.Class({
+JS.Command = new JS.Class({
   initialize: function(functions) {
-    if (Function.is(functions))
+    if (JS.util.isFn(functions))
       functions = {execute: functions};
     this._functions = functions;
     this._stack = this._functions.stack || null;
@@ -19,7 +19,7 @@ JS.Command = JS.Class({
   },
   
   extend: {
-    Stack: JS.Class({
+    Stack: new JS.Class({
       include: [JS.Observable || {}, JS.Enumerable || {}],
       
       initialize: function(options) {
