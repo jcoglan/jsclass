@@ -25,6 +25,7 @@
     //================================================================
     
     var ModA = new JS.Module({
+        include: JS.StackTrace,
         speak: function() {
             return "speak() in ModA";
         },
@@ -49,7 +50,7 @@
     
     var ModC = new JS.Module();
     ModC.include({
-        include: ModA,
+        include: [ModA, JS.StackTrace],
         speak: function() {
             return this.callSuper() + ", and in ModC";
         }
@@ -58,9 +59,9 @@
     ModC.included = ModA.included;
     
     var InheritanceTester = new JS.Class({
-        include: ModC,
+        include: [ModC, JS.StackTrace],
         
-        initialize: function() {},
+        initialize: function() { this.speak() },
         
         speak: function() {
             return this.callSuper() + ", and in class Foo";
