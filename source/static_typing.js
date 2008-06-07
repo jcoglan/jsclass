@@ -1,6 +1,6 @@
 (function() {
   
-  var Type = JS.Class({
+  var Type = new JS.Class({
     initialize: function(type) {
       this.type = type;
       switch (true) {
@@ -25,7 +25,7 @@
       return (typeof data == this.type);
     },
     extend: {
-      Collection: JS.Class({
+      Collection: new JS.Class({
         initialize: function(array) {
           var list = [], i, n = array.length;
           for (i = 0; i < n; i++)

@@ -567,7 +567,24 @@
                 bobo.speak();
             }, 3000);
         }},
-    
+        
+        /*
+        testStaticTyping: function() { with(this) {
+            var foo = function(animal) {
+                return 'something';
+            };
+            
+            var pitbull = new Pitbull('Grrr');
+            
+            benchmark(function() { foo(pitbull, pitbull, pitbull, 'foo') }, 3000);
+            
+            foo = foo.expects(Animal, Pitbull, Dog, 'string', Array)
+                    .returns('string');
+            
+            benchmark(function() { foo(pitbull, pitbull, pitbull, 'foo', []) }, 3000);
+        }},
+        */
+        
         testRubyishInheritance: function() { with(this) {
             var tester = new InheritanceTester();
             assertEqual("speak() in ModB, speak() in ModA, and in ModC, and in class Foo", tester.speak());
