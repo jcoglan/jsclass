@@ -7,13 +7,9 @@ JS.StackTrace = new JS.Module({
         if (!JS.isFn(func)) return this.callSuper();
         var wrapper = function() {
           var fullName = module.__name__ + '#' + name;
-          var indent = '', n = self.stack.length;
-          while (n--) indent += '|  ';
-          window.console && console.log(indent + fullName + '(', arguments, ')');
-          self.stack.push(func);
+          self.stack.push(fullName, arguments);
           var result = func.apply(this, arguments);
-          self.stack.pop(func);
-          window.console && console.log(indent + fullName + '() --> ', result);
+          self.stack.pop(result);
           return result;
         };
         wrapper.toString = function() { return func.toString() };
@@ -53,11 +49,30 @@ JS.StackTrace = new JS.Module({
       return results;
     },
     
-    root: window,
+    root: this,
     excluded: [],
     maxDepth: 8,
     
-    stack: []
+    stack: new JS.Singleton({
+      __list__: [],
+      
+      indent: function() {
+        var indent = '', n = this.__list__.length;
+        while (n--) indent += '|  ';
+        return indent;
+      },
+      
+      push: function(name, args) {
+        window.console && console.log(this.indent() + name + '(', args, ')');
+        this.__list__.push(name);
+      },
+      
+      pop: function(result) {
+        var name = this.__list__.pop();
+        window.console && console.log(this.indent() + name + '() --> ', result);
+        return name;
+      }
+    })
   }
 });
 
