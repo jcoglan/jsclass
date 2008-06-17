@@ -5,6 +5,7 @@ SOURCE_DIR = 'source'
 PACKAGE_DIR = 'build'
 PACKAGES = {
   'class' => 'class',
+  'package' => 'package',
   'comparable' => 'comparable',
   'enumerable' => 'enumerable',
   'observable' => 'observable',
@@ -14,14 +15,14 @@ PACKAGES = {
   'proxy' => 'proxy',
   'command' => 'command',
   'state' => 'state',
-  'stack_trace' => 'stack_trace',
   'linked_list' => 'linked_list',
+  'stack_trace' => 'stack_trace',
   'ruby' => 'ruby',
   
   'patterns' => %w(
     comparable enumerable observable forwardable
     decorator proxy command state stack_trace
-    linked_list ruby method_chain
+    linked_list ruby method_chain package
   )
 }
 

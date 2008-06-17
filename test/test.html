@@ -910,6 +910,25 @@
             assertEqual(foo, InheritanceTester.children[2]);
         }},
         
+        testPacakgeSystem: function() { with(this) {
+            var C = new JS.Package('JS.Class');
+            var M = new JS.Package('JS.Modul');
+            C.addDependency(M);
+            var O = new JS.Package('JS.Observable');
+            O.addDependency(C);
+            O.addDependency(M);
+            var E = new JS.Package('JS.Enumerable');
+            var K = new JS.Package('JS.Comparable');
+            E.addDependency(JS.Package.get('JS.Comparable'));
+            var S = new JS.Package('JS.Command');
+            S.addDependency(E);
+            S.addDependency(O);
+            assertEnumEqual([K, E, M, C, O, S], S.expand());
+            assert(E.isLoaded());
+            assert(!C.isLoaded());
+            assert(!S.isLoaded());
+        }},
+        
         testMethodChain: function() { with(this) {
             var chain = new JS.MethodChain(['foo', 'bar']);
             chain.map(function(s) { return s.toUpperCase() })
