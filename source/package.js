@@ -6,7 +6,7 @@ JS.Package = new JS.Class({
   },
   
   addDependency: function(dep) {
-    this.deps.push(dep);
+    if (this.expand().indexOf(dep) == -1) this.deps.push(dep);
   },
   
   getObject: function() {
@@ -38,7 +38,30 @@ JS.Package = new JS.Class({
     
     get: function(name) {
       return this.store[name] || new this(name);
-    }
+    },
+    
+    DSL: {
+      pkg: function(name) {
+        return new JS.Package.Description(name);
+      }
+    },
+    
+    Description: new JS.Class({
+      initialize: function(name) {
+        this.pkg = JS.Package.get(name);
+      },
+      
+      requires: function() {
+        var names = JS.array(arguments), i, n;
+        for (i = 0, n = names.length; i < n; i++)
+          this.pkg.addDependency(JS.Package.get(names[i]));
+        return this;
+      }
+    })
   }
 });
+
+JS.Packages = function(declarations) {
+  declarations.call(JS.Package.DSL);
+};
 
