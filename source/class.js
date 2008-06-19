@@ -103,6 +103,11 @@ JS.extend(JS.Module.prototype, {
         JS.Module._notify(name, options.notify);
   },
   
+  instanceMethod: function(name) {
+    var method = this.lookup(name).pop();
+    return JS.isFn(method) ? method : null;
+  },
+  
   include: function(module, options, resolve) {
     if (!module) return resolve && this.resolve();
     options = options || {};

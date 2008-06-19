@@ -41,6 +41,6 @@ JS.Observable = new JS.Module({
 });
 
 JS.Observable.include({
-  subscribe:    JS.Observable.__fns__.addObserver,
-  unsubscribe:  JS.Observable.__fns__.removeObserver
+  subscribe:    JS.Observable.instanceMethod('addObserver'),
+  unsubscribe:  JS.Observable.instanceMethod('removeObserver')
 });

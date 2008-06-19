@@ -822,6 +822,15 @@
             assert(dog.method('bark') == dog.method('bark'));
         }},
         
+        testInstanceMethod: function() { with(this) {
+            var klass = new JS.Class({
+                include: JS.Observable,
+                talk: function(){}
+            });
+            assertEqual(klass.prototype.talk, klass.instanceMethod('talk'));
+            assertEqual(JS.Observable.__fns__.subscribe, klass.instanceMethod('subscribe'));
+        }},
+        
         testHierarchy: function() { with(this) {
             var rex = new Dog('Rex');
             assert(rex.isA(Dog));
