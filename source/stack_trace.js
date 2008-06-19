@@ -54,21 +54,21 @@ JS.StackTrace = new JS.Module({
     maxDepth: 8,
     
     stack: new JS.Singleton({
-      __list__: [],
+      _list: [],
       
       indent: function() {
-        var indent = '', n = this.__list__.length;
+        var indent = '', n = this._list.length;
         while (n--) indent += '|  ';
         return indent;
       },
       
       push: function(name, args) {
         window.console && console.log(this.indent() + name + '(', args, ')');
-        this.__list__.push(name);
+        this._list.push(name);
       },
       
       pop: function(result) {
-        var name = this.__list__.pop();
+        var name = this._list.pop();
         window.console && console.log(this.indent() + name + '() --> ', result);
         return name;
       }

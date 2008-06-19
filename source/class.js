@@ -99,8 +99,8 @@ JS.extend(JS.Module.prototype, {
   define: function(name, func, options) {
     options = options || {};
     this.__fns__[name] = func;
-    if (JS.Module.__notify__ && options.notify && JS.isFn(func))
-        JS.Module.__notify__(name, options.notify);
+    if (JS.Module._notify && options.notify && JS.isFn(func))
+        JS.Module._notify(name, options.notify);
   },
   
   include: function(module, options, resolve) {
@@ -301,12 +301,12 @@ JS.Class.klass = JS.Class.constructor = JS.Class;
 JS.ObjectMethods = new JS.Module(JS.ObjectMethods.__fns__);
 
 JS.Module.extend({
-  __obs__: [],
+  _observers: [],
   methodAdded: function(block, context) {
-    this.__obs__.push([block, context]);
+    this._observers.push([block, context]);
   },
-  __notify__: function(name, object) {
-    var obs = this.__obs__;
+  _notify: function(name, object) {
+    var obs = this._observers;
     for (var i = 0, n = obs.length; i < n; i++)
       obs[i][0].call(obs[i][1] || null, name, object);
   }

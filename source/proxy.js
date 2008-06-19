@@ -16,10 +16,10 @@ JS.Proxy.Virtual = new JS.Class({
     proxy.include({
       initialize: function() {
         var args = arguments, subject = null;
-        this._getSubject = function() {
+        this.__getSubject__ = function() {
           subject = new bridge;
           klass.apply(subject, args);
-          return (this._getSubject = function() { return subject; })();
+          return (this.__getSubject__ = function() { return subject; })();
         };
       },
       klass: klass,
@@ -34,14 +34,14 @@ JS.Proxy.Virtual = new JS.Class({
   extend: {
     forward: function(name) {
       return function() {
-        var subject = this._getSubject();
+        var subject = this.__getSubject__();
         return subject[name].apply(subject, arguments);
       };
     },
     
     InstanceMethods: new JS.Module({
       extend: function(source) {
-        this._getSubject().extend(source);
+        this.__getSubject__().extend(source);
         var method, func;
         for (method in source) {
           func = source[method];
