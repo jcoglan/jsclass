@@ -1,12 +1,18 @@
 JS.Package = new JS.Class({
+  include: JS.Observable,
+  
   initialize: function(name) {
     this.name = name;
-    this.deps = [];
+    this._deps = [];
     this.klass.store[name] = this;
   },
   
   addDependency: function(dep) {
-    if (this.expand().indexOf(dep) == -1) this.deps.push(dep);
+    if (this.expand().indexOf(dep) == -1) this._deps.push(dep);
+  },
+  
+  setLocation: function(path) {
+    this._path = path;
   },
   
   getObject: function() {
@@ -19,17 +25,31 @@ JS.Package = new JS.Class({
   },
   
   isLoaded: function() {
-    var n = this.deps.length;
-    while (n--) { if (!this.deps[n].isLoaded()) return false; }
+    var n = this._deps.length;
+    while (n--) { if (!this._deps[n].isLoaded()) return false; }
     return this.getObject() !== undefined;
   },
   
   expand: function(list) {
     var deps = list || [], i, n;
-    for (i = 0, n = this.deps.length; i < n; i++)
-      this.deps[i].expand(deps);
+    for (i = 0, n = this._deps.length; i < n; i++)
+      this._deps[i].expand(deps);
     if (deps.indexOf(this) == -1) deps.push(this);
     return deps;
+  },
+  
+  load: function(callback, scope, deep) {
+    if (this.isLoaded()) return callback.call(scope || null);
+    var packages = this.expand();
+  },
+  
+  _inject: function() {
+    if (this.getObject() !== undefined) return;
+    var tag    = document.createElement('script');
+    tag.type   = 'text/javascript';
+    tag.src    = this._path;
+    tag.onload = this.method('notifyObservers');
+    document.getElementsByTagName('head')[0].appendChild(tag);
   },
   
   extend: {
@@ -42,13 +62,14 @@ JS.Package = new JS.Class({
     
     DSL: {
       pkg: function(name) {
-        return new JS.Package.Description(name);
+        return new JS.Package.Description(name, path);
       }
     },
     
     Description: new JS.Class({
-      initialize: function(name) {
+      initialize: function(name, path) {
         this.pkg = JS.Package.get(name);
+        if (path) this.pkg.setLocation(path);
       },
       
       requires: function() {
@@ -64,4 +85,3 @@ JS.Package = new JS.Class({
 JS.Packages = function(declarations) {
   declarations.call(JS.Package.DSL);
 };
-
