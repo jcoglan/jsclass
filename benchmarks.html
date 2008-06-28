@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>JS.Class tests</title>
+    <script src="prototype.js" type="text/javascript" charset="utf-8"></script>
+    <script src="unittest.js" type="text/javascript" charset="utf-8"></script>
+    <script src="build/class.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="test.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <script type="text/javascript" charset="utf-8">
+        
+        var Animal = JS.Class({
+            extend: {
+                find: function(thing) { return 'Animal finds ' + thing; },
+                create: function(thing) { return this.find(thing) + ' and Animal creates ' + thing; }
+            },
+            initialize: function(name) {
+                this.name = String(name);
+            },
+            speak: function(stuff) {
+                return 'My name is ' + this.name + ' and I like ' + stuff;
+            }
+        });
+        
+        var Bear = JS.Class(Animal, {
+            extend: {
+                create: function(thing) {
+                    return this.callSuper(thing) + ', but Bear creates other stuff'
+                }
+            },
+            speak: function(stuff) {
+                return this.callSuper(stuff).toUpperCase();
+            }
+        });
+        
+        var NoSuperBear = JS.Class(Bear, {
+            speak: function() { return this.name.toUpperCase(); }
+        });
+        
+        var Koala = JS.Class(Bear, {
+            speak: function(stuff) {
+                return "I'm not really a Bear, but I do like " + stuff;
+            }
+        });
+        
+    </script>
+    
+</head>
+<body>
+    
+    <div id="testlog"></div>
+    
+    <script type="text/javascript" charset="utf-8">
+        
+        new Test.Unit.Runner({
+            
+            testSuperSpeed: function() { with(this) {
+                var yogi = new Bear('Yogi');
+                benchmark(function() {
+                    yogi.speak();
+                }, 3000);
+                var bobo = new NoSuperBear('Bobo');
+                benchmark(function() {
+                    bobo.speak();
+                }, 3000);
+            }}
+        });
+        
+    </script>
+</body>
+</html>

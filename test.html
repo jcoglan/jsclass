@@ -479,17 +479,6 @@
         
         new Test.Unit.Runner({
             
-            testSuperSpeed: function() { with(this) {
-                var yogi = new Bear('Yogi');
-                benchmark(function() {
-                    yogi.speak();
-                }, 3000);
-                var bobo = new NoSuperBear('Bobo');
-                benchmark(function() {
-                    bobo.speak();
-                }, 3000);
-            }},
-            
             /*
             testStaticTyping: function() { with(this) {
                 var foo = function(animal) {
