@@ -67,6 +67,12 @@ JS = {
     return /\bcallSuper\b/.test(func.toString());
   },
   
+  mask: function(func) {
+    var string = func.toString().replace(/callSuper/g, 'super');
+    func.toString = function() { return string };
+    return func;
+  },
+  
   array: function(iterable) {
     if (!iterable) return [];
     if (iterable.toArray) return iterable.toArray();
@@ -155,51 +161,34 @@ JS.extend(JS.Module.prototype, {
       results.push(found);
     return results;
   },
-  /*
+  
   make: function(name, func) {
     if (!JS.isFn(func) || !JS.callsSuper(func)) return func;
     var module = this;
     return function() {
-      var supers = module.lookup(name, false), currentSuper = this.callSuper,
-          args = JS.array(arguments), result;
-      this.callSuper = function() {
-        var i = arguments.length;
-        while (i--) args[i] = arguments[i];
-        return supers.pop().apply(this, args);
-      };
-      result = func.apply(this, arguments);
-      currentSuper ? this.callSuper = currentSuper : delete this.callSuper;
-      return result;
-    };
-  },
-  */
-  make: function(name, func) {
-    if (!JS.isFn(func) || !JS.callsSuper(func)) return func;
-    var module = this;
-    return function() {
-      var callees = module.chain(name);
-      return callees.pop().apply(this, arguments);
+      return module.chain(this, name, func, arguments);
     };
   },
   
-  chain: function(name) {
-    var callees = this.lookup(name), n = callees.length;
-    while (--n) (function(func, x) {
-      if (!JS.callsSuper(func)) return n = 1;
-      callees[x] = function() {
-        var args = JS.array(arguments), currentSuper = this.callSuper, result;
-        this.callSuper = function() {
-          var i = arguments.length;
-          while (i--) args[i] = arguments[i];
-          return callees[x-1].apply(this, args);
-        };
-        result = func.apply(this, arguments);
-        currentSuper ? this.callSuper = currentSuper : delete this.callSuper;
-        return result;
-      };
-    })(callees[n], n);
-    return callees;
-  },
+  chain: JS.mask( function(self, name, func, params) {
+    var callees = this.lookup(name, false),
+        stackIndex = callees.length,
+        currentSuper = self.callSuper,
+        args = JS.array(params), result;
+    
+    self.callSuper = function() {
+      var i = arguments.length;
+      while (i--) args[i] = arguments[i];
+      stackIndex -= 1;
+      var returnValue = callees[stackIndex].apply(self, args);
+      stackIndex += 1;
+      return returnValue;
+    };
+    
+    result = func.apply(self, params);
+    currentSuper ? self.callSuper = currentSuper : delete self.callSuper;
+    return result;
+  } ),
   
   resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
