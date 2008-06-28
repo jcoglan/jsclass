@@ -64,6 +64,10 @@
             benchmark(function() {
                 bobo.speak();
             }, 3000);
+        }},
+        
+        testObjectInstantiation: function() { with(this) {
+            benchmark(function() { new Bear('Yogi') }, 3000);
         }}
     });
         
