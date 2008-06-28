@@ -166,12 +166,12 @@ JS.extend(JS.Module.prototype, {
     if (!JS.isFn(func) || !JS.callsSuper(func)) return func;
     var module = this;
     return function() {
-      return module.chain(this, name, func, arguments);
+      return module.chain(this, name, arguments);
     };
   },
   
-  chain: JS.mask( function(self, name, func, params) {
-    var callees = this.lookup(name, false),
+  chain: JS.mask( function(self, name, params) {
+    var callees = this.lookup(name),
         stackIndex = callees.length,
         currentSuper = self.callSuper,
         args = JS.array(params), result;
@@ -185,7 +185,7 @@ JS.extend(JS.Module.prototype, {
       return returnValue;
     };
     
-    result = func.apply(self, params);
+    result = self.callSuper();
     currentSuper ? self.callSuper = currentSuper : delete self.callSuper;
     return result;
   } ),
