@@ -1,33 +1,41 @@
 JS.Package = new JS.Class({
   include: JS.Observable,
   
-  initialize: function(name) {
-    this.name = name;
-    this._deps = [];
-    this.klass.store[name] = this;
-  },
-  
-  addDependency: function(dep) {
-    if (this.expand().indexOf(dep) == -1) this._deps.push(dep);
-  },
-  
-  setLocation: function(path) {
+  initialize: function(path) {
     this._path = path;
+    this._deps = [];
+    this._names = [];
   },
   
-  getObject: function() {
-    var object = this.klass.root, parts = this.name.split('.');
-    for (var i = 0, n = parts.length; i < n; i++) {
-      object = object[parts[i]];
-      if (object === undefined) return object;
+  addDependency: function(pkg) {
+    if (typeof pkg == 'string') pkg = this.klass.getByName(pkg);
+    if (!pkg) return;
+    if (this._deps.indexOf(pkg) == -1) this._deps.push(pkg);
+  },
+  
+  addName: function(name) {
+    if (!this.contains(name)) this._names.push(name);
+  },
+  
+  contains: function(name) {
+    return this._names.indexOf(name) != -1;
+  },
+  
+  getObjects: function() {
+    var objects = [], n = this._names.length, object;
+    while (n--) {
+      object = this.klass.getObject(this._names[n]);
+      if (object) objects.push(object);
     }
-    return object;
+    return objects;
   },
   
   isLoaded: function() {
     var n = this._deps.length;
-    while (n--) { if (!this._deps[n].isLoaded()) return false; }
-    return this.getObject() !== undefined;
+    while (n--) {
+      if (!this._deps[n].isLoaded()) return false;
+    }
+    return this.getObjects().length == this._names.length;
   },
   
   expand: function(list) {
@@ -38,50 +46,60 @@ JS.Package = new JS.Class({
     return deps;
   },
   
-  load: function(callback, scope, deep) {
-    if (this.isLoaded()) return callback.call(scope || null);
-    var packages = this.expand();
-  },
-  
-  _inject: function() {
-    if (this.getObject() !== undefined) return;
-    var tag    = document.createElement('script');
-    tag.type   = 'text/javascript';
-    tag.src    = this._path;
-    tag.onload = this.method('notifyObservers');
+  inject: function() {
+    var tag     = document.createElement('script');
+    tag.type    = 'text/javascript';
+    tag.src     = this._path;
+    tag.onload  = this.method('notifyObservers');
     document.getElementsByTagName('head')[0].appendChild(tag);
+    tag = null;
   },
   
   extend: {
-    store: {},
-    root: this,
+    _store: {},
+    _root: this,
     
-    get: function(name) {
-      return this.store[name] || new this(name);
+    getByPath: function(path) {
+      return this._store[path] || (this._store[path] = new this(path));
+    },
+    
+    getByName: function(name) {
+      for (var path in this._store) {
+        if (this._store[path].contains(name))
+          return this._store[path];
+      }
+      return null;
+    },
+    
+    getObject: function(name) {
+      var object = this._root, parts = name.split('.'), part;
+      while (part = parts.shift()) object = (object||{})[part];
+      return object;
     },
     
     DSL: {
-      pkg: function(name) {
-        return new JS.Package.Description(name, path);
+      pkg: function(name, path) {
+        var pkg = path
+            ? JS.Package.getByPath(path)
+            : JS.Package.getByName(name);
+        pkg.addName(name);
+        return new JS.Package.Description(pkg);
       }
     },
     
     Description: new JS.Class({
-      initialize: function(name, path) {
-        this.pkg = JS.Package.get(name);
-        if (path) this.pkg.setLocation(path);
+      initialize: function(pkg) {
+        this._pkg = pkg;
       },
       
-      requires: function() {
-        var names = JS.array(arguments), i, n;
-        for (i = 0, n = names.length; i < n; i++)
-          this.pkg.addDependency(JS.Package.get(names[i]));
+      requires: function(name) {
+        this._pkg.addDependency(name);
         return this;
       }
     })
   }
 });
 
-JS.Packages = function(declarations) {
-  declarations.call(JS.Package.DSL);
+JS.Packages = function(declaration) {
+  declaration.call(JS.Package.DSL);
 };
