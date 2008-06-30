@@ -19,6 +19,42 @@
     <link rel="stylesheet" href="test.css" type="text/css" media="screen" title="no title" charset="utf-8">
     <script type="text/javascript" charset="utf-8">
     
+    JS.Packages(function() { with(this) {
+    
+        var cdn  = 'http://yui.yahooapis.com/';
+        var yui  = cdn + '2.5.2/build/';
+        
+        pkg('YAHOO',                    yui + 'yahoo-dom-event/yahoo-dom-event.js');
+        pkg('YAHOO.lang',               yui + 'yahoo-dom-event/yahoo-dom-event.js');
+        pkg('YAHOO.util.Dom',           yui + 'yahoo-dom-event/yahoo-dom-event.js');
+        pkg('YAHOO.util.Event',         yui + 'yahoo-dom-event/yahoo-dom-event.js');
+        
+        pkg('YAHOO.util.Selector',      yui + 'selector/selector-beta-min.js');
+        
+        pkg('YAHOO.util.Connection',    yui + 'connection/connection-min.js');
+        pkg('YAHOO.util.Get',           yui + 'get/get-min.js');
+        
+        pkg('YAHOO.util.Anim',          yui + 'animation/animation-min.js');
+        pkg('YAHOO.util.ColorAnim',     yui + 'animation/animation-min.js');
+        
+        pkg('YAHOO.util.History',       yui + 'history/history-min.js');
+        
+        pkg('YAHOO.util.Anim')
+            .requires('YAHOO')
+            .requires('YAHOO.util.Event');
+        
+        pkg('YAHOO.util.Selector')
+            .requires('YAHOO')
+            .requires('YAHOO.util.Anim')
+            .requires('YAHOO.util.Connection');
+    }});
+    
+    require('YAHOO.util.Selector', function() {
+        setTimeout(function() {
+            alert(YAHOO.util.Selector.query('td').length);
+        }, 2000);
+    });
+    
     //================================================================
     // Test that method inheritance works as it does in Ruby.
     // See module.rb for equivalent Ruby code
