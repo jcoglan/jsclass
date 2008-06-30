@@ -49,10 +49,18 @@ JS.Package = new JS.Class({
     var tag     = document.createElement('script');
     tag.type    = 'text/javascript';
     tag.src     = this._path;
-    tag.onload  = function() { callback.call(scope || null) };
+    tag.onload = tag.onreadystatechange = function() {
+      if (  !tag.readyState ||
+            tag.readyState == 'loaded' ||
+            tag.readyState == 'complete' ||
+            (tag.readyState == 4 && tag.status == 200)
+      ) {
+        callback.call(scope || null);
+        tag = null;
+      }
+    };
     ;;; window.console && console.info('Loading ' + this._path);
     document.getElementsByTagName('head')[0].appendChild(tag);
-    tag = null;
   },
   
   extend: {
@@ -85,13 +93,10 @@ JS.Package = new JS.Class({
     },
     
     load: function(list, callback, scope) {
-      var i, n = list.length, loaded = 0;
-      for (i = 0; i < n; i++) {
-        list[i].inject(function() {
-          loaded += 1;
-          if (loaded == n) callback.call(scope || null);
-        });
-      }
+      if (list.length == 0) return callback.call(scope || null);
+      list.shift().inject(function() {
+        this.load(list, callback, scope);
+      }, this);
     },
     
     DSL: {
