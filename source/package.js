@@ -1,6 +1,4 @@
 JS.Package = new JS.Class({
-  include: JS.Observable,
-  
   initialize: function(path) {
     this._path = path;
     this._deps = [];
@@ -30,10 +28,10 @@ JS.Package = new JS.Class({
     return objects;
   },
   
-  isLoaded: function() {
+  isLoaded: function(deep) {
     var n = this._deps.length;
-    while (n--) {
-      if (!this._deps[n].isLoaded()) return false;
+    if (deep !== false) {
+      while (n--) { if (!this._deps[n].isLoaded()) return false; }
     }
     return this.getObjects().length == this._names.length;
   },
@@ -46,11 +44,13 @@ JS.Package = new JS.Class({
     return deps;
   },
   
-  inject: function() {
+  inject: function(callback, scope) {
+    if (this.isLoaded(false)) return callback.call(scope || null);
     var tag     = document.createElement('script');
     tag.type    = 'text/javascript';
     tag.src     = this._path;
-    tag.onload  = this.method('notifyObservers');
+    tag.onload  = function() { callback.call(scope || null) };
+    ;;; window.console && console.info('Loading ' + this._path);
     document.getElementsByTagName('head')[0].appendChild(tag);
     tag = null;
   },
@@ -75,6 +75,23 @@ JS.Package = new JS.Class({
       var object = this._root, parts = name.split('.'), part;
       while (part = parts.shift()) object = (object||{})[part];
       return object;
+    },
+    
+    expand: function(list) {
+      var packages = [];
+      for (var i = 0, n = list.length; i < n; i++)
+        list[i].expand(packages);
+      return packages;
+    },
+    
+    load: function(list, callback, scope) {
+      var i, n = list.length, loaded = 0;
+      for (i = 0; i < n; i++) {
+        list[i].inject(function() {
+          loaded += 1;
+          if (loaded == n) callback.call(scope || null);
+        });
+      }
     },
     
     DSL: {
@@ -103,3 +120,11 @@ JS.Package = new JS.Class({
 JS.Packages = function(declaration) {
   declaration.call(JS.Package.DSL);
 };
+
+require = function() {
+  var args = JS.array(arguments), requirements = [];
+  while (typeof args[0] == 'string') requirements.push(JS.Package.getByName(args.shift()));
+  requirements = JS.Package.expand(requirements);
+  JS.Package.load(requirements, args[0], args[1]);
+};
+
