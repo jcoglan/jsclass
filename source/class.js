@@ -146,7 +146,8 @@ JS.extend(JS.Module.prototype, {
   includes: function(moduleOrClass) {
     if (Object == moduleOrClass || this == moduleOrClass || this.__res__ == moduleOrClass.prototype)
       return true;
-    for (var i = 0, n = this.__inc__.length; i < n; i++) {
+    var i = this.__inc__.length;
+    while (i--) {
       if (this.__inc__[i].includes(moduleOrClass))
         return true;
     }
@@ -272,8 +273,8 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   extend: function(module) {
     if (!this.callSuper) return;
     this.callSuper();
-    for (var i = 0, n = this.subclasses.length; i < n; i++)
-      this.subclasses[i].extend();
+    var i = this.subclasses.length;
+    while (i--) this.subclasses[i].extend();
   },
   
   define: function() {
@@ -300,9 +301,8 @@ JS.Module.extend({
     this._observers.push([block, context]);
   },
   _notify: function(name, object) {
-    var obs = this._observers;
-    for (var i = 0, n = obs.length; i < n; i++)
-      obs[i][0].call(obs[i][1] || null, name, object);
+    var obs = this._observers, i = obs.length;
+    while (i--) obs[i][0].call(obs[i][1] || null, name, object);
   }
 });
 

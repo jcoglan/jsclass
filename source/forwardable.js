@@ -10,8 +10,7 @@ JS.Forwardable = new JS.Module({
   },
   
   defineDelegators: function() {
-    var methods = JS.array(arguments), subject = methods.shift();
-    for (var i = 0, n = methods.length; i < n; i++)
-      this.defineDelegator(subject, methods[i]);
+    var methods = JS.array(arguments), subject = methods.shift(), i = methods.length;
+    while (i--) this.defineDelegator(subject, methods[i]);
   }
 });

@@ -6,7 +6,8 @@ JS.Observable = new JS.Module({
   removeObserver: function(observer, context) {
     this.__observers__ = this.__observers__ || [];
     context = context || null;
-    for (var i = 0, n = this.countObservers(); i < n; i++) {
+    var i = this.countObservers();
+    while (i--) {
       if (this.__observers__[i].bk == observer && this.__observers__[i].cx == context) {
         this.__observers__.splice(i,1);
         return;
@@ -24,7 +25,8 @@ JS.Observable = new JS.Module({
   
   notifyObservers: function() {
     if (!this.isChanged()) return;
-    for (var i = 0, n = this.countObservers(), observer; i < n; i++) {
+    var i = this.countObservers(), observer;
+    while (i--) {
       observer = this.__observers__[i];
       observer.bk.apply(observer.cx, arguments);
     }

@@ -11,7 +11,8 @@ JS.State = new JS.Module({
   },
   
   inState: function() {
-    for (var i = 0, n = arguments.length; i < n; i++) {
+    var i = arguments.length;
+    while (i--) {
       if (this.__state__ == this.__getState__(arguments[i])) return true;
     }
     return false;

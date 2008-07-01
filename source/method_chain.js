@@ -63,17 +63,18 @@ JS.MethodChain.addMethod = function(name) {
 };
 
 JS.MethodChain.addMethods = function(object) {
-  var methods = [], property, i, n;
+  var methods = [], property, i;
   
   for (property in object)
     Number(property) != property && methods.push(property);
   
   if (object instanceof Array) {
-    for (i = 0, n = object.length; i < n; i++)
+    i = object.length;
+    while (i--)
       typeof object[i] == 'string' && methods.push(object[i]);
   }
-  for (i = 0, n = methods.length; i < n; i++)
-    this.addMethod(methods[i]);
+  i = methods.length;
+  while (i--) this.addMethod(methods[i]);
   
   object.prototype &&
     this.addMethods(object.prototype);
