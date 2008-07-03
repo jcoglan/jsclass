@@ -155,11 +155,11 @@ JS.extend(JS.Module.prototype, {
   },
   
   lookup: function(name, lookInSelf) {
-    var results = [], found, i, n;
-    for (i = 0, n = this.__inc__.length; i < n; i++)
-      results = results.concat(this.__inc__[i].lookup(name));
+    var results = [], found, i = this.__inc__.length;
     if (lookInSelf !== false && (found = this.__fns__[name]))
       results.push(found);
+    while (i--)
+      results = results.concat(this.__inc__[i].lookup(name));
     return results;
   },
   
@@ -173,16 +173,16 @@ JS.extend(JS.Module.prototype, {
   
   chain: JS.mask( function(self, name, params) {
     var callees = this.lookup(name),
-        stackIndex = callees.length,
+        stackIndex = -1,
         currentSuper = self.callSuper,
         args = JS.array(params), result;
     
     self.callSuper = function() {
       var i = arguments.length;
       while (i--) args[i] = arguments[i];
-      stackIndex -= 1;
-      var returnValue = callees[stackIndex].apply(self, args);
       stackIndex += 1;
+      var returnValue = callees[stackIndex].apply(self, args);
+      stackIndex -= 1;
       return returnValue;
     };
     

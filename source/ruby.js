@@ -45,7 +45,7 @@ JS.extend(JS.Ruby, {
     };
     
     this.instanceMethod = function(name) {
-      var method = klass.lookup(name).pop();
+      var method = klass.instanceMethod(name);
       return (JS.isFn(method)) ? method : null;
     };
     
