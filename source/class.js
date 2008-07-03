@@ -154,12 +154,12 @@ JS.extend(JS.Module.prototype, {
     return false;
   },
   
-  lookup: function(name, lookInSelf) {
-    var results = [], found, i = this.__inc__.length;
+  lookup: function(name, lookInSelf, results) {
+    results = results || [];
+    var found, i = this.__inc__.length;
     if (lookInSelf !== false && (found = this.__fns__[name]))
       results.push(found);
-    while (i--)
-      results = results.concat(this.__inc__[i].lookup(name));
+    while (i--) this.__inc__[i].lookup(name, true, results);
     return results;
   },
   
