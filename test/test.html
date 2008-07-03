@@ -130,8 +130,15 @@
     ModC.include(ModB);
     ModC.included = ModA.included;
     
+    var ModD = new JS.Module({
+        include: ModA,
+        speak: function() {
+            return "speak() in ModD, " + this.callSuper();
+        }
+    });
+    
     var InheritanceTester = new JS.Class({
-        include: [ModC, {/** JS.StackTrace **/}],
+        include: [ModD, ModC, {/** JS.StackTrace **/}],
         
         initialize: function() { this.speak() },
         
@@ -660,7 +667,7 @@
         
         testRubyishInheritance: function() { with(this) {
             var tester = new InheritanceTester();
-            assertEqual("speak() in ModB, speak() in ModA, and in ModC, and in class Foo", tester.speak());
+            assertEqual("speak() in ModB, speak() in ModD, speak() in ModA, and in ModC, and in class Foo", tester.speak());
             
             tester = new SingletonMethodTester();
             assertEqual('speak() in class Bar', tester.speak());
@@ -744,7 +751,7 @@
             keys.sort();
             assertEqual('__meta__', keys[0]);
             assertEqual('speak', keys[1]);
-            assertEqual("sp__k() _n M_dB, sp__k() _n M_d_, _nd _n M_dC, _nd _n cl_ss F__", obj.speak());
+            assertEqual("sp__k() _n M_dB, sp__k() _n M_dD, sp__k() _n M_d_, _nd _n M_dC, _nd _n cl_ss F__", obj.speak());
         }},
         
         testTypeDetectionOnExtendedObjects: function() { with(this) {
@@ -766,7 +773,7 @@
         }},
         
         testHooks: function() { with(this) {
-            assertEqual(1, ModA.incs.length);
+            assertEqual(2, ModA.incs.length);
             assertEqual(ModC, ModA.incs[0]);
             var obj = new JS.Interface(['foo']);
             obj.extend(ModA);

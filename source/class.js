@@ -156,10 +156,11 @@ JS.extend(JS.Module.prototype, {
   
   lookup: function(name, lookInSelf, results) {
     results = results || [];
-    var found, i = this.__inc__.length;
-    if (lookInSelf !== false && (found = this.__fns__[name]))
+    var found, i, n;
+    for (i = 0, n = this.__inc__.length; i < n; i++)
+      this.__inc__[i].lookup(name, true, results);
+    if (lookInSelf !== false && (found = this.__fns__[name]) && results.indexOf(found) == -1)
       results.push(found);
-    while (i--) this.__inc__[i].lookup(name, true, results);
     return results;
   },
   
@@ -173,16 +174,16 @@ JS.extend(JS.Module.prototype, {
   
   chain: JS.mask( function(self, name, params) {
     var callees = this.lookup(name),
-        stackIndex = -1,
+        stackIndex = callees.length,
         currentSuper = self.callSuper,
         args = JS.array(params), result;
     
     self.callSuper = function() {
       var i = arguments.length;
       while (i--) args[i] = arguments[i];
-      stackIndex += 1;
-      var returnValue = callees[stackIndex].apply(self, args);
       stackIndex -= 1;
+      var returnValue = callees[stackIndex].apply(self, args);
+      stackIndex += 1;
       return returnValue;
     };
     

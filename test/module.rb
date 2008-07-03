@@ -2,6 +2,10 @@ module ModA
   def speak
     "speak() in ModA"
   end
+  
+  def self.included(base)
+    puts base
+  end
 end
 
 module ModB
@@ -18,10 +22,18 @@ module ModC
   include ModB
 end
 
+module ModD
+  include ModA
+  def speak
+    "speak() in ModD, #{super}"
+  end
+end
+
 class Foo
   def speak
     "#{super}, and in class Foo"
   end
+  include ModD
   include ModC
 end
 
