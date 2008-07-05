@@ -1,0 +1,65 @@
+---
+source_directory:   source
+build_directory:    build
+packer:
+  shrink_vars:      true
+  private:          true
+packages:
+  class:
+    files:
+      - class
+  package:
+    files:
+      - package
+  comparable:
+    files:
+      - comparable
+  enumerable:
+    files:
+      - enumerable
+  observable:
+    files:
+      - observable
+  forwardable:
+    files:
+      - forwardable
+  method_chain:
+    files:
+      - method_chain
+  decorator:
+    files:
+      - decorator
+  proxy:
+    files:
+      - proxy
+  command:
+    files:
+      - command
+  state:
+    files:
+      - state
+  linked_list:
+    files:
+      - linked_list
+  stack_trace:
+    files:
+      - stack_trace
+  ruby:
+    files:
+      - ruby
+bundles:
+  patterns:
+    files:
+      - package
+      - comparable
+      - enumerable
+      - observable
+      - forwardable
+      - decorator
+      - proxy
+      - command
+      - state
+      - stack_trace
+      - linked_list
+      - ruby
+      - method_chain
