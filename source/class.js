@@ -87,9 +87,7 @@ JS = {
   
   ignore: function(key, object) {
     return /^(include|extend)$/.test(key) && typeof object == 'object';
-  },
-  
-  util: {}
+  }
 };
 
 JS.Module = JS.makeFunction();

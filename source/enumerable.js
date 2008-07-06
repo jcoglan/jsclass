@@ -1,28 +1,26 @@
-JS.util.Enum = {
-  forEach: function(block, context) {
-    for (var i = 0, n = this.length; i < n; i++)
-      block.call(context || null, this[i], i);
+JS.Enumerable = new JS.Module({
+  extend: {
+    forEach: function(block, context) {
+      for (var i = 0, n = this.length; i < n; i++)
+        block.call(context || null, this[i], i);
+    },
+    
+    isComparable: function(list) {
+      return list.all(function(item) {
+        return JS.isFn(item.compareTo);
+      });
+    },
+    
+    Collection: new JS.Class({
+      initialize: function(array) {
+        this.length = 0;
+        var push = Array.prototype.push;
+        JS.Enumerable.forEach.call(array, function(item) {
+          push.call(this, item);
+        }, this);
+      }
+    })
   },
-  
-  isComparable: function(list) {
-    return list.all(function(item) {
-      return JS.isFn(item.compareTo);
-    });
-  },
-  
-  Collection: new JS.Class({
-    initialize: function(array) {
-      this.length = 0;
-      var push = Array.prototype.push;
-      JS.util.Enum.forEach.call(array, function(item) {
-        push.call(this, item);
-      }, this);
-    }
-  })
-};
-
-JS.util.Enum.methods = {
-  forEach: JS.util.Enum.forEach,
   
   all: function(block, context) {
     var truth = true;
@@ -120,7 +118,7 @@ JS.util.Enum.methods = {
   },
   
   sort: function(block, context) {
-    var comparable = JS.util.Enum.isComparable(this), entries = this.entries();
+    var comparable = JS.Enumerable.isComparable(this), entries = this.entries();
     block = block || (comparable
         ? function(a,b) { return a.compareTo(b); }
         : null);
@@ -130,7 +128,7 @@ JS.util.Enum.methods = {
   },
   
   sortBy: function(block, context) {
-    var util = JS.util.Enum;
+    var util = JS.Enumerable;
     var map = new util.Collection(this.map(block, context));
     var comparable = util.isComparable(map);
     return new util.Collection(map.zip(this).sort(function(a, b) {
@@ -144,7 +142,7 @@ JS.util.Enum.methods = {
   },
   
   zip: function() {
-    var util = JS.util.Enum;
+    var util = JS.Enumerable;
     var args = [], counter = 0, n = arguments.length, block, context;
     if (arguments[n-1] instanceof Function) {
       block = arguments[n-1]; context = {};
@@ -167,18 +165,18 @@ JS.util.Enum.methods = {
     if (!block) return results;
     util.forEach.call(results, block, context);
   }
-};
+});
   
 // http://developer.mozilla.org/en/docs/index.php?title=Core_JavaScript_1.5_Reference:Global_Objects:Array&oldid=58326
-JS.extend(JS.util.Enum.methods, {
-  collect:  JS.util.Enum.methods.map,
-  detect:   JS.util.Enum.methods.find,
-  entries:  JS.util.Enum.methods.toArray,
-  every:    JS.util.Enum.methods.all,
-  findAll:  JS.util.Enum.methods.select,
-  filter:   JS.util.Enum.methods.select,
-  some:     JS.util.Enum.methods.any
+JS.Enumerable.include({
+  forEach:    JS.Enumerable.forEach,
+  collect:    JS.Enumerable.instanceMethod('map'),
+  detect:     JS.Enumerable.instanceMethod('find'),
+  entries:    JS.Enumerable.instanceMethod('toArray'),
+  every:      JS.Enumerable.instanceMethod('all'),
+  findAll:    JS.Enumerable.instanceMethod('select'),
+  filter:     JS.Enumerable.instanceMethod('select'),
+  some:       JS.Enumerable.instanceMethod('any')
 });
 
-JS.Enumerable = new JS.Module(JS.util.Enum.methods);
-JS.util.Enum.Collection.include(JS.Enumerable);
+JS.Enumerable.Collection.include(JS.Enumerable);
