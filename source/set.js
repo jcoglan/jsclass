@@ -31,6 +31,14 @@ JS.Set = new JS.Class({
     return this._indexOf(item) != -1;
   },
   
+  intersection: function(other) {
+    var set = new this.klass;
+    this.klass.forEach(other, function(item) {
+      if (this.hasMember(item)) set.add(item);
+    }, this);
+    return set;
+  },
+  
   merge: function(list) {
     this.klass.forEach(list, function(item) { this.add(item) }, this);
   },
@@ -39,9 +47,21 @@ JS.Set = new JS.Class({
     return this._members.length;
   },
   
+  union: function(other) {
+    var set = new this.klass;
+    set.merge(this);
+    set.merge(other);
+    return set;
+  },
+  
   _indexOf: function(item) {
     return this._members.indexOf(item);
   }
+});
+
+JS.Set.include({
+  n:  JS.Set.instanceMethod('intersection'),
+  u:  JS.Set.instanceMethod('union')
 });
 
 JS.SortedSet = new JS.Class(JS.Set, {
