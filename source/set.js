@@ -23,7 +23,7 @@ JS.Set = new JS.Class({
   },
   
   add: function(item) {
-    if (this.hasMember(item)) return;
+    if (this.contains(item)) return;
     this._members.push(item);
   },
   
@@ -37,14 +37,14 @@ JS.Set = new JS.Class({
     return classes;
   },
   
-  hasMember: function(item) {
+  contains: function(item) {
     return this._indexOf(item) != -1;
   },
   
   intersection: function(other) {
     var set = new this.klass;
     this.klass.forEach(other, function(item) {
-      if (this.hasMember(item)) set.add(item);
+      if (this.contains(item)) set.add(item);
     }, this);
     return set;
   },
