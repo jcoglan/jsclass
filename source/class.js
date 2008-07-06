@@ -97,6 +97,7 @@ JS.extend(JS.Module.prototype, {
     this.__inc__ = [];
     this.__fns__ = {};
     this.__res__ = options.resolve || {};
+    this.__dep__ = [];
     this.include(methods || {});
   },
   
@@ -120,6 +121,7 @@ JS.extend(JS.Module.prototype, {
       this.__inc__.push(module);
       if (module.extended && options.extended) module.extended(options.extended);
       else module.included && module.included(options.included || this);
+      module.__dep__.push(this);
     }
     else {
       if (typeof inc == 'object') {
@@ -138,6 +140,8 @@ JS.extend(JS.Module.prototype, {
         this.define(method, module[method], {notify: options.included || options.extended});
       }
     }
+    i = this.__dep__.length;
+    while (i--) this.__dep__[i].resolve();
     resolve && this.resolve();
   },
   
