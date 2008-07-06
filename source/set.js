@@ -40,6 +40,14 @@ JS.Set = new JS.Class({
 });
 
 JS.SortedSet = new JS.Class(JS.Set, {
+  extend: {
+    compare: function(one, another) {
+      if (one === undefined || another === undefined) return 0;
+      return (one.compareTo && one.compareTo(another)) ||
+             (one < another ? -1 : (one > another ? 1 : 0));
+    }
+  },
+  
   add: function(item) {
     var point = this._indexOf(item, true);
     if (point === null) return;
@@ -48,12 +56,13 @@ JS.SortedSet = new JS.Class(JS.Set, {
   
   _indexOf: function(item, insertionPoint) {
     var items = this._members, n = items.length, i = 0, d = n;
-    if (item < items[0])   { d = 0; i = 0; }
-    if (item > items[n-1]) { d = 0; i = n; }
+    var c = this.klass.compare;
+    if (c(item, items[0]) == -1)  { d = 0; i = 0; }
+    if (c(item, items[n-1]) == 1) { d = 0; i = n; }
     while (items[i] !== item && d > 0.5) {
       d = d / 2;
-      i += Math.round(d) * (items[i] < item ? 1 : -1);
-      if (i > 0 && items[i-1] < item && items[i] >= item) d = 0;
+      i += Math.round(d) * (c(items[i], item) == -1 ? 1 : -1);
+      if (i > 0 && c(items[i-1], item) == -1 && c(items[i], item) > -1) d = 0;
     }
     var found = (items[i] === item);
     return insertionPoint
