@@ -8,8 +8,17 @@
     <script src="prototype.js" type="text/javascript" charset="utf-8"></script>
     <script src="unittest.js" type="text/javascript" charset="utf-8"></script>
     <script src="../build/class.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/patterns.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href="test.css" type="text/css" media="screen" title="no title" charset="utf-8">
     <script type="text/javascript" charset="utf-8">
+    
+    var benchmark = function(block, n) {
+        n = n || 1;
+        var a = Number(new Date);
+        while (n--) block();
+        var b = Number(new Date);
+        console.log('Time elapsed: ' + (b-a)/1000);
+    };
     
     var Animal = new JS.Class({
         extend: {

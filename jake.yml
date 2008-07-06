@@ -41,6 +41,9 @@ packages:
   linked_list:
     files:
       - linked_list
+  set:
+    files:
+      - set
   stack_trace:
     files:
       - stack_trace
@@ -61,5 +64,6 @@ bundles:
       - state
       - stack_trace
       - linked_list
+      - set
       - ruby
       - method_chain
