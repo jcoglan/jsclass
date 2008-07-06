@@ -97,3 +97,10 @@ JS.SortedSet = new JS.Class(JS.Set, {
         : (found ? i : -1);
   }
 });
+
+JS.Enumerable.include({
+  toSet: function(klass, block, context) {
+    klass = klass || JS.Set;
+    return new klass(this, block, context);
+  }
+});
