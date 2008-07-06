@@ -48,13 +48,35 @@ JS.SortedSet = new JS.Class(JS.Set, {
     }
   },
   
+  initialize: function() {
+    this._hasComparable = false;
+    this.callSuper();
+  },
+  
   add: function(item) {
+    this._hasComparable = this._hasComparable || !!item.compareTo;
     var point = this._indexOf(item, true);
     if (point === null) return;
     this._members.splice(point, 0, item);
   },
   
   _indexOf: function(item, insertionPoint) {
+    if (this._hasComparable) return this._indexOfComparable(item, insertionPoint);
+    var items = this._members, n = items.length, i = 0, d = n;
+    if (item < items[0])   { d = 0; i = 0; }
+    if (item > items[n-1]) { d = 0; i = n; }
+    while (items[i] !== item && d > 0.5) {
+      d = d / 2;
+      i += Math.round(d) * (items[i] < item ? 1 : -1);
+      if (i > 0 && items[i-1] < item && items[i] >= item) d = 0;
+    }
+    var found = (items[i] === item);
+    return insertionPoint
+        ? (found ? null : i)
+        : (found ? i : -1);
+  },
+  
+  _indexOfComparable: function(item, insertionPoint) {
     var items = this._members, n = items.length, i = 0, d = n;
     var c = this.klass.compare;
     if (c(item, items[0]) == -1)  { d = 0; i = 0; }
