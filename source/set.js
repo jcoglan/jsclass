@@ -27,6 +27,16 @@ JS.Set = new JS.Class({
     this._members.push(item);
   },
   
+  classify: function(block, context) {
+    var classes = {}, i = this._members.length, value;
+    while (i--) {
+      value = block.call(context || null, this._members[i]);
+      if (!classes[value]) classes[value] = new this.klass;
+      classes[value].add(this._members[i]);
+    }
+    return classes;
+  },
+  
   hasMember: function(item) {
     return this._indexOf(item) != -1;
   },
