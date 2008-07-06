@@ -12,7 +12,7 @@ JS.Comparable = new JS.Module({
   },
   
   lt: function(other) {
-    return this.compareTo(other) == -1;
+    return this.compareTo(other) < 0;
   },
   
   lte: function(other) {
@@ -20,7 +20,7 @@ JS.Comparable = new JS.Module({
   },
   
   gt: function(other) {
-    return this.compareTo(other) == 1;
+    return this.compareTo(other) > 0;
   },
   
   gte: function(other) {

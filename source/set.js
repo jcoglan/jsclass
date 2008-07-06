@@ -84,7 +84,7 @@ JS.SortedSet = new JS.Class(JS.Set, {
   _indexOf: function(item, insertionPoint) {
     var items = this._members, n = items.length, i = 0, d = n;
     if (n == 0) return insertionPoint ? 0 : -1;
-    var compare = !!item.compareTo;
+    var compare = JS.isFn(item.compareTo);
     
     if ( compare
         ? (item.compareTo(items[0]) < 1)
@@ -99,14 +99,14 @@ JS.SortedSet = new JS.Class(JS.Set, {
     while (items[i] !== item && d > 0.5) {
       d = d / 2;
       i += ( (compare
-              ? (item.compareTo(items[i]) == 1)
+              ? (item.compareTo(items[i]) > 0)
               : (item > items[i]))
           ? 1 : -1 )
           * Math.round(d);
       
       if (i > 0
           && ( compare
-              ? (item.compareTo(items[i-1]) == 1)
+              ? (item.compareTo(items[i-1]) > 0)
               : (item > items[i-1]) )
           && ( compare
               ? (item.compareTo(items[i]) < 1)
