@@ -75,52 +75,45 @@ JS.Set.include({
 });
 
 JS.SortedSet = new JS.Class(JS.Set, {
-  extend: {
-    compare: function(one, another) {
-      if (one === undefined || another === undefined) return 0;
-      return (one.compareTo && one.compareTo(another)) ||
-             (one < another ? -1 : (one > another ? 1 : 0));
-    }
-  },
-  
-  initialize: function() {
-    this._hasComparable = false;
-    this.callSuper();
-  },
-  
   add: function(item) {
-    this._hasComparable = this._hasComparable || !!item.compareTo;
     var point = this._indexOf(item, true);
     if (point === null) return;
     this._members.splice(point, 0, item);
   },
   
   _indexOf: function(item, insertionPoint) {
-    if (this._hasComparable) return this._indexOfComparable(item, insertionPoint);
     var items = this._members, n = items.length, i = 0, d = n;
-    if (item < items[0])   { d = 0; i = 0; }
-    if (item > items[n-1]) { d = 0; i = n; }
+    if (n == 0) return insertionPoint ? 0 : -1;
+    var compare = !!item.compareTo;
+    
+    if ( compare
+        ? (item.compareTo(items[0]) < 1)
+        : (item <= items[0]) )
+        { d = 0; i = 0; }
+    
+    if ( compare
+        ? (item.compareTo(items[n-1]) > -1)
+        : (item >= items[n-1]) )
+        { d = 0; i = n; }
+    
     while (items[i] !== item && d > 0.5) {
       d = d / 2;
-      i += Math.round(d) * (items[i] < item ? 1 : -1);
-      if (i > 0 && items[i-1] < item && items[i] >= item) d = 0;
+      i += ( (compare
+              ? (item.compareTo(items[i]) == 1)
+              : (item > items[i]))
+          ? 1 : -1 )
+          * Math.round(d);
+      
+      if (i > 0
+          && ( compare
+              ? (item.compareTo(items[i-1]) == 1)
+              : (item > items[i-1]) )
+          && ( compare
+              ? (item.compareTo(items[i]) < 1)
+              : (item <= items[i]) )
+      ) d = 0;
     }
-    var found = (items[i] === item);
-    return insertionPoint
-        ? (found ? null : i)
-        : (found ? i : -1);
-  },
-  
-  _indexOfComparable: function(item, insertionPoint) {
-    var items = this._members, n = items.length, i = 0, d = n;
-    var c = this.klass.compare;
-    if (c(item, items[0]) == -1)  { d = 0; i = 0; }
-    if (c(item, items[n-1]) == 1) { d = 0; i = n; }
-    while (items[i] !== item && d > 0.5) {
-      d = d / 2;
-      i += Math.round(d) * (c(items[i], item) == -1 ? 1 : -1);
-      if (i > 0 && c(items[i-1], item) == -1 && c(items[i], item) > -1) d = 0;
-    }
+    
     var found = (items[i] === item);
     return insertionPoint
         ? (found ? null : i)

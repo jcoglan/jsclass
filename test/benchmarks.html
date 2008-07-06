@@ -54,6 +54,24 @@
         }
     });
     
+    var TodoItem = new JS.Class({
+        include: JS.Comparable,
+        
+        initialize: function(position, task) {
+            this.position = position;
+            this.task = task || "";
+        },
+        
+        compareTo: function(other) {
+            if (this.position < other.position)
+                return -1;
+            else if (this.position > other.position)
+                return 1;
+            else
+                return 0;
+        }
+    });
+    
     </script>
     
 </head>
