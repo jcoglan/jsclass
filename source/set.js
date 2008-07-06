@@ -10,11 +10,12 @@ JS.Set = new JS.Class({
   
   include: JS.Enumerable || {},
   
-  initialize: function(list) {
+  initialize: function(list, block, context) {
     this._members = [];
-    this.klass.forEach(list, function(item) {
-      this.add(item);
+    if (block) this.klass.forEach(list, function(item) {
+      this.add(block.call(context || null, item));
     }, this);
+    else this.merge(list);
   },
   
   forEach: function(block, context) {
@@ -28,6 +29,10 @@ JS.Set = new JS.Class({
   
   hasMember: function(item) {
     return this._indexOf(item) != -1;
+  },
+  
+  merge: function(list) {
+    this.klass.forEach(list, function(item) { this.add(item) }, this);
   },
   
   size: function() {
