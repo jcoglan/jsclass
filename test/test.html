@@ -1225,6 +1225,7 @@
             todos = $R(1,n).map(function(i) { return new TodoItem(i%4) });
             set = new JS.SortedSet(todos);
             i = n; while (i--) assert(set.contains(todos[i]));
+            assertEnumEqual([0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3], set.map(function(t) { return t.position }));
         }},
         
         testObservableModule: function() { with(this) {
