@@ -1162,6 +1162,42 @@
             this.assertEqual('bar,buzz,foo', hash3.values().sort().join(','));
         },
         
+        testSet: function() { with(this) {
+            var a = new JS.Set([8,2,7,4,8,1]);
+            var b = new JS.Set([3,5,6,9,2,8]);
+            assertEqual(5, a.size());
+            assertEqual(6, b.size());
+            assertEnumEqual([8,2,7,4,1,3,5,6,9], a.u(b).entries());
+            assertEqual(JS.Set, a.u(b).klass);
+            assertEqual(JS.Set, a.n(b).klass);
+            assertEnumEqual([2,8], a.n(b).entries());
+            var c = new JS.Set([1,9,2,8,3,7,4,6,5]);
+            var cats = c.classify(function(x) { return x % 3 });
+            assertEnumEqual([6,3,9], cats[0].entries());
+            assertEnumEqual([4,7,1], cats[1].entries());
+            assertEnumEqual([5,8,2], cats[2].entries());
+            
+            var s, ary, i, n = 10;
+            for (i = 0; i < n; i++) {
+                ary = new JS.Set( $R(1,20).map(function() {
+                    return Math.round(100 * Math.random());
+                }) ).entries();
+                s = new JS.SortedSet(ary);
+                ary.sort(function(a,b) { return a-b });
+                assertEnumEqual(ary, s.entries());
+            }
+            
+            s = new JS.SortedSet(a);
+            assertEnumEqual([1,2,3,4,5,6,7,8,9], s.u(b).entries());
+            assertEqual(JS.SortedSet, s.u(n).klass);
+            cats = s.u(b).classify(function(x) { return x % 4 });
+            assertEqual(JS.SortedSet, cats[0].klass);
+            assertEnumEqual([4,8], cats[0].entries());
+            assertEnumEqual([1,5,9], cats[1].entries());
+            assertEnumEqual([2,6], cats[2].entries());
+            assertEnumEqual([3,7], cats[3].entries());
+        }},
+        
         testObservableModule: function() { with(this) {
             var pub = new Publisher;
             this.counter = 0;
