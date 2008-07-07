@@ -1215,6 +1215,14 @@
             assertEnumEqual([1,2,4,5,6,9], s.map(function(t) { return t.position }));
         }},
         
+        testHomogenousSortedSet: function() { with(this) {
+            var n= 8;
+            var todos = $R(1,n).map(function() { return new TodoItem(5) });
+            var set = new JS.SortedSet(todos);
+            assertEqual(n, set.size());
+            var i = n; while (i--) assert(set.contains(todos[i]));
+        }},
+        
         testObservableModule: function() { with(this) {
             var pub = new Publisher;
             this.counter = 0;

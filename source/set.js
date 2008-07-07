@@ -115,14 +115,20 @@ JS.SortedSet = new JS.Class(JS.Set, {
     if (n == 0) return insertionPoint ? 0 : -1;
     var compare = this.klass.compare;
     
-    if (compare(item, items[0]) < 1)    { d = 0; i = 0; }
-    if (compare(item, items[n-1]) > -1) { d = 0; i = n; }
+    if (compare(item, items[0]) < 1)   { d = 0; i = 0; }
+    if (compare(item, items[n-1]) > 0) { d = 0; i = n; }
     
     while (items[i] !== item && d > 0.5) {
       d = d / 2;
       i += (compare(item, items[i]) > 0 ? 1 : -1) * Math.round(d);
       if (i > 0 && compare(item, items[i-1]) > 0 && compare(item, items[i]) < 1) d = 0;
     }
+    
+    // The pointer will end up at the start of any homogenous section. Step
+    // through the section until we find the needle or until the section ends.
+    while (items[i] && items[i] !== item &&
+        compare(item, items[i]) == 0) i += 1;
+    
     var found = (items[i] === item);
     return insertionPoint
         ? (found ? null : i)
