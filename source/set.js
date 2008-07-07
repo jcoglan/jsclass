@@ -57,6 +57,12 @@ JS.Set = new JS.Class({
     this.klass.forEach(list, function(item) { this.add(item) }, this);
   },
   
+  rebuild: function() {
+    var members = this._members;
+    this.clear();
+    this.merge(members);
+  },
+  
   size: function() {
     return this._members.length;
   },
@@ -83,12 +89,6 @@ JS.SortedSet = new JS.Class(JS.Set, {
     var point = this._indexOf(item, true);
     if (point === null) return;
     this._members.splice(point, 0, item);
-  },
-  
-  sort: function() {
-    var members = this._members;
-    this.clear();
-    this.merge(members);
   },
   
   _indexOf: function(item, insertionPoint) {
