@@ -18,6 +18,17 @@ JS.Set = new JS.Class({
     else this.merge(list);
   },
   
+  flatten: function(set) {
+    var members = this._members, item, i = members.length;
+    if (!set) { this.clear(); set = this; }
+    while (i--) {
+      item = members[i];
+      if (item.isA && item.isA(JS.Set)) item.flatten(set);
+      else set.add(item);
+    }
+    return set;
+  },
+  
   forEach: function(block, context) {
     this.klass.forEach(this._members, block, context);
   },
@@ -110,10 +121,8 @@ JS.SortedSet = new JS.Class(JS.Set, {
     while (items[i] !== item && d > 0.5) {
       d = d / 2;
       i += (compare(item, items[i]) > 0 ? 1 : -1) * Math.round(d);
-      
       if (i > 0 && compare(item, items[i-1]) > 0 && compare(item, items[i]) < 1) d = 0;
     }
-    
     var found = (items[i] === item);
     return insertionPoint
         ? (found ? null : i)

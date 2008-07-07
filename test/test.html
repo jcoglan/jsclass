@@ -1177,7 +1177,17 @@
             assertEnumEqual([4,7,1], cats[1].entries());
             assertEnumEqual([5,8,2], cats[2].entries());
             
+            var list = [9,3,7,8,4];
+            var sorted = new JS.SortedSet(['fred', 'baz']);
+            var inner = new JS.Set([5, sorted]);
+            var nest = new JS.Set([4, 'foo', list, inner, 12, new JS.Set([45,'twelve'])]);
+            nest.flatten();
+            assertEnumEqual(['twelve',45,12,'fred','baz',5,list,'foo',4], nest.entries());
+            assertEnumEqual(['baz', 'fred'], sorted.entries());
+            assertEnumEqual([5, sorted], inner.entries());
+            
             var s, ary, i, n = 10;
+            
             for (i = 0; i < n; i++) {
                 ary = new JS.Set( $R(1,20).map(function() {
                     return Math.round(100 * Math.random());
