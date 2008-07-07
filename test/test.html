@@ -1216,11 +1216,15 @@
         }},
         
         testHomogenousSortedSet: function() { with(this) {
-            var n= 8;
+            var n= 20;
             var todos = $R(1,n).map(function() { return new TodoItem(5) });
             var set = new JS.SortedSet(todos);
             assertEqual(n, set.size());
             var i = n; while (i--) assert(set.contains(todos[i]));
+            
+            todos = $R(1,n).map(function(i) { return new TodoItem(i%4) });
+            set = new JS.SortedSet(todos);
+            i = n; while (i--) assert(set.contains(todos[i]));
         }},
         
         testObservableModule: function() { with(this) {
