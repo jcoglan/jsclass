@@ -5,65 +5,34 @@ packer:
   shrink_vars:      true
   private:          true
 packages:
-  class:
-    files:
-      - class
-  package:
-    files:
-      - package
-  comparable:
-    files:
-      - comparable
-  enumerable:
-    files:
-      - enumerable
-  observable:
-    files:
-      - observable
-  forwardable:
-    files:
-      - forwardable
-  method_chain:
-    files:
-      - method_chain
-  decorator:
-    files:
-      - decorator
-  proxy:
-    files:
-      - proxy
-  command:
-    files:
-      - command
-  state:
-    files:
-      - state
-  linked_list:
-    files:
-      - linked_list
-  set:
-    files:
-      - set
-  stack_trace:
-    files:
-      - stack_trace
-  ruby:
-    files:
-      - ruby
+  class:            class
+  package:          package
+  comparable:       comparable
+  enumerable:       enumerable
+  observable:       observable
+  forwardable:      forwardable
+  method_chain:     method_chain
+  decorator:        decorator
+  proxy:            proxy
+  command:          command
+  state:            state
+  linked_list:      linked_list
+  set:              set
+  stack_trace:      stack_trace
+  ruby:             ruby
 bundles:
   patterns:
-    files:
-      - package
-      - comparable
-      - enumerable
-      - observable
-      - forwardable
-      - decorator
-      - proxy
-      - command
-      - state
-      - stack_trace
-      - linked_list
-      - set
-      - ruby
-      - method_chain
+    - package
+    - comparable
+    - enumerable
+    - observable
+    - forwardable
+    - decorator
+    - proxy
+    - command
+    - state
+    - stack_trace
+    - linked_list
+    - set
+    - ruby
+    - method_chain
