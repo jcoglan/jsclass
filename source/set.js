@@ -11,7 +11,7 @@ JS.Set = new JS.Class({
   include: JS.Enumerable || {},
   
   initialize: function(list, block, context) {
-    this._members = [];
+    this.clear();
     if (block) this.klass.forEach(list, function(item) {
       this.add(block.call(context || null, item));
     }, this);
@@ -35,6 +35,10 @@ JS.Set = new JS.Class({
       classes[value].add(this._members[i]);
     }
     return classes;
+  },
+  
+  clear: function() {
+    this._members = [];
   },
   
   contains: function(item) {
@@ -79,6 +83,12 @@ JS.SortedSet = new JS.Class(JS.Set, {
     var point = this._indexOf(item, true);
     if (point === null) return;
     this._members.splice(point, 0, item);
+  },
+  
+  sort: function() {
+    var members = this._members;
+    this.clear();
+    this.merge(members);
   },
   
   _indexOf: function(item, insertionPoint) {

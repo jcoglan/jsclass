@@ -1196,6 +1196,13 @@
             assertEnumEqual([1,5,9], cats[1].entries());
             assertEnumEqual([2,6], cats[2].entries());
             assertEnumEqual([3,7], cats[3].entries());
+            
+            var todos = $R(1,6).map(function(i) { return new TodoItem(i) });
+            s = new JS.SortedSet(todos);
+            todos[2].position = 9;
+            assertEnumEqual([1,2,9,4,5,6], s.map(function(t) { return t.position }));
+            s.sort();
+            assertEnumEqual([1,2,4,5,6,9], s.map(function(t) { return t.position }));
         }},
         
         testObservableModule: function() { with(this) {
