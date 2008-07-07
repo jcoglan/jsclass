@@ -85,6 +85,14 @@ JS.Set.include({
 });
 
 JS.SortedSet = new JS.Class(JS.Set, {
+  extend: {
+    compare: function(one, another) {
+      return one.compareTo
+          ? one.compareTo(another)
+          : (one < another ? -1 : (one > another ? 1 : 0));
+    }
+  },
+  
   add: function(item) {
     var point = this._indexOf(item, true);
     if (point === null) return;
@@ -94,34 +102,16 @@ JS.SortedSet = new JS.Class(JS.Set, {
   _indexOf: function(item, insertionPoint) {
     var items = this._members, n = items.length, i = 0, d = n;
     if (n == 0) return insertionPoint ? 0 : -1;
-    var compare = JS.isFn(item.compareTo);
+    var compare = this.klass.compare;
     
-    if ( compare
-        ? (item.compareTo(items[0]) < 1)
-        : (item <= items[0]) )
-        { d = 0; i = 0; }
-    
-    if ( compare
-        ? (item.compareTo(items[n-1]) > -1)
-        : (item >= items[n-1]) )
-        { d = 0; i = n; }
+    if (compare(item, items[0]) < 1)    { d = 0; i = 0; }
+    if (compare(item, items[n-1]) > -1) { d = 0; i = n; }
     
     while (items[i] !== item && d > 0.5) {
       d = d / 2;
-      i += ( (compare
-              ? (item.compareTo(items[i]) > 0)
-              : (item > items[i]))
-          ? 1 : -1 )
-          * Math.round(d);
+      i += (compare(item, items[i]) > 0 ? 1 : -1) * Math.round(d);
       
-      if (i > 0
-          && ( compare
-              ? (item.compareTo(items[i-1]) > 0)
-              : (item > items[i-1]) )
-          && ( compare
-              ? (item.compareTo(items[i]) < 1)
-              : (item <= items[i]) )
-      ) d = 0;
+      if (i > 0 && compare(item, items[i-1]) > 0 && compare(item, items[i]) < 1) d = 0;
     }
     
     var found = (items[i] === item);

@@ -95,6 +95,34 @@
         
         testObjectInstantiation: function() { with(this) {
             benchmark(function() { new Bear('Yogi') }, 3000);
+        }},
+        
+        testSetSorting: function() { with(this) {
+            var s = new JS.SortedSet;
+            benchmark(function() {
+                s.add( Math.round(Math.random() * 10000) );
+            }, 3000);
+            
+            s = new JS.SortedSet;
+            benchmark(function() {
+                s.add( new TodoItem( Math.round(Math.random() * 10000) ) );
+            }, 3000);
+            
+            s = new JS.SortedSet;
+            (5000).times(function() {
+                s.add( Math.round(Math.random() * 10000) );
+            });
+            benchmark(function() {
+                s.contains( Math.round(Math.random() * 10000) );
+            }, 5000);
+            
+            s = new JS.SortedSet;
+            (5000).times(function() {
+                s.add( new TodoItem( Math.round(Math.random() * 10000) ) );
+            });
+            benchmark(function() {
+                s.contains( new TodoItem ( Math.round(Math.random() * 10000) ) );
+            }, 5000);
         }}
     });
         
