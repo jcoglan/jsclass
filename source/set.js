@@ -5,6 +5,12 @@ JS.Set = new JS.Class({
       if (list.forEach) return list.forEach(block, context);
       for (var i = 0, n = list.length; i < n; i++)
         block.call(context || null, list[i], i);
+    },
+    
+    areEqual: function(one, another) {
+      return one.equal
+          ? one.equal(another)
+          : (one === another);
     }
   },
   
@@ -16,6 +22,15 @@ JS.Set = new JS.Class({
       this.add(block.call(context || null, item));
     }, this);
     else this.merge(list);
+  },
+  
+  equal: function(other) {
+    if (this.length != other.length || !(other.isA && other.isA(JS.Set))) return false;
+    var i = this._members.length;
+    while (i--) {
+      if (!other.contains(this._members[i])) return false;
+    }
+    return true;
   },
   
   flatten: function(set) {
@@ -36,6 +51,7 @@ JS.Set = new JS.Class({
   add: function(item) {
     if (this.contains(item)) return;
     this._members.push(item);
+    this.length = this.size = this._members.length;
   },
   
   classify: function(block, context) {
@@ -74,10 +90,6 @@ JS.Set = new JS.Class({
     this.merge(members);
   },
   
-  size: function() {
-    return this._members.length;
-  },
-  
   union: function(other) {
     var set = new this.klass;
     set.merge(this);
@@ -86,7 +98,11 @@ JS.Set = new JS.Class({
   },
   
   _indexOf: function(item) {
-    return this._members.indexOf(item);
+    var i = this._members.length, equal = this.klass.areEqual;
+    while (i--) {
+      if (equal(item, this._members[i])) return i;
+    }
+    return -1;
   }
 });
 
@@ -108,17 +124,18 @@ JS.SortedSet = new JS.Class(JS.Set, {
     var point = this._indexOf(item, true);
     if (point === null) return;
     this._members.splice(point, 0, item);
+    this.length = this.size = this._members.length;
   },
   
   _indexOf: function(item, insertionPoint) {
     var items = this._members, n = items.length, i = 0, d = n;
     if (n == 0) return insertionPoint ? 0 : -1;
-    var compare = this.klass.compare;
+    var compare = this.klass.compare, equal = this.klass.areEqual;
     
     if (compare(item, items[0]) < 1)   { d = 0; i = 0; }
     if (compare(item, items[n-1]) > 0) { d = 0; i = n; }
     
-    while (items[i] !== item && d > 0.5) {
+    while (!equal(item, items[i]) && d > 0.5) {
       d = d / 2;
       i += (compare(item, items[i]) > 0 ? 1 : -1) * Math.round(d);
       if (i > 0 && compare(item, items[i-1]) > 0 && compare(item, items[i]) < 1) d = 0;
@@ -126,10 +143,10 @@ JS.SortedSet = new JS.Class(JS.Set, {
     
     // The pointer will end up at the start of any homogenous section. Step
     // through the section until we find the needle or until the section ends.
-    while (items[i] && items[i] !== item &&
+    while (items[i] && !equal(item, items[i]) &&
         compare(item, items[i]) == 0) i += 1;
     
-    var found = (items[i] === item);
+    var found = equal(item, items[i]);
     return insertionPoint
         ? (found ? null : i)
         : (found ? i : -1);
