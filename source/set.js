@@ -25,7 +25,7 @@ JS.Set = new JS.Class({
   },
   
   equal: function(other) {
-    if (this.length != other.length || !(other.isA && other.isA(JS.Set))) return false;
+    if (this.length != other.length || !(other instanceof JS.Set)) return false;
     var i = this._members.length;
     while (i--) {
       if (!other.contains(this._members[i])) return false;
@@ -38,7 +38,7 @@ JS.Set = new JS.Class({
     if (!set) { this.clear(); set = this; }
     while (i--) {
       item = members[i];
-      if (item.isA && item.isA(JS.Set)) item.flatten(set);
+      if (item instanceof JS.Set) item.flatten(set);
       else set.add(item);
     }
     return set;
