@@ -72,11 +72,20 @@ JS.Set = new JS.Class({
     return this._indexOf(item) != -1;
   },
   
-  // TODO
-  difference: function() {},
+  difference: function(other) {
+    other = (other instanceof JS.Set) ? other : new JS.Set(other);
+    var set = new this.klass, items = this._members, i = items.length;
+    while (i--) {
+      if (!other.contains(items[i])) set.add(items[i]);
+    }
+    return set;
+  },
   
-  // TODO
-  divide: function() {},
+  divide: function(block, context) {
+    var classes = this.classify(block, context), sets = new this.klass;
+    for (var key in classes) sets.add(classes[key]);
+    return sets;
+  },
   
   intersection: function(other) {
     var set = new this.klass;
@@ -86,8 +95,9 @@ JS.Set = new JS.Class({
     return set;
   },
   
-  // TODO
-  isEmpty: function() {},
+  isEmpty: function() {
+    return this._members.length == 0;
+  },
   
   // TODO
   isProperSubset: function() {},
@@ -117,8 +127,10 @@ JS.Set = new JS.Class({
   // TODO
   removeIf: function() {},
   
-  // TODO
-  replace: function() {},
+  replace: function(other) {
+    this.clear();
+    this.merge(other);
+  },
   
   // TODO
   subtract: function() {},

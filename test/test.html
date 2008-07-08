@@ -1202,6 +1202,18 @@
             assertEnumEqual(['baz', 'fred'], sorted.entries());
             assertEnumEqual([5, sorted], inner.entries());
             
+            assertEnumEqual([4,9,8], new JS.Set([8,2,9,4,'foo']).difference(['foo',2]));
+            
+            var sets = a.u(b).divide(function(x) { return x % 3 });
+            assert(sets instanceof JS.Set);
+            assert(sets.contains(new JS.Set([6,9,3])));
+            assert(sets.contains(new JS.SortedSet([7,1,4])));
+            assert(sets.contains(new JS.Set([8,2,5])));
+            assertEqual(3, sets.size);
+            
+            sets.replace([0,3,8,2]);
+            assert(sets.equal(new JS.SortedSet([3,0,2,8])));
+            
             var s, ary, i, n = 10;
             
             for (i = 0; i < n; i++) {
