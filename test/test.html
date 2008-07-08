@@ -1163,6 +1163,10 @@
         },
         
         testSet: function() { with(this) {
+            assert((new JS.Set) instanceof JS.Set);
+            assert((new JS.SortedSet) instanceof JS.Set);
+            assert((new JS.SortedSet) instanceof JS.SortedSet);
+            
             var a = new JS.Set([8,2,7,4,8,1]);
             var b = new JS.Set([3,5,6,9,2,8]);
             assertEqual(5, a.size);
