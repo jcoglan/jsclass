@@ -72,6 +72,12 @@ JS.Set = new JS.Class({
     return this._indexOf(item) != -1;
   },
   
+  // TODO
+  difference: function() {},
+  
+  // TODO
+  divide: function() {},
+  
   intersection: function(other) {
     var set = new this.klass;
     this.klass.forEach(other, function(item) {
@@ -79,6 +85,21 @@ JS.Set = new JS.Class({
     }, this);
     return set;
   },
+  
+  // TODO
+  isEmpty: function() {},
+  
+  // TODO
+  isProperSubset: function() {},
+  
+  // TODO
+  isProperSuperset: function() {},
+  
+  // TODO
+  isSubset: function() {},
+  
+  // TODO
+  isSuperset: function() {},
   
   merge: function(list) {
     this.klass.forEach(list, function(item) { this.add(item) }, this);
@@ -90,12 +111,27 @@ JS.Set = new JS.Class({
     this.merge(members);
   },
   
+  // TODO
+  remove: function() {},
+  
+  // TODO
+  removeIf: function() {},
+  
+  // TODO
+  replace: function() {},
+  
+  // TODO
+  subtract: function() {},
+  
   union: function(other) {
     var set = new this.klass;
     set.merge(this);
     set.merge(other);
     return set;
   },
+  
+  // TODO
+  xor: function(other) {},
   
   _indexOf: function(item) {
     var i = this._members.length, equal = this.klass.areEqual;
