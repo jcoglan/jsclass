@@ -8,7 +8,7 @@ JS.Package = new JS.Class({
   addDependency: function(pkg) {
     if (typeof pkg == 'string') pkg = this.klass.getByName(pkg);
     if (!pkg) return;
-    if (this._deps.indexOf(pkg) == -1) this._deps.push(pkg);
+    if (JS.indexOf(this._deps, pkg) == -1) this._deps.push(pkg);
   },
   
   addName: function(name) {
@@ -16,7 +16,7 @@ JS.Package = new JS.Class({
   },
   
   contains: function(name) {
-    return this._names.indexOf(name) != -1;
+    return JS.indexOf(this._names, name) != -1;
   },
   
   getObjects: function() {
@@ -40,7 +40,7 @@ JS.Package = new JS.Class({
     var deps = list || [], i, n;
     for (i = 0, n = this._deps.length; i < n; i++)
       this._deps[i].expand(deps);
-    if (deps.indexOf(this) == -1) deps.push(this);
+    if (JS.indexOf(deps, this) == -1) deps.push(this);
     return deps;
   },
   

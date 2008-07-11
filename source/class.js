@@ -81,6 +81,13 @@ JS = {
     return results;
   },
   
+  indexOf: function(haystack, needle) {
+    for (var i = 0, n = haystack.length; i < n; i++) {
+      if (haystack[i] === needle) return i;
+    }
+    return -1;
+  },
+  
   isFn: function(object) {
     return object instanceof Function;
   },
@@ -161,7 +168,7 @@ JS.extend(JS.Module.prototype, {
     var found, i, n;
     for (i = 0, n = this.__inc__.length; i < n; i++)
       this.__inc__[i].lookup(name, true, results);
-    if (lookInSelf !== false && (found = this.__fns__[name]) && results.indexOf(found) == -1)
+    if (lookInSelf !== false && (found = this.__fns__[name]) && JS.indexOf(results, found) == -1)
       results.push(found);
     return results;
   },

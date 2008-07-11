@@ -38,7 +38,7 @@ JS.StackTrace = new JS.Module({
       var results = [], n = list.length, i = n, key, item, name;
       while (i--) {
         item = list[i];
-        if (n > 1 && this.excluded.indexOf(item.o) != -1) continue;
+        if (n > 1 && JS.indexOf(this.excluded, item.o) != -1) continue;
         if (item.o instanceof Array) continue;
         name = item.name ? item.name + '.' : '';
         for (key in item.o) {
