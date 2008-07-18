@@ -103,8 +103,7 @@ JS.extend(JS.Module.prototype, {
     options = options || {};
     this.__inc__ = [];
     this.__fns__ = {};
-    this.__res__ = options.resolve || {};
-    this.__dep__ = [];
+    this.__res__ = options.resolve || null;
     this.include(methods || {});
   },
   
@@ -128,7 +127,6 @@ JS.extend(JS.Module.prototype, {
       this.__inc__.push(module);
       if (module.extended && options.extended) module.extended(options.extended);
       else module.included && module.included(options.included || this);
-      module.__dep__.push(this);
     }
     else {
       if (typeof inc == 'object') {
@@ -147,13 +145,11 @@ JS.extend(JS.Module.prototype, {
         this.define(method, module[method], {notify: options.included || options.extended});
       }
     }
-    i = this.__dep__.length;
-    while (i--) this.__dep__[i].resolve(null, true);
     resolve && this.resolve();
   },
   
   includes: function(moduleOrClass) {
-    if (Object == moduleOrClass || this == moduleOrClass || this.__res__ == moduleOrClass.prototype)
+    if (Object == moduleOrClass || this == moduleOrClass || this.__res__ === moduleOrClass.prototype)
       return true;
     var i = this.__inc__.length;
     while (i--) {
@@ -201,17 +197,14 @@ JS.extend(JS.Module.prototype, {
     return result;
   } ),
   
-  resolve: function(target, recurse) {
+  resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
+    if (!resolved) return;
     for (i = 0, n = this.__inc__.length; i < n; i++)
       this.__inc__[i].resolve(target);
     for (key in this.__fns__) {
       made = target.make(key, this.__fns__[key]);
       if (resolved[key] != made) resolved[key] = made;
-    }
-    if (recurse) {
-      i = this.__dep__.length;
-      while (i--) this.__dep__[i].resolve(null, true);
     }
   }
 });

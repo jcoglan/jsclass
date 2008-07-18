@@ -41,7 +41,7 @@ JS.State = new JS.Module({
         klass.include(methods);
         collection[state] = new klass;
       }
-      this.addMethods(stubs, module.__res__.klass);
+      if (module.__res__) this.addMethods(stubs, module.__res__.klass);
       return collection;
     },
     
