@@ -22,6 +22,7 @@ packages:
   ruby:             ruby
 bundles:
   patterns:
+    - method_chain
     - package
     - comparable
     - enumerable
@@ -35,4 +36,4 @@ bundles:
     - linked_list
     - set
     - ruby
-    - method_chain
+

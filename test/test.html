@@ -1048,6 +1048,8 @@
             var racoon = new Animal('Racoon');
             assertEqual('THE TEXT', racoon._(new String('the text')).toUpperCase());
             assertEqual('Racoon hides in your TV', racoon._(function(thing) { return this.name + ' ' + thing; }, 'hides in your TV'));
+            
+            assertEqual('function', typeof it().setState);
         }},
         
         testComparableModule: function() { with(this) {

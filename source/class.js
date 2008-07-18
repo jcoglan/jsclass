@@ -142,7 +142,7 @@ JS.extend(JS.Module.prototype, {
       }
       for (method in module) {
         if (JS.ignore(method, module[method])) continue;
-        this.define(method, module[method], {notify: options.included || options.extended});
+        this.define(method, module[method], {notify: options.included || options.extended || this});
       }
     }
     resolve && this.resolve();
