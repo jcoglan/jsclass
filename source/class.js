@@ -148,7 +148,7 @@ JS.extend(JS.Module.prototype, {
       }
     }
     i = this.__dep__.length;
-    while (i--) this.__dep__[i].resolve();
+    while (i--) this.__dep__[i].resolve(null, true);
     resolve && this.resolve();
   },
   
@@ -201,13 +201,17 @@ JS.extend(JS.Module.prototype, {
     return result;
   } ),
   
-  resolve: function(target) {
+  resolve: function(target, recurse) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
     for (i = 0, n = this.__inc__.length; i < n; i++)
       this.__inc__[i].resolve(target);
     for (key in this.__fns__) {
       made = target.make(key, this.__fns__[key]);
       if (resolved[key] != made) resolved[key] = made;
+    }
+    if (recurse) {
+      i = this.__dep__.length;
+      while (i--) this.__dep__[i].resolve(null, true);
     }
   }
 });
