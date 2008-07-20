@@ -6,7 +6,7 @@
   class. Objects also have an @isA()@ method that can be used to type-check against the whole
   class tree.
   
-  <pre>
+  <pre class="prettyprint">
   /**
    * These classes exist...
    * var Animal = JS.Class({...});
@@ -23,13 +23,13 @@
   All classes have a @superclass@ property that refers to their parent class, or @Object@ if they
   have no parent class.
   
-  <pre>
+  <pre class="prettyprint">
   rex.klass               // -> Dog
   rex.klass.superclass    // -> Animal</pre>
   
   You can use this from within methods to access class constructors, static methods, etc...
   
-  <pre>
+  <pre class="prettyprint">
   var Sheep = new JS.Class(Animal, {
     // Returns a new Animal with the same name as the sheep
     clone: function() {

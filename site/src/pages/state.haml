@@ -18,7 +18,7 @@
   what's going on. First, let's define some state objects. Each one represents the behaviour
   of a set of methods in a given state, and each state should implement the same methods.
   
-  <pre>
+  <pre class="prettyprint">
   var Tools = {
     Pen: {
       mouseDown: function() {
@@ -43,7 +43,7 @@
   <tt>mouseDown()</tt> itself - this is left up to @JS.State@. It should define an initial
   state for itself when initialized.
   
-  <pre>
+  <pre class="prettyprint">
   var DrawingController = new JS.Class({
     include: JS.State,
     
@@ -57,7 +57,7 @@
   state of the object. @inState()@ takes one or more state objects, and returns @true@ iff the
   object is in any one of them.
   
-  <pre>
+  <pre class="prettyprint">
   var d = new DrawingController();
   d.inState(Tools.Pen)                    // -> true
   d.inState(Tools.Selection)              // -> false
@@ -66,7 +66,7 @@
   As @setState()@ has added the required methods for us, we can call state-dependent methods
   on the object, change its state, and see what happens.
   
-  <pre>
+  <pre class="prettyprint">
   d.mouseDown();
       // -> "Starting to draw"
   d.mouseUp();
@@ -86,7 +86,7 @@
   for adding all the class' states. Including states in the class itself also allows you to
   refer to them by name rather than as objects, so we could rewrite the above as:
   
-  <pre>
+  <pre class="prettyprint">
   var DrawingController = new JS.Class({
     include: JS.State,
     
@@ -132,7 +132,7 @@
   If one state has a missing method, a method is added to it that simply returns the object.
   For example:
   
-  <pre>
+  <pre class="prettyprint">
   var Twiddle = new JS.Class({
     include: JS.State,
     
@@ -177,7 +177,7 @@
   to specify the ways in which it differs from its parent. Let's take an example implementation
   of @ChildController@.
   
-  <pre>
+  <pre class="prettyprint">
   var ChildController = new JS.Class(DrawingController, {
     states: {
       Selection: {
@@ -200,7 +200,7 @@
   the @Eraser@ state. The @Selection.mouseDown@ method calls the super method from the
   @DrawingController@ class during its execution. Let's test out our new class:
   
-  <pre>
+  <pre class="prettyprint">
   c = new ChildController();
   c.inState('Pen')      // -> true
   c.mouseDown()         // -> "Starting to draw"

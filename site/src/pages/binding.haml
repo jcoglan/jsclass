@@ -4,7 +4,7 @@
   In JavaScript, an object's methods are just functions. Functions are data. And that means I can
   do the following:
   
-  <pre>
+  <pre class="prettyprint">
   var rex = new Dog('Rex');
   var speak = rex.speak;    // a method
   speak('biscuits');
@@ -14,14 +14,14 @@
   @this@ inside the function no longer refers to the right thing. @JS.Class@ gives each class
   instance a @method()@ method, that returns a method by name, bound to its source object.
   
-  <pre>
+  <pre class="prettyprint">
   var speak = rex.method('speak');
   speak('biscuits');
       // -> "MY NAME IS REX AND I LIKE BISCUITS!"</pre>
   
   You can also do this with static methods:
   
-  <pre>
+  <pre class="prettyprint">
   var User = new JS.Class({
     extend: {
       create: function(name) {

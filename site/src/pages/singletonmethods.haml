@@ -6,7 +6,7 @@
   the object's class definition. @JS.Class@ allows the same behaviour. Recall our @Animal@
   class:
   
-  <pre>
+  <pre class="prettyprint">
   var Animal = new JS.Class({
     initialize: function(name) {
       this.name = name;
@@ -19,7 +19,7 @@
   We can create a new animal and @extend@ it with singleton methods. All @JS.Class@-derived
   objects have an @extend()@ method for doing this:
   
-  <pre>
+  <pre class="prettyprint">
   var cow = new Animal('Daisy');
   
   cow.extend({

@@ -5,7 +5,7 @@
   on all @JS.Class@ classes. Calling @include()@ adds instance methods to the class, and @extend@
   adds static methods, just like in Ruby. We could rewrite our @TodoItem@ class as:
   
-  <pre>
+  <pre class="prettyprint">
   var TodoItem = new JS.Class({
     initialize: function(position) {
       this.position = position;
@@ -26,13 +26,13 @@
   @include@-ing/@extend@-ing a class like this will overwrite any existing methods with the same names
   as those in the mixin, unless you pass @false@ as the second argument.
   
-  <pre>
+  <pre class="prettyprint">
   TodoItem.include(Comparable, false);</pre>
   
   If you @include()@ an object which itself has @include@ or @extend@ properties, these will be
   treated as directives and applied to your class. So you can do this:
   
-  <pre>
+  <pre class="prettyprint">
   var Enumerable = { /* methods... */ };
   
   var Comparable = {

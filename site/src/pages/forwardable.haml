@@ -11,7 +11,7 @@
   an array in one of its instance properties. You might implement some methods for
   manipulating the array through the class' own interface:
   
-  <pre>
+  <pre class="prettyprint">
   var RecordCollection = new JS.Class({
     initialize: function() {
       this.records = [];
@@ -29,7 +29,7 @@
   to delegate calls to as the first argument, and the names of the delegated methods
   as the other arguments:
   
-  <pre>
+  <pre class="prettyprint">
   var RecordCollection = new JS.Class({
     extend: JS.Forwardable,
     initialize: function() {
@@ -46,7 +46,7 @@
   
   If you need to define extra class methods, you need to change the notation slightly:
   
-  <pre>
+  <pre class="prettyprint">
   var RecordCollection = new JS.Class({
     extend: [JS.Forwardable, {
       // class methods go here
@@ -61,6 +61,6 @@
   If you want to give the delegating method a different name, use the @defineDelegator@
   (singular) method instead:
   
-  <pre>
+  <pre class="prettyprint">
   // Add an instance method called 'add' that calls records.push
   RecordCollection.defineDelegator('records', 'push', 'add');</pre>

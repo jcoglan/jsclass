@@ -22,7 +22,7 @@
   
   To use a linked list, you create it as follows and add objects to it:
   
-  <pre>
+  <pre class="prettyprint">
   var list = new JS.LinkedList.Doubly.Circular();
   var foo = {}, bar = {}, baz = {};
   list.push(foo);
@@ -61,7 +61,7 @@
   pointers. If you want to add an object to several lists, you can wrap it in a node object before
   adding it to each list:
   
-  <pre>
+  <pre class="prettyprint">
   var listA = new JS.LinkedList.Doubly.Circular();
   var listB = new JS.LinkedList.Doubly.Circular();
   
@@ -83,7 +83,7 @@
   If the "@Enumerable@":/enumerable.html module is loaded before the @LinkedList@ code,
   then you can treat linked lists as enumerable objects. You can loop over their nodes like so:
   
-  <pre>
+  <pre class="prettyprint">
   list.forEach(function(node, i) {
     // do stuff with node
     // i is the position in the list

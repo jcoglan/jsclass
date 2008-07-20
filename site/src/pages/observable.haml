@@ -17,7 +17,7 @@
   interesting happens to it, so that other objects can listen for such announcements and respond
   however they see fit. Let's imagine we're running a magazine:
   
-  <pre>
+  <pre class="prettyprint">
   var Magazine = new JS.Class({
     include: JS.Observable,
     
@@ -41,7 +41,7 @@
   
   And, let's create an object to represent our magazine:
   
-  <pre>
+  <pre class="prettyprint">
   var mag = new Magazine('JavaScript Monthly');</pre>
   
   So, we have a magazine that can publish issues. Whenever it does so, it calls @this.notifyObservers(issue)@,
@@ -52,7 +52,7 @@
   A 'subscriber' is simply a callback function that is assigned to observe an object and fire
   when the observed object notifies its observers. A simple example might be:
   
-  <pre>
+  <pre class="prettyprint">
   mag.addObserver(function(issue) {
     // do something with the new issue
   });</pre>
@@ -60,7 +60,7 @@
   This function will be called whenever @mag@ publishes a new issue. A more complex example
   could involve objects attaching their methods to observe an object:
   
-  <pre>
+  <pre class="prettyprint">
   var Reader = new JS.Class({
     receiveIssue: function(issue) {
       if (this.likes(issue.publisher))
@@ -83,13 +83,13 @@
   An optional second argument to @addObserver()@ specifies the execution context for the
   listener function. For example, the above could be restated as:
   
-  <pre>
+  <pre class="prettyprint">
   mag.addObserver(person.receiveIssue, person);</pre>
   
   Observers can be removed, so long as you specify _the exact same function and context_
   used to set up the observer:
   
-  <pre>
+  <pre class="prettyprint">
   // Works...
   mag.addObserver(person.method('receiveIssue'));
   mag.removeObserver(person.method('receiveIssue'));

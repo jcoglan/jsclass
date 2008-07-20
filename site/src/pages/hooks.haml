@@ -7,7 +7,7 @@
   If a class has a static method called @inherited()@ it will be called whenever you create
   a subclass of it:
   
-  <pre>
+  <pre class="prettyprint">
   var ChildDetector = new JS.Class({
     extend: {
       inherited: function(klass) {
@@ -24,7 +24,7 @@
   will be called. You can use this to build modules with complex behaviour inside a closure
   so they cannot be modified from outside:
   
-  <pre>
+  <pre class="prettyprint">
   var ActiveRecord = (function(){
     var INSTANCE_METHODS = {
       save: function() {},

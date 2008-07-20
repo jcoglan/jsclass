@@ -10,7 +10,7 @@
   tries to implement its syntax. Specifically, it focuses on the idea that a class definition
   is a procedure rather than a static template. For example, consider this Ruby code:
   
-  <pre>
+  <pre class="prettyprint">
   class RubyClass
     extend Forwardable
     def_delegator :@list, :<<, :add
@@ -34,7 +34,7 @@
   to the whole language while defining the class. For example I can store values in order
   to redefine methods:
   
-  <pre>
+  <pre class="prettyprint">
   class RubyClass
     old_add = instance_method :add
     
@@ -50,7 +50,7 @@
   With vanilla @JS.Class@, such things are not possible. You would need to write all the
   above as:
   
-  <pre>
+  <pre class="prettyprint">
   var RubyClass = new JS.Class({
     extend: JS.Forwardable,
     
@@ -83,7 +83,7 @@
   then use a closure to modify the class without creating new global variables. @JS.Ruby@ is
   designed to let you get as close as possible to the Ruby way of doing things as possible:
   
-  <pre>
+  <pre class="prettyprint">
   var RubyClass = new JS.Class();
   JS.Ruby(RubyClass, function() { with(this) {
     extend(JS.Forwardable);
@@ -120,7 +120,7 @@
   classes at this time, and it only works with classes created using @JS.Class@. The basic call
   structure is:
   
-  <pre>
+  <pre class="prettyprint">
   JS.Ruby(SomeExistingClass, function() { with(this) {
     // code here
   }});</pre>
@@ -131,7 +131,7 @@
   a new alias for an instance method. The following code adds two methods, @get@ and @fetch@,
   that both do the same thing:
   
-  <pre>
+  <pre class="prettyprint">
   JS.Ruby(RubyClass, function() { with(this) {
     def('get', function(index) {
       return this.list[index];
@@ -149,7 +149,7 @@
   that calling them will make sure that any new class methods are available to call inside
   your @JS.Ruby@ code.
   
-  <pre>
+  <pre class="prettyprint">
   var EventClass = new JS.Class();
   JS.Ruby(EventClass, function() { with(this) {
     
@@ -173,7 +173,7 @@
   In JavaScript, the syntax is @with (self) { ... }@, and you may use @def@ and @alias@ within
   such a block for creating and aliasing class methods.
   
-  <pre>
+  <pre class="prettyprint">
   JS.Ruby(RubyClass, function() { with(this) {
     with (self) {
       def('create', function() {

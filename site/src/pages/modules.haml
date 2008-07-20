@@ -9,7 +9,7 @@
   just two methods - an @included()@ and an @extended()@ hook - that can be mixed into classes
   but cannot have their instance methods modified. This allows you to create secure mixins.
   
-  <pre>
+  <pre class="prettyprint">
   var Comparable = new JS.Module({
     extend: {
       compare: function(a,b) {
@@ -38,6 +38,6 @@
   
   @Comparable@'s instance methods are now not accessible unless the module is mixed into a class:
   
-  <pre>
+  <pre class="prettyprint">
   TodoItem.include(Comparable);
   // Now TodoItem has all the methods defined above</pre>

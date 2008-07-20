@@ -4,7 +4,7 @@
   Static methods (also known as class methods) are methods that you call on classes themselves,
   rather than their instances. To add static methods to your class, wrap them up in an @extend@ block:
   
-  <pre>
+  <pre class="prettyprint">
   var User = new JS.Class({
     extend: {
       find: function(id) {
@@ -22,7 +22,7 @@
   Note that @extend@ (as defined above) will not become an instance method of the class. Within
   static methods, @this@ refers to the class itself - see the @create()@ method.
   
-  <pre>
+  <pre class="prettyprint">
   var james = User.create('James');
   james.username    // -> 'James'
   james.klass       // -> User</pre>
@@ -30,7 +30,7 @@
   When you create a subclass, it will inherit any static methods of its parent, and you can use
   @callSuper()@ too:
   
-  <pre>
+  <pre class="prettyprint">
   var LoudUser = new JS.Class(User, {
     extend: {
       create: function(name) {

@@ -1,133 +1,107 @@
-!white = #fff
-!black = #000
-!dark_grey = #444
-!light_grey = #f4f4f4
-!light_green = #b2e864
-!dark_green = #6c9334
-!leading = 18px
-!font_size = 13px
+!white        = #fff
+!dark_grey    = #333
+!light_grey   = #eee
+!red          = #d11f1f
+!blue         = #76a0d0
+!font_size    = 13px
+!line_height  = 1.5
 
-!columns = 4
-!column_width = 183px
-!gutter_width = 14px
+!column_width = 170px
+!gutter_width = 20px
 
 body
-  :background   = !white
-  :color        = !black
-  :margin       0
-  :padding      0
+  :background       = !white
+  :color            = !dark_grey
+  :margin           = 0 0 0 0
+  :padding          = 0 0 0 0
   :font
-    :size       = !font_size
-    :family     Arial, Helvetica, sans-serif
-  :line-height  = 1.385
+    :size           = !font_size
+    :family         Arial, Helvetica, sans-serif
+  :line-height      = !line_height
 
-#container
-  :width    800px
-  :margin   0 auto
-
-p, ul
-  :margin   = !leading 0
-  :padding  0
-
-li
-  :margin   0 0 0 32px
-  :padding  0
-
-a
-  :color            = !dark_green
-  :font-weight      bold
-  :text-decoration  none
-
-h3
-  :color            = !dark_green
-  :border-bottom    = 1px dotted !dark_grey
-  :font
-    :size           = !leading
-    :family         Georgia, Times New Roman, serif
-    :weight         bold
-  :line-height      = !leading
-  :margin           = !leading 0
-
-pre
-  :background   = !light_grey
-  :border
-    :top    = 1px dotted !dark_grey
-    :bottom = 1px dotted !dark_grey
-  :margin   = !leading 0
-  :padding  8px 0
-  :font
-    :size   11px
+.sub
+  :margin           0 auto
+  :width            = 4 * !column_width + 3 * !gutter_width
 
 #header
-  :border-bottom    = 1px dotted !dark_grey
-  :margin           = !leading 0
+  :background       url(header.gif) center top repeat-x
+  :height           97px
+  :padding          19px 0 0
   
   h1
-    :font
-      :size         = 3 * !leading
-      :family       Georgia, Times New Roman, serif
-      :weight       normal
-    :line-height    1.0em
-    :height         2.0em
+    :background     url(title.gif) left top no-repeat
+    :width          374px
     :margin         0
     
     a
-      :float            left
-      :background       = !dark_grey
-      :color            = !white
-      :text-decoration  none
-      :padding          6px 12px
-      :font-weight      normal
+      :display      block
+      :height       0
+      :padding      66px 0 0
+      :overflow     hidden
     
     span
-      :float        left
-      :clear        left
-      :font-size    18px
-      :line-height  1em
-      :background   = !light_green
-      :color        = !dark_grey
-      :padding      8px 12px 6px
-
-#content
-  :display    inline
-  :float      right
-  :width      = 3 * !column_width + 3 * !gutter_width
-  :margin     = 0 0 (2 * !leading)
-  
-#sidebar
-  :display    inline
-  :float      left
-  :width      = !column_width
-  
-  ul
-    :list-style   none
-    
-    li
-      :list-style     none
-      :margin         0
-      :background     = !light_grey
-      :border-top     1px solid #888
-      
-      a
-        :color        = !dark_grey
-        :height       = !leading
-        :display      block
-        :padding      2px 4px
-        :font
-          :weight     normal
-      
-      a:hover
-        :color        = !white
-        :background   #888
+      :display      none
 
 #footer
-  :clear  both
-  :border-top     = 1px dotted !dark_grey
-  :font
-    :size         12px
-  :margin         = (2 * !leading) 0 !leading
-  :padding        = !leading 14px
+  :border-top       = 2px solid !dark_grey
+  :background       = !red
+  :margin           2.0em 0 0
   
   p
-    :margin 0
+    :color          = !white
+    :margin         0 0
+    :padding        = 1.0em 0
+
+#content
+  :position         relative
+  :left             50%
+  :margin
+    :left           = -!column_width - !gutter_width/2
+  :width            = 3 * !column_width + 2 * !gutter_width
+
+#sidebar
+  :position         absolute
+  :left             50%
+  :top              130px
+  :margin
+    :left           = -2*!column_width -1.5*!gutter_width
+  :width            = !column_width
   
+  ul, li
+    :margin         0 0 1.5em 0
+    :padding        0 0 0 0
+    :list-style     none
+  
+  li
+    :border-top     = 1px solid #ccc
+    :margin-bottom  0
+    
+    a
+      :display      block
+      :padding      2px 4px
+      :width        = !column_width - 8px
+      :font-size    0.85em
+      :text-decoration  none
+      :color        = !dark_grey
+    
+    a:hover
+      :background   = !light_grey
+
+h3
+  :border-top       = 2px solid !light_grey
+  :color            = !red
+  :font
+    :size           = 2 * !font_size
+    :family         Trebuchet MS, Verdana, sans-serif
+    :weight         normal
+  :margin           0.5em 0
+
+p, ul
+  :margin           1.0em 0
+
+pre
+  :font-size        = 0.85 * !font_size
+
+a
+  :color            = !blue
+  :font-weight      bold

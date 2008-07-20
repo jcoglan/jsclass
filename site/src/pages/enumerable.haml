@@ -10,7 +10,7 @@
   
   Here's a simple class that stores some of its instance data in a list, just so you get the idea:
   
-  <pre>
+  <pre class="prettyprint">
   var Collection = new JS.Class({
     include: JS.Enumerable,
     
@@ -28,7 +28,7 @@
   
   Let's create an instance and see what it does:
   
-  <pre>
+  <pre class="prettyprint">
   var list = new Collection(3,7,4,8,2);
   list.forEach(function(x, i) {
     console.log(x, i);
@@ -49,7 +49,7 @@
   
   Returns @true@ iff @block@ returns @true@ for every member of the collection. Aliased as @every()@.
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).all(function(x) {
     return x > 5;
   })
@@ -64,7 +64,7 @@
   
   Returns @true@ if @block@ returns @true@ for one or more members of the collection. Aliased as @some()@.
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).any(function(x) {
     return x > 5;
   })
@@ -95,7 +95,7 @@
   
   Calls @block@ with every set of @n@ consecutive members of the collection.
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).forEachCons(3, function(list) {
     console.log(list);
   });
@@ -110,7 +110,7 @@
   Splits the collection up into pieces of length @n@, and call @block@ with each
   piece in turn.
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).forEachSlice(2, function(list) {
     console.log(list);
   });
@@ -128,7 +128,7 @@
   
   Returns the first member of the collection for which @block@ returns @true@. Aliased as @detect()@.
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).find(function(x) {
     return x > 5;
   })
@@ -144,7 +144,7 @@
   function. The first time your @block@ is called, it is passed the value of @memo@ you
   specified. The return value of @block@ becomes the next value of @memo@.
   
-  <pre>
+  <pre class="prettyprint">
   // sum the values
   new Collection(3,7,4,8,2).inject(0, function(memo, x) {
     return memo + x;
@@ -155,7 +155,7 @@
   
   Returns an @Array@ formed by calling @block@ on each member of the collection. Aliased as @collect()@.
   
-  <pre>
+  <pre class="prettyprint">
   // square the numbers
   new Collection(3,7,4,8,2).map(function(x) {
     return x * x;
@@ -169,7 +169,7 @@
   it is used to sort the members. If no block is passed, a sensible default sort method
   is used.
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).max()   // -> 8
   
   new Collection(3,7,4,8,2).max(function(a,b) {
@@ -182,7 +182,7 @@
   Returns @true@ iff the collection contains any members equal to @needle@. Items are checked for
   equality (@==@) rather than identity (@===@).
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).member('7')   // -> true
   new Collection(3,7,4,8,2).member('foo') // -> false</pre>
   
@@ -195,7 +195,7 @@
   Returns two arrays, one containing members for which @block@ returns @true@, the other
   containing those for which it returns @false@.
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).partition(function(x, i) {
     return x > i;
   })
@@ -206,7 +206,7 @@
   Returns a new @Array@ containing the members of the collection for which @block@ returns @true@.
   Aliased as @filter()@ and @findAll()@.
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).select(function(x) {
     return x > 5;
   })
@@ -216,7 +216,7 @@
   
   Returns a new @Array@ containing the members of the collection for which @block@ returns @false@.
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).reject(function(x) {
     return x > 5;
   })
@@ -233,7 +233,7 @@
   standard comparison operators. If no @block@ is passed, a sensible default sort method
   is used, otherwise the block itself is used to perform sorting.
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).sort()
   // -> [2, 3, 4, 7, 8]
   
@@ -248,7 +248,7 @@
   Returns a new @Array@ containing the members of the collection sorted according to the
   value that @block@ returns for them.
   
-  <pre>
+  <pre class="prettyprint">
   // sort values modulo 7
   new Collection(3,7,4,8,2).sortBy(function(x) {
     return x % 7;
@@ -271,7 +271,7 @@
   
   What this translates to in practise:
   
-  <pre>
+  <pre class="prettyprint">
   new Collection(3,7,4,8,2).zip([1,9,3,6,4], [6,3,3])
   
   // -> [ [3,1,6], [7,9,3], [4,3,3],

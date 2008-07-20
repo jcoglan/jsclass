@@ -10,7 +10,7 @@
   To create a subclass of, say, @Animal@, you pass it in as the first argument when creating a new
   class. Recall our @Animal@ class:
   
-  <pre>
+  <pre class="prettyprint">
   var Animal = new JS.Class({
     initialize: function(name) {
       this.name = name;
@@ -22,7 +22,7 @@
   
   We can create a class @Dog@ as follows:
   
-  <pre>
+  <pre class="prettyprint">
   var Dog = new JS.Class(Animal, {
     speak: function(stuff) {
       return this.callSuper().toUpperCase() + '!';
@@ -39,20 +39,20 @@
   created dynamically inside method calls and allows you to access the current method in the parent
   class. Like in Ruby, you don't have to pass any arguments to @callSuper()@, thus avoiding repetition.
   
-  <pre>
+  <pre class="prettyprint">
   var rex = new Dog('Rex');
   rex.speak('barking')
       // -> "MY NAME IS REX AND I LIKE BARKING!"</pre>
   
   @callSuper()@ is not accessible from outside the object:
   
-  <pre>
+  <pre class="prettyprint">
   rex.callSuper();
       // -> rex.callSuper is not a function</pre>
   
   You can pass arguments to @callSuper()@ to override the ones passed in automatically, e.g.:
   
-  <pre>
+  <pre class="prettyprint">
   var Dog = new JS.Class(Animal, {
     speak: function(stuff) {
       stuff = stuff.replace(/[aeiou]/ig, '_');

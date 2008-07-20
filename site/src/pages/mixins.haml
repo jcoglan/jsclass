@@ -6,7 +6,7 @@
   to import the methods. (@JS.Class@ comes with a "@Comparable@":/comparable.html module, so you
   don't have to write you own.)
   
-  <pre>
+  <pre class="prettyprint">
   /**
    * Object similar to Ruby's Comparable module
    */
@@ -59,7 +59,7 @@
   and @eq()@. Its @compareTo()@ instance method tells it how its intances should be ordered relative to
   each other. Now you can do:
   
-  <pre>
+  <pre class="prettyprint">
   var items = [
     new TodoItem(8),
     new TodoItem(4),
@@ -79,7 +79,7 @@
   
   The @include@ directive can also take an array of mixins, like this:
   
-  <pre>
+  <pre class="prettyprint">
   var MyClass = new JS.Class({
     include: [Enumerable, Clickable, Comparable],
     
@@ -88,7 +88,7 @@
   
   The same applies to @extend@, for mixing in static methods:
   
-  <pre>
+  <pre class="prettyprint">
   var ActiveRecord = {
     Base: {
       ClassMethods: {
@@ -114,7 +114,7 @@
   like parent classes), although methods _in_ mixins can use @callSuper()@ to refer to super-methods
   in the context of the classes they are mixed into.
   
-  <pre>
+  <pre class="prettyprint">
   var Reversible = {
     compareTo: function(other) {
       return -1 * this.callSuper();

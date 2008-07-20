@@ -6,73 +6,74 @@
     =stylesheets 'application', 'prettify'
     =javascripts 'prettify'
   %body{:onload => 'prettyPrint()'}
-    #container
-      #header
+    #header
+      .sub
         %h1
           =link 'JS.Class', '/'
-          %span Ruby-like classes for JavaScript
-      #content
-        = yield
-      #sidebar
-        %ul
-          %li
-            =link 'Inheritance and <tt>callSuper</tt>', '/inheritance.html'
-          %li
-            =link 'Static/class methods', '/statics.html'
-          %li
-            =link 'Mixins'
-          %li
-            =link '<tt>include</tt> and <tt>extend</tt>', '/includeextend.html'
-          %li
-            =link 'Singleton methods', '/singletonmethods.html'
-          %li
-            =link 'Method binding', '/binding.html'
-          %li
-            =link 'Callbacks and hooks', '/hooks.html'
-          %li
-            =link 'Modules'
-          %li
-            =link 'Type checking, the class tree', '/types.html'
-          %li
-            =link 'Interfaces'
-          %li
-            =link 'Singletons'
-        %ul
-          %li
-            =link 'Patterns'
-          %li
-            =link 'Command'
-          %li
-            =link 'Comparable'
-          %li
-            =link 'Decorator'
-          %li
-            =link 'Enumerable'
-          %li
-            =link 'Forwardable'
-          %li
-            =link 'Linked lists', '/linkedlist.html'
-          %li
-            =link 'MethodChain'
-          %li
-            =link 'Observable'
-          %li
-            =link 'Proxies'
-          %li
-            =link 'State'
-          %li
-            =link 'Ruby'
-      #footer
+          %span Ruby-style JavaScript
+    #content
+      = yield
+    #sidebar
+      %ul
+        %li
+          =link 'Inheritance and <tt>callSuper</tt>', '/inheritance.html'
+        %li
+          =link 'Static/class methods', '/statics.html'
+        %li
+          =link 'Mixins'
+        %li
+          =link '<tt>include</tt> and <tt>extend</tt>', '/includeextend.html'
+        %li
+          =link 'Singleton methods', '/singletonmethods.html'
+        %li
+          =link 'Method binding', '/binding.html'
+        %li
+          =link 'Callbacks and hooks', '/hooks.html'
+        %li
+          =link 'Modules'
+        %li
+          =link 'Type checking, the class tree', '/types.html'
+        %li
+          =link 'Interfaces'
+        %li
+          =link 'Singletons'
+      %ul
+        %li
+          =link 'Patterns'
+        %li
+          =link 'Command'
+        %li
+          =link 'Comparable'
+        %li
+          =link 'Decorator'
+        %li
+          =link 'Enumerable'
+        %li
+          =link 'Forwardable'
+        %li
+          =link 'Linked lists', '/linkedlist.html'
+        %li
+          =link 'MethodChain'
+        %li
+          =link 'Observable'
+        %li
+          =link 'Proxies'
+        %li
+          =link 'State'
+        %li
+          =link 'Ruby'
+    #footer
+      .sub
         :textile
           @JS.Class@, &copy; 2007&ndash;2008 James Coglan. Released under an MIT-style license.
-    %script{:type => 'text/javascript'}
-      :plain
-        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    %script{:type => 'text/javascript'}
-      :plain
-        if (!/^http:\/\/localhost[\:\/]/i.test(window.location.href)) {
-          var pageTracker = _gat._getTracker("UA-873493-4");
-          pageTracker._initData();
-          pageTracker._trackPageview();
-        }
+  %script{:type => 'text/javascript'}
+    :plain
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  %script{:type => 'text/javascript'}
+    :plain
+      if (!/^http:\/\/localhost[\:\/]/i.test(window.location.href)) {
+        var pageTracker = _gat._getTracker("UA-873493-4");
+        pageTracker._initData();
+        pageTracker._trackPageview();
+      }

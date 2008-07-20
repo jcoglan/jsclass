@@ -9,7 +9,7 @@
   
   Let's take a quick example:
   
-  <pre>
+  <pre class="prettyprint">
   // Basic Bike class. Bikes cost $10 per gear.
   
   var Bike = new JS.Class({
@@ -44,7 +44,7 @@
   method call onto the component and return the result. e.g., @DiskBrakeDecorator@'s
   @getModel()@ method looks like:
   
-  <pre>
+  <pre class="prettyprint">
   getModel: function() {
     return this.component.getModel();
   };</pre>
@@ -52,7 +52,7 @@
   Any methods you don't redefine in the decorator class will look similar to this. Let's
   try our new classes out:
   
-  <pre>
+  <pre class="prettyprint">
   var bike = new Bike('Specialized Rock Hopper', 21);
   bike.getPrice()   // -> 210
   
@@ -64,7 +64,7 @@
   If a decorator defines new methods, they will be passed through by any other decorators
   you wrap an object with.
   
-  <pre>
+  <pre class="prettyprint">
   var HornDecorator = new JS.Decorator(Bike, {
     beepHorn: function(noise) {
       return noise.toUpperCase();

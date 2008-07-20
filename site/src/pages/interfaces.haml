@@ -9,7 +9,7 @@
   
   To create an interface, just pass in an array of method names:
   
-  <pre>
+  <pre class="prettyprint">
   var IntComparable = new JS.Interface([
     'compareTo', 'lt', 'lte', 'gt', 'gte', 'eq'
   ]);
@@ -20,7 +20,7 @@
   
   You can then test any object to find out whether it implements the required interfaces:
   
-  <pre>
+  <pre class="prettyprint">
   JS.Interface.ensure(someObject,
       IntComparable, IntStateMachine);</pre>
   
