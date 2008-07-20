@@ -1239,6 +1239,12 @@
             assert(sets.contains(new JS.Set([8,2,5])));
             assertEqual(3, sets.size);
             
+            // http://en.wikipedia.org/wiki/Subset
+            assert(new JS.Set([1,2]).isProperSubset(new JS.Set([1,2,3])));
+            assert(new JS.Set([3,1,2]).isSubset(new JS.Set([1,2,3])));
+            assert(!( new JS.Set([3,1,2]).isProperSubset(new JS.Set([1,2,3])) ));
+            assert(new JS.SortedSet().isSubset(new JS.Set([1,2,3])));
+            
             sets.replace([0,3,8,2]);
             assert(sets.equal(new JS.SortedSet([3,0,2,8])));
             

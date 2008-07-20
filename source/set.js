@@ -66,6 +66,7 @@ JS.Set = new JS.Class({
   
   clear: function() {
     this._members = [];
+    this.length = this.size = this._members.length;
   },
   
   contains: function(item) {
@@ -99,17 +100,27 @@ JS.Set = new JS.Class({
     return this._members.length == 0;
   },
   
-  // TODO
-  isProperSubset: function() {},
+  isProperSubset: function(other) {
+    return this.isSubset(other) &&
+        this._members.length < other._members.length;
+  },
   
-  // TODO
-  isProperSuperset: function() {},
+  isProperSuperset: function() {
+    return this.isSuperset(other) &&
+        this._members.length > other._members.length;
+  },
   
-  // TODO
-  isSubset: function() {},
+  isSubset: function(other) {
+    var members = this._members, i = members.length;
+    while (i--) {
+      if (!other.contains(members[i])) return false;
+    }
+    return true;
+  },
   
-  // TODO
-  isSuperset: function() {},
+  isSuperset: function(other) {
+    return other.isSubset(this);
+  },
   
   merge: function(list) {
     this.klass.forEach(list, function(item) { this.add(item) }, this);
