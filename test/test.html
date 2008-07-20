@@ -1248,6 +1248,12 @@
             sets.replace([0,3,8,2]);
             assert(sets.equal(new JS.SortedSet([3,0,2,8])));
             
+            c = new JS.Set([8,2,6,5,7]);
+            c.remove(2);
+            assert(c.equal(new JS.Set([5,6,7,8])));
+            c.removeIf(function(x) { return x%2 == 0 });
+            assert(c.equal(new JS.Set([5,7])));
+            
             var s, ary, i, n = 10;
             
             for (i = 0; i < n; i++) {

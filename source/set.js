@@ -132,11 +132,20 @@ JS.Set = new JS.Class({
     this.merge(members);
   },
   
-  // TODO
-  remove: function() {},
+  remove: function(item) {
+    var index = this._indexOf(item);
+    if (index == -1) return;
+    this._members.splice(index, 1);
+    this.length = this.size = this._members.length;
+  },
   
-  // TODO
-  removeIf: function() {},
+  removeIf: function(predicate, context) {
+    var members = this._members, i = members.length;
+    while (i--) {
+      if (predicate.call(context || null, members[i]))
+        this.remove(members[i]);
+    }
+  },
   
   replace: function(other) {
     this.clear();
