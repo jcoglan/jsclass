@@ -152,8 +152,11 @@ JS.Set = new JS.Class({
     this.merge(other);
   },
   
-  // TODO
-  subtract: function() {},
+  subtract: function(list) {
+    this.klass.forEach(list, function(item) {
+      this.remove(item);
+    }, this)
+  },
   
   union: function(other) {
     var set = new this.klass;
@@ -162,8 +165,15 @@ JS.Set = new JS.Class({
     return set;
   },
   
-  // TODO
-  xor: function(other) {},
+  xor: function(other) {
+    var set = new JS.Set(other);
+    var members = this._members, i = members.length, item;
+    while (i--) {
+      item = members[i];
+      set[set.contains(item) ? 'remove' : 'add'](item);
+    }
+    return set;
+  },
   
   _indexOf: function(item) {
     var i = this._members.length, equal = this.klass.areEqual;

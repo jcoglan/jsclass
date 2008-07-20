@@ -1254,6 +1254,16 @@
             c.removeIf(function(x) { return x%2 == 0 });
             assert(c.equal(new JS.Set([5,7])));
             
+            c = new JS.Set([8,2,6,5,7]);
+            c.subtract([7,6]);
+            assert(c.equal(new JS.Set([5,8,2])));
+            
+            var xa = new JS.Set([2,9,3,7,5]), xb = new JS.Set([8,1,5,2,6]);
+            var x = xa.xor(xb);
+            assert(x.equal(new JS.Set([9,3,7,8,1,6])));
+            assert(xa.equal(new JS.Set([2,9,3,7,5])));
+            assert(xb.equal(new JS.Set([8,1,5,6,2])));
+            
             var s, ary, i, n = 10;
             
             for (i = 0; i < n; i++) {
