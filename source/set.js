@@ -24,26 +24,6 @@ JS.Set = new JS.Class({
     else this.merge(list);
   },
   
-  equal: function(other) {
-    if (this.length != other.length || !(other instanceof JS.Set)) return false;
-    var i = this._members.length;
-    while (i--) {
-      if (!other.contains(this._members[i])) return false;
-    }
-    return true;
-  },
-  
-  flatten: function(set) {
-    var members = this._members, item, i = members.length;
-    if (!set) { this.clear(); set = this; }
-    while (i--) {
-      item = members[i];
-      if (item instanceof JS.Set) item.flatten(set);
-      else set.add(item);
-    }
-    return set;
-  },
-  
   forEach: function(block, context) {
     this.klass.forEach(this._members, block, context);
   },
@@ -86,6 +66,26 @@ JS.Set = new JS.Class({
     var classes = this.classify(block, context), sets = new this.klass;
     for (var key in classes) sets.add(classes[key]);
     return sets;
+  },
+  
+  equal: function(other) {
+    if (this.length != other.length || !(other instanceof JS.Set)) return false;
+    var i = this._members.length;
+    while (i--) {
+      if (!other.contains(this._members[i])) return false;
+    }
+    return true;
+  },
+  
+  flatten: function(set) {
+    var members = this._members, item, i = members.length;
+    if (!set) { this.clear(); set = this; }
+    while (i--) {
+      item = members[i];
+      if (item instanceof JS.Set) item.flatten(set);
+      else set.add(item);
+    }
+    return set;
   },
   
   intersection: function(other) {
