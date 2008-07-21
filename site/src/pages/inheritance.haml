@@ -26,4 +26,163 @@
     </ol>
   </blockquote>
   
+  Sound confusing? Let's break it down with a few examples.
   
+  h3. Parent-child class inheritance
+  
+  We'll start with class-based inheritance, and this is the most widely understood. If
+  class @Child@ inherits from class @Parent@, @Child@'s methods can call methods from
+  @Parent@ using @callSuper()@. @Child@ inherits all the methods of @Parent@ and can
+  override them if necessary:
+  
+  <pre class="prettyprint">
+  var Parent = new JS.Class({
+    speak: function() {
+      return "I'm an object";
+    },
+    
+    writeCode: function(code) {
+      return "I wrote: " + code;
+    }
+  });
+  
+  var Child = new JS.Class(Parent, {
+    speak: function() {
+      return this.callSuper().replace(/[aeiou]/ig, '_');
+    }
+  });
+  
+  (new Child).speak()
+  // -> "_'m _n _bj_ct"
+  
+  (new Child).writeCode('function(){}')
+  // -> "I wrote: function(){}"</pre>
+  
+  This style of inheritance is commonly supported by object-oriented languages and is
+  pretty simple to understand: a class can only have one parent class, and can call methods
+  from it. It is worth mentioning here that, in common with Ruby, @JS.Class@ makes arguments
+  to @callSuper()@ optional. By default, it passes the same parameters to the parent method
+  as were used to call the child method. More information can be found under "Creating classes":/classes.html.
+  
+  h3. Inheritance from mixins
+  
+  This area causes some confusion as it relates to multiple inheritance, but Ruby's method
+  lookup rules do give predictable dependable results. When you mix a module into a class,
+  it becomes part of the inheritance tree. Ruby searches all the modules included by a class
+  before searching the parent class, in reverse inclusion order. Also, it's a depth-first
+  search. If a module includes other modules, these are searched before moving on. An example
+  should clarify things:
+  
+  <pre class="prettyprint">
+  var ModA = new JS.Module({
+    speak: function() {
+      return "speak() in ModA";
+    }
+  });
+  
+  var ModB = new JS.Module({
+    speak: function() {
+      return "speak() in ModB, " + this.callSuper();
+    }
+  });
+  
+  var ModC = new JS.Module({
+    include: [ModA, ModB],
+    speak: function() {
+      return this.callSuper() + ", and in ModC";
+    }
+  });
+  
+  var Foo = new JS.Class({
+    include: ModC,
+    speak: function() {
+      return this.callSuper() + ", and in class Foo";
+    }
+  });</pre>
+  
+  Suppose we create a new @Foo@ and call @speak()@ on it. @Foo@
+  includes @ModC@, which itself includes @ModA@ and @ModB@. So when looking for methods,
+  we look in @Foo@, then @ModC@, then @ModB@, then @ModA@. At each stage,
+  @callSuper()@ forces the search to continue along the inheritance chain.
+  
+  <pre class="prettyprint">
+  (new Foo).speak()
+  // -> "speak() in ModB, speak() in ModA, and in ModC, and in class Foo"</pre>
+  
+  This nicely demonstrates the late binding of @callSuper@. @ModB@ does not include any
+  other modules, so its call to @callSuper@ depends on the module @ModB@ is being called
+  in, and which other modules are part of that inheritance chain.
+  
+  Remember that all the modules included by a class are searched before moving
+  on to the parent class when searching for methods.
+  
+  h3. Singleton methods
+  
+  When you create an object from a class, the object does not have any custom methods
+  of its own. It only has methods inherited from its class.
+  
+  <pre class="prettyprint">
+  var Machine = new JS.Class({
+    run: function() {
+      return 'Machine is running';
+    }
+  });
+  
+  var obj = new Machine();
+  obj.run()   // -> "Machine is running"</pre>
+  
+  But, we can extend objects with their own methods. Every object has an eigenclass
+  (also referred to as a metaclass in some literature), and this eigenclass stores
+  methods you add to the object. Methods tied to an object (rather than defined in
+  a class or a module) are known as singleton methods, as they're defined on a single
+  object. This class is the first place @JS.Class@ looks when you call a method on an object.
+  
+  <pre class="prettyprint">
+  obj.extend({
+    run: function() {
+      return this.callSuper() + ', and obj is running';
+    }
+  });</pre>
+  
+  Where does @callSuper@ lead to? After we look in the object's eigenclass, we
+  look in the class the object belongs to, which in this case is the @Machine@
+  class. So we get:
+  
+  <pre class="prettyprint">
+  obj.run()
+  // -> "Machine is running, and obj is running"</pre>
+  
+  But remember that we always search the modules included by a class before moving onto
+  its parent class. So if we extend an object using a module, that module gets included
+  into the object's eigenclass and comes between the object and its class:
+  
+  <pre class="prettyprint">
+  var MachineExtension = new JS.Module({
+    run: function() {
+      return this.callSuper().toUpperCase();
+    }
+  });
+  
+  obj.extend(MachineExtension);</pre>
+  
+  It's not immediately apparent what @callSuper()@ does in this case: @MachineExtension@
+  has no parent class and does not include any other modules. Because Ruby's method lookup
+  is late-bound, the meaning of @callSuper()@ in @MachineExtension@ depends on the context
+  you use it in. You should think of that last line as being equivalent to:
+  
+  <pre class="prettyprint">
+  obj.__eigen__().include(MachineExtension);</pre>
+  
+  So @obj@'s eigenclass includes @MachineExtension@, making it part of the inheritance tree.
+  When we call @obj.run()@ now, the call stack will find @obj.run@, @MachineExtension#run@
+  and @Machine#run@ in that order. @Machine#run@ returns @"Machine is running"@,
+  @MachineExtension#run@ turns that to uppercase, and @obj.run@ appends @", and obj is running"@.
+  
+  <pre class="prettyprint">
+  obj.run()
+  // -> "MACHINE IS RUNNING, and obj is running"</pre>
+  
+  So it couldn't be simpler! This is fairly advanced Ruby functionality, but it will stick
+  if you remember the following: to find a method, you look in the object's eigenclass,
+  then in the class the object belongs to, then that class' parent class, and so on. At each
+  level, you search all the modules included by the class before moving onto the parent.
