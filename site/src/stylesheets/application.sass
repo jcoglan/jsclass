@@ -54,19 +54,19 @@ body
     :padding        = 1.0em 0
 
 #content
-  :position         relative
-  :left             50%
-  :margin
-    :left           = -!column_width - !gutter_width/2
+  :float            right
   :width            = 3 * !column_width + 2 * !gutter_width
 
 #sidebar
-  :position         absolute
-  :left             50%
-  :top              130px
-  :margin
-    :left           = -2*!column_width -1.5*!gutter_width
+  :float            left
   :width            = !column_width
+  
+  h4
+    :color          = !red
+    :font
+      :size         = !font_size
+      :family       Trebuchet MS, Verdana, sans-serif
+    :margin         1.0em 0
   
   ul, li
     :margin         0 0 1.5em 0
