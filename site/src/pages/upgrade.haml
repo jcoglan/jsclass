@@ -53,7 +53,7 @@
   It just took a set of methods and wrapped them inside hooks for use with @include()@
   and @extend()@. In version 2.0, @JS.Module@ is a fully-fledged class in its own right
   and thus behaves differently. The main difference is the behaviour of the @extend@
-  keyword -- in 1.x, @extend@ adds class methods to a class that @include@s the module,
+  keyword -- in 1.x, @extend@ adds class methods to a class that @include@-s the module,
   and in 2.0 @extend@ adds singleton methods to the module itself, not to the class.
   
   Consider this example:
@@ -132,3 +132,37 @@
   (new Process).run()   // -> "Run an instance"</pre>
   
   This technique is consistent with the Ruby way of getting the same behaviour.
+  
+  h3. @callSuper()@ can call module methods
+  
+  2.0 fully implements Ruby's inheritance system, whereas 1.x was incomplete. In
+  particular, 1.x did not allow @callSuper()@ to call methods from mixed-in modules.
+  Consider this example:
+  
+  <pre class="prettyprint">
+  var Employee = new JS.Class({
+    hire: function() {
+      return "Hiring an Employee";
+    }
+  });
+  
+  var Employable = new JS.Module({
+    hire: function() {
+      return "I'm Employable";
+    }
+  });
+  
+  var BusDriver = new JS.Class(Employee, {
+    include: Employable,
+    
+    hire: function() {
+      return this.callSuper();
+    }
+  });
+  
+  (new BusDriver).hire()</pre>
+  
+  In version 1.x, the final line evaluates to @"Hiring an Employee"@ (from @Employee@,
+  the parent class), but in 2.0 it returns @"I'm Employable"@. This is because mixed in
+  @Module@ objects become part of the inheritance tree according to Ruby's inheritance
+  semantics.
