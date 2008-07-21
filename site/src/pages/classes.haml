@@ -84,3 +84,56 @@
   
   Ruby's inheritance system is more powerful than simply calling methods in parent classes.
   For more information on how it works, refer to the "inheritance article":/inheritance.html.
+  
+  h3. Modifying existing classes
+  
+  You can add methods to classes after you've created them using a couple of special methods.
+  All classes created using @JS.Class@ have these methods, the first of which is @define()@.
+  This adds a single named method to the class, which immediately makes it available in
+  instances of the class and in its subclasses.
+  
+  <pre class="prettyprint">
+  Animal.define('sleep', function() {
+    return this.name + ' is sleeping';
+  });
+  
+  rex.sleep()
+  // -> "Rex is sleeping"</pre>
+  
+  Note that if the class already has a method with the same name as the one you're defining,
+  the old method will be overwritten. Methods in parent classes and in mixins can be accessed
+  using @callSuper()@.
+  
+  The other option available to you is to use @include()@. This method has a couple of roles;
+  if you supply a "@Module@":/modules.html, the module is mixed into the class and becomes
+  part of its inheritance tree. If you supply any other type of object, the methods from the
+  object are copied into the class, overwriting any pre-existing methods with similar names.
+  
+  <pre class="prettyprint">
+  // Replace Dog's speak method  (#1)
+  Dog.include({
+    speak: function(stuff) {
+      return this.callSuper('lots of ' + stuff) + '!';
+    }
+  });
+  
+  rex.speak('cats')
+  // -> "My name is Rex and I like lots of cats!"
+  
+  // Mix in a module, altering the class's ancestry
+  // callSuper() in Dog#speak will now call this method
+  var Speaker = new JS.Module({
+    speak: function(stuff) {
+      return 'I can talk about ' + stuff + '!';
+    }
+  });
+  
+  Dog.include(Speaker);
+  rex.speak('cats')
+  // -> "I can talk about lots of cats!!"</pre>
+  
+  Notice how including @Speaker@ does not overwrite the @speak@ method in the @Dog@ class
+  (marked @#1@ above). That method is defined in @Dog@ and will persist until overwritten
+  directly in the @Dog@ class. @Speaker@ merely injects another method called @speak@ into
+  the inheritance chain for the @Dog@ class. For more information, refer to the "explanation
+  of Ruby's method lookup algorithm":/inheritance.html.

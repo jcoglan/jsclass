@@ -116,6 +116,27 @@
   Remember that all the modules included by a class are searched before moving
   on to the parent class when searching for methods.
   
+  h3. Late binding
+  
+  The inheritance chain of a class can be modified at any time by mixing more modules
+  into it. Consider this extension of the above example:
+  
+  <pre class="prettyprint">
+  var ModD = new JS.Module({
+    speak: function() {
+      return 'ModD speaks';
+    }
+  });
+  
+  Foo.include(ModD);</pre>
+  
+  The lookup chain for @Foo@ now goes @Foo@, @ModD@, @ModC@, @ModB@, @ModA@. @speak()@
+  in @ModD@ does not @callSuper()@, so methods in @ModC@ upwards are no longer called.
+  
+  <pre class="prettyprint">
+  (new Foo).speak()
+  // -> "ModD speaks, and in class Foo"</pre>
+  
   h3. Singleton methods
   
   When you create an object from a class, the object does not have any custom methods

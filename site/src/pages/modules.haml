@@ -70,6 +70,30 @@
   you cannot call @Comparable.lt(someObject)@, for example. The methods can only be called
   on objects whose class includes the module.
   
+  If you want to mix several modules into your class, you need to specify them as an
+  array, in the order you want them to be included, for example:
+  
+  <pre class="prettyprint">
+  var Foo = new JS.Class({
+    include: [ModA, ModB, ModC],
+    
+    initialize: function() {
+      // ...
+    }
+  });</pre>
+  
+  Alternatively, you could create the class first, then mix the modules in afterward:
+  
+  <pre class="prettyprint">
+  var Foo = new JS.Class({
+    initialize: function() {
+      // ...
+    }
+  });
+  Foo.include(ModA);
+  Foo.include(ModB);
+  Foo.include(ModC);</pre>
+  
   h3. Modules and @callSuper()@
   
   When you mix a module into a class, the module becomes part of the class' 'ancestry'.
