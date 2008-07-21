@@ -82,32 +82,32 @@
   
   var ModB = new JS.Module({
     speak: function() {
-      return "speak() in ModB, " + this.callSuper();
+      return this.callSuper() + ", speak() in ModB";
     }
   });
   
   var ModC = new JS.Module({
-    include: [ModA, ModB],
+    include: ModB,
     speak: function() {
       return this.callSuper() + ", and in ModC";
     }
   });
   
   var Foo = new JS.Class({
-    include: ModC,
+    include: [ModA, ModC],
     speak: function() {
       return this.callSuper() + ", and in class Foo";
     }
   });</pre>
   
   Suppose we create a new @Foo@ and call @speak()@ on it. @Foo@
-  includes @ModC@, which itself includes @ModA@ and @ModB@. So when looking for methods,
+  includes @ModA@ and @ModC@, which itself includes @ModB@. So when looking for methods,
   we look in @Foo@, then @ModC@, then @ModB@, then @ModA@. At each stage,
   @callSuper()@ forces the search to continue along the inheritance chain.
   
   <pre class="prettyprint">
   (new Foo).speak()
-  // -> "speak() in ModB, speak() in ModA, and in ModC, and in class Foo"</pre>
+  // -> "speak() in ModA, speak() in ModB, and in ModC, and in class Foo"</pre>
   
   This nicely demonstrates the late binding of @callSuper@. @ModB@ does not include any
   other modules, so its call to @callSuper@ depends on the module @ModB@ is being called
