@@ -76,6 +76,20 @@ body
 #content
   :float            right
   :width            = 3 * !column_width + 2 * !gutter_width
+  
+  blockquote
+    :border-left    = 4px solid !blue
+    :margin         1.5em 0
+    :padding        0 1.5em
+
+  pre
+    :font-size      = 0.85 * !font_size
+
+  p code, li code
+    :background     = !light_grey
+
+  a code
+    :background     transparent
 
 #sidebar
   :float            left
@@ -119,9 +133,6 @@ h3
 
 p, ul, pre
   :margin           = !line_height * !font_size 0
-
-pre
-  :font-size        = 0.85 * !font_size
 
 a
   :color            = !blue
