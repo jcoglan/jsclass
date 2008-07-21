@@ -8,7 +8,7 @@
 !line_height  = 1.5
 
 !column_width = 170px
-!gutter_width = 20px
+!gutter_width = 32px
 
 body
   :background       = !white
@@ -66,7 +66,7 @@ body
     :font
       :size         = !font_size
       :family       Trebuchet MS, Verdana, sans-serif
-    :margin         1.0em 0
+    :margin         1.5em 0
   
   ul, li
     :margin         0 0 1.5em 0
@@ -97,8 +97,8 @@ h3
     :weight         normal
   :margin           0.5em 0
 
-p, ul
-  :margin           1.0em 0
+p, ul, pre
+  :margin           = !line_height * !font_size 0
 
 pre
   :font-size        = 0.85 * !font_size

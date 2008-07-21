@@ -1,6 +1,34 @@
 :textile
   @JS.Class@ is a library designed to facilitate object-oriented development in JavaScript. It
-  uses several idioms borrowed from Ruby to simulate classes, inheritance, mixins and modules.
+  implements Ruby's core object, module and class system and some of its metaprogramming facilities,
+  giving you a powerful base to build well-structured OO programs.
+  
+  <pre class="prettyprint">
+  var Event = new JS.Class({
+    include: JS.Observable,
+    
+    fire: function(data) {
+      this.notifyObservers('fire', data);
+    }
+  });</pre>
+  
+  h3. Features
+  
+  @JS.Class@ is designed to make JavaScript behave like Ruby in terms of its OOP structures.
+  To this end, it provides the following features:
+  
+  * Classes and modules with Ruby-compatible inheritance
+  * Subclassing and mixins
+  * @super@-like calls to delegate calls up the inheritance tree
+  * Singleton methods and eigenclasses
+  * @included@, @extended@ and @inherited@ hooks
+  * Method binding
+  * Ports of various standard Ruby modules, including @Enumerable@, @Observable@, @Comparable@,
+    @Forwardable@
+  
+  Its inheritance system supports late-bound @super()@ calls to parent classes and modules,
+  including calls from singleton methods. It has been designed to mimick Ruby as closely as
+  possible, so if you know Ruby you should feel right at home.
   
   h3. Download version 2.0
   
@@ -9,8 +37,6 @@
   and boosts method call performance. It also adds three new packages to the standard library:
   @Package@, @Set@ and @StackTrace@.
   
-  
-  
   "Download JS.Class 2.0.0":/assets/JS.Class.2.0.0.zip
   
   Most code based on version 1.x will be compatible with this release, but there a few "issues
@@ -18,32 +44,6 @@
   still available:
   
   "Download JS.Class 1.6.1":/assets/JS.Class.1-6-1.zip
-  
-  h3. Documentation
-  
-  More in-depth topics can be found in the sidebar. This is a simple introduction to class creation.
-  All @JS.Class@ classes are defined as follows:
-  
-  <pre class="prettyprint">
-  var Animal = new JS.Class({
-    initialize: function(name) {
-      this.name = name;
-    },
-    speak: function(things) {
-      return 'My name is ' + this.name + ' and I like ' + things;
-    }
-  });</pre>
-  
-  All classes should have an @initialize()@ method. That method will get called to instantiate
-  the class' objects. It receives any arguments you use when creating an instance, for example:
-  
-  <pre class="prettyprint">
-  var pig = new Animal('Porky');
-  pig.speak('mud')   // -> "My name is Porky and I like mud"</pre>
-  
-  Any other methods in your class definition become instance methods for the class, as the above
-  example demonstrates. There are a few exceptions to this rule, as you will find out if you
-  read the articles in the sidebar.
   
   h3. Acknowledgements
   
