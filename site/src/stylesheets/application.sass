@@ -29,6 +29,9 @@ body
   :height           97px
   :padding          19px 0 0
   
+  .sub
+    :position       relative
+  
   h1
     :background     url(title.gif) left top no-repeat
     :width          374px
@@ -42,6 +45,23 @@ body
     
     span
       :display      none
+  
+  #download
+    a
+      :background   = !dark_red
+      :border-bottom = 1px solid !light_grey
+      :color        = !white
+      :font
+        :family     Trebuchet MS, Verdana, sans-serif
+        :size       = 16px
+        :style      italic
+        :weight     bold
+      :text-decoration none
+      :position     absolute
+      :right        0
+      :top          24px
+      :display      block
+      :padding      4px 8px
 
 #footer
   :border-top       = 2px solid !dark_grey
