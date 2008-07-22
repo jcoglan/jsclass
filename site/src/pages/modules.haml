@@ -102,12 +102,10 @@
   log its results:
   
   <pre class="prettyprint">
-  User.include({
-    eq: function(user) {
-      var areEqual = this.callSuper();
-      if (areEqual) console.log("Found two equal objects!");
-      return areEqual;
-    }
+  User.define('eq', function(user) {
+    var areEqual = this.callSuper();
+    if (areEqual) console.log("Found two equal objects!");
+    return areEqual;
   });</pre>
   
   Note we don't need to pass @user@ into @callSuper()@ - it gets passed in automatically
