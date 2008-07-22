@@ -34,7 +34,7 @@
   // Augment Observable module with StackTrace
   JS.Observable.include(JS.StackTrace);
   
-  // Class class, inherits from Parent, includes Mixin and Observable
+  // Child class, inherits from Parent, includes Mixin and Observable
   // run() calls fire(), which calls Observable#notifyObservers()
   Child = new JS.Class(Parent, {
     include: [Mixin, JS.Observable, JS.StackTrace],
