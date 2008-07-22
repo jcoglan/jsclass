@@ -16,6 +16,9 @@ JS.StackTrace = new JS.Module({
         return this.callSuper(name, wrapper);
       } });
       
+      for (var method in module.__fns__)
+        module.define(method, module.__fns__[method]);
+      
       if (!module.__name__) setTimeout(function() {
         module.__name__ = self.nameOf(base);
       }, 100);
