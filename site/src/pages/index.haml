@@ -1,51 +1,62 @@
 :textile
   @JS.Class@ is a library designed to facilitate object-oriented development in JavaScript. It
-  uses several idioms borrowed from Ruby to simulate classes, inheritance, mixins and modules.
-  
-  h3. Download version 1.6
-  
-  1.6 adds the "@Forwardable@":/forwardable.html and "@State@":/state.html modules, and makes some small changes to the modules
-  API. All @Module@ objects now have both @included@ and @extended@ methods, and a new @extended@
-  hook has been implemented to allow objects to run code when they are added to classes using
-  @extend()@. 1.6 Also introduces "@JS.Ruby@":/ruby.html, a DSL for more Ruby-like class definition syntax.
-  
-  "Download JS.Class 1.6.1":/assets/JS.Class.1-6-1.zip
-  
-  h3. Documentation
-  
-  More in-depth topics can be found in the sidebar. This is a simple introduction to class creation.
-  All @JS.Class@ classes are defined as follows:
+  implements Ruby's core object, module and class system and some of its metaprogramming facilities,
+  giving you a powerful base to build well-structured OO programs.
   
   <pre class="prettyprint">
-  var Animal = new JS.Class({
-    initialize: function(name) {
-      this.name = name;
-    },
-    speak: function(things) {
-      return 'My name is ' + this.name + ' and I like ' + things;
+  var Event = new JS.Class({
+    include: JS.Observable,
+    
+    fire: function(data) {
+      this.notifyObservers('fire', data);
     }
   });</pre>
   
-  All classes should have an @initialize()@ method. That method will get called to instantiate
-  the class' objects. It receives any arguments you use when creating an instance, for example:
+  h3. Features
   
-  <pre class="prettyprint">
-  var pig = new Animal('Porky');
-  pig.speak('mud')   // -> "My name is Porky and I like mud"</pre>
+  @JS.Class@ is designed to make JavaScript behave like Ruby in terms of its OOP structures.
+  To this end, it provides the following features:
   
-  Any other methods in your class definition become instance methods for the class, as the above
-  example demonstrates. There are a few exceptions to this rule, as you will find out if you
-  read the articles in the sidebar.
+  * Classes and modules with Ruby-compatible inheritance
+  * Subclassing and mixins
+  * Late-binding arguments-optional @super@ calls to parent classes and mixins
+  * Singleton methods and eigenclasses
+  * @included@, @extended@ and @inherited@ hooks
+  * Method binding
+  * Ports of various standard Ruby modules, including @Enumerable@, @Observable@, @Comparable@,
+    @Forwardable@
+  
+  Its inheritance system supports late-bound @super()@ calls to parent classes and modules,
+  including calls from singleton methods. It has been designed to mimick Ruby as closely as
+  possible, so if you know Ruby you should feel right at home.
+  
+  h3. Download version 2.0
+  
+  2.0 is a complete rewrite of the 1.6 core to build a more Ruby-like system. It fixes a number
+  of @Module@-related bugs in 1.6, has an iheritance model completely compatible with Ruby's,
+  and boosts method call performance. It also adds three new packages to the standard library:
+  @Package@, @Set@ and @StackTrace@.
+  
+  "Download JS.Class 2.0.0":/assets/JS.Class.2.0.0.zip
+  
+  Most code based on version 1.x will be compatible with this release, but there a few "issues
+  to be aware of":/upgrade.html. If you have code you cannot update to 2.0 at present, 1.6 is
+  still available:
+  
+  "Download JS.Class 1.6.1":/assets/JS.Class.1-6-1.zip
   
   h3. Acknowledgements
   
-  @JS.Class@ is inspired by, an partially derived from, the following open-source projects:
+  @JS.Class@ was initially inspired by, and borrows ideas from, these open-source projects:
   
   * The "Prototype":http://prototypejs.org framework, &copy; 2005-2007 Sam Stephenson
   * Alex Arnell's "Inheritance":http://www.twologic.com/projects/inheritance/ library, &copy; 2006, Alex Arnell
   * "Base":http://dean.edwards.name/weblog/2006/03/base/, &copy; 2006-7, Dean Edwards
   
-  Its author was also influenced by techniques demonstrated in "Pro JavaScript Design Patterns":http://www.apress.com/book/view/9781590599082.
+  The standard library has been influenced by techniques demonstrated in
+  "Pro JavaScript Design Patterns":http://www.apress.com/book/view/9781590599082, and contains
+  ports of a few standard Ruby modules.
   
   @JS.Class@ is &copy; 2007&ndash;2008 James Coglan. You can find update announcements via
-  "my blog":http://blog.jcoglan.com/category/jsclass/.
+  "my blog":http://blog.jcoglan.com/category/jsclass/. The source code is "hosted on
+  Github":http://github.com/jcoglan/js.class.

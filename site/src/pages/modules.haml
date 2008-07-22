@@ -1,43 +1,115 @@
 :textile
-  h3. Modules
+  h3. Using Modules
   
-  Ruby modules are collections of methods that can be mixed into classes. The instance methods
-  in a module cannot be accessed from outside it, they can only be used in classes that
-  @include@ or @extend@ using the module.
+  In Ruby, a module is simply an object that stores methods. In @JS.Class@, they are right
+  at the core of the library, being responsible for handling inheritance rules, looking
+  up methods and the like. @JS.Module@ is a class, and @JS.Class@ is also a class that
+  happens to inherit from @JS.Module@. That is:
   
-  @JS.Class@ has some functionality to mimick modules. @JS.Module@ creates objects that have
-  just two methods - an @included()@ and an @extended()@ hook - that can be mixed into classes
-  but cannot have their instance methods modified. This allows you to create secure mixins.
+  <pre class="prettyprint">
+  JS.Class.superclass === JS.Module</pre>
+  
+  I like to think of classes as modules that can be instantiated to create objects. But enough
+  theory, the important thing is: modules store methods, and can be used to group related methods
+  together so you can mix behaviour into classes.
+  
+  For example, suppose you want to encapsulate the idea of being able to compare objects to
+  each other so they can be sorted. (@JS.Class@ comes with a "@Comparable@":/comparable.html
+  module, so you don't have to write you own.) A module for achieving this might look like:
   
   <pre class="prettyprint">
   var Comparable = new JS.Module({
-    extend: {
-      compare: function(a,b) {
-        return a.compareTo(b);
-      }
-    },
-    
     lt: function(object) {
-      return this.klass.compare(this, object) == -1;
+      return this.compareTo(object) == -1;
     },
     lte: function(object) {
-      return this.klass.compare(this, object) < 1;
+      return this.compareTo(object) < 1;
     },
     gt: function(object) {
-      return this.klass.compare(this, object) == 1;
+      return this.compareTo(object) == 1;
     },
     gte: function(object) {
-      return this.klass.compare(this, object) > -1;
+      return this.compareTo(object) > -1;
     },
     eq: function(object) {
-      return this.klass.compare(this, object) == 0;
+      return this.compareTo(object) == 0;
     }
   });</pre>
   
-  (@JS.Class@ comes with a "@Comparable@":/comparable.html module, so you don't have to write you own.)
-  
-  @Comparable@'s instance methods are now not accessible unless the module is mixed into a class:
+  This @Comparable@ module cannot be instantiated -- you cannot create new objects from it.
+  But you can add the module to a class, and the class will gain the methods stored in the
+  module. This module will work with any class with a @compareTo()@ method:
   
   <pre class="prettyprint">
-  TodoItem.include(Comparable);
-  // Now TodoItem has all the methods defined above</pre>
+  var User = new JS.Class({
+    include: Comparable,
+    
+    initialize: function(name) {
+      this.name = name;
+    },
+    
+    compareTo: function(user) {
+      if (this.name < user.name)
+        return -1;
+      else if (this.name > user.name)
+        return 1;
+      else
+        return 0;
+    }
+  });</pre>
+  
+  We now have users with comparison methods:
+  
+  <pre class="prettyprint">
+  var jack = new User('Jack'), jill = new User('Jill');
+  jack.lt(jill)   // -> true
+  jack.gt(jill)   // -> false
+  jill.gt(jack)   // -> true</pre>
+  
+  Also note that the methods stored in a module are not methods _of_ the module. That is,
+  you cannot call @Comparable.lt(someObject)@, for example. The methods can only be called
+  on objects whose class includes the module.
+  
+  If you want to mix several modules into your class, you need to specify them as an
+  array, in the order you want them to be included, for example:
+  
+  <pre class="prettyprint">
+  var Foo = new JS.Class({
+    include: [ModA, ModB, ModC],
+    
+    initialize: function() {
+      // ...
+    }
+  });</pre>
+  
+  Alternatively, you could create the class first, then mix the modules in afterward:
+  
+  <pre class="prettyprint">
+  var Foo = new JS.Class({
+    initialize: function() {
+      // ...
+    }
+  });
+  Foo.include(ModA);
+  Foo.include(ModB);
+  Foo.include(ModC);</pre>
+  
+  h3. Modules and @callSuper()@
+  
+  When you mix a module into a class, the module becomes part of the class' 'ancestry'.
+  That means that the class' own methods can use @callSuper()@ if they override any
+  methods inherited from the module. For example, let's override @Comparable#eq()@ to
+  log its results:
+  
+  <pre class="prettyprint">
+  User.include({
+    eq: function(user) {
+      var areEqual = this.callSuper();
+      if (areEqual) console.log("Found two equal objects!");
+      return areEqual;
+    }
+  });</pre>
+  
+  Note we don't need to pass @user@ into @callSuper()@ - it gets passed in automatically
+  unless we override it. For more information on inheritance, "read about how Ruby's
+  method lookup works":/inheritance.html.

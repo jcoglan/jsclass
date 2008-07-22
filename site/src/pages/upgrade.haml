@@ -1,0 +1,168 @@
+:textile
+  h3. Upgrading to JS.Class 2.0
+  
+  If you followed the documentation, the vast majority of your code will be compatible
+  with version 2.0. Some undocumented methods and objects have been removed, but if
+  you've been sticking to the publicized API you should be fine. This article lists
+  known differences between version 1.x and version 2.0.
+  
+  h3. The @new@ keyword is not optional
+  
+  In 1.x, you could create classes and modules without using the @new@ keyword:
+  
+  <pre class="prettyprint">
+  var MyClass = JS.Class({
+    initialize: function() { /* ... */ }
+  });</pre>
+  
+  The documentation examples all used @new@ so if you followed along your code will
+  continue to work. In 2.0 you must use @new@ to create modules, classes, interfaces,
+  singletons, decorators, and proxies.
+  
+  <pre class="prettyprint">
+  var MyClass = new JS.Class({
+    initialize: function() { /* ... */ }
+  });
+  
+  var MyMod = new JS.Module({
+    doSomething: function() { /* ... */ }
+  });
+  
+  var MyDeco = new JS.Decorator(MyClass, {
+    extraFunc: function() { /* ... */ }
+  });</pre>
+  
+  This is a consequence of the fact that @JS.Class@ and @JS.Module@ are themselves
+  classes in 2.0. In 1.x they were simple functions so the @new@ keyword has no real
+  effect.
+  
+  h3. Modules can have singleton properties
+  
+  In 1.x, @JS.Module@ was simply a shortcut for putting a set of methods inside
+  a closure so they could not be access unless you mixed the module into a class.
+  It was implemented as follows:
+  
+  <pre class="prettyprint">
+  JS.Module = function(source) {
+    return {
+      included: function(klass) { klass.include(source); },
+      extended: function(klass) { klass.extend(source); }
+    };
+  };</pre>
+  
+  It just took a set of methods and wrapped them inside hooks for use with @include()@
+  and @extend()@. In version 2.0, @JS.Module@ is a fully-fledged class in its own right
+  and thus behaves differently. The main difference is the behaviour of the @extend@
+  keyword -- in 1.x, @extend@ adds class methods to a class that @include@-s the module,
+  and in 2.0 @extend@ adds singleton methods to the module itself, not to the class.
+  
+  Consider this example:
+  
+  <pre class="prettyprint">
+  var Runnable = new JS.Module({
+    extend: {
+      runAll: function() {
+        return 'Run all';
+      }
+    },
+    
+    run: function() {
+      return 'Run an instance';
+    }
+  });
+  
+  var Process = new JS.Class({
+    include: Runnable
+  });</pre>
+  
+  In version 1.x, @extend@ adds methods to classes that @include@ the module:
+  
+  <pre class="prettyprint">
+  // Works in 1.x
+  Process.runAll()    // -> "Run all"</pre>
+  
+  In version 2.0, @extend@ adds methods to the module itself, but not to classes
+  that @include@ it.
+  
+  <pre class="prettyprint">
+  // Works in 2.0
+  Runnable.runAll()   // -> "Run all"</pre>
+  
+  In all versions, the @run()@ method from @Runnable@ is added as an instance method
+  to @Process@. It is not a method on @Runnable@, in that you cannot call @Runnable.run()@,
+  it is a method stored _inside_ the module @Runnable@.
+  
+  <pre class="prettyprint">
+  // Works everywhere
+  (new Process).run() // -> "Run an instance"</pre>
+  
+  If you want the 1.x behaviour, you need two modules: one to store instance methods
+  and one to store class methods. Use an @included()@ hook so the including class does
+  not have to make multiple @include@ calls.
+  
+  <pre class="prettyprint">
+  var Runnable = new JS.Module({
+    extend: {
+      ClassMethods: new JS.Module({
+        runAll: function() {
+          return 'Run all';
+        }
+      }),
+      
+      included: function(base) {
+        base.extend(this.ClassMethods);
+      }
+    },
+    
+    run: function() {
+      return 'Run an instance';
+    }
+  });
+  
+  var Process = new JS.Class({
+    include: Runnable
+  });</pre>
+  
+  The @run()@ method is added as an instance method from the @Runnable@ module.
+  The @included()@ hook extends @Process@ (the @base@) using the module
+  @Runnable.ClassMethods@, so @Process@ gets a @runAll()@ class method.
+  
+  <pre class="prettyprint">
+  Process.runAll()      // -> "Run all"
+  (new Process).run()   // -> "Run an instance"</pre>
+  
+  This technique is consistent with the Ruby way of getting the same behaviour.
+  
+  h3. @callSuper()@ can call module methods
+  
+  2.0 fully implements Ruby's inheritance system, whereas 1.x was incomplete. In
+  particular, 1.x did not allow @callSuper()@ to call methods from mixed-in modules.
+  Consider this example:
+  
+  <pre class="prettyprint">
+  var Employee = new JS.Class({
+    hire: function() {
+      return "Hiring an Employee";
+    }
+  });
+  
+  var Employable = new JS.Module({
+    hire: function() {
+      return "I'm Employable";
+    }
+  });
+  
+  var BusDriver = new JS.Class(Employee, {
+    include: Employable,
+    
+    hire: function() {
+      return this.callSuper();
+    }
+  });
+  
+  (new BusDriver).hire()</pre>
+  
+  In version 1.x, the final line evaluates to @"Hiring an Employee"@ (from @Employee@,
+  the parent class), but in 2.0 it returns @"I'm Employable"@. This is because mixed in
+  @Module@ objects become part of the inheritance tree according to Ruby's inheritance
+  semantics.

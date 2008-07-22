@@ -2,8 +2,8 @@
 %html
   %head
     %meta{'http-equiv' => 'content-type', :content => 'text/html; charset=utf-8'}
-    %title JS.Class - Ruby-like classes for JavaScript
-    =stylesheets 'application', 'prettify'
+    %title JS.Class - Ruby-style JavaScript
+    =stylesheets 'application', 'twilight'
     =javascripts 'prettify'
   %body{:onload => 'prettyPrint()'}
     #header
@@ -11,57 +11,59 @@
         %h1
           =link 'JS.Class', '/'
           %span Ruby-style JavaScript
-    #content
-      = yield
-    #sidebar
-      %ul
-        %li
-          =link 'Inheritance and <tt>callSuper</tt>', '/inheritance.html'
-        %li
-          =link 'Static/class methods', '/statics.html'
-        %li
-          =link 'Mixins'
-        %li
-          =link '<tt>include</tt> and <tt>extend</tt>', '/includeextend.html'
-        %li
-          =link 'Singleton methods', '/singletonmethods.html'
-        %li
-          =link 'Method binding', '/binding.html'
-        %li
-          =link 'Callbacks and hooks', '/hooks.html'
-        %li
-          =link 'Modules'
-        %li
-          =link 'Type checking, the class tree', '/types.html'
-        %li
-          =link 'Interfaces'
-        %li
-          =link 'Singletons'
-      %ul
-        %li
-          =link 'Patterns'
-        %li
-          =link 'Command'
-        %li
-          =link 'Comparable'
-        %li
-          =link 'Decorator'
-        %li
-          =link 'Enumerable'
-        %li
-          =link 'Forwardable'
-        %li
-          =link 'Linked lists', '/linkedlist.html'
-        %li
-          =link 'MethodChain'
-        %li
-          =link 'Observable'
-        %li
-          =link 'Proxies'
-        %li
-          =link 'State'
-        %li
-          =link 'Ruby'
+        #download
+          =link 'Download v2.0', '/assets/JS.Class.2.0.0.zip'
+    .sub
+      #content
+        = yield
+      #sidebar
+        %h4 Core reference
+        %ul
+          %li
+            =link 'Creating classes', '/classes.html'
+          %li
+            =link 'Using Modules', '/modules.html'
+          %li
+            =link 'Class methods', '/statics.html'
+          %li
+            =link 'Inheritance', '/inheritance.html'
+          %li
+            =link 'Singleton methods', '/singletonmethods.html'
+          %li
+            =link 'Method binding', '/binding.html'
+          %li
+            =link 'Callbacks and hooks', '/hooks.html'
+          %li
+            =link 'Type checking, the class tree', '/types.html'
+          %li
+            =link 'Interfaces'
+          %li
+            =link 'Singletons'
+        %h4 Standard library
+        %ul
+          %li
+            =link 'Command'
+          %li
+            =link 'Comparable'
+          %li
+            =link 'Decorator'
+          %li
+            =link 'Enumerable'
+          %li
+            =link 'Forwardable'
+          %li
+            =link 'Linked lists', '/linkedlist.html'
+          %li
+            =link 'MethodChain'
+          %li
+            =link 'Observable'
+          %li
+            =link 'Proxies'
+          %li
+            =link 'State'
+          %li
+            =link 'Ruby'
+      %div{:style => 'clear: both;'}
     #footer
       .sub
         :textile
