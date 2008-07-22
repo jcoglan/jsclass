@@ -39,16 +39,6 @@ JS.extend(JS.Ruby, {
       alias: JS.Ruby.alias(klass, this)
     };
     
-    this.extend = function(source) {
-      klass.extend(source);
-      JS.Ruby.extendDSL(this, klass);
-    };
-    
-    this.instanceMethod = function(name) {
-      var method = klass.instanceMethod(name);
-      return (JS.isFn(method)) ? method : null;
-    };
-    
     JS.Ruby.extendDSL(this, klass);
   }
 });
