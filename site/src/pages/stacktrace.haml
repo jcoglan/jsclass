@@ -1,0 +1,119 @@
+:textile
+  h3. @JS.StackTrace@
+  
+  The @StackTrace@ module can be mixed into any class or module and helps with debugging
+  programs using Firebug. When it is mixed into a class, it makes the class log all its
+  method calls to the console, along with arguments passed in and values returned. Firebug
+  will let you inspect the arguments and return values, making this a powerful tool for
+  seeing what your program is doing.
+  
+  Let's take a reasonably complex example as it demonstrates the full capabilities of
+  @StackTrace@. This shows how you can mix it in when defining a class or a module, how
+  to add it to existing modules, and shows some complex output.
+  
+  <pre class="prettyprint">
+  // Parent class. run() calls getString()
+  Parent = new JS.Class({
+    include: JS.StackTrace,
+    run: function() {
+      return this.getString();
+    },
+    getString: function() {
+      return 'Running';
+    }
+  });
+  
+  // Mixin module. run() calls the super method
+  Mixin = new JS.Module({
+    include: JS.StackTrace,
+    run: function() {
+      return this.callSuper().toUpperCase();
+    }
+  });
+  
+  // Augment Observable module with StackTrace
+  JS.Observable.include(JS.StackTrace);
+  
+  // Class class, inherits from Parent, includes Mixin and Observable
+  // run() calls fire(), which calls Observable#notifyObservers()
+  Child = new JS.Class(Parent, {
+    include: [Mixin, JS.Observable, JS.StackTrace],
+    run: function() {
+      this.fire();
+      return this.callSuper() + '!!!';
+    },
+    fire: function() {
+      this.notifyObservers();
+    }
+  });</pre>
+  
+  Suppose that somewhere else in your code you have this:
+  
+  <pre class="prettyprint">
+  var child = new Child, parent = new Parent;
+  child.addObserver(parent.method('run'));
+  child.run('something')</pre>
+  
+  @StackTrace@ will print the following to the console. Every method call in traced classes
+  is logged, with indentation to show how deep in the call stack you are. Vertical lines
+  connect the beginning and end of a single method call.
+  
+  <pre>
+  JS.Observable#addObserver( [function()] )
+  JS.Observable#addObserver() --> undefined
+  Child#run( ["something"] )
+  |  Child#fire( [] )
+  |  |  JS.Observable#notifyObservers( [] )
+  |  |  |  JS.Observable#isChanged( [] )
+  |  |  |  JS.Observable#isChanged() --> true
+  |  |  |  JS.Observable#countObservers( [] )
+  |  |  |  JS.Observable#countObservers() --> 1
+  |  |  |  Parent#run( [] )
+  |  |  |  |  Parent#getString( [] )
+  |  |  |  |  Parent#getString() --> Running
+  |  |  |  Parent#run() --> Running
+  |  |  JS.Observable#notifyObservers() --> undefined
+  |  Child#fire() --> undefined
+  |  Mixin#run( ["something"] )
+  |  |  Parent#run( ["something"] )
+  |  |  |  Parent#getString( [] )
+  |  |  |  Parent#getString() --> Running
+  |  |  Parent#run() --> Running
+  |  Mixin#run() --> RUNNING
+  Child#run() --> RUNNING!!!</pre>
+  
+  h3. Caveats
+  
+  It is important to know the limitations of this module as the limitations of JavaScript
+  mean it can cause serious problems if abused. The first and most important caveat is,
+  do not use this module in production code. It wraps all the functions in your classes
+  with extra calls, at least trippling the number of function calls and causing a large
+  performance hit. Only use it in development.
+  
+  The other caveats relate to consequences of JavaScript's naming system. When you create
+  a class like @Parent = new JS.Class()@, the class stored in the variable @Parent@ has
+  no way of knowing the name of the variable(s) that reference it. Therefore, @StackTrace@
+  has an autodiscovery system to find out the names of classes and methods at runtime. It works
+  using a breadth-first search of all global objects in the program, continuing until
+  it finds an object matching the class to trace. This lookup is expensive, and the cost
+  grows exponentially with how deeply nested your namespace is. For example, finding a
+  class @Parent@ is much faster than finding @MyApp.utils.Parent@, as the latter is two
+  levels of nesting deeper.
+  
+  One obvious side-effect of the above is that your class _must_ be globally accessible
+  so that @StackTrace@ can figure out its name. Classes defined inside closures will
+  never be found.
+  
+  Finally, note that @StackTrace@ cannot find names for classes immediately, there is
+  some delay in naming a class after you include @StackTrace@ into it. Consider this:
+  
+  <pre class="prettyprint">
+  var Foo = new JS.Class({
+    include: JS.StackTrace
+  });</pre>
+  
+  This creates a new class, mixes @StackTrace@ into it, _then_ assigns the finished
+  class to the variable @Foo@. So at the point that @StackTrace@ is mixed in, the
+  class has not been bound to a name. To get around this, names are looked up
+  asynchronously using a @setTimeout()@ call. Code that runs synchronously with the
+  class definition will not be correctly traced.
