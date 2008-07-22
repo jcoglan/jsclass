@@ -20,7 +20,7 @@
   proxies for all its instance methods. This saves you time and reduces code duplication.
   
   Consider the following example: we have a @Dog@ class, which keeps track of how many
-  times it has been instantiated through its static @instances@ property. We then create
+  times it has been instantiated through its class property @instances@. We then create
   a @DogProxy@ class from @Dog@, and instantiate it. At this point we see that
   @Dog.instances == 0@. Then we call @rex.bark()@, which instantiates @rex@'s subject
   and calls @bark()@ on it. @Dog.instances@ now equals @1@. Calling further methods

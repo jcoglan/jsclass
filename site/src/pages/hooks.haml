@@ -4,7 +4,7 @@
   Ruby defines a couple of hook methods that you can use to detect when a class is subclassed
   or when a module is mixed in. These hooks are called @inherited()@, @included()@ and @extended()@.
   
-  If a class has a static method called @inherited()@ it will be called whenever you create
+  If a class has a class method called @inherited()@ it will be called whenever you create
   a subclass of it:
   
   <pre class="prettyprint">

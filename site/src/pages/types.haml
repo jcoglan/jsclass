@@ -2,7 +2,7 @@
   h3. Type-checking and the class tree
   
   All objects created from @JS.Class@ classes have a @klass@ property that refers to the class
-  it belongs to. You can use this for type-checking and for accessing static methods on the
+  it belongs to. You can use this for type-checking and for accessing class methods on the
   class. Objects also have an @isA()@ method that can be used to type-check against the whole
   class tree.
   
@@ -27,7 +27,7 @@
   rex.klass               // -> Dog
   rex.klass.superclass    // -> Animal</pre>
   
-  You can use this from within methods to access class constructors, static methods, etc...
+  You can use this from within methods to access class constructors, class methods, etc...
   
   <pre class="prettyprint">
   var Sheep = new JS.Class(Animal, {
@@ -38,4 +38,4 @@
   });</pre>
   
   Each class also has a @subclasses@ property, which contains an array of its subclasses. This
-  is less useful for programming, but is used to allow static methods to be inherited.
+  is less useful for programming, but is used to allow class methods to be inherited.
