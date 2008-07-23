@@ -973,11 +973,6 @@
                 theUpperMethod: function() { return 'success!' }
             });
             
-            assertEqual(undefined, (new klass).theMethod);
-            assertEqual(undefined, (new klass).theUpperMethod);
-            
-            klass.resolve();
-            
             assertEqual('success!', (new klass).theMethod());
             assertEqual('success!', (new klass).theUpperMethod());
         }},

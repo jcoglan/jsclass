@@ -104,6 +104,7 @@ JS.extend(JS.Module.prototype, {
     this.__mod__ = this;
     this.__inc__ = [];
     this.__fns__ = {};
+    this.__dep__ = [];
     this.__res__ = options.resolve || null;
     this.include(methods || {});
   },
@@ -113,6 +114,8 @@ JS.extend(JS.Module.prototype, {
     this.__fns__[name] = func;
     if (JS.Module._notify && options.notify && JS.isFn(func))
         JS.Module._notify(name, options.notify);
+    var i = this.__dep__.length;
+    while (i--) this.__dep__[i].resolve();
   },
   
   instanceMethod: function(name) {
@@ -126,6 +129,7 @@ JS.extend(JS.Module.prototype, {
     var inc = module.include, ext = module.extend, modules, i, n, method;
     if (module.__inc__ && module.__fns__) {
       this.__inc__.push(module);
+      module.__dep__.push(this);
       if (module.extended && options.extended) module.extended(options.extended);
       else module.included && module.included(options.included || this);
     }
@@ -209,7 +213,14 @@ JS.extend(JS.Module.prototype, {
   
   resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
+    i = this.__dep__.length;
+    
+    if (target == this) {
+      i = this.__dep__.length;
+      while (i--) this.__dep__[i].resolve();
+    }
     if (!resolved) return;
+    
     for (i = 0, n = this.__inc__.length; i < n; i++)
       this.__inc__[i].resolve(target);
     for (key in this.__fns__) {
