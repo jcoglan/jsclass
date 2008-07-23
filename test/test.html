@@ -166,7 +166,9 @@
         }
     });
     
-    var Special = new SpecialClass(InheritanceTester, {
+    var Special = new SpecialClass({});
+    
+    var SpecialSub = new SpecialClass(InheritanceTester, {
         speak: function() {
             return this.callSuper().toUpperCase();
         }
@@ -683,11 +685,11 @@
             assertEqual(JS.Class, SpecialClass.klass);
             assertEqual(JS.Class, SpecialClass.superclass);
             assertEqual(SpecialClass, Special.klass);
-            assertEqual(InheritanceTester, Special.superclass)
+            assertEqual(InheritanceTester, SpecialSub.superclass)
             var things = Special.make('something', function() { return 'else' });
             assertEqual('something', things[0]);
             assertEqual('else', things[1]());
-            assertEqual("speak() in ModB, speak() in ModD, speak() in ModA, and in ModC, and in class Foo".toUpperCase(), new Special().speak());
+            assertEqual("speak() in ModB, speak() in ModD, speak() in ModA, and in ModC, and in class Foo".toUpperCase(), new SpecialSub().speak());
         }},
         
         testIsA: function() { with(this) {
@@ -699,8 +701,8 @@
             assert(obj.isA(JS.ObjectMethods));
             assert(obj.isA(Object));
             
-            obj = new Special();
-            assert(obj.isA(Special));
+            obj = new SpecialSub();
+            assert(obj.isA(SpecialSub));
             assert(obj.isA(InheritanceTester));
             assert(obj.isA(ModA));
             assert(obj.isA(ModB));
@@ -715,6 +717,7 @@
             assert(InheritanceTester.isA(JS.Class));
             assert(InheritanceTester.isA(JS.Module));
             assert(Special.isA(JS.Class));
+            assert(Special.isA(SpecialClass));
             assert(Special.isA(JS.Module));
             assert(!(new SomeClass).isA(InheritanceTester));
             
@@ -1004,7 +1007,7 @@
                 }
             });
             assert(Object.children.length > 0);
-            assertEqual(Special, InheritanceTester.children[0]);
+            assertEqual(SpecialSub, InheritanceTester.children[0]);
             assertEqual(HookTester, InheritanceTester.children[1]);
             assertEqual(foo, InheritanceTester.children[2]);
         }},
