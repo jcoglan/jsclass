@@ -10,7 +10,7 @@
     <script type="text/javascript" charset="utf-8">
       timeA = Number(new Date);
     </script>
-    <script src="../build/class-min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/class-src.js" type="text/javascript" charset="utf-8"></script>
     <script src="../build/patterns-min.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
       timeB = Number(new Date);
@@ -693,12 +693,12 @@
         testInheritanceFromClass: function() { with(this) {
             assertEqual(JS.Class, SpecialClass.klass);
             assertEqual(JS.Class, SpecialClass.superclass);
-            assertEqual(JS.Class, Special.klass);
+            assertEqual(SpecialClass, Special.klass);
             assertEqual(InheritanceTester, Special.superclass)
             var things = Special.make('something', function() { return 'else' });
             assertEqual('something', things[0]);
             assertEqual('else', things[1]());
-            assertEqual("speak() in ModB, speak() in ModA, and in ModC, and in class Foo".toUpperCase(), new Special().speak());
+            assertEqual("speak() in ModB, speak() in ModD, speak() in ModA, and in ModC, and in class Foo".toUpperCase(), new Special().speak());
         }},
         
         testIsA: function() { with(this) {
