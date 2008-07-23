@@ -25,6 +25,12 @@ JS.StackTrace = new JS.Module({
     },
     
     nameOf: function(object, root) {
+      if (object instanceof Array) {
+        var results = [], i, n;
+        for (i = 0, n = object.length; i < n; i++)
+          results.push(this.nameOf(object[i]));
+        return results;
+      }
       if (object.__name__) return object.__name__;
       var field = [{name: null, o: root || this.root}], l = 0;
       while (typeof field == 'object' && l < this.maxDepth) {
