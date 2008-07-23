@@ -29,7 +29,7 @@ JS.State = new JS.Module({
     } },
     
     buildCollection: function(module, states) {
-      var stubs = {}, collection = {}, superstates = module.lookup('states', false).pop() || {};
+      var stubs = {}, collection = {}, superstates = module.lookup('states').pop() || {};
       this.buildStubs(stubs, collection, states);
       this.buildStubs(stubs, collection, superstates);
       var state, klass, methods, name;

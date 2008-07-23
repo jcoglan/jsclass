@@ -174,7 +174,7 @@ JS.extend(JS.Module.prototype, {
     var ancestors = this.ancestors(), results = [], i, n, method;
     for (i = 0, n = ancestors.length; i < n; i++) {
       method = ancestors[i].__mod__.__fns__[name];
-      if (JS.isFn(method)) results.push(method);
+      if (method) results.push(method);
     }
     return results;
   },
