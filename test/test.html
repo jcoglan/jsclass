@@ -623,17 +623,6 @@
     
     window.console && console.log(Rails.numericValue);
     
-    JS.Packages(function() { with(this) {
-      var root = 'http://yui.yahooapis.com/2.5.2/build';
-      
-      pkg('YAHOO',                root + '/yahoo-dom-event/yahoo-dom-event.js');
-      pkg('YAHOO.util.Dom',       root + '/yahoo-dom-event/yahoo-dom-event.js');
-      pkg('YAHOO.util.Event',     root + '/yahoo-dom-event/yahoo-dom-event.js');
-      
-      pkg('YAHOO.util.Selector',  root + '/selector/selector-beta.js')
-          .requires('YAHOO.util.Dom');
-    }});
-    
     </script>
     <script type="text/javascript" charset="utf-8">
       timeB = Number(new Date);
