@@ -235,8 +235,12 @@ JS.ObjectMethods = new JS.Module({
 JS.Class = JS.makeFunction();
 JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   initialize: function(parent, methods) {
-    var klass = JS.extend(JS.makeFunction(), this);
-    klass.klass = klass.constructor = JS.Class;
+    var klass = JS.makeFunction();
+    
+    klass.klass = klass.constructor = this.klass;
+    if (this.klass) this.__eigen__.call(klass).resolve();
+    else JS.extend(klass, this);
+    
     if (!JS.isFn(parent)) {
       methods = parent;
       parent = Object;
@@ -252,10 +256,17 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   
   inherit: function(klass) {
     this.superclass = klass;
+    
+    if (this.__meta__) this.__meta__.include(klass.__eigen__
+        ? klass.__eigen__()
+        : new JS.Module(klass.prototype));
+    
     this.subclasses = [];
     (klass.subclasses || []).push(this);
+    
     var p = this.prototype = JS.makeBridge(klass);
     p.klass = p.constructor = this;
+    
     this.__mod__ = new JS.Module({}, {resolve: this.prototype});
     this.include(JS.ObjectMethods, null, false);
     this.include(klass.__mod__ || new JS.Module(klass.prototype, {resolve: klass.prototype}), null, false);
@@ -267,14 +278,6 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     var mod = this.__mod__, options = options || {};
     options.included = this;
     return mod.include(module, options, resolve !== false);
-  },
-  
-  __eigen__: function() {
-    if (this.__meta__) return this.__meta__;
-    var module = this.callSuper();
-    var parent = this.superclass;
-    module.include(parent.__eigen__ ? parent.__eigen__() : new JS.Module(parent.prototype));
-    return module;
   },
   
   extend: function(module) {
