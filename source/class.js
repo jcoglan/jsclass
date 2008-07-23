@@ -101,6 +101,7 @@ JS.Module = JS.makeFunction();
 JS.extend(JS.Module.prototype, {
   initialize: function(methods, options) {
     options = options || {};
+    this.__mod__ = this;
     this.__inc__ = [];
     this.__fns__ = {};
     this.__res__ = options.resolve || null;
@@ -159,13 +160,22 @@ JS.extend(JS.Module.prototype, {
     return false;
   },
   
-  lookup: function(name, lookInSelf, results) {
+  ancestors: function(results) {
     results = results || [];
-    var found, i, n;
-    for (i = 0, n = this.__inc__.length; i < n; i++)
-      this.__inc__[i].lookup(name, true, results);
-    if (lookInSelf !== false && (found = this.__fns__[name]) && JS.indexOf(results, found) == -1)
-      results.push(found);
+    for (var i = 0, n = this.__inc__.length; i < n; i++)
+      this.__inc__[i].ancestors(results);
+    var klass = (this.__res__||{}).klass,
+        result = (klass && this.__res__ == klass.prototype) ? klass : this;
+    if (JS.indexOf(results, result) == -1) results.push(result);
+    return results;
+  },
+  
+  lookup: function(name) {
+    var ancestors = this.ancestors(), results = [], i, n, method;
+    for (i = 0, n = ancestors.length; i < n; i++) {
+      method = ancestors[i].__mod__.__fns__[name];
+      if (JS.isFn(method)) results.push(method);
+    }
     return results;
   },
   
@@ -269,7 +279,10 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     
     this.__mod__ = new JS.Module({}, {resolve: this.prototype});
     this.include(JS.ObjectMethods, null, false);
-    this.include(klass.__mod__ || new JS.Module(klass.prototype, {resolve: klass.prototype}), null, false);
+    
+    if (klass !== Object) this.include(klass.__mod__ || new JS.Module(klass.prototype,
+        {resolve: klass.prototype}), null, false);
+    
     this.extend();
   },
   
@@ -293,9 +306,9 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     module.resolve();
   },
   
-  includes: JS.delegate('__mod__', 'includes'),
-  lookup:   JS.delegate('__mod__', 'lookup'),
-  resolve:  JS.delegate('__mod__', 'resolve')
+  includes:   JS.delegate('__mod__', 'includes'),
+  ancestors:  JS.delegate('__mod__', 'ancestors'),
+  resolve:    JS.delegate('__mod__', 'resolve')
 });
 
 JS.Module = JS.extend(new JS.Class(JS.Module.prototype), JS.ObjectMethods.__fns__);

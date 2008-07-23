@@ -670,6 +670,10 @@
             assertEqual('SPEAK() IN MODB, SPEAK() IN CLASS BAR', tester.speak());
         }},
         
+        testAncestors: function() { with(this) {
+            assertEnumEqual([JS.ObjectMethods, ModA, ModD, ModB, ModC, InheritanceTester], InheritanceTester.ancestors());
+        }},
+        
         testCoreClasses: function() { with(this) {
             assertEqual(JS.Class, JS.Module.klass);
             assertEqual(JS.Class, JS.Class.klass);
