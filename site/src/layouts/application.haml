@@ -12,7 +12,8 @@
           =link 'JS.Class', '/'
           %span Ruby-style JavaScript
         #download
-          =link 'Download v2.0', '/assets/JS.Class.2.0.0.zip'
+          %a{:href => '/assets/JS.Class.2-0-0.zip', :onclick => "trackDownload('2.0.0')"}
+            Download v2.0
     .sub
       #content
         = yield
@@ -78,8 +79,13 @@
       document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
   %script{:type => 'text/javascript'}
     :plain
-      if (!/^http:\/\/localhost[\:\/]/i.test(window.location.href)) {
+      isLocal = !!( /localhost|192\.168/i.test(window.location.href) );
+      if (!isLocal) {
         var pageTracker = _gat._getTracker("UA-873493-4");
         pageTracker._initData();
         pageTracker._trackPageview();
       }
+      trackDownload = function(version) {
+        if (!isLocal) pageTracker._trackPageview('/download/' + version + '/');
+        return true;
+      };
