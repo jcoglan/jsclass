@@ -213,7 +213,6 @@ JS.extend(JS.Module.prototype, {
   
   resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
-    i = this.__dep__.length;
     
     if (target == this) {
       i = this.__dep__.length;
