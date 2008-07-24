@@ -5,28 +5,7 @@ JS.StackTrace = new JS.Module({
       
       module.extend({define: function(name, func) {
         if (!JS.isFn(func)) return this.callSuper();
-        var wrapper = function() {
-          var fullName = module.__name__ + '#' + name, result;
-          self.stack.push(fullName, this, arguments);
-          
-          if (self.logLevel == 'errors') {
-            try { result = func.apply(this, arguments); }
-            catch (e) {
-              if (e.logged) throw e;
-              e.logged = true;
-              window.console && console.error(e, 'thrown by', self.stack.top().name + '. Backtrace:');
-              self.print();
-              self.flush();
-              throw e;
-            }
-          } else {
-            result = func.apply(this, arguments);
-          }
-          
-          self.stack.pop(result);
-          return result;
-        };
-        wrapper.toString = function() { return func.toString() };
+        var wrapper = JS.StackTrace.wrap(func, module, name);
         return this.callSuper(name, wrapper);
       } });
       
@@ -118,6 +97,33 @@ JS.StackTrace = new JS.Module({
     
     print: function() {
       this.stack.backtrace();
+    },
+    
+    wrap: function(func, module, name) {
+      var self = JS.StackTrace;
+      var wrapper = function() {
+        var result, fullName = self.nameOf(module) + '#' + name;
+        self.stack.push(fullName, this, arguments);
+        
+        if (self.logLevel == 'errors') {
+          try { result = func.apply(this, arguments); }
+          catch (e) {
+            if (e.logged) throw e;
+            e.logged = true;
+            window.console && console.error(e, 'thrown by', self.stack.top().name + '. Backtrace:');
+            self.print();
+            self.flush();
+            throw e;
+          }
+        } else {
+          result = func.apply(this, arguments);
+        }
+        
+        self.stack.pop(result);
+        return result;
+      };
+      wrapper.toString = function() { return func.toString() };
+      return wrapper;
     }
   }
 });
