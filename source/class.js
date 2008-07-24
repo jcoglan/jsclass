@@ -214,10 +214,6 @@ JS.extend(JS.Module.prototype, {
   resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
     
-    if (target == this) {
-      i = this.__dep__.length;
-      while (i--) this.__dep__[i].resolve();
-    }
     if (!resolved) return;
     
     for (i = 0, n = this.__inc__.length; i < n; i++)
@@ -255,12 +251,8 @@ JS.ObjectMethods = new JS.Module({
 JS.Class = JS.makeFunction();
 JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   initialize: function(parent, methods) {
-    var klass = JS.makeFunction();
-    
+    var klass = JS.extend(JS.makeFunction(), this);
     klass.klass = klass.constructor = this.klass;
-    if (this.klass) this.__eigen__.call(klass).resolve();
-    else JS.extend(klass, this);
-    
     if (!JS.isFn(parent)) {
       methods = parent;
       parent = Object;
@@ -277,9 +269,12 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   inherit: function(klass) {
     this.superclass = klass;
     
-    if (this.__meta__) this.__meta__.include(klass.__eigen__
-        ? klass.__eigen__()
-        : new JS.Module(klass.prototype));
+    if (this.__eigen__) {
+      this.__eigen__().include(klass.__eigen__
+          ? klass.__eigen__()
+          : new JS.Module(klass.prototype));
+      this.__meta__.resolve();
+    }
     
     this.subclasses = [];
     (klass.subclasses || []).push(this);
@@ -292,8 +287,6 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     
     if (klass !== Object) this.include(klass.__mod__ || new JS.Module(klass.prototype,
         {resolve: klass.prototype}), null, false);
-    
-    this.extend();
   },
   
   include: function(module, options, resolve) {
