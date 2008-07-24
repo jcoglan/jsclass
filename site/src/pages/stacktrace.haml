@@ -82,6 +82,35 @@
   |  Mixin#run() --> RUNNING
   Child#run() --> RUNNING!!!</pre>
   
+  h3. Tracing modes
+  
+  @StackTrace@ has a couple of different modes that control its output. The default mode
+  is @full@, which logs all method calls and shows stack level using indentation. The
+  other mode is @errors@, which only prints out the call stack when an exception is
+  thrown and is not caught. The method that threw the exception is printed at the top,
+  the method that called _that_ next, and so on until we reach the outermost method.
+  Suppose we make the following changes to our program:
+  
+  <pre class="prettyprint">
+  Parent.define('getString', function() {
+    throw new TypeError;
+  });
+  
+  JS.StackTrace.logLevel = 'errors';</pre>
+  
+  Then running the program again produces:
+  
+  <pre>
+  TypeError thrown by Parent#getString. Backtrace:
+  Parent#getString( [] )
+  Parent#run( [] )
+  JS.Observable#notifyObservers( [] )
+  Child#fire( [] )
+  Child#run( ["something"] )</pre>
+  
+  This output has been condensed slightly for clarity. In practise, @StackTrace@ also
+  logs the object that each method is called on so you can inspect it with Firebug.
+  
   h3. Caveats
   
   It is important to know the limitations of this module as the limitations of JavaScript
