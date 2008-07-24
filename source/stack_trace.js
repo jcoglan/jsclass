@@ -6,9 +6,23 @@ JS.StackTrace = new JS.Module({
       module.extend({define: function(name, func) {
         if (!JS.isFn(func)) return this.callSuper();
         var wrapper = function() {
-          var fullName = module.__name__ + '#' + name;
-          self.stack.push(fullName, arguments);
-          var result = func.apply(this, arguments);
+          var fullName = module.__name__ + '#' + name, result;
+          self.stack.push(fullName, this, arguments);
+          
+          if (self.logLevel == 'errors') {
+            try { result = func.apply(this, arguments); }
+            catch (e) {
+              if (e.logged) throw e;
+              e.logged = true;
+              window.console && console.error(e, 'thrown by', self.stack.top().name + '. Backtrace:');
+              self.print();
+              self.flush();
+              throw e;
+            }
+          } else {
+            result = func.apply(this, arguments);
+          }
+          
           self.stack.pop(result);
           return result;
         };
@@ -58,9 +72,10 @@ JS.StackTrace = new JS.Module({
       return results;
     },
     
-    root: this,
-    excluded: [],
-    maxDepth: 8,
+    root:       this,
+    excluded:   [],
+    maxDepth:   8,
+    logLevel:   'full',
     
     stack: new JS.Singleton({
       _list: [],
@@ -71,17 +86,39 @@ JS.StackTrace = new JS.Module({
         return indent;
       },
       
-      push: function(name, args) {
-        window.console && console.log(this.indent() + name + '(', args, ')');
-        this._list.push(name);
+      push: function(name, object, args) {
+        if (JS.StackTrace.logLevel == 'full') window.console &&
+            console.log(this.indent() + name + '(', args, ')');
+        this._list.push({name: name, object: object, args: args});
       },
       
       pop: function(result) {
-        var name = this._list.pop();
-        window.console && console.log(this.indent() + name + '() --> ', result);
+        var name = this._list.pop().name;
+        if (JS.StackTrace.logLevel == 'full') window.console &&
+            console.log(this.indent() + name + '() --> ', result);
         return name;
+      },
+      
+      top: function() {
+        return this._list[this._list.length - 1] || {};
+      },
+      
+      backtrace: function() {
+        var i = this._list.length, item;
+        while (i--) {
+          item = this._list[i];
+          window.console && console.log(item.name, 'in', item.object, '(', item.args, ')');
+        }
       }
-    })
+    }),
+    
+    flush: function() {
+      this.stack._list = [];
+    },
+    
+    print: function() {
+      this.stack.backtrace();
+    }
   }
 });
 
