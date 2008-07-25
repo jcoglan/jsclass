@@ -14,7 +14,7 @@ JS.StackTrace = new JS.Module({
       
       if (!module.__name__) setTimeout(function() {
         module.__name__ = self.nameOf(base);
-      }, 100);
+      }, 1);
     },
     
     nameOf: function(object, root) {
