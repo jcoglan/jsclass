@@ -1,25 +1,29 @@
 :textile
   h3. Method binding
   
-  In JavaScript, an object's methods are just functions. Functions are data. And that means I can
-  do the following:
+  Ruby has method objects (@Method@ and @UnboundMethod@) for passing references to an
+  object's methods, so you can call a method without having a reference to the object.
+  JavaScript has functions and treats them as first-class objects, so you can get
+  a reference to a method and call it later:
   
   <pre class="prettyprint">
   var rex = new Dog('Rex');
-  var speak = rex.speak;    // a method
-  speak('biscuits');
+  var spk = rex.speak;    // a reference, we are not calling the method
+  spk('biscuits');
       // -> "MY NAME IS AND I LIKE BISCUITS!"</pre>
   
-  Where did Rex's name go? The thing is, we've called @speak()@ outside the context of @rex@, so
-  @this@ inside the function no longer refers to the right thing. @JS.Class@ gives each class
-  instance a @method()@ method, that returns a method by name, bound to its source object.
+  Where did Rex's name go? The thing is, we've not called @spk@ through the object @rex@, so
+  @this@ inside the function no longer refers to the right thing. @JS.Class@ gives each object
+  a @method()@ method, that returns a method by name, bound to its source object. This
+  method is simply a JavaScript function that you can call on its own and maintain
+  the binding of @this@:
   
   <pre class="prettyprint">
   var speak = rex.method('speak');
   speak('biscuits');
       // -> "MY NAME IS REX AND I LIKE BISCUITS!"</pre>
   
-  You can also do this with class methods:
+  You can also do this with class methods, since classes are objects too:
   
   <pre class="prettyprint">
   var User = new JS.Class({
