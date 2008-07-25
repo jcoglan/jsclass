@@ -1,7 +1,7 @@
 :textile
-  h3. Callbacks and hooks
+  h3. Metaprogramming hooks
   
-  Ruby defines a couple of hook methods that you can use to detect when a class is subclassed
+  Ruby defines a few hook methods that you can use to detect when a class is subclassed
   or when a module is mixed in. These hooks are called @inherited()@, @included()@ and @extended()@.
   
   If a class has a class method called @inherited()@ it will be called whenever you create
@@ -20,35 +20,48 @@
   in JavaScript and should not be used as a variable name. The child class will have all its methods
   in place when @inherited()@ gets called, so you can use them within your callback function.
   
-  In the same vein, if you @include()@ an object that has a method called @included@, that method
-  will be called. You can use this to build modules with complex behaviour inside a closure
-  so they cannot be modified from outside:
+  In the same vein, if you @include()@ a module that has a singleton method called @included@,
+  that method will be called. This effectively allows you to redefine the meaning of @include@
+  for individual modules. A good example of this is the @StackTrace@ module, which doesn't
+  add any methods to the class but changes the inner workings of the class instead:
+  
   
   <pre class="prettyprint">
-  var ActiveRecord = (function(){
-    var INSTANCE_METHODS = {
-      save: function() {},
-      validate: function() {},
-      attributes: function() {}
-    };
-    
-    var STATIC_METHODS = {
-      find: function() {},
-      create: function() {}
-    };
-    
-    return {
-      included: function(klass) {
-        klass.include(INSTANCE_METHODS);
-        klass.extend(STATIC_METHODS);
+  JS.StackTrace = new JS.Module({
+    extend: {
+      included: function(base) {
+        var module = base.__mod__ || base, self = this;
+        
+        // Change the working of define() in the including class
+        module.extend({define: function(name, func) {
+          if (!JS.isFn(func)) return this.callSuper();
+          var wrapper = self.wrap(func, module, name);
+          return this.callSuper(name, wrapper);
+        } });
+        
+        // Wrap existing methods
+        for (var method in module.__fns__)
+          module.define(method, module.__fns__[method]);
+        
+        // Find out the name of the class
+        if (!module.__name__) setTimeout(function() {
+          module.__name__ = self.nameOf(base);
+        }, 1);
       }
-    };
-  })();</pre>
-  
-  @ActiveRecord@ is now an object with one public method, @included@, that tells it what to
-  do when it is mixed into a class. The module is secure as no code outside the module can
-  modify its contents. @JS.Class@ actually includes its own module functionality to do precisely
-  this - see "Modules":/modules.html.
+      
+      // more methods (elided)
+      
+    } // end extend: block
+    
+    // no instance methods
+  });</pre>
   
   The @extended()@ hook works in much the same way as @included()@, except that it will be
-  called when the object is used to @extend()@ a class.
+  called when the module is used to @extend()@ an object.
+  
+  <pre class="prettyprint">
+  // This will call MyMod.extended(obj)
+  obj.extend(MyMod);</pre>
+  
+  Again, you can use this to redefine how @extend()@ works with individual modules, so
+  they can change the behaviour of the objects they extend.
