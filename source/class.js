@@ -64,7 +64,9 @@ JS = {
   },
   
   callsSuper: function(func) {
-    return /\bcallSuper\b/.test(func.toString());
+    return func.SUPER === undefined
+        ? func.SUPER = /\bcallSuper\b/.test(func.toString())
+        : func.SUPER;
   },
   
   mask: function(func) {

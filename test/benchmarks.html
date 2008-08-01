@@ -123,6 +123,26 @@
             benchmark(function() {
                 s.contains( new TodoItem ( Math.round(Math.random() * 10000) ) );
             }, 5000);
+        }},
+        
+        testClassCreation: function() { with(this) {
+            benchmark(function() {
+                var K = function() {};
+                K.prototype.method1 = function() {};
+                K.prototype.method2 = function() {};
+            }, 100);
+            benchmark(function() {
+                var K = Class.create({
+                    method1: function(){},
+                    method2: function(){}
+                });
+            }, 100);
+            benchmark(function() {
+                var K = new JS.Class({
+                    method1: function(){},
+                    method2: function(){}
+                });
+            }, 100);
         }}
     });
         
