@@ -197,13 +197,13 @@ JS.extend(JS.Module.prototype, {
     var callees = this.lookup(name),
         stackIndex = callees.length,
         currentSuper = self.callSuper,
-        args = JS.array(params), result;
+        result;
     
     self.callSuper = function() {
       var i = arguments.length;
-      while (i--) args[i] = arguments[i];
+      while (i--) params[i] = arguments[i];
       stackIndex -= 1;
-      var returnValue = callees[stackIndex].apply(self, args);
+      var returnValue = callees[stackIndex].apply(self, params);
       stackIndex += 1;
       return returnValue;
     };
