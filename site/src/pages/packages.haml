@@ -1,0 +1,91 @@
+:textile
+  h3. @JS.Packages@
+  
+  @JS.Class@, as of version 2.0, comes with a package system that lets you load scripts
+  on demand with support for dependencies. Its lets you name objects and the URLs for
+  the files that contain them, so your application code only has to deal with knowing
+  which objects it needs, not where to find those objects.
+  
+  For example, say I want to do something with "YUI's CSS selector":http://developer.yahoo.com/yui/selector/.
+  I just need to @require@ it, and supply a function to run once all the requisite code
+  has loaded:
+  
+  <pre class="prettyprint">
+  require('YAHOO.util.Selector', function() {
+    var myDivs = YAHOO.util.Selector.query('div.mine');
+    // .. more code (elided)
+  });</pre>
+  
+  h3. Setting up
+  
+  Before you can use the @require@ statement, you need the following loaded into the
+  page:
+  
+  * The @JS.Class@ core (@class.js@)
+  * @JS.Package@, the dependency manager (@package.js@)
+  * A list of dependencies
+  
+  The first two are dealt with with a couple of @script@ tags. The third needs to be
+  written out to describe all the other files in your application and how they relate
+  to each other.
+  
+  h3. The package listing
+  
+  To describe your packages, you simply list out the name of every major object, function
+  or class in your application, and state the URL of the file that defines said object.
+  A typical setup for YUI might look like:
+  
+  <pre class="prettyprint">
+  JS.Packages(function() { with(this) {
+    var cdn  = 'http://yui.yahooapis.com/';
+    var yui  = cdn + '2.5.2/build/';
+    
+    pkg('YAHOO',                 yui + 'yahoo-dom-event/yahoo-dom-event.js');
+    pkg('YAHOO.lang',            yui + 'yahoo-dom-event/yahoo-dom-event.js');
+    pkg('YAHOO.util.Dom',        yui + 'yahoo-dom-event/yahoo-dom-event.js');
+    pkg('YAHOO.util.Event',      yui + 'yahoo-dom-event/yahoo-dom-event.js');
+    
+    pkg('YAHOO.util.Selector',   yui + 'selector/selector-beta-min.js');
+    
+    pkg('YAHOO.util.Anim',       yui + 'animation/animation-min.js');
+    pkg('YAHOO.util.ColorAnim',  yui + 'animation/animation-min.js');
+    
+    pkg('YAHOO.util.History',    yui + 'history/history-min.js');
+    
+    pkg('YAHOO.util.DD',         yui + 'dragdrop/dragdrop-min.js');
+    pkg('YAHOO.widget.Slider',   yui + 'slider/slider-min.js');
+  }});</pre>
+  
+  (Yes, YUI has its own loader utility, I'm just using this as a well-known example.)
+  
+  Don't worry about listing files twice, each file will only be loaded once. We use object
+  detection to figure out whether a particular object is loaded and only request its file
+  if an object is @require@-d and found to be missing.
+  
+  If you know YUI, you'll know that some of these files require others to be loaded before
+  they can work. For example, @Slider@ needs @YAHOO@, @Dom@, @Event@ and @DD@ in order
+  to function. We can add this to our configuration like so:
+  
+  <pre class="prettyprint">
+  JS.Packages(function() { with(this) {
+    var cdn  = 'http://yui.yahooapis.com/';
+    var yui  = cdn + '2.5.2/build/';
+    
+    // .. other packages (see above)
+    
+    pkg('YAHOO.util.DD',         yui + 'dragdrop/dragdrop-min.js');
+    pkg('YAHOO.widget.Slider',   yui + 'slider/slider-min.js');
+    
+    pkg('YAHOO.util.DD')
+        .requires('YAHOO')
+        .requires('YAHOO.util.Dom')
+        .requires('YAHOO.util.Event');
+    
+    pkg('YAHOO.widget.Slider')
+        .requires('YAHOO.util.DD');
+  }});</pre>
+  
+  Again, don't worry that some of those dependencies live in the same file - each file will
+  only be requested and parsed once. This setup simply means you can easily change the
+  storage location of various bits of your application without worrying that you may have
+  broken any features.
