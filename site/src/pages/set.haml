@@ -114,7 +114,7 @@
   
   h3. @flatten()@
   
-  Flattens the set in place, such any sets nested within the receiver are merged and their
+  Flattens the set in place, such that any sets nested within the receiver are merged and their
   members become the receiver's members.
   
   <pre class="prettyprint">
@@ -134,3 +134,72 @@
   h3. @isEmpty()@
   
   Returns @true@ iff the receiver has no members.
+  
+  h3. @isProperSubset(other)@
+  
+  Returns @true@ iff the receiver is a proper subset of the set @other@, that is if all the members
+  of the receiver are also in @other@, and the receiver is a smaller set than @other@.
+  
+  h3. @isProperSuperset(other)@
+  
+  Returns @true@ iff the receiver is a proper superset of the set @other@, that is if all the members
+  of @other@ are also in the receiver, and the receiver is a larger set than @other@.
+  
+  h3. @isSubset(other)@
+  
+  Returns @true@ iff the receiver is a subset of the set @other@, that is if all the members of
+  the receiver are also members of @other@.
+  
+  h3. @isSuperset(other)@
+  
+  Returns @true@ iff the receiver is a superset of the set @other@, that is if all the members of
+  @other@ are also members of the receiver.
+  
+  h3. @merge(set)@
+  
+  Adds all the members of @set@ to the receiver.
+  
+  h3. @rebuild()@
+  
+  Acts as an integrity check on the receiver. If some of the objects in the set have changed
+  such that they are now equal then any duplicates are discarded. For @SortedSet@ instances,
+  this also sorts the set if any objects have changed such that they are now in the wrong
+  position.
+  
+  h3. @remove(item)@
+  
+  Removes the member @item@ (i.e. whichever member is equal to @item@) from the receiver.
+  
+  h3. @removeIf(predicate, context)@
+  
+  Removes all the members of the set for which @predicate@ returns @true@.
+  
+  <pre class="prettyprint">
+  var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
+  
+  // Remove multiples of 3
+  s.removeIf(function(x) { return x % 3 == 0 });
+  
+  // s == Set{1,2,4,5,7,8}</pre>
+  
+  h3. @replace(other)@
+  
+  Removes all the members from the receiver and replaces them with those of the set @other@.
+  
+  h3. @subtract(list)@
+  
+  Removes all the members of @list@ from the receiver. This is similar to @difference@, except
+  that it modifies the receiving set in place rather than returning a new set.
+  
+  h3. @union(set)@
+  
+  Returns a new set containing all the members from @set@ and the receiver.
+  
+  h3. @xor(other)@
+  
+  Returns a new set containing members that are either in @other@ or in the receiver, but
+  not in both. This is equivalent to:
+  
+  <pre class="prettyprint">
+  // a.xor(b) ->
+  (a.union(b)).difference(a.intersection(b))</pre>
