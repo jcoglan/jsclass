@@ -1237,23 +1237,23 @@
             assert(new JS.SortedSet().isSubset(new JS.Set([1,2,3])));
             
             sets.replace([0,3,8,2]);
-            assert(sets.equal(new JS.SortedSet([3,0,2,8])));
+            assert(sets.equals(new JS.SortedSet([3,0,2,8])));
             
             c = new JS.Set([8,2,6,5,7]);
             c.remove(2);
-            assert(c.equal(new JS.Set([5,6,7,8])));
+            assert(c.equals(new JS.Set([5,6,7,8])));
             c.removeIf(function(x) { return x%2 == 0 });
-            assert(c.equal(new JS.Set([5,7])));
+            assert(c.equals(new JS.Set([5,7])));
             
             c = new JS.Set([8,2,6,5,7]);
             c.subtract([7,6]);
-            assert(c.equal(new JS.Set([5,8,2])));
+            assert(c.equals(new JS.Set([5,8,2])));
             
             var xa = new JS.Set([2,9,3,7,5]), xb = new JS.Set([8,1,5,2,6]);
             var x = xa.xor(xb);
-            assert(x.equal(new JS.Set([9,3,7,8,1,6])));
-            assert(xa.equal(new JS.Set([2,9,3,7,5])));
-            assert(xb.equal(new JS.Set([8,1,5,6,2])));
+            assert(x.equals(new JS.Set([9,3,7,8,1,6])));
+            assert(xa.equals(new JS.Set([2,9,3,7,5])));
+            assert(xb.equals(new JS.Set([8,1,5,6,2])));
             
             var s, ary, i, n = 10;
             

@@ -8,8 +8,8 @@ JS.Set = new JS.Class({
     },
     
     areEqual: function(one, another) {
-      return one.equal
-          ? one.equal(another)
+      return one.equals
+          ? one.equals(another)
           : (one === another);
     }
   },
@@ -29,9 +29,10 @@ JS.Set = new JS.Class({
   },
   
   add: function(item) {
-    if (this.contains(item)) return;
+    if (this.contains(item)) return false;
     this._members.push(item);
     this.length = this.size = this._members.length;
+    return true;
   },
   
   classify: function(block, context) {
@@ -68,7 +69,7 @@ JS.Set = new JS.Class({
     return sets;
   },
   
-  equal: function(other) {
+  equals: function(other) {
     if (this.length != other.length || !(other instanceof JS.Set)) return false;
     var i = this._members.length;
     while (i--) {
