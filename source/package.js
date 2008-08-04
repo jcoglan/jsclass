@@ -44,7 +44,7 @@ JS.Package = new JS.Class({
     return deps;
   },
   
-  inject: function(callback, scope) {
+  injectScript: function(callback, scope) {
     if (this.isLoaded(false)) return callback.call(scope || null);
     var tag     = document.createElement('script');
     tag.type    = 'text/javascript';
@@ -93,8 +93,8 @@ JS.Package = new JS.Class({
     },
     
     load: function(list, callback, scope) {
-      if (list.length == 0) return callback.call(scope || null);
-      list.shift().inject(function() {
+      if (list.length == 0) return callback && callback.call(scope || null);
+      list.shift().injectScript(function() {
         this.load(list, callback, scope);
       }, this);
     },
