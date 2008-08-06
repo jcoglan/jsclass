@@ -132,7 +132,7 @@ JS.extend(JS.Module.prototype, {
     if (module.__inc__ && module.__fns__) {
       this.__inc__.push(module);
       module.__dep__.push(this);
-      if (module.extended && options.extended) module.extended(options.extended);
+      if (options.extended) module.extended && module.extended(options.extended);
       else module.included && module.included(options.included || this);
     }
     else {

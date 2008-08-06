@@ -195,6 +195,17 @@
         }
     });
     
+    ExtendingModule = new JS.Module({
+        someMethod: function() {
+            return 'I am working'
+        },
+        extend: {
+            included: function(base) {
+                base.extend(this);
+            }
+        }
+    });     
+    
     //================================================================
     //================================================================
     
@@ -782,6 +793,13 @@
             assertEqual('speak() in ModA', klass.speak());
             assertEqual(2, ModA.exts.length);
             assertEqual(klass, ModA.exts[1]);
+        }},
+        
+        testIncludeCausingExtend: function() { with(this) {
+            var klass = new JS.Class({include: ExtendingModule});
+            
+            assertEqual('I am working', klass.someMethod());
+            assertEqual('I am working', (new klass).someMethod());
         }},
         
         testClassDefinition: function() { with(this) {
