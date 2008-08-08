@@ -102,13 +102,11 @@ JS.Set = new JS.Class({
   },
   
   isProperSubset: function(other) {
-    return this.isSubset(other) &&
-        this._members.length < other._members.length;
+    return this._members.length < other._members.length && this.isSubset(other);
   },
   
   isProperSuperset: function() {
-    return this.isSuperset(other) &&
-        this._members.length > other._members.length;
+    return this._members.length > other._members.length && this.isSuperset(other);
   },
   
   isSubset: function(other) {
