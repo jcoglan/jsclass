@@ -50,6 +50,14 @@ JS.Set = new JS.Class({
     this.length = this.size = this._members.length;
   },
   
+  complement: function(other) {
+    var set = new this.klass;
+    this.klass.forEach(other, function(item) {
+      if (!this.contains(item)) set.add(item);
+    }, this);
+    return set;
+  },
+  
   contains: function(item) {
     return this._indexOf(item) != -1;
   },

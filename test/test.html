@@ -1240,6 +1240,7 @@
             assertEnumEqual([5, sorted], inner.entries());
             
             assertEnumEqual([4,9,8], new JS.Set([8,2,9,4,'foo']).difference(['foo',2]));
+            assertEnumEqual([0,1,7], new JS.SortedSet([3,9,4,6]).complement([1,0,3,7,6,9,4]));
             
             var sets = a.u(b).divide(function(x) { return x % 3 });
             assert(sets instanceof JS.Set);
