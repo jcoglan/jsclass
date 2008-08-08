@@ -44,7 +44,9 @@
   @Set@ and @SortedSet@ include the "@Enumerable@":/enumerable.html module as long as you
   load said module before the @Set@ file. The iteration order for @Set@ is arbitrary and is
   not guaranteed, whereas for @SortedSet@ iteration takes place in sort order. The rest of
-  the API is as follows:
+  the API is as follows. As a general rule, any method that returns a new set will return
+  a set of the same type as the receiver, i.e. if @set@ is a @Set@ then @set.union(other)@
+  returns a new @Set@, if @set@ is a @SortedSet@ the same call returns a @SortedSet@.
   
   h3. @add(item)@
   
