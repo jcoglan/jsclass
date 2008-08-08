@@ -216,6 +216,11 @@ JS.extend(JS.Module.prototype, {
   resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
     
+    if (target == this) {
+      i = this.__dep__.length;
+      while (i--) this.__dep__[i].resolve();
+    }
+    
     if (!resolved) return;
     
     for (i = 0, n = this.__inc__.length; i < n; i++)
