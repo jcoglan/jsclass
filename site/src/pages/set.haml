@@ -163,6 +163,17 @@
   
   Adds all the members of @set@ to the receiver.
   
+  h3. @product(set)@
+  
+  Returns a new (always non-sorted) set of all possible ordered pairs whose first member is
+  in the receiver and whose second member is in @set@.
+  
+  <pre class="prettyprint">
+  var a = new JS.Set([1,2]), b = new JS.Set([3,4]);
+  var prod = a.product(b);
+  
+  // prod == Set{ [1,3], [1,4], [2,3], [2,4] }</pre>
+    
   h3. @rebuild()@
   
   Acts as an integrity check on the receiver. If some of the objects in the set have changed

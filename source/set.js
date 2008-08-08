@@ -133,6 +133,16 @@ JS.Set = new JS.Class({
     this.klass.forEach(list, function(item) { this.add(item) }, this);
   },
   
+  product: function(other) {
+    var pairs = new JS.Set;
+    this.forEach(function(item) {
+      this.klass.forEach(other, function(partner) {
+        pairs.add([item, partner]);
+      });
+    }, this);
+    return pairs;
+  },
+  
   rebuild: function() {
     var members = this._members;
     this.clear();
@@ -193,7 +203,8 @@ JS.Set = new JS.Class({
 
 JS.Set.include({
   n:  JS.Set.instanceMethod('intersection'),
-  u:  JS.Set.instanceMethod('union')
+  u:  JS.Set.instanceMethod('union'),
+  x:  JS.Set.instanceMethod('product')
 });
 
 JS.SortedSet = new JS.Class(JS.Set, {

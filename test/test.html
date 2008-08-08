@@ -1272,6 +1272,10 @@
             c.subtract([7,6]);
             assert(c.equals(new JS.Set([5,8,2])));
             
+            var k = new JS.SortedSet([1,2,3,4]), l = new JS.SortedSet([5,6,7,8]);
+            assertEqual('1,5,1,6,1,7,1,8,2,5,2,6,2,7,2,8,3,5,3,6,3,7,3,8,4,5,4,6,4,7,4,8',
+                    k.x(l).map(function(pair) { return pair.join(',') }).join(','));
+            
             var xa = new JS.Set([2,9,3,7,5]), xb = new JS.Set([8,1,5,2,6]);
             var x = xa.xor(xb);
             assert(x.equals(new JS.Set([9,3,7,8,1,6])));
