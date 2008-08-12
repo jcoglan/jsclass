@@ -193,10 +193,11 @@ JS.extend(JS.Module.prototype, {
     };
   },
   
-  chain: JS.mask( function(self, name, params) {
+  chain: JS.mask( function(self, name, args) {
     var callees = this.lookup(name),
         stackIndex = callees.length,
         currentSuper = self.callSuper,
+        params = JS.array(args),
         result;
     
     self.callSuper = function() {
