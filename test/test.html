@@ -946,14 +946,12 @@
             assertEqual(4*6, Koala.count() + Bear.count() + Dog.count() + Pitbull.count());
         }},
         
-        testClassMethodInheritanceSkipsGenerations: function() { with(this) {
+        testClassMethodsMustBeDeclaredWithExtend: function() { with(this) {
             Dog.eatFood = function(food) { return 'Dogs eat ' + food; };
             assertEqual('Dogs eat biscuits', Dog.eatFood('biscuits'));
             Animal.extend({eatFood: function(food) { return 'Animals eat ' + food; }});
             assertEqual('Animals eat people', Pitbull.eatFood('people'));
-            assertEqual('Dogs eat biscuits', Dog.eatFood('biscuits'));
-            Pitbull.extend({eatFood: function() { return this.callSuper(); }});
-            assertEqual('Dogs eat people', Pitbull.eatFood('people'));
+            assertEqual('Animals eat biscuits', Dog.eatFood('biscuits'));
         }},
         
         testModularInheritance: function() { with(this) {
