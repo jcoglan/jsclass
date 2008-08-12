@@ -1,6 +1,7 @@
 ---
 source_directory:   source
 build_directory:    build
+layout:             apart
 packer:
   shrink_vars:      true
   private:          true
