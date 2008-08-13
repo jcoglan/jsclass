@@ -40,6 +40,7 @@ JS.ClassCompiler = new JS.Class({
   
   declaration: function() {
     var str = this._className + ' = ' + this._subject.toString() + ';\n';
+    if (this._subject.superclass != Object) str += this.subclass();
     str += this._className + '.prototype.constructor = \n';
     str += this._className + '.prototype.klass = ' + this._className + ';\n';
     var superclass = this._subject.superclass;
@@ -79,10 +80,7 @@ JS.ClassCompiler = new JS.Class({
   },
   
   instanceMethods: function() {
-    var str = '';
-    if (this._subject.superclass != Object) str += this.subclass();
-    
-    var anc = this._subject.ancestors(), methods = {}, method;
+    var anc = this._subject.ancestors(), methods = {}, str = '', method;
     for (var i = 0, n = anc.length; i < n; i++) {
       if (anc[i] == JS.ObjectMethods) continue;
       JS.extend(methods, anc[i].__mod__.__fns__);
