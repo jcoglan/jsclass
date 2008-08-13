@@ -1,6 +1,12 @@
 JS.Compiler = {
+  queue: [],
+  
   compile: function(klass) {
-    return new JS.ClassCompiler(klass).output();
+    var str = '';
+    this.queue.push(klass);
+    while (this.queue.length > 0)
+      str += new JS.ClassCompiler(this.queue.shift()).output();
+    return str;
   },
   
   stringify: function(object) {
@@ -9,12 +15,15 @@ JS.Compiler = {
         return 'null';
       case (object === undefined):
         return 'undefined';
+      case (object.isA && object.isA(JS.Class)):
+        this.queue.push(object);
+        return null;
+      case (object instanceof Function):
+        return object.toString();
       case (typeof object == 'number' || typeof object == 'boolean'):
         return String(object);
       case (typeof object == 'string'):
         return '"' + object.replace(/"/g, "\\\"") + '"';
-      case (object instanceof Function):
-        return object.toString();
     }
   }
 };
@@ -31,8 +40,8 @@ JS.ClassCompiler = new JS.Class({
   
   declaration: function() {
     var str = this._className + ' = ' + this._subject.toString() + ';\n';
-    str += this._className + '.prototype.klass = \n';
-    str += this._className + '.prototype.constructor = ' + this._className + ';\n';
+    str += this._className + '.prototype.constructor = \n';
+    str += this._className + '.prototype.klass = ' + this._className + ';\n';
     var superclass = this._subject.superclass;
     superclass = (superclass == Object) ? 'Object' : JS.StackTrace.nameOf(superclass);
     str += this._className + '.superclass = ' + superclass + ';\n';
@@ -52,14 +61,19 @@ JS.ClassCompiler = new JS.Class({
   },
   
   classMethods: function() {
-    var anc = this._subject.__eigen__().ancestors(), methods = {}, str = '', method;
+    var anc = this._subject.__eigen__().ancestors(),
+        methods = {},
+        str = '',
+        value, method;
+    
     for (var i = 0, n = anc.length; i < n; i++) {
       if (anc[i] == JS.ObjectMethods || anc[i] == JS.Module || anc[i] == JS.Class) continue;
       JS.extend(methods, anc[i].__mod__.__fns__);
     }
-    console.log(methods);
     for (method in methods) {
-      str += this._className + '.' + method + ' = ' + JS.Compiler.stringify(methods[method]) + ';\n';
+      value  = JS.Compiler.stringify(methods[method]);
+      if (!value) continue;
+      str += this._className + '.' + method + ' = ' + value + ';\n';
     }
     return str;
   },

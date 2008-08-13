@@ -45,7 +45,13 @@
         STRING:     "foo is a \"word\"",
         BOOLEAN:    true,
         NULL:       null,
-        UNDEF:      undefined
+        UNDEF:      undefined,
+        
+        InnerClass: new JS.Class(TestClass, {
+          inspect: function() {
+            return 'obj<InnerClass>';
+          }
+        })
       }
     });
     
