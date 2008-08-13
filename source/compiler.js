@@ -9,7 +9,7 @@ JS.Compiler = {
     return str;
   },
   
-  stringify: function(object) {
+  stringify: function(object, compiler, method) {
     switch (true) {
       case (object === null):
         return 'null';
@@ -19,12 +19,22 @@ JS.Compiler = {
         this.queue.push(object);
         return null;
       case (object instanceof Function):
-        return object.toString();
+        return this.stringifyMethod(object, compiler, method);
       case (typeof object == 'number' || typeof object == 'boolean'):
         return String(object);
       case (typeof object == 'string'):
         return '"' + object.replace(/"/g, "\\\"").replace(/\n/g, "\\n") + '"';
     }
+  },
+  
+  stringifyMethod: function(method, compiler, name) {
+    if (!JS.callsSuper(method)) return method.toString();
+    
+    return 'function() {\n' +
+    'var method = ' + method.toString() + ';\n' +
+    '   var $super = ' + JS.StackTrace.nameOf(compiler._subject.superclass) + '.prototype.' + name + ';\n' +
+    '   return method.apply(this, arguments);\n' +
+    '}';
   }
 };
 
@@ -87,7 +97,7 @@ JS.ClassCompiler = new JS.Class({
     }
     for (method in methods) {
       if (methods[method] == this._subject.superclass.prototype[method]) continue;
-      str += this._className + '.prototype.' + method + ' = ' + JS.Compiler.stringify(methods[method]) + ';\n';
+      str += this._className + '.prototype.' + method + ' = ' + JS.Compiler.stringify(methods[method], this, method) + ';\n';
     }
     return str;
   }

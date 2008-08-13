@@ -37,6 +37,10 @@
         return 'something'.toUpperCase();
       },
       
+      inspect: function() {
+        return this.callSuper().toLowerCase();
+      },
+      
       extend: {
         NUMERIC:    -8,
         SCIENCE:    5.6e12,
