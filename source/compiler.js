@@ -23,7 +23,7 @@ JS.Compiler = {
       case (typeof object == 'number' || typeof object == 'boolean'):
         return String(object);
       case (typeof object == 'string'):
-        return '"' + object.replace(/"/g, "\\\"") + '"';
+        return '"' + object.replace(/"/g, "\\\"").replace(/\n/g, "\\n") + '"';
     }
   }
 };
