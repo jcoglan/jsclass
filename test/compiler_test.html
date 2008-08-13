@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>JS.Class tests: Compiler</title>
+    <script src="../build/min/class.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/min/patterns.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+  
+  <textarea id="build" rows="40" cols="100"></textarea>
+  
+  <script type="text/javascript">
+  
+    var TestClass = new JS.Class({
+      include: JS.Observable,
+      
+      extend: {
+        ImaClassMethod: function() {
+          return this;
+        }
+      },
+      
+      initialize: function(param) {
+        this._param = param;
+      },
+      
+      inspect: function() {
+        return this._param.toString();
+      }
+    });
+    
+    var SubClass = new JS.Class(TestClass, {
+      something: function() {
+        return 'something'.toUpperCase();
+      }
+    });
+    
+    document.getElementById('build').value =
+        JS.Compiler.compile(TestClass) + '\n\n' +
+        JS.Compiler.compile(SubClass);
+  
+  </script>
+  
+</body>
+</html>

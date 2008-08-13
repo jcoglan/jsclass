@@ -327,7 +327,6 @@ JS.Module.include(JS.ObjectMethods);
 JS.Class = JS.extend(new JS.Class(JS.Module, JS.Class.prototype), JS.ObjectMethods.__fns__);
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
-JS.ObjectMethods = new JS.Module(JS.ObjectMethods.__fns__);
 
 JS.Module.extend({
   _observers: [],
