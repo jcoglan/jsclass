@@ -32,8 +32,22 @@ JS.Compiler = {
     
     return 'function() {\n' +
     'var method = ' + method.toString() + ';\n' +
-    '   var $super = ' + JS.StackTrace.nameOf(compiler._subject.superclass) + '.prototype.' + name + ';\n' +
-    '   return method.apply(this, arguments);\n' +
+    '    var $super = ' + JS.StackTrace.nameOf(compiler._subject.superclass) + '.prototype.' + name + ',\n' +
+    '        args = [], i = arguments.length,\n' +
+    '        currentSuper = this.callSuper,\n' +
+    '        result;\n' +
+    '    \n' +
+    '    while (i--) args[i] = arguments[i];\n' +
+    '    \n' +
+    '    this.callSuper = function() {\n' +
+    '        var i = arguments.length;\n' +
+    '        while (i--) args[i] = arguments[i];\n' +
+    '        return $super.apply(this, args);\n' +
+    '    };\n' +
+    '    \n' +
+    '    result = method.apply(this, arguments);\n' +
+    '    currentSuper ? this.callSuper = currentSuper : delete this.callSuper;\n' +
+    '    return result;\n' +
     '}';
   }
 };
