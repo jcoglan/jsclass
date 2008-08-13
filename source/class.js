@@ -30,7 +30,7 @@ JS = {
   extend: function(object, methods) {
     methods = methods || {};
     for (var prop in methods) {
-      if (object[prop] == methods[prop]) continue;
+      if (object[prop] === methods[prop]) continue;
       object[prop] = methods[prop];
     }
     return object;

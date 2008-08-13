@@ -1,6 +1,21 @@
 JS.Compiler = {
   compile: function(klass) {
     return new JS.ClassCompiler(klass).output();
+  },
+  
+  stringify: function(object) {
+    switch (true) {
+      case (object === null):
+        return 'null';
+      case (object === undefined):
+        return 'undefined';
+      case (typeof object == 'number' || typeof object == 'boolean'):
+        return String(object);
+      case (typeof object == 'string'):
+        return '"' + object.replace(/"/g, "\\\"") + '"';
+      case (object instanceof Function):
+        return object.toString();
+    }
   }
 };
 
@@ -42,8 +57,9 @@ JS.ClassCompiler = new JS.Class({
       if (anc[i] == JS.ObjectMethods || anc[i] == JS.Module || anc[i] == JS.Class) continue;
       JS.extend(methods, anc[i].__mod__.__fns__);
     }
+    console.log(methods);
     for (method in methods) {
-      str += this._className + '.' + method + ' = ' + methods[method].toString() + ';\n';
+      str += this._className + '.' + method + ' = ' + JS.Compiler.stringify(methods[method]) + ';\n';
     }
     return str;
   },
@@ -59,7 +75,7 @@ JS.ClassCompiler = new JS.Class({
     }
     for (method in methods) {
       if (methods[method] == this._subject.superclass.prototype[method]) continue;
-      str += this._className + '.prototype.' + method + ' = ' + methods[method].toString() + ';\n';
+      str += this._className + '.prototype.' + method + ' = ' + JS.Compiler.stringify(methods[method]) + ';\n';
     }
     return str;
   }

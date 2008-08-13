@@ -35,6 +35,17 @@
     var SubClass = new JS.Class(TestClass, {
       something: function() {
         return 'something'.toUpperCase();
+      },
+      
+      extend: {
+        NUMERIC:    -8,
+        SCIENCE:    5.6e12,
+        FLOAT:      12309.243,
+        OCTAL:      0774,
+        STRING:     "foo is a \"word\"",
+        BOOLEAN:    true,
+        NULL:       null,
+        UNDEF:      undefined
       }
     });
     
