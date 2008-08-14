@@ -101,7 +101,7 @@ JS.ClassCompiler = new JS.Class({
       JS.extend(methods, anc[i].__mod__.__fns__);
     }
     for (method in methods) {
-      value  = JS.Compiler.stringify(methods[method]);
+      value = JS.Compiler.stringify(methods[method]);
       if (!value) continue;
       str += this._className + '.' + method + ' = ' + value + ';\n';
     }
@@ -115,7 +115,7 @@ JS.ClassCompiler = new JS.Class({
       JS.extend(methods, anc[i].__mod__.__fns__);
     }
     for (method in methods) {
-      if (methods[method] == this._subject.superclass.prototype[method]) continue;
+      if (methods[method] === this._subject.superclass.prototype[method]) continue;
       str += this._className + '.prototype.' + method + ' = ' + JS.Compiler.stringify(methods[method], this, method) + ';\n';
     }
     return str;

@@ -228,7 +228,7 @@ JS.extend(JS.Module.prototype, {
       this.__inc__[i].resolve(target);
     for (key in this.__fns__) {
       made = target.make(key, this.__fns__[key]);
-      if (resolved[key] != made) resolved[key] = made;
+      if (resolved[key] !== made) resolved[key] = made;
     }
   }
 });
