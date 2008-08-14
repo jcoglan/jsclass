@@ -101,6 +101,10 @@ JS.ClassCompiler = new JS.Class({
       JS.extend(methods, anc[i].__mod__.__fns__);
     }
     for (method in methods) {
+      if (methods[method] === this._subject.superclass[method]) {
+        str += this._className + '.' + method + ' = ' + JS.StackTrace.nameOf(this._subject.superclass) + '.' + method + ';\n';
+        continue;
+      }
       value = JS.Compiler.stringify(methods[method]);
       if (!value) continue;
       str += this._className + '.' + method + ' = ' + value + ';\n';
