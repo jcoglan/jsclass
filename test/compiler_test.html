@@ -15,11 +15,11 @@
   <script type="text/javascript">
   
     var TestClass = new JS.Class({
-      include: JS.Observable,
+      
       
       extend: {
         ImaClassMethod: function() {
-          return this;
+          return 'classy!';
         }
       },
       
@@ -57,6 +57,12 @@
         InnerClass: new JS.Class(TestClass, {
           inspect: function() {
             return 'obj<InnerClass>';
+          },
+          
+          extend: {
+            ImaClassMethod: function() {
+              return this.callSuper() + ' foo';
+            }
           }
         })
       }
