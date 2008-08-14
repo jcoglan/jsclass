@@ -1,11 +1,16 @@
 JS.Compiler = {
   queue: [],
   
-  compile: function(klass) {
-    var str = '';
+  compile: function(klass, options) {
+    options = options || {};
+    var str = '', i, n;
     this.queue.push(klass);
     while (this.queue.length > 0)
       str += new JS.ClassCompiler(this.queue.shift()).output();
+    if (options.subclasses) {
+      for (i = 0, n = klass.subclasses.length; i < n; i++)
+        str += this.compile(klass.subclasses[i], {subclasses: true});
+    }
     return str;
   },
   
