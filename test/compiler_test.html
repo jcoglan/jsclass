@@ -14,63 +14,27 @@
   
   <script type="text/javascript">
   
-    var TestClass = new JS.Class({
-      
-      
-      extend: {
-        ImaClassMethod: function() {
-          return 'classy!';
-        }
-      },
-      
-      someVal: null,
-      
-      initialize: function(param) {
-        this._param = param;
-      },
-      
-      inspect: function() {
-        return this._param.toString();
-      }
-    });
-    
-    var SubClass = new JS.Class(TestClass, {
-      something: function() {
-        return 'something'.toUpperCase();
-      },
-      
-      inspect: function() {
-        return this.callSuper().toLowerCase();
-      },
-      
-      extend: {
-        NUMERIC:    -8,
-        SCIENCE:    5.6e12,
-        FLOAT:      12309.243,
-        OCTAL:      0774,
-        STRING:     "foo is a \"word\" \n\
-                      and this is a \"multiline\" 'string'",
-        BOOLEAN:    true,
-        NULL:       null,
-        UNDEF:      undefined,
+    var TestModule = new JS.Module({
+      extend: [{
+        singleton: function() {
+          return 'singleton';
+        },
         
-        InnerClass: new JS.Class(TestClass, {
-          inspect: function() {
-            return 'obj<InnerClass>';
-          },
-          
-          extend: {
-            ImaClassMethod: function() {
-              return this.callSuper() + ' foo';
-            }
-          }
-        })
+        CONST:  false,
+        
+        notifyObservers: function() {
+          this.callSuper();
+          this.callSuper();
+        }
+      }, JS.Observable],
+      
+      instance: function(obj) {
+        return obj.klass;
       }
     });
     
     document.getElementById('build').value =
-        JS.Compiler.compile(TestClass) + '\n\n' +
-        JS.Compiler.compile(SubClass);
+        JS.Compiler.compile(TestModule);
   
   </script>
   
