@@ -1,15 +1,14 @@
 JS.Compiler = new JS.Class({
   extend: {
     reset: function() {
-      this._queue = [];
-      this._processed = [];
+      this.extend({ _queue: [], _processed: [] });
     },
     
     compile: function(klass, options) {
       var str = '';
       this._queue.push(klass);
       while (this._queue.length > 0)
-        str += new this(this._queue.shift()).output(options || {});
+        str += new JS.Compiler(this._queue.shift()).output(options || {});
       return str;
     },
     
@@ -38,12 +37,14 @@ JS.Compiler = new JS.Class({
   
   initialize: function(classOrModule) {
     if (!classOrModule.isA) return this;
+    if (JS.indexOf(this.klass._processed, classOrModule) != -1) return this;
+    this.klass._processed.push(classOrModule);
     if (classOrModule.isA(JS.Class)) return new JS.ClassCompiler(classOrModule);
     if (classOrModule.isA(JS.Module)) return new JS.ModuleCompiler(classOrModule);
   },
   
   output: function() {
-    return '/* Could not be compiled -- not a class or module */\n';
+    return '';
   }
 });
 
@@ -82,8 +83,16 @@ JS.ModuleCompiler = new JS.Class(JS.Compiler, {
     this._name = this.klass.nameOf(module);
   },
   
-  output: function() {
-    return this.declaration() + this.singletonMethods();
+  output: function(options) {
+    var str = this.declaration() + this.singletonMethods() + this.instanceMethods(),
+        anc, meta, self, mod;
+    if (options.dependencies) {
+      anc = this._module.ancestors(); self = anc.pop();
+      meta = this._module.__eigen__ ? this._module.__eigen__().ancestors().slice(2) : []; self = meta.pop();
+      while (mod = anc.shift()) str = this.klass.compile(mod, options) + str;
+      while (mod = meta.shift()) str = this.klass.compile(mod, options) + str;
+    }
+    return str;
   },
   
   declaration: function() {
@@ -111,13 +120,19 @@ JS.ModuleCompiler = new JS.Class(JS.Compiler, {
     for (i = 0, n = ancestors.length; i < n; i++) {
       if (ancestors[i] == JS.ObjectMethods || ancestors[i] == JS.Module) continue;
       name = this.klass.nameOf(ancestors[i]);
-      console.log(name);
       block = ancestors[i].__fns__;
       for (method in block) {
         if (this._module[method] === block[method])
           str += this._name + '.' + method + ' = ' + name + '.__fns__.' + method + ';\n';
       }
     }
+    return str;
+  },
+  
+  instanceMethods: function() {
+    var str = '', method;
+    for (method in this._module.__fns__)
+      str += this._name + '.__fns__.' + method + ' = ' + this.klass.stringify(this._module.__fns__[method]) + ';\n';
     return str;
   }
 });

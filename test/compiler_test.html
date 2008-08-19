@@ -34,7 +34,8 @@
     });
     
     document.getElementById('build').value =
-        JS.Compiler.compile(TestModule);
+        JS.Compiler.compile(JS.Observable, {dependencies: true}) +
+        JS.Compiler.compile(TestModule, {dependencies: true});
   
   </script>
   
