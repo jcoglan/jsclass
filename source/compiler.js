@@ -107,7 +107,9 @@ JS.ModuleCompiler = new JS.Class(JS.Compiler, {
     
     for (method in block) {
       assign = this._name + '.' + method;
-      if (!JS.callsSuper(block[method])) {
+      if (block[method].isA && (block[method].isA(JS.Module) || block[method].isA(JS.Class))) {
+        str += JS.Compiler.compile(block[method]);
+      } else if (!JS.callsSuper(block[method])) {
         str += assign + ' = ' + this.klass.stringify(block[method]) + ';\n';
       } else {
         str += this._name + '.__meta__.__fns__.' + method + ' = ' + this.klass.stringify(block[method]) + ';\n';

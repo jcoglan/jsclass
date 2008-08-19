@@ -10,6 +10,7 @@
 </head>
 <body>
   
+  <textarea id="comp" rows="40" cols="100"></textarea>
   <textarea id="build" rows="40" cols="100"></textarea>
   
   <script type="text/javascript">
@@ -36,6 +37,9 @@
     document.getElementById('build').value =
         JS.Compiler.compile(JS.Observable, {dependencies: true}) +
         JS.Compiler.compile(TestModule, {dependencies: true});
+    
+    document.getElementById('comp').value =
+        JS.Compiler.compile(JS.Comparable);
   
   </script>
   
