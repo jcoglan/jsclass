@@ -102,9 +102,9 @@ JS.ModuleCompiler = new JS.Class(JS.Compiler, {
     for (method in block) {
       assign = this._name + '.' + method;
       metaAssign = this._name + '.__meta__.__fns__.' + method;
-      if (block[method].isA && block[method].isA(JS.Module)) {
+      if (block[method] && block[method].isA && block[method].isA(JS.Module)) {
         continue;
-      } else if (!JS.callsSuper(block[method])) {
+      } else if (!(JS.isFn(block[method]) && JS.callsSuper(block[method]))) {
         str += assign + ' = ' + metaAssign + ' = ' + this.klass.stringify(block[method]) + ';\n';
       } else {
         str += metaAssign + ' = ' + this.klass.stringify(block[method]) + ';\n';
@@ -175,9 +175,9 @@ JS.ClassCompiler = new JS.Class(JS.ModuleCompiler, {
     for (method in block) {
       assign = this._name + '.prototype.' + method;
       metaAssign = this._name + '.__fns__.' + method;
-      if (block[method].isA && block[method].isA(JS.Module)) {
+      if (block[method] && block[method].isA && block[method].isA(JS.Module)) {
         continue;
-      } else if (!JS.callsSuper(block[method])) {
+      } else if (!(JS.isFn(block[method]) && JS.callsSuper(block[method]))) {
         str += assign + ' = ' + metaAssign + ' = ' + this.klass.stringify(block[method]) + ';\n';
       } else {
         str += metaAssign + ' = ' + this.klass.stringify(block[method]) + ';\n';
