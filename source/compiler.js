@@ -83,7 +83,7 @@ JS.ModuleCompiler = new JS.Class(JS.Compiler, {
   },
   
   output: function(options) {
-    var str = this.declaration() + this.singletonMethods() + this.instanceMethods();
+    var str = this.declaration() + this.singletonMethods(2) + this.instanceMethods();
     return str;
   },
   
@@ -91,8 +91,8 @@ JS.ModuleCompiler = new JS.Class(JS.Compiler, {
     return  this._name + ' = {__fns__: {}, __meta__: {__fns__: {}}};\n';
   },
   
-  singletonMethods: function() {
-    var ancestors = this._module.__eigen__().ancestors().slice(2), self = ancestors.pop(),
+  singletonMethods: function(ignore) {
+    var ancestors = this._module.__eigen__().ancestors().slice(ignore || 0), self = ancestors.pop(),
         i, n, name, block, method, str = '', assign, metaAssign;
     
     block = self.__fns__;
@@ -140,13 +140,13 @@ JS.ClassCompiler = new JS.Class(JS.ModuleCompiler, {
   
   declaration: function() {
     var str = this._name + ' = ' + this.klass.stringify(this._module) + ';\n';
-    if (this._module.superclass != Object) str += this.subclass();
-    str += this._name + '.prototype.constructor =\n';
-    str += this._name + '.prototype.klass = ' + this._name + ';\n';
     str += this._name + '.superclass = ' + this._superclass + ';\n';
     str += this._name + '.subclasses = [];\n';
     if (this._module.superclass.subclasses)
       str += this._superclass + '.subclasses.push(' + this._name + ');\n';
+    if (this._module.superclass != Object) str += this.subclass();
+    str += this._name + '.prototype.constructor =\n';
+    str += this._name + '.prototype.klass = ' + this._name + ';\n';
     str += this._name + '.__fns__ = {};\n';
     str += this._name + '.__meta__ = {__fns__: {}};\n';
     return str;
@@ -160,8 +160,8 @@ JS.ClassCompiler = new JS.Class(JS.ModuleCompiler, {
     '})();\n';
   },
   
-  singletonMethods: function() {
-    return '';
+  singletonMethods: function(ignore) {
+    return this.callSuper(4);
   },
   
   instanceMethods: function() {

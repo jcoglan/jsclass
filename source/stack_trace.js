@@ -30,9 +30,11 @@ JS.StackTrace = new JS.Module({
         l += 1;
         field = this.descend(field, object);
       }
-      object.__name__ = (typeof field == 'string')
-          ? field.replace(/\.prototype\./g, '#')
-          : undefined;
+      if (typeof field == 'string') {
+        field = field.replace(/\.prototype\./g, '#');
+        object.__name__ = field;
+        if (object.__meta__) object.__meta__.__name__ = field + '.__meta__';
+      }
       return object.__name__;
     },
     

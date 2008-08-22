@@ -15,7 +15,6 @@
   <textarea id="class" rows="40" cols="100"></textarea>
   
   <script type="text/javascript">
-  
     var TestModule = new JS.Module({
       include: JS.Comparable,
       extend: [JS.Observable, {
@@ -44,6 +43,18 @@
       
       isSuperset: function() {
         return this.callSuper();
+      },
+      
+      extend: {
+        Location: new JS.Class(),
+        
+        someMethod: function() {
+          return 'some';
+        },
+        
+        areEqual: function() {
+          return this.callSuper();
+        }
       }
     });
     
@@ -51,7 +62,7 @@
         JS.Compiler.compile(TestModule, {nested: true, dependencies: true});
     
     document.getElementById('class').value =
-        JS.Compiler.compile(TestClass);
+        JS.Compiler.compile(TestClass, {nested: true});
   
   </script>
   
