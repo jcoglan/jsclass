@@ -5,41 +5,23 @@
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>JS.Class tests: Compiler</title>
+    <script src="globals.js" type="text/javascript" charset="utf-8"></script>
     <script src="../build/min/class.js" type="text/javascript" charset="utf-8"></script>
-    <script src="../build/min/patterns.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../build/min/patterns.js" type="text/javascript" charset="utf-8"></script>    
 </head>
 <body>
   
   <textarea id="comp" rows="40" cols="100"></textarea>
-  <textarea id="build" rows="40" cols="100"></textarea>
   
   <script type="text/javascript">
   
     var TestModule = new JS.Module({
-      extend: [{
-        singleton: function() {
-          return 'singleton';
-        },
-        
-        CONST:  false,
-        
-        notifyObservers: function() {
-          this.callSuper();
-          this.callSuper();
-        }
-      }, JS.Observable],
-      
-      instance: function(obj) {
-        return obj.klass;
-      }
+      include: JS.Comparable,
+      extend: JS.Observable
     });
     
-    document.getElementById('build').value =
-        JS.Compiler.compile(JS.Observable, {dependencies: true}) +
-        JS.Compiler.compile(TestModule, {dependencies: true});
-    
     document.getElementById('comp').value =
-        JS.Compiler.compile(JS.Comparable);
+        JS.Compiler.compile(TestModule, {dependencies: true, nested: true});
   
   </script>
   
