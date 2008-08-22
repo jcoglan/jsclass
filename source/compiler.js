@@ -93,18 +93,19 @@ JS.ModuleCompiler = new JS.Class(JS.Compiler, {
   
   singletonMethods: function() {
     var ancestors = this._module.__eigen__().ancestors().slice(2), self = ancestors.pop(),
-        i, n, name, block, method, str = '', assign;
+        i, n, name, block, method, str = '', assign, metaAssign;
     
     block = self.__fns__;
     
     for (method in block) {
       assign = this._name + '.' + method;
+      metaAssign = this._name + '.__meta__.__fns__.' + method;
       if (block[method].isA && block[method].isA(JS.Module)) {
         continue;
       } else if (!JS.callsSuper(block[method])) {
-        str += assign + ' = ' + this.klass.stringify(block[method]) + ';\n';
+        str += assign + ' = ' + metaAssign + ' = ' + this.klass.stringify(block[method]) + ';\n';
       } else {
-        str += this._name + '.__meta__.__fns__.' + method + ' = ' + this.klass.stringify(block[method]) + ';\n';
+        str += metaAssign + ' = ' + this.klass.stringify(block[method]) + ';\n';
         str += assign + ' = ' + this.klass.superCaller + ';\n';
         str += assign + '.__anc__ = [' + this.klass.nameOf(ancestors).join(', ') + ', ' + this._name + '.__meta__];\n';
         str += assign + '.__nym__ = ' + this.klass.stringify(method) + ';\n';
@@ -165,18 +166,19 @@ JS.ClassCompiler = new JS.Class(JS.ModuleCompiler, {
   
   instanceMethods: function() {
     var ancestors = this._module.ancestors().slice(1), self = ancestors.pop(),
-        i, n, name, block, method, str = '', assign;
+        i, n, name, block, method, str = '', assign, metaAssign;
     
     block = self.__mod__.__fns__;
     
     for (method in block) {
       assign = this._name + '.prototype.' + method;
+      metaAssign = this._name + '.__fns__.' + method;
       if (block[method].isA && block[method].isA(JS.Module)) {
         continue;
       } else if (!JS.callsSuper(block[method])) {
-        str += assign + ' = ' + this.klass.stringify(block[method]) + ';\n';
+        str += assign + ' = ' + metaAssign + ' = ' + this.klass.stringify(block[method]) + ';\n';
       } else {
-        str += this._name + '.__fns__.' + method + ' = ' + this.klass.stringify(block[method]) + ';\n';
+        str += metaAssign + ' = ' + this.klass.stringify(block[method]) + ';\n';
         str += assign + ' = ' + this.klass.superCaller + ';\n';
         str += assign + '.__anc__ = [' + this.klass.nameOf(ancestors).join(', ') + ', ' + this._name + '];\n';
         str += assign + '.__nym__ = ' + this.klass.stringify(method) + ';\n';
