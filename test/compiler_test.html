@@ -12,16 +12,42 @@
 <body>
   
   <textarea id="comp" rows="40" cols="100"></textarea>
+  <textarea id="class" rows="40" cols="100"></textarea>
   
   <script type="text/javascript">
   
     var TestModule = new JS.Module({
       include: JS.Comparable,
-      extend: JS.Observable
+      extend: [JS.Observable, {
+        notifyObservers: function() {
+          this.callSuper();
+          this.callSuper();
+        }
+      }],
+      
+      lte: function() {
+        this.callSuper();
+        this.callSuper();
+      }
+    });
+    
+    var TestClass = new JS.Class(JS.Set, {
+      include: TestModule,
+      
+      something: function() {
+        return 'something';
+      },
+      
+      isSuperset: function() {
+        return this.callSuper();
+      }
     });
     
     document.getElementById('comp').value =
-        JS.Compiler.compile(TestModule, {dependencies: true, nested: true});
+        JS.Compiler.compile(TestModule, {nested: true, dependencies: true});
+    
+    document.getElementById('class').value =
+        JS.Compiler.compile(TestClass);
   
   </script>
   

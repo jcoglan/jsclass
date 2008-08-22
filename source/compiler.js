@@ -2,10 +2,6 @@ JS.Compiler = new JS.Class({
   extend: {
     EXCLUDED: [JS.ObjectMethods, JS.Module, JS.Class],
     
-    reset: function() {
-      this.extend({ _queue: [] });
-    },
-    
     compile: function() {
       var list = JS.array(arguments),
           i = list.length - 1,
@@ -17,13 +13,12 @@ JS.Compiler = new JS.Class({
     },
     
     expand: function(list, options) {
-      var length = 0, module, temp, expansion, i, j, n, m;
+      var length = 0, temp, expansion, i, j, n, m;
       while (length != list.length) {
         length = list.length;
         temp = [];
         for (i = 0, n = list.length; i < n; i++) {
-          module = list[i];
-          expansion = this.expandSingle(module, options);
+          expansion = this.expandSingle(list[i], options);
           for (j = 0, m = expansion.length; j < m; j++) {
             if (JS.indexOf(temp, expansion[j]) != -1) continue;
             if (JS.indexOf(this.EXCLUDED, expansion[j]) != -1) continue;
@@ -60,9 +55,6 @@ JS.Compiler = new JS.Class({
           return 'null';
         case (object === undefined):
           return 'undefined';
-        case (object.isA && object.isA(JS.Class)):
-          this.queue.push(object);
-          return null;
         case (object instanceof Function):
           return object.toString().replace(/^\s*/g, '').replace(/\s*$/g, '');
         case (typeof object == 'number' || typeof object == 'boolean'):
@@ -83,8 +75,6 @@ JS.Compiler = new JS.Class({
     return '';
   }
 });
-
-JS.Compiler.reset();
 
 JS.ModuleCompiler = new JS.Class(JS.Compiler, {
   initialize: function(module) {
@@ -122,7 +112,7 @@ JS.ModuleCompiler = new JS.Class(JS.Compiler, {
     }
     
     for (i = 0, n = ancestors.length; i < n; i++) {
-      if (ancestors[i] == JS.ObjectMethods || ancestors[i] == JS.Module) continue;
+      if (JS.indexOf(this.klass.EXCLUDED, ancestors[i]) != -1) continue;
       name = this.klass.nameOf(ancestors[i]);
       block = ancestors[i].__fns__;
       for (method in block) {
@@ -137,6 +127,72 @@ JS.ModuleCompiler = new JS.Class(JS.Compiler, {
     var str = '', method;
     for (method in this._module.__fns__)
       str += this._name + '.__fns__.' + method + ' = ' + this.klass.stringify(this._module.__fns__[method]) + ';\n';
+    return str;
+  }
+});
+
+JS.ClassCompiler = new JS.Class(JS.ModuleCompiler, {
+  initialize: function() {
+    this.callSuper();
+    this._superclass = (this._module.superclass === Object) ? 'Object' : this.klass.nameOf(this._module.superclass);
+  },
+  
+  declaration: function() {
+    var str = this._name + ' = ' + this.klass.stringify(this._module) + ';\n';
+    if (this._module.superclass != Object) str += this.subclass();
+    str += this._name + '.prototype.constructor =\n';
+    str += this._name + '.prototype.klass = ' + this._name + ';\n';
+    str += this._name + '.superclass = ' + this._superclass + ';\n';
+    str += this._name + '.subclasses = [];\n';
+    if (this._module.superclass.subclasses)
+      str += this._superclass + '.subclasses.push(' + this._name + ');\n';
+    str += this._name + '.__fns__ = {};\n';
+    str += this._name + '.__meta__ = {__fns__: {}};\n';
+    return str;
+  },
+  
+  subclass: function() {
+    return this._name + '.prototype = (function() {\n' +
+    '    var bridge = function() {};\n' +
+    '    bridge.prototype = ' + this._superclass + '.prototype;\n' +
+    '    return new bridge;\n' +
+    '})();\n';
+  },
+  
+  singletonMethods: function() {
+    return '';
+  },
+  
+  instanceMethods: function() {
+    var ancestors = this._module.ancestors().slice(1), self = ancestors.pop(),
+        i, n, name, block, method, str = '', assign;
+    
+    block = self.__mod__.__fns__;
+    
+    for (method in block) {
+      assign = this._name + '.prototype.' + method;
+      if (block[method].isA && block[method].isA(JS.Module)) {
+        continue;
+      } else if (!JS.callsSuper(block[method])) {
+        str += assign + ' = ' + this.klass.stringify(block[method]) + ';\n';
+      } else {
+        str += this._name + '.__fns__.' + method + ' = ' + this.klass.stringify(block[method]) + ';\n';
+        str += assign + ' = ' + this.klass.superCaller + ';\n';
+        str += assign + '.__anc__ = [' + this.klass.nameOf(ancestors).join(', ') + ', ' + this._name + '];\n';
+        str += assign + '.__nym__ = ' + this.klass.stringify(method) + ';\n';
+      }
+    }
+    
+    for (i = 0, n = ancestors.length; i < n; i++) {
+      if (JS.indexOf(this.klass.EXCLUDED, ancestors[i]) != -1) continue;
+      name = this.klass.nameOf(ancestors[i]);
+      block = ancestors[i].__mod__.__fns__;
+      for (method in block) {
+        if (this._module.prototype[method] === block[method] &&
+            this._module.superclass.prototype[method] != this._module.prototype[method])
+          str += this._name + '.prototype.' + method + ' = ' + name + '.__fns__.' + method + ';\n';
+      }
+    }
     return str;
   }
 });
