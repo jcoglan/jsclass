@@ -13,6 +13,7 @@
   
   <textarea id="comp" rows="40" cols="100"></textarea>
   <textarea id="class" rows="40" cols="100"></textarea>
+  <textarea id="set" rows="40" cols="100"></textarea>
   
   <script type="text/javascript">
     var TestModule = new JS.Module({
@@ -63,6 +64,9 @@
     
     document.getElementById('class').value =
         JS.Compiler.compile(TestClass, {nested: true});
+    
+    document.getElementById('set').value =
+        JS.Compiler.compile(JS.Set, {subclasses: true});
   
   </script>
   

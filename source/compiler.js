@@ -42,6 +42,8 @@ JS.Compiler = new JS.Class({
         list = module.ancestors().slice(0,-1).concat(
             module.__eigen__().ancestors().slice(0,-1), list);
       }
+      if (options.subclasses)
+        list = list.concat(module.subclasses || []);
       return list;
     },
     
