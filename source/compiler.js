@@ -17,7 +17,8 @@ JS.Compiler = new JS.Class({
       while (length != list.length) {
         length = list.length;
         temp = [];
-        for (i = 0, n = list.length; i < n; i++) {
+        i = list.length;
+        while (i--) {
           expansion = this.expandSingle(list[i], options);
           for (j = 0, m = expansion.length; j < m; j++) {
             if (JS.indexOf(temp, expansion[j]) != -1) continue;
@@ -32,6 +33,7 @@ JS.Compiler = new JS.Class({
     
     expandSingle: function(module, options) {
       var list = [module], key, eigen = module.__eigen__().__fns__;
+      
       if (options.nested) {
         for (key in eigen) {
           if (eigen[key] && eigen[key].isA && eigen[key].isA(JS.Module))
@@ -39,8 +41,7 @@ JS.Compiler = new JS.Class({
         }
       }
       if (options.dependencies) {
-        list = module.ancestors().slice(0,-1).concat(
-            module.__eigen__().ancestors().slice(0,-1), list);
+        list = module.ancestors().slice(0,-1).concat(list);
       }
       if (options.subclasses)
         list = list.concat(module.subclasses || []);
@@ -205,7 +206,7 @@ JS.Compiler.extend({superCaller: JS.Compiler.stringify(function() {
   var self = arguments.callee, anc = self.__anc__, nym = self.__nym__,
       methods = [], i = arguments.length, n, found, params = [];
   
-  while (i--) params.push(arguments[i]);
+  while (i--) params[i] = arguments[i];
   
   for (i = 0, n = anc.length; i < n; i++) {
     if (found = anc[i].__fns__[nym]) methods.push(found);
