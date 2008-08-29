@@ -64,11 +64,11 @@ JS.LinkedList.Doubly = new JS.Class(JS.LinkedList, {
 
 JS.LinkedList.insertTemplate = function(prev, next, pos) {
   return function(node, newNode) {
-    if (node.list != this) return;
+    if (node.list !== this) return;
     newNode[prev] = node;
     newNode[next] = node[next];
     node[next] = (node[next][prev] = newNode);
-    if (newNode[prev] == this[pos]) this[pos] = newNode;
+    if (newNode[prev] === this[pos]) this[pos] = newNode;
     newNode.list = this;
     this.length++;
   };
@@ -90,12 +90,12 @@ JS.LinkedList.Doubly.Circular = new JS.Class(JS.LinkedList.Doubly, {
   },
   
   remove: function(removed) {
-    if (removed.list != this || this.length == 0) return null;
+    if (removed.list !== this || this.length === 0) return null;
     if (this.length > 1) {
       removed.prev.next = removed.next;
       removed.next.prev = removed.prev;
-      if (removed == this.first) this.first = removed.next;
-      if (removed == this.last) this.last = removed.prev;
+      if (removed === this.first) this.first = removed.next;
+      if (removed === this.last) this.last = removed.prev;
     } else {
       this.first = this.last = null;
     }

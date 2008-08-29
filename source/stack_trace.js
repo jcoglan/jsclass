@@ -26,7 +26,7 @@ JS.StackTrace = new JS.Module({
       }
       if (object.__name__) return object.__name__;
       var field = [{name: null, o: root || this.root}], l = 0;
-      while (typeof field == 'object' && l < this.maxDepth) {
+      while (typeof field === 'object' && l < this.maxDepth) {
         l += 1;
         field = this.descend(field, object);
       }
@@ -42,7 +42,7 @@ JS.StackTrace = new JS.Module({
       var results = [], n = list.length, i = n, key, item, name;
       while (i--) {
         item = list[i];
-        if (n > 1 && JS.indexOf(this.excluded, item.o) != -1) continue;
+        if (n > 1 && JS.indexOf(this.excluded, item.o) !== -1) continue;
         if (item.o instanceof Array) continue;
         name = item.name ? item.name + '.' : '';
         for (key in item.o) {
@@ -68,14 +68,14 @@ JS.StackTrace = new JS.Module({
       },
       
       push: function(name, object, args) {
-        if (JS.StackTrace.logLevel == 'full') window.console &&
+        if (JS.StackTrace.logLevel === 'full') window.console &&
             console.log(this.indent() + name + '(', args, ')');
         this._list.push({name: name, object: object, args: args});
       },
       
       pop: function(result) {
         var name = this._list.pop().name;
-        if (JS.StackTrace.logLevel == 'full') window.console &&
+        if (JS.StackTrace.logLevel === 'full') window.console &&
             console.log(this.indent() + name + '() --> ', result);
         return name;
       },
@@ -107,7 +107,7 @@ JS.StackTrace = new JS.Module({
         var result, fullName = self.nameOf(module) + '#' + name;
         self.stack.push(fullName, this, arguments);
         
-        if (self.logLevel == 'errors') {
+        if (self.logLevel === 'errors') {
           try { result = func.apply(this, arguments); }
           catch (e) {
             if (e.logged) throw e;
@@ -133,6 +133,6 @@ JS.StackTrace = new JS.Module({
 (function() {
   var module = JS.StackTrace;
   for (var key in module.root) {
-    if (key != 'JS') module.excluded.push(module.root[key]);
+    if (key !== 'JS') module.excluded.push(module.root[key]);
   }
 })();

@@ -5,7 +5,7 @@ JS.Decorator = new JS.Class({
     
     for (method in decoree.prototype) {
       func = decoree.prototype[method];
-      if (JS.isFn(func) && func != decoree) func = this.klass.delegate(method);
+      if (JS.isFn(func) && func !== decoree) func = this.klass.delegate(method);
       delegators[method] = func;
     }
     

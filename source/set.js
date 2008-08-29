@@ -59,7 +59,7 @@ JS.Set = new JS.Class({
   },
   
   contains: function(item) {
-    return this._indexOf(item) != -1;
+    return this._indexOf(item) !== -1;
   },
   
   difference: function(other) {
@@ -78,7 +78,7 @@ JS.Set = new JS.Class({
   },
   
   equals: function(other) {
-    if (this.length != other.length || !(other instanceof JS.Set)) return false;
+    if (this.length !== other.length || !(other instanceof JS.Set)) return false;
     var i = this._members.length;
     while (i--) {
       if (!other.contains(this._members[i])) return false;
@@ -106,7 +106,7 @@ JS.Set = new JS.Class({
   },
   
   isEmpty: function() {
-    return this._members.length == 0;
+    return this._members.length === 0;
   },
   
   isProperSubset: function(other) {
@@ -151,7 +151,7 @@ JS.Set = new JS.Class({
   
   remove: function(item) {
     var index = this._indexOf(item);
-    if (index == -1) return;
+    if (index === -1) return;
     this._members.splice(index, 1);
     this.length = this.size = this._members.length;
   },
@@ -225,7 +225,7 @@ JS.SortedSet = new JS.Class(JS.Set, {
   
   _indexOf: function(item, insertionPoint) {
     var items = this._members, n = items.length, i = 0, d = n;
-    if (n == 0) return insertionPoint ? 0 : -1;
+    if (n === 0) return insertionPoint ? 0 : -1;
     var compare = this.klass.compare, equal = this.klass.areEqual;
     
     if (compare(item, items[0]) < 1)   { d = 0; i = 0; }
@@ -240,7 +240,7 @@ JS.SortedSet = new JS.Class(JS.Set, {
     // The pointer will end up at the start of any homogenous section. Step
     // through the section until we find the needle or until the section ends.
     while (items[i] && !equal(item, items[i]) &&
-        compare(item, items[i]) == 0) i += 1;
+        compare(item, items[i]) === 0) i += 1;
     
     var found = equal(item, items[i]);
     return insertionPoint

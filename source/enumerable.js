@@ -53,10 +53,10 @@ JS.Enumerable = new JS.Module({
   find: function(block, context) {
     var needle = {}, K = needle;
     this.forEach(function(item, i) {
-      if (needle != K) return;
+      if (needle !== K) return;
       needle = block.call(context || null, item, i) ? item : needle;
     });
-    return needle == K ? null : needle;
+    return needle === K ? null : needle;
   },
   
   inject: function(memo, block, context) {
@@ -85,7 +85,7 @@ JS.Enumerable = new JS.Module({
   },
   
   member: function(needle) {
-    return this.any(function(item) { return item == needle; });
+    return this.any(function(item) { return item === needle; });
   },
   
   min: function(block, context) {
@@ -151,7 +151,7 @@ JS.Enumerable = new JS.Module({
       block = arguments[n-2]; context = arguments[n-1];
     }
     util.forEach.call(arguments, function(arg) {
-      if (arg == block || arg == context) return;
+      if (arg === block || arg === context) return;
       if (arg.toArray) arg = arg.toArray();
       if (arg instanceof Array) args.push(arg);
     });

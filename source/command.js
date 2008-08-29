@@ -39,7 +39,7 @@ JS.Command = new JS.Class({
       },
       
       _restart: function() {
-        if (this.pointer == 0 && this._redo && this._redo.execute)
+        if (this.pointer === 0 && this._redo && this._redo.execute)
           this._redo.execute();
       },
       
