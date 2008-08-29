@@ -28,7 +28,7 @@ JS.Comparable = new JS.Module({
   },
   
   eq: function(other) {
-    return this.compareTo(other) == 0;
+    return this.compareTo(other) === 0;
   },
   
   between: function(a, b) {

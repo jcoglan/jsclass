@@ -8,7 +8,7 @@ JS.Observable = new JS.Module({
     context = context || null;
     var i = this.countObservers();
     while (i--) {
-      if (this.__observers__[i].bk == observer && this.__observers__[i].cx == context) {
+      if (this.__observers__[i].bk === observer && this.__observers__[i].cx === context) {
         this.__observers__.splice(i,1);
         return;
       }

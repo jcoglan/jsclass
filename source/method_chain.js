@@ -23,7 +23,7 @@ JS.MethodChain.fire = function(queue, object) {
       case 'function':  property = method.func;               break;
       case 'object':    object = method.func; continue loop;  break;
     }
-    object = (typeof property == 'function')
+    object = (typeof property === 'function')
         ? property.apply(object, method.args)
         : property;
   }
@@ -66,12 +66,12 @@ JS.MethodChain.addMethods = function(object) {
   var methods = [], property, i;
   
   for (property in object)
-    Number(property) != property && methods.push(property);
+    Number(property) !== property && methods.push(property);
   
   if (object instanceof Array) {
     i = object.length;
     while (i--)
-      typeof object[i] == 'string' && methods.push(object[i]);
+      typeof object[i] === 'string' && methods.push(object[i]);
   }
   i = methods.length;
   while (i--) this.addMethod(methods[i]);
@@ -90,10 +90,10 @@ JS.ObjectMethods.include({
   wait: function(time) {
     var chain = new JS.MethodChain;
     
-    typeof time == 'number' &&
+    typeof time === 'number' &&
       setTimeout(chain.fire.bind(chain, this), time * 1000);
     
-    this.forEach && typeof time == 'function' &&
+    this.forEach && typeof time === 'function' &&
       this.forEach(function() {
         setTimeout(chain.fire.bind(chain, arguments[0]), time.apply(this, arguments) * 1000);
       });
@@ -104,8 +104,8 @@ JS.ObjectMethods.include({
   _: function() {
     var base = arguments[0], args = [], i, n;
     for (i = 1, n = arguments.length; i < n; i++) args.push(arguments[i]);
-    return  (typeof base == 'object' && base) ||
-            (typeof base == 'function' && base.apply(this, args)) ||
+    return  (typeof base === 'object' && base) ||
+            (typeof base === 'function' && base.apply(this, args)) ||
             this;
   }
 });

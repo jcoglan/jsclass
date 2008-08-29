@@ -9,7 +9,7 @@ JS.Proxy.Virtual = new JS.Class({
     
     for (method in klass.prototype) {
       func = klass.prototype[method];
-      if (JS.isFn(func) && func != klass) func = this.klass.forward(method);
+      if (JS.isFn(func) && func !== klass) func = this.klass.forward(method);
       delegators[method] = func;
     }
     

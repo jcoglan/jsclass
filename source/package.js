@@ -6,9 +6,9 @@ JS.Package = new JS.Class({
   },
   
   addDependency: function(pkg) {
-    if (typeof pkg == 'string') pkg = this.klass.getByName(pkg);
+    if (typeof pkg === 'string') pkg = this.klass.getByName(pkg);
     if (!pkg) return;
-    if (JS.indexOf(this._deps, pkg) == -1) this._deps.push(pkg);
+    if (JS.indexOf(this._deps, pkg) === -1) this._deps.push(pkg);
   },
   
   addName: function(name) {
@@ -16,7 +16,7 @@ JS.Package = new JS.Class({
   },
   
   contains: function(name) {
-    return JS.indexOf(this._names, name) != -1;
+    return JS.indexOf(this._names, name) !== -1;
   },
   
   getObjects: function() {
@@ -33,14 +33,14 @@ JS.Package = new JS.Class({
     if (deep !== false) {
       while (n--) { if (!this._deps[n].isLoaded()) return false; }
     }
-    return this.getObjects().length == this._names.length;
+    return this.getObjects().length === this._names.length;
   },
   
   expand: function(list) {
     var deps = list || [], i, n;
     for (i = 0, n = this._deps.length; i < n; i++)
       this._deps[i].expand(deps);
-    if (JS.indexOf(deps, this) == -1) deps.push(this);
+    if (JS.indexOf(deps, this) === -1) deps.push(this);
     return deps;
   },
   
@@ -51,9 +51,9 @@ JS.Package = new JS.Class({
     tag.src     = this._path;
     tag.onload = tag.onreadystatechange = function() {
       if (  !tag.readyState ||
-            tag.readyState == 'loaded' ||
-            tag.readyState == 'complete' ||
-            (tag.readyState == 4 && tag.status == 200)
+            tag.readyState === 'loaded' ||
+            tag.readyState === 'complete' ||
+            (tag.readyState === 4 && tag.status === 200)
       ) {
         callback.call(scope || null);
         tag = null;
@@ -93,7 +93,7 @@ JS.Package = new JS.Class({
     },
     
     load: function(list, callback, scope) {
-      if (list.length == 0) return callback && callback.call(scope || null);
+      if (list.length === 0) return callback && callback.call(scope || null);
       list.shift().injectScript(function() {
         this.load(list, callback, scope);
       }, this);
@@ -128,7 +128,7 @@ JS.Packages = function(declaration) {
 
 require = function() {
   var args = JS.array(arguments), requirements = [];
-  while (typeof args[0] == 'string') requirements.push(JS.Package.getByName(args.shift()));
+  while (typeof args[0] === 'string') requirements.push(JS.Package.getByName(args.shift()));
   requirements = JS.Package.expand(requirements);
   JS.Package.load(requirements, args[0], args[1]);
 };

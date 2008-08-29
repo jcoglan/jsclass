@@ -30,7 +30,7 @@ JS = {
   extend: function(object, methods) {
     methods = methods || {};
     for (var prop in methods) {
-      if (object[prop] == methods[prop]) continue;
+      if (object[prop] === methods[prop]) continue;
       object[prop] = methods[prop];
     }
     return object;
@@ -95,7 +95,7 @@ JS = {
   },
   
   ignore: function(key, object) {
-    return /^(include|extend)$/.test(key) && typeof object == 'object';
+    return /^(include|extend)$/.test(key) && typeof object === 'object';
   }
 };
 
@@ -136,12 +136,12 @@ JS.extend(JS.Module.prototype, {
       else module.included && module.included(options.included || this);
     }
     else {
-      if (typeof inc == 'object') {
+      if (typeof inc === 'object') {
         modules = [].concat(inc);
         for (i = 0, n = modules.length; i < n; i++)
           this.include(modules[i], options);
       }
-      if (typeof ext == 'object') {
+      if (typeof ext === 'object') {
         modules = [].concat(ext);
         for (i = 0, n = modules.length; i < n; i++)
           (options.included || this).extend(modules[i], false);
@@ -156,7 +156,7 @@ JS.extend(JS.Module.prototype, {
   },
   
   includes: function(moduleOrClass) {
-    if (Object == moduleOrClass || this == moduleOrClass || this.__res__ === moduleOrClass.prototype)
+    if (Object === moduleOrClass || this === moduleOrClass || this.__res__ === moduleOrClass.prototype)
       return true;
     var i = this.__inc__.length;
     while (i--) {
@@ -171,8 +171,8 @@ JS.extend(JS.Module.prototype, {
     for (var i = 0, n = this.__inc__.length; i < n; i++)
       this.__inc__[i].ancestors(results);
     var klass = (this.__res__||{}).klass,
-        result = (klass && this.__res__ == klass.prototype) ? klass : this;
-    if (JS.indexOf(results, result) == -1) results.push(result);
+        result = (klass && this.__res__ === klass.prototype) ? klass : this;
+    if (JS.indexOf(results, result) === -1) results.push(result);
     return results;
   },
   
@@ -217,7 +217,7 @@ JS.extend(JS.Module.prototype, {
   resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
     
-    if (target == this) {
+    if (target === this) {
       i = this.__dep__.length;
       while (i--) this.__dep__[i].resolve();
     }
@@ -228,7 +228,7 @@ JS.extend(JS.Module.prototype, {
       this.__inc__[i].resolve(target);
     for (key in this.__fns__) {
       made = target.make(key, this.__fns__[key]);
-      if (resolved[key] != made) resolved[key] = made;
+      if (resolved[key] !== made) resolved[key] = made;
     }
   }
 });
@@ -251,7 +251,7 @@ JS.ObjectMethods = new JS.Module({
   
   method: function(name) {
     var self = this, cache = self.__mcache__ = self.__mcache__ || {};
-    if ((cache[name] || {}).fn == self[name]) return cache[name].bd;
+    if ((cache[name] || {}).fn === self[name]) return cache[name].bd;
     return (cache[name] = {fn: self[name], bd: JS.bind(self[name], self)}).bd;
   }
 });
@@ -327,7 +327,6 @@ JS.Module.include(JS.ObjectMethods);
 JS.Class = JS.extend(new JS.Class(JS.Module, JS.Class.prototype), JS.ObjectMethods.__fns__);
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
-JS.ObjectMethods = new JS.Module(JS.ObjectMethods.__fns__);
 
 JS.Module.extend({
   _observers: [],

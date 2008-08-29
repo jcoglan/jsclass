@@ -1,7 +1,7 @@
 JS.State = new JS.Module({
   __getState__: function(state) {
-    return  (typeof state == 'object' && state) ||
-            (typeof state == 'string' && ((this.states || {})[state] || {})) ||
+    return  (typeof state === 'object' && state) ||
+            (typeof state === 'string' && ((this.states || {})[state] || {})) ||
             {};
   },
   
@@ -13,7 +13,7 @@ JS.State = new JS.Module({
   inState: function() {
     var i = arguments.length;
     while (i--) {
-      if (this.__state__ == this.__getState__(arguments[i])) return true;
+      if (this.__state__ === this.__getState__(arguments[i])) return true;
     }
     return false;
   },
@@ -65,7 +65,7 @@ JS.State = new JS.Module({
 
 JS.Module.include({define: (function(wrapped) {
   return function(name, block) {
-    if (name == 'states' && typeof block == 'object')
+    if (name === 'states' && typeof block === 'object')
       arguments[1] = JS.State.buildCollection(this, block);
     return wrapped.apply(this, arguments);
   };

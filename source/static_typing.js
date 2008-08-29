@@ -10,7 +10,7 @@
         case type instanceof JS.Interface :
           this.test = this.testInterface;
           break;
-        case typeof type == 'string' || type instanceof String :
+        case typeof type === 'string' || type instanceof String :
           this.test = this.testType;
           break;
       }
@@ -22,7 +22,7 @@
       return this.type.test(data);
     },
     testType: function(data) {
-      return (typeof data == this.type);
+      return (typeof data === this.type);
     },
     extend: {
       Collection: new JS.Class({
