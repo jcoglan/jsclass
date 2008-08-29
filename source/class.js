@@ -136,20 +136,25 @@ JS.extend(JS.Module.prototype, {
       else module.included && module.included(options.included || this);
     }
     else {
-      if (typeof inc === 'object') {
-        modules = [].concat(inc);
-        for (i = 0, n = modules.length; i < n; i++)
-          this.include(modules[i], options);
-      }
-      if (typeof ext === 'object') {
-        modules = [].concat(ext);
-        for (i = 0, n = modules.length; i < n; i++)
-          (options.included || this).extend(modules[i], false);
-        (options.included || this).extend();
-      }
-      for (method in module) {
-        if (JS.ignore(method, module[method])) continue;
-        this.define(method, module[method], {notify: options.included || options.extended || this});
+      if (options.recall) {
+        for (method in module) {
+          if (JS.ignore(method, module[method])) continue;
+          this.define(method, module[method], {notify: options.included || options.extended || this});
+        }
+      } else {
+        if (typeof inc === 'object') {
+          modules = [].concat(inc);
+          for (i = 0, n = modules.length; i < n; i++)
+            this.include(modules[i], options);
+        }
+        if (typeof ext === 'object') {
+          modules = [].concat(ext);
+          for (i = 0, n = modules.length; i < n; i++)
+            (options.included || this).extend(modules[i], false);
+          (options.included || this).extend();
+        }
+        options.recall = true;
+        return this.include(module, options, resolve);
       }
     }
     resolve && this.resolve();
