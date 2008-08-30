@@ -1,0 +1,169 @@
+:textile
+  h3. @JS.ConstantScope@
+  
+  @ConstantScope@ is a metaprogramming mixin that alters the way constants are
+  stored inside modules and classes. It does not add any methods to the including
+  class, but it changes its internals in certain useful ways. In JavaScript, there
+  is no such thing as a constant but convention dictates that any variable name
+  that begins with a capital letter is to be treated as such. The same convention
+  exists in Ruby, with the added bonus that the interpreter will warn you when
+  a constant is redefined. To understant what this module does, we need first to
+  examine some differences in constant lookup between Ruby and @JS.Class@.
+  
+  While @JS.Class@ makes every attempt to support Ruby's object inheritance system,
+  such that method lookup works the same in both systems, the same cannot be said
+  of constant lookup. This is because Ruby's constant lookup system makes use of
+  the lexical scope of constant names, which you really need a language parser for
+  if you want it to work properly. @JS.Class@ is not a code parser, which means it
+  can't support the same constant semantics as Ruby. Let's take a concrete example:
+  
+  <pre class="prettyprint">
+  class Outer
+    CONST = 45
+    
+    class Item          # (1)
+    end
+    
+    class Inner
+      class Item        # (2)
+        def initialize
+          puts CONST    # (3)
+        end
+      end
+      
+      def create_item
+        Item.new        # (4)
+      end
+    end
+    
+    def create_item
+      Item.new          # (5)
+    end
+  end </pre>
+  
+  In Ruby, any name beginning with a capital letter is considered a constant: the
+  class @Outer@ contains three constants: @CONST@, @Item@ and @Inner@. They are
+  referred to externally as @Outer::CONST@, @Outer::Item@ and @Outer::Inner@.
+  Likewise, @Outer::Inner@ contains a single constant, @Outer::Inner::Item@.
+  When you refer to a constant, Ruby looks up that name in the lexical scope of
+  the reference, i.e. it looks in the enclosing class, then the class enclosing
+  _that_, and so on until it reaches the global scope. So, the line marked @(4)@
+  refers to @Outer::Inner::Item@ (defined on line @(2)@) and line @(5)@ refers
+  to @Outer::Item@, defined on line @(1)@. Line @(3)@ has to go back out to @Outer@
+  to find the constant @CONST@.
+  
+  To write this in @JS.Class@, we need to make the constants properties of the
+  classes that contain them by @extend@-ing the classes:
+  
+  <pre class="prettyprint">
+  Outer = new JS.Class({
+    extend: {
+      CONST: 45,
+      
+      Item: new JS.Class(),
+      
+      Inner: new JS.Class({
+        extend: {
+          Item: new JS.Class({
+            initialize: function() {
+              alert(Outer.CONST);
+            }
+          })
+        },
+        
+        create_item: function() {
+          return new this.klass.Item();
+        }
+      })
+    },
+    
+    create_item: function() {
+      return new this.klass.Item();
+    }
+  }); </pre>
+  
+  This is noisy as it contains a lot of nesting that isn't present in the Ruby version.
+  Also, we end up with more name duplication (@Outer.CONST@) since classes have no awareness
+  of their lexical nesting, and we have some funny-looking @this.klass.X@ references
+  where instance methods need to refer to constants stored in their class.
+  
+  @JS.ConstantScope@ is a module that allows classes and any classes nested inside them
+  to support Ruby's constant lookup system, in that any reference to a 'constant' (a property
+  beginning with a capital letter) can be made simply using the syntax @this.X@. The value
+  of such a reference will follow the same lexical rules as exist in Ruby, so that we
+  can rewrite the above code as:
+  
+  <pre class="prettyprint">
+  Outer = new JS.Class({
+    include: JS.ConstantScope,
+    
+    CONST: 45,
+    
+    Item: new JS.Class(),
+    
+    Inner: new JS.Class({
+      Item: new JS.Class({
+        initialize: function() {
+          alert(this.CONST);
+        }
+      }),
+      
+      create_item: function() {
+        return new this.Item();
+      }
+    }),
+    
+    create_item: function() {
+      return new this.Item();
+    }
+  }); </pre>
+  
+  Notice we've got rid of the extra @Outer@ reference to look up @CONST@, there are no
+  @extend@ blocks, and we no longer have any @this.klass.X@ references. This also means
+  that the syntax for referring to a constant is the same in both class and instance
+  methods:
+  
+  <pre class="prettyprint">
+  SomeClass = new JS.Class({
+    include: JS.ConstantScope,
+    
+    MY_CONST:   'cheese',
+    
+    fetch: function() {
+      return this.MY_CONST;
+    },
+    
+    extend: {
+      get: function() {
+        return this.MY_CONST;
+      }
+    }
+  });
+  
+  SomeClass.get();      // -> "cheese"
+  
+  var s = new SomeClass();
+  s.fetch();            // -> "cheese"</pre>
+  
+  h3. Warnings
+  
+  JavaScript is simply unable to support the same constant syntax as Ruby without
+  resorting to a great deal of messing around with global variables. To support the
+  @this.X@ syntax in all nested classes and methods, the @ConstantScope@ module needs
+  to perform a great deal of reflection and creates a fair few extra modules to make
+  sure that constants are inherited properly by nested classes and that they are available
+  as both class and instance properties. All this is fairly expensive and you may run
+  into performance issues; treat this module as experimental for the time being, and if
+  you do use it beware of the following.
+  
+  @ConstantScope@ works by propagating constants to a multitude of different objects
+  so that they appear to be lexically scoped. Changing a constant using a simple attribute
+  accessor will not cause the new value to propagate, so make sure you reassign constants
+  by @extend@-ing their containing class. Taking the above example:
+  
+  <pre class="prettyprint">
+  // This will not propagate as expected
+  SomeClass.MY_CONST = 'cake';
+  
+  // Do this instead
+  SomeClass.extend({MY_CONST: 'cake'});</pre>
