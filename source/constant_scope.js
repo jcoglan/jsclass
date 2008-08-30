@@ -38,9 +38,8 @@ JS.ConstantScope = new JS.Module({
         delete inclusions[key];
         
         if (object.isA && object.isA(JS.Module)) {
-          object.include(base.__consts__);
-          object.extend(base.__consts__);
           object.include(this);
+          object.__consts__.include(base.__consts__);
         }
       }
       return constants;

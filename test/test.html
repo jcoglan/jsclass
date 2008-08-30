@@ -1320,11 +1320,16 @@
         testConstants: function() { with(this) {
             var Foo = new JS.Class({
                 include: JS.ConstantScope,
+                CONST:   45,
                 
                 Item: new JS.Class({NAME: 'Outer'}),
                 
                 Inner: new JS.Class({
-                    Item: new JS.Class({NAME: 'Inner'}),
+                    Item: new JS.Class({NAME: 'Inner',
+                        talk: function() {
+                            return this.CONST;
+                        }
+                    }),
                     
                     extend: {
                         get: function() {
@@ -1337,6 +1342,7 @@
             assert(Foo.Item.NAME === Foo.Item.prototype.NAME);
             assertEqual('Outer', Foo.Item.NAME);
             assertEqual('Inner', Foo.Inner.get());
+            assertEqual(45, (new Foo.Inner.Item).talk());
         }},
         
         testDecorator: function() { with(this) {
