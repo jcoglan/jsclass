@@ -3,8 +3,12 @@ JS.ConstantScope = new JS.Module({
     included: function(base) {
       base.__consts__ = new JS.Module();
       base.extend(this.ClassMethods);
+      
       base.include(base.__consts__);
       base.extend(base.__consts__);
+      
+      base.include(base.__mod__.__fns__);
+      base.extend(base.__eigen__().__fns__);
     },
     
     ClassMethods: new JS.Module({
@@ -34,9 +38,9 @@ JS.ConstantScope = new JS.Module({
         delete inclusions[key];
         
         if (object.isA && object.isA(JS.Module)) {
-          object.include(this);
           object.include(base.__consts__);
           object.extend(base.__consts__);
+          object.include(this);
         }
       }
       return constants;

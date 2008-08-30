@@ -1317,6 +1317,28 @@
             assertEqual(933, this.counter);
         }},
         
+        testConstants: function() { with(this) {
+            var Foo = new JS.Class({
+                include: JS.ConstantScope,
+                
+                Item: new JS.Class({NAME: 'Outer'}),
+                
+                Inner: new JS.Class({
+                    Item: new JS.Class({NAME: 'Inner'}),
+                    
+                    extend: {
+                        get: function() {
+                            return this.Item.NAME
+                        }
+                    }
+                })
+            });
+            
+            assert(Foo.Item.NAME === Foo.Item.prototype.NAME);
+            assertEqual('Outer', Foo.Item.NAME);
+            assertEqual('Inner', Foo.Inner.get());
+        }},
+        
         testDecorator: function() { with(this) {
             var bike = new Bicycle('BMX', 1);
             var bikeWithHeadlights = new HeadlightDecorator(bike);
