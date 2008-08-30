@@ -9,6 +9,7 @@ packages:
   class:            class
   package:          package
   comparable:       comparable
+  constant_scope:   constant_scope
   enumerable:       enumerable
   observable:       observable
   forwardable:      forwardable
@@ -29,6 +30,7 @@ bundles:
     - enumerable
     - observable
     - forwardable
+    - constant_scope
     - decorator
     - proxy
     - command
