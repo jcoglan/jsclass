@@ -107,15 +107,15 @@ JS.extend(JS.Module.prototype, {
     this.__inc__ = [];
     this.__fns__ = {};
     this.__dep__ = [];
-    this.__res__ = options.resolve || null;
+    this.__res__ = options._resolve || null;
     this.include(methods || {});
   },
   
   define: function(name, func, options) {
     options = options || {};
     this.__fns__[name] = func;
-    if (JS.Module._notify && options.notify && JS.isFn(func))
-        JS.Module._notify(name, options.notify);
+    if (JS.Module._notify && options._notify && JS.isFn(func))
+        JS.Module._notify(name, options._notify);
     var i = this.__dep__.length;
     while (i--) this.__dep__[i].resolve();
   },
@@ -129,19 +129,19 @@ JS.extend(JS.Module.prototype, {
     if (!module) return resolve && this.resolve();
     options = options || {};
     var inc = module.include, ext = module.extend, modules, i, n, method,
-        includer = options.included || this;
+        includer = options._included || this;
     
     if (module.__inc__ && module.__fns__) {
       this.__inc__.push(module);
       module.__dep__.push(this);
-      if (options.extended) module.extended && module.extended(options.extended);
+      if (options._extended) module.extended && module.extended(options._extended);
       else module.included && module.included(includer);
     }
     else {
-      if (options.recall) {
+      if (options._recall) {
         for (method in module) {
           if (JS.ignore(method, module[method])) continue;
-          this.define(method, module[method], {notify: includer || options.extended || this});
+          this.define(method, module[method], {_notify: includer || options._extended || this});
         }
       } else {
         if (typeof inc === 'object') {
@@ -155,7 +155,7 @@ JS.extend(JS.Module.prototype, {
             includer.extend(modules[i], false);
           includer.extend();
         }
-        options.recall = true;
+        options._recall = true;
         return includer.include(module, options, resolve);
       }
     }
@@ -243,13 +243,13 @@ JS.extend(JS.Module.prototype, {
 JS.ObjectMethods = new JS.Module({
   __eigen__: function() {
     if (this.__meta__) return this.__meta__;
-    var module = this.__meta__ = new JS.Module({}, {resolve: this});
+    var module = this.__meta__ = new JS.Module({}, {_resolve: this});
     module.include(this.klass.__mod__);
     return module;
   },
   
   extend: function(module, resolve) {
-    return this.__eigen__().include(module, {extended: this}, resolve !== false);
+    return this.__eigen__().include(module, {_extended: this}, resolve !== false);
   },
   
   isA: function(moduleOrClass) {
@@ -297,17 +297,17 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     var p = this.prototype = JS.makeBridge(klass);
     p.klass = p.constructor = this;
     
-    this.__mod__ = new JS.Module({}, {resolve: this.prototype});
+    this.__mod__ = new JS.Module({}, {_resolve: this.prototype});
     this.include(JS.ObjectMethods, null, false);
     
     if (klass !== Object) this.include(klass.__mod__ || new JS.Module(klass.prototype,
-        {resolve: klass.prototype}), null, false);
+        {_resolve: klass.prototype}), null, false);
   },
   
   include: function(module, options, resolve) {
     if (!module) return;
     var mod = this.__mod__, options = options || {};
-    options.included = this;
+    options._included = this;
     return mod.include(module, options, resolve !== false);
   },
   
