@@ -10,9 +10,11 @@ JS.LinkedList = new JS.Class({
   },
   
   forEach: function(block, context) {
-    for (var node = this.first, next, i = 0, n = this.length; i < n; i++) {
+    var node = this.first, next, i, n;
+    for (i = 0, n = this.length; i < n; i++) {
       next = node.next;
       block.call(context || null, node, i);
+      if (node === this.last) break;
       node = next;
     }
   },

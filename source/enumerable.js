@@ -1,8 +1,10 @@
 JS.Enumerable = new JS.Module({
   extend: {
     forEach: function(block, context) {
-      for (var i = 0, n = this.length; i < n; i++)
-        block.call(context || null, this[i], i);
+      for (var i = 0, n = this.length; i < n; i++) {
+        if (this[i])
+          block.call(context || null, this[i], i);
+      }
     },
     
     isComparable: function(list) {
