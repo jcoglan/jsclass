@@ -842,6 +842,20 @@
             assertEqual('TopClass(2) extends SubClass(2) extends BaseClass(2)', top.getName());
         }},
         
+        testBoundSuper: function() { with(this) {
+            var Parent = new JS.Class({
+                n: 4,
+                getNum: function() { return this.n }
+            });
+            
+            var Child = new JS.Class(Parent, {
+                getNum: function() { return this.method('callSuper') }
+            });
+            
+            var m = (new Child).getNum();
+            assertEqual(4, m());
+        }},
+        
         testInheritanceFromNativeClass: function() { with(this) {
             var nat = new NativeClass();
             assertEqual('Native', nat.getName());

@@ -202,7 +202,7 @@ JS.extend(JS.Module.prototype, {
   
   chain: JS.mask( function(self, name, args) {
     var callees = this.lookup(name),
-        stackIndex = callees.length,
+        stackIndex = callees.length - 1,
         currentSuper = self.callSuper,
         params = JS.array(args),
         result;
@@ -216,7 +216,7 @@ JS.extend(JS.Module.prototype, {
       return returnValue;
     };
     
-    result = self.callSuper();
+    result = callees.pop().apply(self, params);
     currentSuper ? self.callSuper = currentSuper : delete self.callSuper;
     return result;
   } ),
