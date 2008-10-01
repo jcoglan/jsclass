@@ -3,8 +3,10 @@ JS.Set = new JS.Class({
     forEach: function(list, block, context) {
       if (!list) return;
       if (list.forEach) return list.forEach(block, context);
-      for (var i = 0, n = list.length; i < n; i++)
-        block.call(context || null, list[i], i);
+      for (var i = 0, n = list.length; i < n; i++) {
+        if (list[i])
+          block.call(context || null, list[i], i);
+      }
     },
     
     areEqual: function(one, another) {
