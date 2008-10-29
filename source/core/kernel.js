@@ -18,6 +18,11 @@ JS.Kernel = new JS.Module({
     var self = this, cache = self.__mcache__ = self.__mcache__ || {};
     if ((cache[name] || {}).fn === self[name]) return cache[name].bd;
     return (cache[name] = {fn: self[name], bd: JS.bind(self[name], self)}).bd;
+  },
+  
+  tap: function(block, scope) {
+    block.call(scope || null, this);
+    return this;
   }
 });
 
