@@ -6,7 +6,16 @@ packer:
   shrink_vars:      true
   private:          true
 packages:
-  class:            class
+  class:
+    directory: core
+    files:
+      - utils
+      - module
+      - kernel
+      - class
+      - circulate
+      - interface
+      - singleton
   package:          package
   comparable:       comparable
   constant_scope:   constant_scope

@@ -648,7 +648,7 @@
         }},
         
         testAncestors: function() { with(this) {
-            assertEnumEqual([JS.ObjectMethods, ModA, ModD, ModB, ModC, InheritanceTester], InheritanceTester.ancestors());
+            assertEnumEqual([JS.Kernel, ModA, ModD, ModB, ModC, InheritanceTester], InheritanceTester.ancestors());
         }},
         
         testCoreClasses: function() { with(this) {
@@ -679,7 +679,7 @@
             assert(obj.isA(ModA));
             assert(obj.isA(ModB));
             assert(obj.isA(ModC));
-            assert(obj.isA(JS.ObjectMethods));
+            assert(obj.isA(JS.Kernel));
             assert(obj.isA(Object));
             
             obj = new SpecialSub();
@@ -688,7 +688,7 @@
             assert(obj.isA(ModA));
             assert(obj.isA(ModB));
             assert(obj.isA(ModC));
-            assert(obj.isA(JS.ObjectMethods));
+            assert(obj.isA(JS.Kernel));
             assert(obj.isA(Object));
             
             assert(!obj.isA(JS.Class));

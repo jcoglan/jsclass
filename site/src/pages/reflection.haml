@@ -68,7 +68,7 @@
   
   <pre class="prettyprint">
   Foo.ancestors()
-  // -> [JS.ObjectMethods, ModA, ModB, ModC, Foo]</pre>
+  // -> [JS.Kernel, ModA, ModB, ModC, Foo]</pre>
   
   If you're debugging using Firebug, it will just print @Object@ or @function()@ for
   each of those:
@@ -82,7 +82,7 @@
   
   <pre class="prettyprint">
   JS.StackTrace.nameOf(Foo.ancestors())
-  // -> ["JS.ObjectMethods", "ModA", "ModB", "ModC", "Foo"]</pre>
+  // -> ["JS.Kernel", "ModA", "ModB", "ModC", "Foo"]</pre>
   
   If that's not enough information, you can ask @JS.Class@ to explicitly look up methods
   for you so you can see the order that inherited methods will be called in. You can

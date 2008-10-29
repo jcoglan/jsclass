@@ -86,7 +86,7 @@ JS.Module.methodAdded(function(name) {
   JS.MethodChain.addMethod(name);
 });
 
-JS.ObjectMethods.include({
+JS.Kernel.include({
   wait: function(time) {
     var chain = new JS.MethodChain;
     
