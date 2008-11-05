@@ -6,7 +6,7 @@ packer:
   shrink_vars:      true
   private:          true
 packages:
-  class:
+  core:
     directory: core
     files:
       - utils
@@ -32,7 +32,7 @@ packages:
   stack_trace:      stack_trace
   ruby:             ruby
 bundles:
-  patterns:
+  stdlib:
     - method_chain
     - package
     - comparable
