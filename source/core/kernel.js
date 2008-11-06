@@ -11,7 +11,9 @@ JS.Kernel = new JS.Module(/** @scope Kernel.prototype */{
   /**
    * Returns the object's metamodule, analogous to calling (class << self; self; end)
    * in Ruby. Ruby's metaclasses are Classes, not just Modules, but so far I've not found
-   * a compelling reason to enforce this. You cannot ins
+   * a compelling reason to enforce this. You cannot instantiate or subclass metaclasses
+   * in Ruby, they only really exist to store methods so a module will suffice.
+   * 
    * @returns {Module}
    */
   __eigen__: function() {
@@ -26,6 +28,7 @@ JS.Kernel = new JS.Module(/** @scope Kernel.prototype */{
    * Module, it becomes part of the object's inheritance chain and any methods added
    * directly to the object will take precedence. Pass false as a second argument
    * to prevent the method resolution process from firing.
+   * 
    * @param {Module|Object} module
    * @param {Boolean} resolve
    */
@@ -36,6 +39,7 @@ JS.Kernel = new JS.Module(/** @scope Kernel.prototype */{
   /**
    * Returns true if the object is an instance of moduleOrClass or one of its
    * subclasses, or if the object's class includes the module moduleOrClass.
+   * 
    * @param {Module|Class} moduleOrClass
    * @returns {Boolean}
    */
@@ -45,6 +49,7 @@ JS.Kernel = new JS.Module(/** @scope Kernel.prototype */{
   
   /**
    * Returns the named method from the object as a bound function.
+   * 
    * @param {String} name
    * @returns {Function}
    */

@@ -36,7 +36,7 @@
  * 
  *                class
  *          =================
- *          | C | SomeClass | -----------------------------------------------
+ *          | C | SomeClass |------------------------------------------------
  *          =================                                               |
  *                  |                                                       |
  *                  V                                                       |
@@ -78,29 +78,40 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    */
   initialize: function(methods, options) {
     options = options || {};
-    this.__mod__ = this;
-    this.__inc__ = [];
-    this.__fns__ = {};
-    this.__dep__ = [];
+    
+    this.__mod__ = this;      // Mirror property found in Class. Think of this as toModule()
+    this.__inc__ = [];        // List of modules included in this module
+    this.__fns__ = {};        // Object storing methods belonging to this module
+    this.__dep__ = [];        // List modules and classes that depend on this module
+    
+    // Object to resolve methods onto
     this.__res__ = options._resolve || null;
-    this.include(methods || {});
+    
+    if (methods) this.include(methods);
   },
   
   /**
+   * Adds an instance method to the module with the given name. The options parameter is
+   * for internal use to make sure callbacks fire on the correct objects, e.g. a class
+   * uses a hidden module to store its methods, but callbacks should fire on the class,
+   * not the module.
+   * 
    * @param {String} name
    * @param {Function} func
    * @param {Object} options
    */
   define: function(name, func, options) {
-    options = options || {};
+    var notify = (options || {})._notify || this;
     this.__fns__[name] = func;
-    if (JS.Module._notify && options._notify && JS.isFn(func))
-        JS.Module._notify(name, options._notify);
+    if (JS.Module._notify && notify && JS.isFn(func))
+        JS.Module._notify(name, notify);
     var i = this.__dep__.length;
     while (i--) this.__dep__[i].resolve();
   },
   
   /**
+   * Returns the named instance method from the module as an unbound function.
+   * 
    * @param {String} name
    * @returns {Function}
    */
@@ -110,6 +121,11 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
   },
   
   /**
+   * Mixes a module into this one or, if module is plain old object (rather than a Module)
+   * adds methods directly into this module. The options and resolve arguments are mostly
+   * for internal use; options specifies objects that callbacks should fire on, and resolve
+   * tells the module whether to resolve methods onto its target after adding the methods.
+   * 
    * @param {Module|Object} module
    * @param {Object} options
    * @param {Boolean} resolve
@@ -117,33 +133,50 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
   include: function(module, options, resolve) {
     if (!module) return resolve && this.resolve();
     options = options || {};
-    var inc = module.include, ext = module.extend, modules, i, n, method,
-        includer = options._included || this;
+    
+    var inc      = module.include,
+        ext      = module.extend,
+        includer = options._included || this,
+        modules, method, i, n;
+    
     
     if (module.__inc__ && module.__fns__) {
+      // module is a Module instance: make links and fire callbacks
+      
       this.__inc__.push(module);
       module.__dep__.push(this);
       if (options._extended) module.extended && module.extended(options._extended);
       else module.included && module.included(includer);
-    }
-    else {
+      
+    } else {
+      // module is a normal object: add methods directly to this module
+      
       if (options._recall) {
+        // Second call: add all the methods
         for (method in module) {
           if (JS.ignore(method, module[method])) continue;
           this.define(method, module[method], {_notify: includer || options._extended || this});
         }
       } else {
+        // First call: handle include and extend blocks
+        
+        // Handle inclusions
         if (typeof inc === 'object') {
           modules = [].concat(inc);
           for (i = 0, n = modules.length; i < n; i++)
             includer.include(modules[i], options);
         }
+        
+        // Handle extensions
         if (typeof ext === 'object') {
           modules = [].concat(ext);
           for (i = 0, n = modules.length; i < n; i++)
             includer.extend(modules[i], false);
           includer.extend();
         }
+        
+        // Make a second call to include(). This allows mixins to modify the
+        // include() method and affect the addition of methods to this module
         options._recall = true;
         return includer.include(module, options, resolve);
       }
@@ -152,6 +185,10 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
   },
   
   /**
+   * Returns true iff this module includes (i.e. inherits from) the given module, or if
+   * the receiver and given module are the same object. Recurses over the receiver's
+   * inheritance tree, could get expensive.
+   * 
    * @param {Module} module
    * @returns {Boolean}
    */
@@ -167,22 +204,39 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
   },
   
   /**
+   * Returns an array of the module's ancestor modules/classes, with the most distant
+   * first and the receiver last. This is the opposite order to that given by Ruby, but
+   * this order makes it easier to eliminate duplicates and preserve Ruby's inheritance
+   * semantics with respect to the diamond problem. The results parameter is for internal
+   * use; we recurse over the tree passing the same array around rather than generating
+   * lots of arrays and concatenating.
+   * 
    * @param {Array} results
    * @returns {Array}
    */
   ancestors: function(results) {
     results = results || [];
+    
+    // Recurse over inclusions first
     for (var i = 0, n = this.__inc__.length; i < n; i++)
       this.__inc__[i].ancestors(results);
+    
+    // If this module is not already in the list, add it
     var klass = (this.__res__||{}).klass,
         result = (klass && this.__res__ === klass.prototype) ? klass : this;
     if (JS.indexOf(results, result) === -1) results.push(result);
+    
     return results;
   },
   
   /**
+   * Returns an array of all the methods in the module's inheritance tree with the given
+   * name. Methods are returned in the same order as the modules in ancestors(), so the
+   * last method in the list will be called first, the penultimate on the first callSuper(),
+   * and so on back through the list.
+   * 
    * @param {String} name
-   * @returns {Function}
+   * @returns {Array}
    */
   lookup: function(name) {
     var ancestors = this.ancestors(), results = [], i, n, method;
@@ -194,6 +248,10 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
   },
   
   /**
+   * Returns a version of the function ready to be added to a prototype object. Functions
+   * that use callSuper() must be wrapped to support that behaviour, other functions can
+   * be used raw.
+   * 
    * @param {String} name
    * @param {Function} func
    * @returns {Function}
@@ -207,38 +265,59 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
   },
   
   /**
+   * Performs calls to functions that use callSuper(). Ancestor methods are looked up
+   * dynamically at call-time; this allows callSuper() to be late-bound as in Ruby at the
+   * cost of a little performance. Arguments to the call are stored so they can be passed
+   * up the call stack automatically without the developer needing to pass them by hand.
+   * 
    * @param {Object} self
    * @param {String} name
    * @param {Array} args
    * @returns {Object}
    */
   chain: JS.mask( function(self, name, args) {
-    var callees = this.lookup(name),
-        stackIndex = callees.length - 1,
-        currentSuper = self.callSuper,
-        params = JS.array(args),
+    var callees      = this.lookup(name),     // List of method implementations
+        stackIndex   = callees.length - 1,    // Current position in the call stack
+        currentSuper = self.callSuper,        // Current super method attached to the receiver
+        params       = JS.array(args),        // Copy of argument list
         result;
     
+    // Set up the callSuper() method
     self.callSuper = function() {
+    
+      // Overwrite arguments specified explicitly
       var i = arguments.length;
       while (i--) params[i] = arguments[i];
+      
+      // Step up the stack, call and step back down
       stackIndex -= 1;
       var returnValue = callees[stackIndex].apply(self, params);
       stackIndex += 1;
+      
       return returnValue;
     };
     
+    // Call the last method in the stack
     result = callees.pop().apply(self, params);
+    
+    // Remove or reassign callSuper() method
     currentSuper ? self.callSuper = currentSuper : delete self.callSuper;
+    
     return result;
   } ),
   
   /**
+   * Copies methods from the module onto the target object, wrapping methods where
+   * necessary. The target will typically be a native JavaScript prototype object used
+   * to represent a class. Recurses over this module's ancestors to make sure all applicable
+   * methods exist.
+   * 
    * @param {Object} target
    */
   resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
     
+    // Resolve all dependent modules if the target is this module
     if (target === this) {
       i = this.__dep__.length;
       while (i--) this.__dep__[i].resolve();
@@ -246,8 +325,11 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
     
     if (!resolved) return;
     
+    // Recurse over this module's ancestors
     for (i = 0, n = this.__inc__.length; i < n; i++)
       this.__inc__[i].resolve(target);
+    
+    // Wrap and copy methods to the target
     for (key in this.__fns__) {
       made = target.make(key, this.__fns__[key]);
       if (resolved[key] !== made) resolved[key] = made;
