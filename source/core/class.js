@@ -95,20 +95,6 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), /** @scope Class.protot
   },
   
   /**
-   * Adds singleton methods to the class, or mixes a module into its metamodule. Classes
-   * have special behaviour with respect to singleton methods in that each class's
-   * singleton methods are inherited by its descendants.
-   * 
-   * @param {Module|Object} module
-   */
-  extend: function(module) {
-    if (!this.callSuper) return;
-    this.callSuper();
-    var i = this.subclasses.length;
-    while (i--) this.subclasses[i].extend();
-  },
-  
-  /**
    * Adds an instance method to the class with the given name. The options parameter is
    * for internal use to make sure callbacks fire on the correct objects, e.g. a class
    * uses a hidden module to store its methods, but callbacks should fire on the class,

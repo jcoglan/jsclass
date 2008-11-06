@@ -745,6 +745,19 @@
             assertEqual('It says JABBA!', obj.jabba());
         }},
         
+        testClassMethodPropagation: function() { with(this) {
+            var TheParent = new JS.Class(),
+                TheChild = new JS.Class(TheParent);
+            
+            TheParent.extend({
+                foo: function() {
+                    return 'foo';
+                }
+            });
+            
+            assertEqual('foo', TheChild.foo());
+        }},
+        
         testHooks: function() { with(this) {
             assertEqual(2, ModA.incs.length);
             assertEqual(ModC, ModA.incs[0]);
