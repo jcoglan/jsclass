@@ -7,7 +7,7 @@
  * 
  * @module Kernel
  */
-JS.Kernel = new JS.Module(/** @scope Kernel.prototype */{
+JS.Kernel = JS.extend(new JS.Module(/** @scope Kernel.prototype */{
   /**
    * Returns the object's metamodule, analogous to calling (class << self; self; end)
    * in Ruby. Ruby's metaclasses are Classes, not just Modules, but so far I've not found
@@ -24,6 +24,16 @@ JS.Kernel = new JS.Module(/** @scope Kernel.prototype */{
   },
   
   /**
+   * Returns true iff this object is the same as the argument. Override to provide a
+   * more meaningful comparison for use in sets, hashtables etc.
+   * @param {Object} object
+   * @returns {Boolean}
+   */
+  equals: function(object) {
+    return this === object;
+  },
+  
+  /**
    * Extends the object using the methods from module. If module is an instance of
    * Module, it becomes part of the object's inheritance chain and any methods added
    * directly to the object will take precedence. Pass false as a second argument
@@ -34,6 +44,16 @@ JS.Kernel = new JS.Module(/** @scope Kernel.prototype */{
    */
   extend: function(module, resolve) {
     return this.__eigen__().include(module, {_extended: this}, resolve !== false);
+  },
+  
+  /**
+   * Returns a hexadecimal hashcode for the object for use in hashtables. By default,
+   * this is a random number guaranteed to be unique to the object. If you override
+   * this method, make sure that a.equals(b) implies a.hash() == b.hash().
+   * @returns {String}
+   */
+  hash: function() {
+    return this.__hashcode__ = this.__hashcode__ || JS.Kernel.getHashCode();
   },
   
   /**
@@ -76,6 +96,19 @@ JS.Kernel = new JS.Module(/** @scope Kernel.prototype */{
   tap: function(block, scope) {
     block.call(scope || null, this);
     return this;
+  }
+}),
+
+/** @scope Kernel */{
+  __hashIndex__: 0,
+  
+  /**
+   * Returns a previously unused hashcode as a hexadecimal string.
+   * @returns {String}
+   */
+  getHashCode: function() {
+    this.__hashIndex__ += 1;
+    return (Math.floor(new Date().getTime() / 1000) + this.__hashIndex__).toString(16);
   }
 });
 
