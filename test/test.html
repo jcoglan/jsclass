@@ -1250,6 +1250,13 @@
             hash.setDefault(function(car) { return car.brand.toUpperCase() });
             assertEqual('VOLVO', hash.get(new HashCar('volvo')));
             
+            hash.removeIf(function(pair) {
+                return pair.key.brand == 'lotus' || pair.value.code == 'black'
+            });
+            assertEqual(2, hash.size);
+            assertIdentical(null, hash.remove(new HashCar('audi')));
+            assertEqual(2, hash.size);
+            
             hash.setDefault();
             hash.compareByIdentity();
             assertIdentical(null, hash.get(new HashCar('ferari')));

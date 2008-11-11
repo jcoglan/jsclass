@@ -178,6 +178,39 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
   put: function(key, value) {
     this.assoc(key, true).setValue(value);
     return this;
+  },
+  
+  /**
+   * @param {Object} key
+   * @returns {Object}
+   */
+  remove: function(key) {
+    var bucket = this._bucketForKey(key);
+    if (!bucket) return null;
+    
+    var index = this._indexInBucket(bucket, key);
+    if (index < 0) return null;
+    
+    var result = bucket[index];
+    bucket.splice(index, 1);
+    this.size -= 1;
+    this.length -= 1;
+    
+    if (bucket.length === 0)
+      delete this._buckets[key.hash ? key.hash() : key];
+    
+    return result;
+  },
+  
+  /**
+   * @param {Function} predicate
+   * @param {Object} scope
+   */
+  removeIf: function(predicate, scope) {
+    this.forEach(function(pair) {
+      if (predicate.call(scope || null, pair))
+        this.remove(pair.key);
+    }, this);
   }
 });
 
