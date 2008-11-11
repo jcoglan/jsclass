@@ -32,7 +32,7 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
    * @param {Enumerable} list
    */
   initialize: function(list) {
-    this._buckets = {};
+    this.clear();
     if (!list) return;
     for (var i = 0, n = list.length; i < n; i += 2)
       this.put(list[i], list[i+1]);
@@ -54,11 +54,120 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
   
   /**
    * @param {Object} key
+   * @param {Boolean} createIfAbsent
+   * @returns {Array}
+   */
+  _bucketForKey: function(key, createIfAbsent) {
+    var hash = key.hash ? key.hash() : key,
+        bucket = this._buckets[hash];
+    
+    if (!bucket && createIfAbsent)
+      bucket = this._buckets[hash] = [];
+    
+    return bucket;
+  },
+  
+  /**
+   * @param {Array} bucket
+   * @param {Object} key
+   * @returns {Hash.Pair}
+   */
+  _indexInBucket: function(bucket, key) {
+    var i     = bucket.length,
+        ident = !!this._compareByIdentity;
+        
+    while (i--) {
+      if (ident ? (bucket[i].key === key) : bucket[i].key.equals(key))
+        return i;
+    }
+    return -1;
+  },
+  
+  /**
+   * @param {Object} key
+   * @param {Boolean} createIfAbsent
+   * @returns {Hash.Pair}
+   */
+  assoc: function(key, createIfAbsent) {
+    var bucket = this._bucketForKey(key, createIfAbsent);
+    if (!bucket) return null;
+    
+    var index = this._indexInBucket(bucket, key);
+    if (index > -1) return bucket[index];
+    if (!createIfAbsent) return null;
+    
+    this.size += 1; this.length += 1;
+    pair = new this.klass.Pair;
+    pair.setKey(key);
+    bucket.push(pair);
+    return pair;
+  },
+  
+  /**
+   */
+  clear: function() {
+    this._buckets = {};
+    this.length = this.size = 0;
+  },
+  
+  /**
+   */
+  compareByIdentity: function() {
+    this._compareByIdentity = true;
+  },
+  
+  /**
+   * @returns {Boolean}
+   */
+  comparesByIdentity: function() {
+    return !!this._compareByIdentity;
+  },
+  
+  /**
+   * @param {Object} value
+   */
+  setDefault: function(value) {
+    this._default = value;
+  },
+  
+  /**
+   * @param {Object} key
+   * @returns {Object}
+   */
+  getDefault: function(key) {
+    return JS.isFn(this._default)
+        ? this._default(key)
+        : (this._default || null);
+  },
+  
+  /**
+   * @param {Object} key
    * @returns {Object}
    */
   get: function(key) {
-    var pair = this._findPair(key);
-    return pair ? pair.value : undefined;
+    var pair = this.assoc(key);
+    return pair ? pair.value : this.getDefault(key);
+  },
+  
+  /**
+   * @param {Object} key
+   * @returns {Boolean}
+   */
+  hasKey: function(key) {
+    return !!this.assoc(key);
+  },
+  
+  /**
+   * @param {Object} value
+   * @returns {Boolean}
+   */
+  hasValue: function(value) {
+    var has = false, ident = !!this._compareByIdentity;
+    this.forEach(function(pair) {
+      if ((value.equals && !ident) ? value.equals(pair.value) : value === pair.value)
+        has = true;
+    });
+    return has;
   },
   
   /**
@@ -67,40 +176,8 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
    * @returns {Hash}
    */
   put: function(key, value) {
-    this._findPair(key, true).setValue(value);
+    this.assoc(key, true).setValue(value);
     return this;
-  },
-  
-  /**
-   * @returns {Number}
-   */
-  size: function() {
-    var n = 0;
-    this.forEach(function() { n += 1 });
-    return n;
-  },
-  
-  /**
-   * @param {Object} key
-   * @param {Boolean} createIfAbsent
-   * @returns {Hash.Pair}
-   */
-  _findPair: function(key, createIfAbsent) {
-    var hash   = key.hash ? key.hash() : key,
-        bucket = this._buckets[hash] || (this._buckets[hash] = []),
-        i      = bucket.length,
-        pair   = null;
-        
-    while (i--) {
-      if (bucket[i].key.equals(key)) return bucket[i];
-    }
-    
-    if (!createIfAbsent) return null;
-    
-    pair = new this.klass.Pair;
-    pair.setKey(key);
-    bucket.push(pair);
-    return pair;
   }
 });
 

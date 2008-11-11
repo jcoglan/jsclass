@@ -1226,18 +1226,41 @@
         
         testHashClass: function() { with(this) {
             var hash = new JS.Hash();
-            hash.put(new HashCar('ferari'), new HashColor('red'));
+            var ferari = new HashCar('ferari'), red = new HashColor('red');
+            hash.put(ferari, red);
             hash.put(new HashCar('ford'), new HashColor('blue'));
             hash.put(new HashCar('jaguar'), new HashColor('green'));
             hash.put(new HashCar('lotus'), new HashColor('yellow'));
             
-            assertEqual(4, hash.size());
+            assertEqual(4, hash.size);
             assertEqual('red', hash.get(new HashCar('ferari')).code);
             assertEqual('green', hash.get(new HashCar('JAGuar')).code);
             
             hash.put(new HashCar('jaGUar'), new HashColor('black'));
-            assertEqual(4, hash.size());
+            assertEqual(4, hash.size);
             assertEqual('black', hash.get(new HashCar('JAGuar')).code);
+            
+            assert(hash.hasKey(new HashCar('ford')));
+            assert(!hash.hasKey(new HashCar('daewoo')));
+            assert(hash.hasValue(new HashColor('black')));
+            assert(!hash.hasValue(new HashColor('beige')));
+            
+            hash.setDefault(4);
+            assertEqual(4, hash.get(new HashCar('nothing')));
+            hash.setDefault(function(car) { return car.brand.toUpperCase() });
+            assertEqual('VOLVO', hash.get(new HashCar('volvo')));
+            
+            hash.setDefault();
+            hash.compareByIdentity();
+            assertIdentical(null, hash.get(new HashCar('ferari')));
+            assertEqual('red', hash.get(ferari).code);
+            
+            assert(!hash.hasKey(new HashCar('ford')));
+            assert(!hash.hasKey(new HashCar('daewoo')));
+            assert(!hash.hasValue(new HashColor('black')));
+            assert(!hash.hasValue(new HashColor('beige')));
+            assert(hash.hasKey(ferari));
+            assert(hash.hasValue(red));
         }},
         
         testSet: function() { with(this) {
