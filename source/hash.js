@@ -35,7 +35,7 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     this.clear();
     if (!list) return;
     for (var i = 0, n = list.length; i < n; i += 2)
-      this.put(list[i], list[i+1]);
+      this.store(list[i], list[i+1]);
   },
   
   /**
@@ -237,7 +237,7 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
   invert: function() {
     var hash = new this.klass;
     this.forEach(function(pair) {
-      hash.put(pair.value, pair.key);
+      hash.store(pair.value, pair.key);
     });
     return hash;
   },
@@ -287,16 +287,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
   },
   
   /**
-   * @param {Object} key
-   * @param {Object} value
-   * @returns {Hash}
-   */
-  put: function(key, value) {
-    this.assoc(key, true).setValue(value);
-    return this;
-  },
-  
-  /**
    */
   rehash: function() {
     var temp = new this.klass;
@@ -339,12 +329,22 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
   },
   
   /**
+   * @param {Object} key
+   * @param {Object} value
+   * @returns {Hash}
+   */
+  store: function(key, value) {
+    this.assoc(key, true).setValue(value);
+    return this;
+  },
+  
+  /**
    * [TODO] support blocks for duplicate key decisions
    * @param {Hash} hash
    */
   update: function(hash) {
     hash.forEach(function(pair) {
-      this.put(pair.key, pair.value);
+      this.store(pair.key, pair.value);
     }, this);
   },
   
@@ -356,5 +356,9 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     this.forEach(function(pair) { values.push(pair.value) });
     return values;
   }
+});
+
+JS.Hash.include({
+  put: JS.Hash.instanceMethod('store')
 });
 

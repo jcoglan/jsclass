@@ -1228,10 +1228,10 @@
             var hash = new JS.Hash();
             assert(hash.isEmpty());
             var ferari = new HashCar('ferari'), red = new HashColor('red');
-            hash.put(ferari, red);
-            hash.put(new HashCar('ford'), new HashColor('blue'));
-            hash.put(new HashCar('jaguar'), new HashColor('green'));
-            hash.put(new HashCar('lotus'), new HashColor('yellow'));
+            hash.store(ferari, red);
+            hash.store(new HashCar('ford'), new HashColor('blue'));
+            hash.store(new HashCar('jaguar'), new HashColor('green'));
+            hash.store(new HashCar('lotus'), new HashColor('yellow'));
             assert(!hash.isEmpty());
             
             var otherHash = new JS.Hash([
@@ -1291,10 +1291,10 @@
             assert(hash.hasValue(red));
             
             hash = new JS.Hash;
-            hash.put(ferari, red);
-            hash.put(new HashCar('ford'), new HashColor('blue'));
-            hash.put(new HashCar('jaguar'), new HashColor('green'));
-            hash.put(new HashCar('lotus'), new HashColor('yellow'));
+            hash.store(ferari, red);
+            hash.store(new HashCar('ford'), new HashColor('blue'));
+            hash.store(new HashCar('jaguar'), new HashColor('green'));
+            hash.store(new HashCar('lotus'), new HashColor('yellow'));
             
             ferari.brand = 'jeep';
             assertIdentical(null, hash.get(ferari));
