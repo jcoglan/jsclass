@@ -346,6 +346,37 @@
     //================================================================
     //================================================================
 
+    HashCar = new JS.Class({
+      initialize: function(brand) {
+        this.brand = brand;
+      },
+      
+      equals: function(car) {
+        return car.brand === this.brand;
+      },
+      
+      hash: function() {
+        return this.brand;
+      }
+    });
+    
+    HashColor = new JS.Class({
+      initialize: function(code) {
+        this.code = code;
+      },
+      
+      equals: function(color) {
+        return color.code === this.code;
+      },
+      
+      hash: function() {
+        return this.code;
+      }
+    });
+    
+    //================================================================
+    //================================================================
+
     // A 'comparable' class whose instances can be compared and sorted
     var TodoItem = new JS.Class({
         include: JS.Comparable,
@@ -385,8 +416,10 @@
             this._object = object || {};
         },
         forEach: function(block, context) {
-            for (var key in this._object)
-                block.call(context || null, {key: key, value: this._object[key]});
+            for (var key in this._object) {
+                if (this._object.hasOwnProperty(key))
+                    block.call(context || null, {key: key, value: this._object[key]});
+            }
         }
     });
     
@@ -396,8 +429,10 @@
             this._object = object || {};
         },
         forEach: function(block, context) {
-            for (var key in this._object)
-                block.call(context || null, key, this._object[key]);
+            for (var key in this._object) {
+                if (this._object.hasOwnProperty(key))
+                    block.call(context || null, key, this._object[key]);
+            }
         },
         keys: function() {
             return this.map(function(key, value) { return key; });
@@ -601,6 +636,9 @@
     }});
     
     window.console && console.log(Rails.numericValue);
+    
+    // Let's be evil
+    Object.prototype.nothing = function() {};
     
     </script>
     <script type="text/javascript" charset="utf-8">
@@ -1186,6 +1224,17 @@
             this.assertEqual('bar,buzz,foo', hash3.values().sort().join(','));
         },
         
+        testHashClass: function() { with(this) {
+            var hash = new JS.Hash();
+            hash.put(new HashCar('ferari'), new HashColor('red'));
+            hash.put(new HashCar('ford'), new HashColor('blue'));
+            hash.put(new HashCar('jaguar'), new HashColor('green'));
+            hash.put(new HashCar('lotus'), new HashColor('yellow'));
+            
+            assertEqual(4, hash.size());
+            assertEqual('red', hash.get(new HashCar('ferari')).code);
+        }},
+        
         testSet: function() { with(this) {
             assert((new JS.Set) instanceof JS.Set);
             assert((new JS.SortedSet) instanceof JS.Set);
@@ -1238,7 +1287,7 @@
             assert(sets.contains(new JS.Set([6,9,3])));
             assert(sets.contains(new JS.SortedSet([7,1,4])));
             assert(sets.contains(new JS.Set([8,2,5])));
-            assertEqual(3, sets.size);
+            assertEqual(3, sets.size);    // fails if we add to Object.prototype
             
             // http://en.wikipedia.org/wiki/Subset
             assert(new JS.Set([1,2]).isProperSubset(new JS.Set([1,2,3])));

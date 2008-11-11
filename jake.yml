@@ -28,6 +28,7 @@ packages:
   command:          command
   state:            state
   linked_list:      linked_list
+  hash:             hash
   set:              set
   stack_trace:      stack_trace
   ruby:             ruby
@@ -37,6 +38,9 @@ bundles:
     - package
     - comparable
     - enumerable
+    - linked_list
+    - hash
+    - set
     - observable
     - forwardable
     - constant_scope
@@ -46,6 +50,5 @@ bundles:
     - state
     - stack_trace
     - linked_list
-    - set
     - ruby
 
