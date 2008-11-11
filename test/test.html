@@ -1226,11 +1226,21 @@
         
         testHashClass: function() { with(this) {
             var hash = new JS.Hash();
+            assert(hash.isEmpty());
             var ferari = new HashCar('ferari'), red = new HashColor('red');
             hash.put(ferari, red);
             hash.put(new HashCar('ford'), new HashColor('blue'));
             hash.put(new HashCar('jaguar'), new HashColor('green'));
             hash.put(new HashCar('lotus'), new HashColor('yellow'));
+            assert(!hash.isEmpty());
+            
+            var otherHash = new JS.Hash([
+                new HashCar('ferari'),  new HashColor('red'),
+                new HashCar('ford'),    new HashColor('blue'),
+                new HashCar('jaguar'),  new HashColor('green'),
+                new HashCar('lotus'),   new HashColor('yellow')
+            ]);
+            assert(otherHash.equals(hash));
             
             assertEqual(4, hash.size);
             assertEqual('red', hash.get(new HashCar('ferari')).code);
@@ -1239,6 +1249,17 @@
             hash.put(new HashCar('jaGUar'), new HashColor('black'));
             assertEqual(4, hash.size);
             assertEqual('black', hash.get(new HashCar('JAGuar')).code);
+            
+            assert(!otherHash.equals(hash));
+            
+            assert(otherHash.invert().equals(new JS.Hash([
+                new HashColor('red'),   new HashCar('ferari'),
+                new HashColor('blue'),  new HashCar('ford'),
+                new HashColor('green'), new HashCar('jaguar'),
+                new HashColor('yellow'),new HashCar('lotus')
+            ])));
+            
+            assertEqual(ferari, hash.key(red));
             
             assert(hash.hasKey(new HashCar('ford')));
             assert(!hash.hasKey(new HashCar('daewoo')));
@@ -1268,6 +1289,24 @@
             assert(!hash.hasValue(new HashColor('beige')));
             assert(hash.hasKey(ferari));
             assert(hash.hasValue(red));
+            
+            hash = new JS.Hash;
+            hash.put(ferari, red);
+            hash.put(new HashCar('ford'), new HashColor('blue'));
+            hash.put(new HashCar('jaguar'), new HashColor('green'));
+            hash.put(new HashCar('lotus'), new HashColor('yellow'));
+            
+            ferari.brand = 'jeep';
+            assertIdentical(null, hash.get(ferari));
+            hash.rehash();
+            assertEqual('red', hash.get(ferari).code);
+            
+            var keys = hash.keys().map(function(k) { return k.brand });
+            var values = hash.values().map(function(v) { return v.code });
+            assert(new JS.Set(keys).equals(new JS.Set(['jeep', 'lotus', 'jaguar', 'ford'])));
+            assert(new JS.Set(values).equals(new JS.Set(['yellow', 'blue', 'green' ,'red'])));
+            
+            assertEqual('lotus', hash.key(new HashColor('yellow')).brand);
         }},
         
         testSet: function() { with(this) {

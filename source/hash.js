@@ -141,6 +141,67 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
   },
   
   /**
+   * @returns {Boolean}
+   */
+  equals: function(other) {
+    if (this.length !== other.length || !(other instanceof JS.Hash))
+      return false;
+    var result = true;
+    this.forEach(function(pair) {
+      var otherValue = other.get(pair.key),
+          equal = otherValue.equals
+              ? otherValue.equals(pair.value)
+              : (otherValue === pair.value);
+      if (!equal) result = false;
+    });
+    return result;
+  },
+  
+  /**
+   * @param {Object} key
+   * @param {Object} defaultValue
+   * @returns {Object}
+   */
+  fetch: function(key, defaultValue) {
+    var pair = this.assoc(key);
+    if (pair) return pair.value;
+    
+    if (defaultValue === undefined) throw new Error('key not found');
+    if (JS.isFn(defaultValue)) return defaultValue(key);
+    return defaultValue;
+  },
+  
+  /**
+   * @param {Function} block
+   * @param {Object} scope
+   */
+  forEachKey: function(block, scope) {
+    this.forEach(function(pair) {
+      block.call(scope || null, pair.key);
+    });
+  },
+  
+  /**
+   * @param {Function} block
+   * @param {Object} scope
+   */
+  forEachPair: function(block, scope) {
+    this.forEach(function(pair) {
+      block.call(scope || null, pair.key, pair.value);
+    });
+  },
+  
+  /**
+   * @param {Function} block
+   * @param {Object} scope
+   */
+  forEachValue: function(block, scope) {
+    this.forEach(function(pair) {
+      block.call(scope || null, pair.value);
+    });
+  },
+  
+  /**
    * @param {Object} key
    * @returns {Object}
    */
@@ -171,6 +232,61 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
   },
   
   /**
+   * @returns {Hash}
+   */
+  invert: function() {
+    var hash = new this.klass;
+    this.forEach(function(pair) {
+      hash.put(pair.value, pair.key);
+    });
+    return hash;
+  },
+  
+  /**
+   * @returns {Boolean}
+   */
+  isEmpty: function() {
+    for (var hash in this._buckets) {
+      if (this._buckets.hasOwnProperty(hash) && this._buckets[hash].length > 0)
+        return false;
+    }
+    return true;
+  },
+  
+  /**
+   * @param {Object} value
+   * @returns {Object}
+   */
+  key: function(value) {
+    var result = null;
+    this.forEach(function(pair) {
+      if (value.equals ? value.equals(pair.value) : (value === pair.value))
+        result = pair.key;
+    });
+    return result;
+  },
+  
+  /**
+   * @returns {Array}
+   */
+  keys: function() {
+    var keys = [];
+    this.forEach(function(pair) { keys.push(pair.key) });
+    return keys;
+  },
+  
+  /**
+   * @param {Hash} hash
+   * @returns {Hash}
+   */
+  merge: function(hash) {
+    var newHash = new this.klass;
+    newHash.update(this);
+    newHash.update(hash);
+    return newHash;
+  },
+  
+  /**
    * @param {Object} key
    * @param {Object} value
    * @returns {Hash}
@@ -178,6 +294,15 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
   put: function(key, value) {
     this.assoc(key, true).setValue(value);
     return this;
+  },
+  
+  /**
+   */
+  rehash: function() {
+    var temp = new this.klass;
+    temp._buckets = this._buckets;
+    this.clear();
+    this.update(temp);
   },
   
   /**
@@ -211,6 +336,25 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
       if (predicate.call(scope || null, pair))
         this.remove(pair.key);
     }, this);
+  },
+  
+  /**
+   * [TODO] support blocks for duplicate key decisions
+   * @param {Hash} hash
+   */
+  update: function(hash) {
+    hash.forEach(function(pair) {
+      this.put(pair.key, pair.value);
+    }, this);
+  },
+  
+  /**
+   * @returns {Array}
+   */
+  values: function() {
+    var values = [];
+    this.forEach(function(pair) { values.push(pair.value) });
+    return values;
   }
 });
 
