@@ -1199,7 +1199,7 @@
                     collection.sortBy(function(item) { return item; }).pluck('position').join(','));
         },
         
-        testHashes: function() {
+        testSimpleHashes: function() {
             var hash1 = new PairedHash({foo: 'foo', bar: 'bar'});
             hash1.inject(function(memo, pair, index) {
                 this.assert(pair.key && typeof pair.value == 'string');
@@ -1227,7 +1227,7 @@
             this.assertEqual('bar,buzz,foo', hash3.values().sort().join(','));
         },
         
-        testHashClass: function() { with(this) {
+        testHash: function() { with(this) {
             var hash = new JS.Hash();
             assert(hash.isEmpty());
             var ferari = new HashCar('ferari'), red = new HashColor('red');
@@ -1310,6 +1310,13 @@
             assert(new JS.Set(values).equals(new JS.Set(['yellow', 'blue', 'green' ,'red'])));
             
             assertEqual('lotus', hash.key(new HashColor('yellow')).brand);
+            
+            var sortedHash = new JS.Hash([
+                'foo', 'bar',
+                'bar', 'foo'
+            ]).sort();
+            
+            assertEqual('bar', sortedHash[0].key);
         }},
         
         testSet: function() { with(this) {

@@ -3,12 +3,20 @@ JS.Hash = new JS.Class({
   
   extend: {
     Pair: new JS.Class({
+      include: JS.Comparable || {},
+      
       setKey: function(key) {
         this[0] = this.key = key;
       },
       
       setValue: function(value) {
         this[1] = this.value = value;
+      },
+      
+      compareTo: function(other) {
+        return this.key.compareTo
+            ? this.key.compareTo(other.key)
+            : (this.key < other.key ? -1 : (this.key > other.key ? 1 : 0));
       }
     })
   },
