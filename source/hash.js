@@ -1,36 +1,18 @@
-/**
- * @constructor
- * @class Hash
- */
-JS.Hash = new JS.Class(/** @scope Hash.prototype */{
+JS.Hash = new JS.Class({
   include: JS.Enumerable || {},
   
-  extend: /** @scope Hash */{
-    
-    /**
-     * @constructor
-     * @class Hash.Pair
-     */
-    Pair: new JS.Class(/** @scope Hash.Pair.prototype */{
-      /**
-       * @param {Object} key
-       */
+  extend: {
+    Pair: new JS.Class({
       setKey: function(key) {
         this[0] = this.key = key;
       },
       
-      /**
-       * @param {Object} value
-       */
       setValue: function(value) {
         this[1] = this.value = value;
       }
     })
   },
   
-  /**
-   * @param {Enumerable} list
-   */
   initialize: function(list) {
     this.clear();
     if (!list) return;
@@ -38,10 +20,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
       this.store(list[i], list[i+1]);
   },
   
-  /**
-   * @param {Function} block
-   * @param {Object} scope
-   */
   forEach: function(block, scope) {
     var hash, bucket, i;
     for (hash in this._buckets) {
@@ -52,11 +30,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     }
   },
   
-  /**
-   * @param {Object} key
-   * @param {Boolean} createIfAbsent
-   * @returns {Array}
-   */
   _bucketForKey: function(key, createIfAbsent) {
     var hash = key.hash ? key.hash() : key,
         bucket = this._buckets[hash];
@@ -67,11 +40,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return bucket;
   },
   
-  /**
-   * @param {Array} bucket
-   * @param {Object} key
-   * @returns {Hash.Pair}
-   */
   _indexInBucket: function(bucket, key) {
     var i     = bucket.length,
         ident = !!this._compareByIdentity;
@@ -83,11 +51,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return -1;
   },
   
-  /**
-   * @param {Object} key
-   * @param {Boolean} createIfAbsent
-   * @returns {Hash.Pair}
-   */
   assoc: function(key, createIfAbsent) {
     var bucket = this._bucketForKey(key, createIfAbsent);
     if (!bucket) return null;
@@ -103,46 +66,29 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return pair;
   },
   
-  /**
-   */
   clear: function() {
     this._buckets = {};
     this.length = this.size = 0;
   },
   
-  /**
-   */
   compareByIdentity: function() {
     this._compareByIdentity = true;
   },
   
-  /**
-   * @returns {Boolean}
-   */
   comparesByIdentity: function() {
     return !!this._compareByIdentity;
   },
   
-  /**
-   * @param {Object} value
-   */
   setDefault: function(value) {
     this._default = value;
   },
   
-  /**
-   * @param {Object} key
-   * @returns {Object}
-   */
   getDefault: function(key) {
     return JS.isFn(this._default)
         ? this._default(key)
         : (this._default || null);
   },
   
-  /**
-   * @returns {Boolean}
-   */
   equals: function(other) {
     if (this.length !== other.length || !(other instanceof JS.Hash))
       return false;
@@ -157,11 +103,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return result;
   },
   
-  /**
-   * @param {Object} key
-   * @param {Object} defaultValue
-   * @returns {Object}
-   */
   fetch: function(key, defaultValue) {
     var pair = this.assoc(key);
     if (pair) return pair.value;
@@ -171,57 +112,33 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return defaultValue;
   },
   
-  /**
-   * @param {Function} block
-   * @param {Object} scope
-   */
   forEachKey: function(block, scope) {
     this.forEach(function(pair) {
       block.call(scope || null, pair.key);
     });
   },
   
-  /**
-   * @param {Function} block
-   * @param {Object} scope
-   */
   forEachPair: function(block, scope) {
     this.forEach(function(pair) {
       block.call(scope || null, pair.key, pair.value);
     });
   },
   
-  /**
-   * @param {Function} block
-   * @param {Object} scope
-   */
   forEachValue: function(block, scope) {
     this.forEach(function(pair) {
       block.call(scope || null, pair.value);
     });
   },
   
-  /**
-   * @param {Object} key
-   * @returns {Object}
-   */
   get: function(key) {
     var pair = this.assoc(key);
     return pair ? pair.value : this.getDefault(key);
   },
   
-  /**
-   * @param {Object} key
-   * @returns {Boolean}
-   */
   hasKey: function(key) {
     return !!this.assoc(key);
   },
   
-  /**
-   * @param {Object} value
-   * @returns {Boolean}
-   */
   hasValue: function(value) {
     var has = false, ident = !!this._compareByIdentity;
     this.forEach(function(pair) {
@@ -231,9 +148,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return has;
   },
   
-  /**
-   * @returns {Hash}
-   */
   invert: function() {
     var hash = new this.klass;
     this.forEach(function(pair) {
@@ -242,9 +156,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return hash;
   },
   
-  /**
-   * @returns {Boolean}
-   */
   isEmpty: function() {
     for (var hash in this._buckets) {
       if (this._buckets.hasOwnProperty(hash) && this._buckets[hash].length > 0)
@@ -253,10 +164,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return true;
   },
   
-  /**
-   * @param {Object} value
-   * @returns {Object}
-   */
   key: function(value) {
     var result = null;
     this.forEach(function(pair) {
@@ -266,19 +173,12 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return result;
   },
   
-  /**
-   * @returns {Array}
-   */
   keys: function() {
     var keys = [];
     this.forEach(function(pair) { keys.push(pair.key) });
     return keys;
   },
   
-  /**
-   * @param {Hash} hash
-   * @returns {Hash}
-   */
   merge: function(hash) {
     var newHash = new this.klass;
     newHash.update(this);
@@ -286,8 +186,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return newHash;
   },
   
-  /**
-   */
   rehash: function() {
     var temp = new this.klass;
     temp._buckets = this._buckets;
@@ -295,10 +193,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     this.update(temp);
   },
   
-  /**
-   * @param {Object} key
-   * @returns {Object}
-   */
   remove: function(key) {
     var bucket = this._bucketForKey(key);
     if (!bucket) return null;
@@ -317,10 +211,6 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     return result;
   },
   
-  /**
-   * @param {Function} predicate
-   * @param {Object} scope
-   */
   removeIf: function(predicate, scope) {
     this.forEach(function(pair) {
       if (predicate.call(scope || null, pair))
@@ -328,29 +218,17 @@ JS.Hash = new JS.Class(/** @scope Hash.prototype */{
     }, this);
   },
   
-  /**
-   * @param {Object} key
-   * @param {Object} value
-   * @returns {Hash}
-   */
   store: function(key, value) {
     this.assoc(key, true).setValue(value);
     return this;
   },
   
-  /**
-   * [TODO] support blocks for duplicate key decisions
-   * @param {Hash} hash
-   */
   update: function(hash) {
     hash.forEach(function(pair) {
       this.store(pair.key, pair.value);
     }, this);
   },
   
-  /**
-   * @returns {Array}
-   */
   values: function() {
     var values = [];
     this.forEach(function(pair) { values.push(pair.value) });
