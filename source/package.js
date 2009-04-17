@@ -1,8 +1,9 @@
 JS.Package = new JS.Class({
   initialize: function(path) {
-    this._path = path;
-    this._deps = [];
-    this._names = [];
+    this._path    = path;
+    this._deps    = [];
+    this._names   = [];
+    this._loading = false;
   },
   
   addDependency: function(pkg) {
@@ -20,20 +21,27 @@ JS.Package = new JS.Class({
   },
   
   getObjects: function() {
-    var objects = [], n = this._names.length, object;
-    while (n--) {
-      object = this.klass.getObject(this._names[n]);
-      if (object) objects.push(object);
-    }
+    var objects = [], names = this._names, n = names.length;
+    while (n--) objects.push(this.klass.getObject(names[n]) || null);
     return objects;
   },
   
-  isLoaded: function(deep) {
+  depsComplete: function() {
     var n = this._deps.length;
-    if (deep !== false) {
-      while (n--) { if (!this._deps[n].isLoaded()) return false; }
-    }
-    return this.getObjects().length === this._names.length;
+    while (n--) { if (!this._deps[n].isComplete()) return false; }
+    return true;
+  },
+  
+  isComplete: function() {
+    return this.isLoaded() && this.depsComplete();
+  },
+  
+  isLoaded: function() {
+    return JS.indexOf(this.getObjects(), null) === -1;
+  },
+  
+  readyToLoad: function() {
+    return !this._loading && !this.isLoaded() && this.depsComplete();
   },
   
   expand: function(list) {
@@ -44,28 +52,42 @@ JS.Package = new JS.Class({
     return deps;
   },
   
-  injectScript: function(callback, scope) {
-    if (this.isLoaded(false)) return callback.call(scope || null);
-    var tag     = document.createElement('script');
-    tag.type    = 'text/javascript';
-    tag.src     = this._path;
+  load: function(callback, scope) {
+    if (this._loading) return;
+    
+    var self = this, handler = function() {
+      self._loading = false;
+      callback.call(scope || null);
+    };
+    
+    if (this.isLoaded()) return setTimeout(handler, 1);
+    
+    var tag  = document.createElement('script');
+    tag.type = 'text/javascript';
+    tag.src  = this._path;
+    
     tag.onload = tag.onreadystatechange = function() {
-      if (  !tag.readyState ||
+      if ( !tag.readyState ||
             tag.readyState === 'loaded' ||
             tag.readyState === 'complete' ||
             (tag.readyState === 4 && tag.status === 200)
       ) {
-        callback.call(scope || null);
+        handler();
         tag = null;
       }
     };
     ;;; window.console && console.info('Loading ' + this._path);
+    this._loading = true;
     document.getElementsByTagName('head')[0].appendChild(tag);
   },
   
+  toString: function() {
+    return 'Package:' + this._names[0];
+  },
+  
   extend: {
-    _store: {},
-    _root: this,
+    _store:  {},
+    _global: this,
     
     getByPath: function(path) {
       return this._store[path] || (this._store[path] = new this(path));
@@ -80,7 +102,7 @@ JS.Package = new JS.Class({
     },
     
     getObject: function(name) {
-      var object = this._root, parts = name.split('.'), part;
+      var object = this._global, parts = name.split('.'), part;
       while (part = parts.shift()) object = (object||{})[part];
       return object;
     },
@@ -93,10 +115,22 @@ JS.Package = new JS.Class({
     },
     
     load: function(list, callback, scope) {
-      if (list.length === 0) return callback && callback.call(scope || null);
-      list.shift().injectScript(function() {
-        this.load(list, callback, scope);
-      }, this);
+      var fired = false, handler = function() {
+        if (!fired) callback.call(scope || null);
+        fired = true;
+      };
+      
+      var complete = this._filter(list, 'isComplete');
+      if (complete.length === list.length) return setTimeout(handler, 1);
+      
+      var ready = this._filter(list, 'readyToLoad'), n = ready.length;
+      while (n--) ready[n].load(function() { this.load(list, handler); }, this);
+    },
+    
+    _filter: function(list, test) {
+      var result = [], n = list.length;
+      while (n--) { if (list[n][test]()) result.push(list[n]); }
+      return result;
     },
     
     DSL: {
@@ -125,7 +159,7 @@ JS.Package = new JS.Class({
 JS.Packages = function(declaration) {
   declaration.call(JS.Package.DSL);
 };
-
+ 
 require = function() {
   var args = JS.array(arguments), requirements = [];
   while (typeof args[0] === 'string') requirements.push(JS.Package.getByName(args.shift()));

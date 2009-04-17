@@ -32,7 +32,7 @@
         
         pkg('YAHOO.util.Selector',      yui + 'selector/selector-beta-min.js');
         
-        pkg('YAHOO.util.Connection',    yui + 'connection/connection-min.js');
+        pkg('YAHOO.util.Connect',       yui + 'connection/connection-min.js');
         pkg('YAHOO.util.Get',           yui + 'get/get-min.js');
         
         pkg('YAHOO.util.Anim',          yui + 'animation/animation-min.js');
@@ -47,7 +47,10 @@
         pkg('YAHOO.util.Selector')
             .requires('YAHOO')
             .requires('YAHOO.util.Anim')
-            .requires('YAHOO.util.Connection');
+            .requires('YAHOO.util.Connect');
+        
+        pkg('YAHOO.util.Connect')
+            .requires('YAHOO');
     }});
     
     alert(window.YAHOO ? 'YUI version ' + YAHOO.VERSION : 'YAHOO not defined');

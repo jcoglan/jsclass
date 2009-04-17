@@ -2,9 +2,12 @@
   h3. @JS.Packages@
   
   @JS.Class@, as of version 2.0, comes with a package system that lets you load scripts
-  on demand with support for dependencies. Its lets you name objects and the URLs for
-  the files that contain them, so your application code only has to deal with knowing
-  which objects it needs, not where to find those objects.
+  on demand with support for dependency management. Its lets you name objects and the URLs
+  for the files that contain them, so your application code only has to deal with knowing
+  which objects it needs, not where to find those objects. Where possible, @JS.Package@
+  will download scripts in parallel to improve load speed, and it makes sure interdependent
+  scripts are loaded in the correct order. It uses script tag injection rather than
+  @XMLHttpRequest@, so it works cross-domain.
   
   For example, say I want to do something with "YUI's CSS selector":http://developer.yahoo.com/yui/selector/.
   I just need to @require@ it, and supply a function to run once all the requisite code
