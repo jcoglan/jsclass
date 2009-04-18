@@ -3,6 +3,7 @@ JS.Package = new JS.Class({
     this._path    = path;
     this._deps    = [];
     this._names   = [];
+    this._waiters = [];
     this._loading = false;
   },
   
@@ -41,7 +42,7 @@ JS.Package = new JS.Class({
   },
   
   readyToLoad: function() {
-    return !this._loading && !this.isLoaded() && this.depsComplete();
+    return !this.isLoaded() && this.depsComplete();
   },
   
   expand: function(list) {
@@ -53,14 +54,15 @@ JS.Package = new JS.Class({
   },
   
   load: function(callback, scope) {
-    if (this._loading) return;
-    
     var self = this, handler = function() {
       self._loading = false;
       callback.call(scope || null);
     };
     
     if (this.isLoaded()) return setTimeout(handler, 1);
+    
+    this._waiters.push(handler);
+    if (this._loading) return;
     
     var tag  = document.createElement('script');
     tag.type = 'text/javascript';
@@ -72,7 +74,8 @@ JS.Package = new JS.Class({
             tag.readyState === 'complete' ||
             (tag.readyState === 4 && tag.status === 200)
       ) {
-        handler();
+        for (var i = 0, n = self._waiters.length; i < n; i++) self._waiters[i]();
+        self._waiters = [];
         tag = null;
       }
     };

@@ -54,6 +54,9 @@
     }});
     
     alert(window.YAHOO ? 'YUI version ' + YAHOO.VERSION : 'YAHOO not defined');
+    
+    require('YAHOO.util.Anim', function() {});
+    
     require('YAHOO.util.Selector', function() {
         setTimeout(function() {
             alert('Using YAHOO.util.Selector: ' + YAHOO.util.Selector.query('td').length);
