@@ -21,12 +21,6 @@ JS.Package = new JS.Class({
     return JS.indexOf(this._names, name) !== -1;
   },
   
-  getObjects: function() {
-    var objects = [], names = this._names, n = names.length;
-    while (n--) objects.push(this.klass.getObject(names[n]) || null);
-    return objects;
-  },
-  
   depsComplete: function() {
     var n = this._deps.length;
     while (n--) { if (!this._deps[n].isComplete()) return false; }
@@ -37,8 +31,17 @@ JS.Package = new JS.Class({
     return this.isLoaded() && this.depsComplete();
   },
   
-  isLoaded: function() {
-    return JS.indexOf(this.getObjects(), null) === -1;
+  isLoaded: function(withExceptions) {
+    var names = this._names, n = names.length, object;
+    while (n--) {
+      object = this.klass.getObject(names[n]);
+      if (object !== undefined) continue;
+      if (withExceptions)
+        throw new Error('Expected package at ' + this._path + ' to define ' + names[n]);
+      else
+        return false;
+    }
+    return true;
   },
   
   readyToLoad: function() {
@@ -74,6 +77,7 @@ JS.Package = new JS.Class({
             tag.readyState === 'complete' ||
             (tag.readyState === 4 && tag.status === 200)
       ) {
+        self.isLoaded(true);
         for (var i = 0, n = self._waiters.length; i < n; i++) self._waiters[i]();
         self._waiters = [];
         tag = null;
