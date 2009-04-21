@@ -23,26 +23,26 @@
     JS.Packages(function() { with(this) {
     
         var cdn  = 'http://yui.yahooapis.com/';
-        var yui  = cdn + '2.5.2/build/';
+        var yui  = cdn + '2.6.0/build/';
         
-        pkg('YAHOO',                    yui + 'yahoo-dom-event/yahoo-dom-event.js');
-        pkg('YAHOO.lang',               yui + 'yahoo-dom-event/yahoo-dom-event.js');
-        pkg('YAHOO.util.Dom',           yui + 'yahoo-dom-event/yahoo-dom-event.js');
-        pkg('YAHOO.util.Event',         yui + 'yahoo-dom-event/yahoo-dom-event.js');
+        file(yui + 'yahoo-dom-event/yahoo-dom-event.js')
+        .defines( 'YAHOO',
+                  'YAHOO.lang',
+                  'YAHOO.util.Dom',
+                  'YAHOO.util.Event');
         
         pkg('YAHOO.util.Selector',      yui + 'selector/selector-beta-min.js');
         
         pkg('YAHOO.util.Connect',       yui + 'connection/connection-min.js');
         pkg('YAHOO.util.Get',           yui + 'get/get-min.js');
         
-        pkg('YAHOO.util.Anim',          yui + 'animation/animation-min.js');
-        pkg('YAHOO.util.ColorAnim',     yui + 'animation/animation-min.js');
+        file(yui + 'animation/animation-min.js')
+        .defines( 'YAHOO.util.Anim',
+                  'YAHOO.util.ColorAnim')
+        .requires('YAHOO',
+                  'YAHOO.util.Event');
         
         pkg('YAHOO.util.History',       yui + 'history/history-min.js');
-        
-        pkg('YAHOO.util.Anim')
-            .requires('YAHOO')
-            .requires('YAHOO.util.Event');
         
         pkg('YAHOO.util.Selector')
             .requires('YAHOO')

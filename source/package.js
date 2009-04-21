@@ -147,6 +147,11 @@ JS.Package = new JS.Class({
             : JS.Package.getByName(name);
         pkg.addName(name);
         return new JS.Package.Description(pkg);
+      },
+      
+      file: function(path) {
+        var pkg = JS.Package.getByPath(path);
+        return new JS.Package.Description(pkg);
       }
     },
     
@@ -155,8 +160,15 @@ JS.Package = new JS.Class({
         this._pkg = pkg;
       },
       
-      requires: function(name) {
-        this._pkg.addDependency(name);
+      requires: function() {
+        var i = arguments.length;
+        while (i--) this._pkg.addDependency(arguments[i]);
+        return this;
+      },
+      
+      defines: function() {
+        var i = arguments.length;
+        while (i--) this._pkg.addName(arguments[i]);
         return this;
       }
     })
