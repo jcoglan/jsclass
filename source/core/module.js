@@ -317,10 +317,10 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    */
   resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
-    this.ancestors(false);
     
     // Resolve all dependent modules if the target is this module
     if (target === this) {
+      this.__anc__ = null;
       i = this.__dep__.length;
       while (i--) this.__dep__[i].resolve();
     }
