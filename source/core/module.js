@@ -215,6 +215,7 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    * @returns {Array}
    */
   ancestors: function(results) {
+    if (results === undefined && this.__anc__) return this.__anc__.slice();
     results = results || [];
     
     // Recurse over inclusions first
@@ -226,7 +227,7 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
         result = (klass && this.__res__ === klass.prototype) ? klass : this;
     if (JS.indexOf(results, result) === -1) results.push(result);
     
-    return results;
+    return this.__anc__ = results;
   },
   
   /**
@@ -316,6 +317,7 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    */
   resolve: function(target) {
     var target = target || this, resolved = target.__res__, i, n, key, made;
+    this.ancestors(false);
     
     // Resolve all dependent modules if the target is this module
     if (target === this) {
