@@ -215,6 +215,8 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    * @returns {Array}
    */
   ancestors: function(results) {
+    var cachable = (results === undefined);
+    if (cachable && this.__anc__) return this.__anc__.slice();
     results = results || [];
     
     // Recurse over inclusions first
@@ -226,6 +228,7 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
         result = (klass && this.__res__ === klass.prototype) ? klass : this;
     if (JS.indexOf(results, result) === -1) results.push(result);
     
+    if (cachable) this.__anc__ = results.slice();
     return results;
   },
   
@@ -319,6 +322,7 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
     
     // Resolve all dependent modules if the target is this module
     if (target === this) {
+      this.__anc__ = null;
       i = this.__dep__.length;
       while (i--) this.__dep__[i].resolve();
     }
