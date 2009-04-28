@@ -75,7 +75,10 @@ JS.Set = new JS.Class({
   
   divide: function(block, context) {
     var classes = this.classify(block, context), sets = new this.klass;
-    for (var key in classes) sets.add(classes[key]);
+    for (var key in classes) {
+      if (!classes.hasOwnProperty(key)) continue;
+      sets.add(classes[key]);
+    }
     return sets;
   },
   

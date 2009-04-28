@@ -1374,7 +1374,7 @@
             assert(sets.contains(new JS.Set([6,9,3])));
             assert(sets.contains(new JS.SortedSet([7,1,4])));
             assert(sets.contains(new JS.Set([8,2,5])));
-            assertEqual(3, sets.size);    // fails if we add to Object.prototype
+            assertEqual(3, sets.size);
             
             // http://en.wikipedia.org/wiki/Subset
             assert(new JS.Set([1,2]).isProperSubset(new JS.Set([1,2,3])));
