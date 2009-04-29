@@ -30,7 +30,7 @@ JS.Command = new JS.Class({
       
       forEach: function(block, context) {
         for (var i = 0, n = this._stack.length; i < n; i++) {
-          if (this._stack[i])
+          if (this._stack[i] !== undefined)
             block.call(context || null, this._stack[i], i);
         }
       },

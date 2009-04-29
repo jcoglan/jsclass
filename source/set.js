@@ -4,7 +4,7 @@ JS.Set = new JS.Class({
       if (!list) return;
       if (list.forEach) return list.forEach(block, context);
       for (var i = 0, n = list.length; i < n; i++) {
-        if (list[i])
+        if (list[i] !== undefined)
           block.call(context || null, list[i], i);
       }
     },
