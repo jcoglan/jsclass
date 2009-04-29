@@ -116,6 +116,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), /** @scope Class.protot
   // do not have, therefore we need to explicitly delegate calls to a module
   includes:   JS.delegate('__mod__', 'includes'),
   ancestors:  JS.delegate('__mod__', 'ancestors'),
+  lookup:     JS.delegate('__mod__', 'lookup'),
   resolve:    JS.delegate('__mod__', 'resolve')
 });
 

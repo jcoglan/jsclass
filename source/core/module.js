@@ -83,6 +83,7 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
     this.__inc__ = [];        // List of modules included in this module
     this.__fns__ = {};        // Object storing methods belonging to this module
     this.__dep__ = [];        // List modules and classes that depend on this module
+    this.__mct__ = {};        // Cache table for method call lookups
     
     // Object to resolve methods onto
     this.__res__ = options._resolve || null;
@@ -242,11 +243,14 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    * @returns {Array}
    */
   lookup: function(name) {
+    var cache = this.__mct__;
+    if (cache[name]) return cache[name].slice();
     var ancestors = this.ancestors(), results = [], i, n, method;
     for (i = 0, n = ancestors.length; i < n; i++) {
       method = ancestors[i].__mod__.__fns__[name];
       if (method) results.push(method);
     }
+    cache[name] = results.slice();
     return results;
   },
   
@@ -323,6 +327,7 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
     // Resolve all dependent modules if the target is this module
     if (target === this) {
       this.__anc__ = null;
+      this.__mct__ = {};
       i = this.__dep__.length;
       while (i--) this.__dep__[i].resolve();
     }
