@@ -1,4 +1,4 @@
-JS.Set = new JS.Class({
+JS.Set = new JS.Class('Set', {
   extend: {
     forEach: function(list, block, context) {
       if (!list) return;
@@ -212,7 +212,7 @@ JS.Set.include({
   x:  JS.Set.instanceMethod('product')
 });
 
-JS.SortedSet = new JS.Class(JS.Set, {
+JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
   extend: {
     compare: function(one, another) {
       return one.compareTo

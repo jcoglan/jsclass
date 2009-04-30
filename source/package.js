@@ -1,4 +1,4 @@
-JS.Package = new JS.Class({
+JS.Package = new JS.Class('Package', {
   initialize: function(path) {
     this._path    = path;
     this._deps    = [];

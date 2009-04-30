@@ -1,4 +1,4 @@
-JS.LinkedList = new JS.Class({
+JS.LinkedList = new JS.Class('LinkedList', {
   include: JS.Enumerable || {},
   
   initialize: function(array, useNodes) {
@@ -49,7 +49,7 @@ JS.LinkedList = new JS.Class({
   }
 });
 
-JS.LinkedList.Doubly = new JS.Class(JS.LinkedList, {
+JS.LinkedList.Doubly = new JS.Class('LinkedList.Doubly', JS.LinkedList, {
   insertAt: function(n, newNode) {
     if (n < 0 || n >= this.length) return;
     this.insertBefore(this.at(n), newNode);
@@ -76,7 +76,7 @@ JS.LinkedList.insertTemplate = function(prev, next, pos) {
   };
 };
 
-JS.LinkedList.Doubly.Circular = new JS.Class(JS.LinkedList.Doubly, {
+JS.LinkedList.Doubly.Circular = new JS.Class('LinkedList.Doubly.Circular', JS.LinkedList.Doubly, {
   insertAfter: JS.LinkedList.insertTemplate('prev', 'next', 'last'),
   insertBefore: JS.LinkedList.insertTemplate('next', 'prev', 'first'),
   

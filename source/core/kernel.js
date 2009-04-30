@@ -18,7 +18,9 @@ JS.Kernel = JS.extend(new JS.Module(/** @scope Kernel.prototype */{
    */
   __eigen__: function() {
     if (this.__meta__) return this.__meta__;
-    var module = this.__meta__ = new JS.Module({}, {_resolve: this});
+    var me = this.__nom__, klass = this.klass.__nom__;
+    var name = me || (klass ? '#<' + klass + '>' : '');
+    var module = this.__meta__ = new JS.Module(name ? name + '.' : '', {}, {_resolve: this});
     module.include(this.klass.__mod__);
     return module;
   },

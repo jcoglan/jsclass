@@ -1,4 +1,4 @@
-JS.Comparable = new JS.Module({
+JS.Comparable = new JS.Module('Comparable', {
   extend: {
     ClassMethods: new JS.Module({
       compare: function(one, another) {

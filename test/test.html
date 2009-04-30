@@ -658,7 +658,6 @@
     <div id="testlog"></div>
     
     <script type="text/javascript" charset="utf-8">
-        
     new Test.Unit.Runner({
         /*
         testStaticTyping: function() { with(this) {
@@ -704,6 +703,13 @@
             assertEqual(1, JS.Class.subclasses.length);
             assertEqual(SpecialClass, JS.Class.subclasses[0]);
             assertEqual(JS.Module, JS.Class.superclass);
+        }},
+        
+        testNaming: function() { with(this) {
+            assertEqual('Hash',             JS.Hash.displayName);
+            assertEqual('Hash#merge',       JS.Hash.prototype.merge.displayName);
+            assertEqual('Hash.Pair',        JS.Hash.Pair.displayName);
+            assertEqual('Hash.Pair#setKey', JS.Hash.Pair.prototype.setKey.displayName);
         }},
         
         testInheritanceFromClass: function() { with(this) {
@@ -1666,7 +1672,6 @@
             assertEqual(3, forward.count());
         }}
     });
-        
     </script>
 </body>
 </html>

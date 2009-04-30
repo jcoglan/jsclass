@@ -1,4 +1,4 @@
-JS.Hash = new JS.Class({
+JS.Hash = new JS.Class('Hash', {
   include: JS.Enumerable || {},
   
   extend: {

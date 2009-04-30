@@ -17,13 +17,22 @@ JS.Class = JS.makeFunction();
 JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), /** @scope Class.prototype */{
   
   /**
+   * @param {String} name
    * @param {Class} parent
    * @param {Object} methods
    * @returns {Class}
    */
-  initialize: function(parent, methods) {
+  initialize: function(name, parent, methods) {
+    if (typeof name === 'string') {
+      this.__nom__ = this.displayName = name;
+    } else {
+      this.__nom__ = this.displayName = '';
+      methods = parent;
+      parent = name;
+    }
     var klass = JS.extend(JS.makeFunction(), this);
     klass.klass = klass.constructor = this.klass;
+    
     if (!JS.isFn(parent)) {
       methods = parent;
       parent = Object;
@@ -71,7 +80,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), /** @scope Class.protot
     // Set up a module to store methods and delegate calls to
     // -- Class does not really subclass Module, instead each
     // Class has a Module that it delegates to
-    this.__mod__ = new JS.Module({}, {_resolve: this.prototype});
+    this.__mod__ = new JS.Module(this.__nom__, {}, {_resolve: this.prototype});
     this.include(JS.Kernel, null, false);
     
     if (klass !== Object) this.include(klass.__mod__ || new JS.Module(klass.prototype,

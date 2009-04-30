@@ -1,4 +1,4 @@
-JS.Enumerable = new JS.Module({
+JS.Enumerable = new JS.Module('Enumerable', {
   extend: {
     forEach: function(block, context) {
       for (var i = 0, n = this.length; i < n; i++) {

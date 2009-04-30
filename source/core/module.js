@@ -72,23 +72,59 @@
  */
 JS.Module = JS.makeFunction();
 JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
+  END_WITHOUT_DOT: /([^\.])$/,
+  
   /**
+   * @param {String} name
    * @param {Object} methods
    * @param {Object} options
    */
-  initialize: function(methods, options) {
-    options = options || {};
-    
+  initialize: function(name, methods, options) {
     this.__mod__ = this;      // Mirror property found in Class. Think of this as toModule()
     this.__inc__ = [];        // List of modules included in this module
     this.__fns__ = {};        // Object storing methods belonging to this module
     this.__dep__ = [];        // List modules and classes that depend on this module
     this.__mct__ = {};        // Cache table for method call lookups
     
+    if (typeof name === 'string') {
+      this.__nom__ = this.displayName = name;
+    } else {
+      this.__nom__ = this.displayName = '';
+      options = methods;
+      methods = name;
+    }
+    
+    options = options || {};
+    
     // Object to resolve methods onto
     this.__res__ = options._resolve || null;
     
     if (methods) this.include(methods);
+  },
+  
+  /**
+   * Sets the display name of the module to the given value. Should be the fully-qualified
+   * name, including names of the containing modules.
+   * 
+   * @param {String} name
+   */
+  setName: function(name) {
+    if (this.__nom__) return;
+    this.__nom__ = this.displayName = name || '';
+    for (var key in this.__mod__.__fns__)
+      this.__name__(key);
+  },
+  
+  /**
+   * Assigns the displayName property to the named method using Ruby conventions for naming
+   * instance and singleton methods. If the named field contains another Module, the name
+   * change is applied recursively.
+   */
+  __name__: function(name) {
+    var object = this.__mod__.__fns__[name] || {};
+    name = this.__nom__.replace(this.END_WITHOUT_DOT, '$1#') + name;
+    if (JS.isFn(object.setName)) return object.setName(name);
+    if (JS.isFn(object)) object.displayName = name;
   },
   
   /**
@@ -104,6 +140,7 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
   define: function(name, func, options) {
     var notify = (options || {})._notify || this;
     this.__fns__[name] = func;
+    this.__name__(name);
     if (JS.Module._notify && notify && JS.isFn(func))
         JS.Module._notify(name, notify);
     var i = this.__dep__.length;

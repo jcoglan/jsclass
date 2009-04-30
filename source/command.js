@@ -1,4 +1,4 @@
-JS.Command = new JS.Class({
+JS.Command = new JS.Class('Command', {
   initialize: function(functions) {
     if (JS.isFn(functions))
       functions = {execute: functions};

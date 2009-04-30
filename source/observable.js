@@ -1,4 +1,4 @@
-JS.Observable = new JS.Module({
+JS.Observable = new JS.Module('Observable', {
   addObserver: function(observer, context) {
     (this.__observers__ = this.__observers__ || []).push({bk: observer, cx: context || null});
   },

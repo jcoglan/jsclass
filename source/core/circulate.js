@@ -1,6 +1,6 @@
-JS.Module = JS.extend(new JS.Class(JS.Module.prototype), JS.Kernel.__fns__);
+JS.Module = JS.extend(new JS.Class('Module', JS.Module.prototype), JS.Kernel.__fns__);
 JS.Module.include(JS.Kernel);
-JS.Class = JS.extend(new JS.Class(JS.Module, JS.Class.prototype), JS.Kernel.__fns__);
+JS.Class = JS.extend(new JS.Class('Class', JS.Module, JS.Class.prototype), JS.Kernel.__fns__);
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
 

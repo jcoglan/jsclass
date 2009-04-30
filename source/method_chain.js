@@ -56,11 +56,14 @@ JS.MethodChain.reserved = (function() {
 
 JS.MethodChain.addMethod = function(name) {
   if (this.reserved.test(name)) return;
-  this.prototype[name] = function() {
+  var func = this.prototype[name] = function() {
     this.____(name, arguments);
     return this;
   };
+  func.displayName = 'MethodChain#' + name;
 };
+
+JS.MethodChain.displayName = 'MethodChain';
 
 JS.MethodChain.addMethods = function(object) {
   var methods = [], property, i;

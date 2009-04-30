@@ -1,4 +1,4 @@
-JS.State = new JS.Module({
+JS.State = new JS.Module('State', {
   __getState__: function(state) {
     return  (typeof state === 'object' && state) ||
             (typeof state === 'string' && ((this.states || {})[state] || {})) ||
