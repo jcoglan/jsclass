@@ -68,7 +68,7 @@ JS.Hash = new JS.Class('Hash', {
     if (!createIfAbsent) return null;
     
     this.size += 1; this.length += 1;
-    pair = new this.klass.Pair;
+    var pair = new this.klass.Pair;
     pair.setKey(key);
     bucket.push(pair);
     return pair;
