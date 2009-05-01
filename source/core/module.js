@@ -109,18 +109,21 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    * @param {String} name
    */
   setName: function(name) {
-    if (this.__nom__) return;
     this.__nom__ = this.displayName = name || '';
     for (var key in this.__mod__.__fns__)
       this.__name__(key);
+    if (name && this.__meta__) this.__meta__.setName(name + '.');
   },
   
   /**
    * Assigns the displayName property to the named method using Ruby conventions for naming
    * instance and singleton methods. If the named field contains another Module, the name
    * change is applied recursively.
+   * 
+   * @param {String} name
    */
   __name__: function(name) {
+    if (!this.__nom__) return;
     var object = this.__mod__.__fns__[name] || {};
     name = this.__nom__.replace(this.END_WITHOUT_DOT, '$1#') + name;
     if (JS.isFn(object.setName)) return object.setName(name);

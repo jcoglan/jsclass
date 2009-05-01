@@ -83,6 +83,19 @@
             assertEqual('Hash#merge',       JS.Hash.prototype.merge.displayName);
             assertEqual('Hash.Pair',        JS.Hash.Pair.displayName);
             assertEqual('Hash.Pair#setKey', JS.Hash.Pair.prototype.setKey.displayName);
+            
+            assertEqual('BigNest',          BigNest.displayName);
+            assertEqual('BigNest#foo',      BigNest.prototype.foo.displayName);
+            assertEqual('BigNest#C',        BigNest.prototype.C.displayName);
+            assertEqual('BigNest.A',        BigNest.A.displayName);
+            assertEqual('BigNest.foo',      BigNest.foo.displayName);
+            assertEqual('BigNest.A#foo',    BigNest.A.__fns__.foo.displayName);
+            assertEqual('BigNest.A#B',      BigNest.A.__fns__.B.displayName);
+            assertEqual('BigNest.A.foo',    BigNest.A.foo.displayName);
+            assertEqual('BigNest.A.E',      BigNest.A.E.displayName);
+            assertEqual('BigNest.A#B#foo',  BigNest.A.__fns__.B.prototype.foo.displayName);
+            assertEqual('BigNest#C#foo',    BigNest.prototype.C.__fns__.foo.displayName);
+            assertEqual('BigNest#C.D',      BigNest.prototype.C.D.displayName);
         }},
         
         testInheritanceFromClass: function() { with(this) {

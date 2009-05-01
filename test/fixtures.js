@@ -111,7 +111,36 @@ ExtendingModule = new JS.Module({
             base.extend(this);
         }
     }
-});     
+});
+
+//================================================================
+//================================================================
+
+var BigNest = new JS.Class('BigNest', {
+    extend: {
+        A: new JS.Module({
+            extend: {
+                E: new JS.Class({}),
+                foo: function() {}
+            },
+            B: new JS.Class({
+                foo: function() {}
+            }),
+            foo: function() {}
+        }),
+        foo: function() {}
+    },
+    foo: function() {},
+    
+    C: new JS.Module({
+        extend: {
+            D: new JS.Class({
+                foo: function() {}
+            })
+        },
+        foo: function() {}
+    })
+});
 
 //================================================================
 //================================================================
