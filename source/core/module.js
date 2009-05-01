@@ -234,11 +234,12 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    * @returns {Boolean}
    */
   includes: function(module) {
-    if (Object === module || this === module || this.__res__ === module.prototype)
+    var self = this.__mod__;
+    if (Object === module || self === module || self.__res__ === module.prototype)
       return true;
-    var i = this.__inc__.length;
+    var i = self.__inc__.length;
     while (i--) {
-      if (this.__inc__[i].includes(module))
+      if (self.__inc__[i].includes(module))
         return true;
     }
     return false;
@@ -256,20 +257,20 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    * @returns {Array}
    */
   ancestors: function(results) {
-    var cachable = (results === undefined);
-    if (cachable && this.__anc__) return this.__anc__.slice();
+    var self = this.__mod__, cachable = (results === undefined);
+    if (cachable && self.__anc__) return self.__anc__.slice();
     results = results || [];
     
     // Recurse over inclusions first
-    for (var i = 0, n = this.__inc__.length; i < n; i++)
-      this.__inc__[i].ancestors(results);
+    for (var i = 0, n = self.__inc__.length; i < n; i++)
+      self.__inc__[i].ancestors(results);
     
     // If this module is not already in the list, add it
-    var klass = (this.__res__||{}).klass,
-        result = (klass && this.__res__ === klass.prototype) ? klass : this;
+    var klass = (self.__res__||{}).klass,
+        result = (klass && self.__res__ === klass.prototype) ? klass : self;
     if (JS.indexOf(results, result) === -1) results.push(result);
     
-    if (cachable) this.__anc__ = results.slice();
+    if (cachable) self.__anc__ = results.slice();
     return results;
   },
   
@@ -283,9 +284,9 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    * @returns {Array}
    */
   lookup: function(name) {
-    var cache = this.__mct__;
+    var self = this.__mod__, cache = self.__mct__;
     if (cache[name]) return cache[name].slice();
-    var ancestors = this.ancestors(), results = [], i, n, method;
+    var ancestors = self.ancestors(), results = [], i, n, method;
     for (i = 0, n = ancestors.length; i < n; i++) {
       method = ancestors[i].__mod__.__fns__[name];
       if (method) results.push(method);
@@ -362,25 +363,27 @@ JS.extend(JS.Module.prototype, /** @scope Module.prototype */{
    * @param {Object} target
    */
   resolve: function(target) {
-    var target = target || this, resolved = target.__res__, i, n, key, made;
+    var self     = this.__mod__,
+        target   = target || self,
+        resolved = target.__res__, i, n, key, made;
     
     // Resolve all dependent modules if the target is this module
-    if (target === this) {
-      this.__anc__ = null;
-      this.__mct__ = {};
-      i = this.__dep__.length;
-      while (i--) this.__dep__[i].resolve();
+    if (target === self) {
+      self.__anc__ = null;
+      self.__mct__ = {};
+      i = self.__dep__.length;
+      while (i--) self.__dep__[i].resolve();
     }
     
     if (!resolved) return;
     
     // Recurse over this module's ancestors
-    for (i = 0, n = this.__inc__.length; i < n; i++)
-      this.__inc__[i].resolve(target);
+    for (i = 0, n = self.__inc__.length; i < n; i++)
+      self.__inc__[i].resolve(target);
     
     // Wrap and copy methods to the target
-    for (key in this.__fns__) {
-      made = target.make(key, this.__fns__[key]);
+    for (key in self.__fns__) {
+      made = target.make(key, self.__fns__[key]);
       if (resolved[key] !== made) resolved[key] = made;
     }
   }

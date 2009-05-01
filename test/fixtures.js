@@ -136,6 +136,15 @@ var BigNest = new JS.Class('BigNest', {
         extend: {
             D: new JS.Class({
                 foo: function() {}
+            }),
+            K: new JS.Module({
+                L: new JS.Module({
+                    extend: {
+                        M: new JS.Module({
+                            N: new JS.Module()
+                        })
+                    }
+                })
             })
         },
         foo: function() {}

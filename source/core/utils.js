@@ -54,24 +54,6 @@ JS = {
   },
   
   /** section: utils
-   * JS.delegate(property, method) -> Function
-   * - property (String): name of instance variable to delegate to
-   * - method (String): name of method to call on delegate object
-   *
-   * Returns a function used to delegate a method call to a property of an object. Used for
-   * faking a subclass with manual delegation to the parent class. For example:
-   * 
-   *     JS.delegate('mod', 'lookup')
-   *     
-   *     // -> function() { return this.mod.lookup.apply(this.mod, arguments); }
-   **/
-  delegate: function(property, method) {
-    return function() {
-      return this[property][method].apply(this[property], arguments);
-    };
-  },
-  
-  /** section: utils
    * JS.bind(object, func) -> Function
    * - object (Object): object to bind the function to
    * - func (Function): function that the bound function should call
