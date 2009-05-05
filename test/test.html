@@ -633,6 +633,11 @@
             hash.store(new HashCar('lotus'), new HashColor('yellow'));
             assert(!hash.isEmpty());
             
+            assertEqual('ford',   hash.assoc(new HashCar('ford'))[0].brand);
+            assertEqual('blue',   hash.assoc(new HashCar('ford'))[1].code);
+            assertEqual('jaguar', hash.rassoc(new HashColor('green'))[0].brand);
+            assertEqual('green',  hash.rassoc(new HashColor('green'))[1].code);
+            
             assert( new JS.Set(hash.keys().pluck('brand'))
             .equals(new JS.Set(['ferari', 'ford', 'jaguar', 'lotus'])) );
             
@@ -648,6 +653,10 @@
                 new HashCar('lotus'),   new HashColor('yellow')
             ]);
             assert(otherHash.equals(hash));
+            
+            assertEnumEqual(['blue', 'yellow'],
+                otherHash.valuesAt(new HashCar('ford'), new HashCar('lotus'))
+                         .pluck('code').sort());
             
             assert(otherHash.merge(new JS.Hash([
                 new HashCar('extra'),   new HashColor('read-all-about-it')
@@ -736,6 +745,10 @@
             hash.store(new HashCar('jaguar'), new HashColor('green'));
             hash.store(new HashCar('lotus'), new HashColor('yellow'));
             
+            var filtered = hash.select(function(pair) { return pair.value.code.length == 4 });
+            assertEqual('ford', filtered[0][0].brand);
+            assertEqual('blue', filtered[0][1].code);
+            
             ferari.brand = 'jeep';
             assertIdentical(null, hash.get(ferari));
             hash.rehash();
@@ -758,6 +771,25 @@
             hash.clear();
             assertEqual(0, hash.size);
             assert(hash.isEmpty());
+            
+            hash.replace(new JS.Hash([
+                new HashCar('A'),   new HashCar('B'),
+                new HashCar('B'),   new HashCar('C'),
+                new HashCar('C'),   new HashCar('D'),
+                new HashCar('D'),   new HashCar('E'),
+                new HashCar('E'),   new HashCar('A')
+            ]));
+            
+            assertEqual('A,B,C,D,E', hash.toArray().pluck('key').pluck('brand').sort().join(','));
+            
+            assertEqual(5, hash.size);
+            assertEqual('E', hash.get(new HashCar('D')).brand);
+            var removed = hash.shift();
+            assertEqual(4, hash.size);
+            var keys = hash.values();
+            assertEqual(4, keys.length);
+            keys.push(removed);
+            assertEqual('ABCDE', keys.pluck('brand').sort().join(''));
         }},
         
         testSet: function() { with(this) {

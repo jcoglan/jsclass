@@ -61,7 +61,7 @@ JS.Hash = new JS.Class('Hash', {
     return -1;
   },
   
-  _assoc: function(key, createIfAbsent) {
+  assoc: function(key, createIfAbsent) {
     var bucket = this._bucketForKey(key, createIfAbsent);
     if (!bucket) return null;
     
@@ -74,6 +74,11 @@ JS.Hash = new JS.Class('Hash', {
     pair.setKey(key);
     bucket.push(pair);
     return pair;
+  },
+  
+  rassoc: function(value) {
+    var key = this.key(value);
+    return key ? this.assoc(key) : null;
   },
   
   clear: function() {
@@ -115,7 +120,7 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   fetch: function(key, defaultValue) {
-    var pair = this._assoc(key);
+    var pair = this.assoc(key);
     if (pair) return pair.value;
     
     if (defaultValue === undefined) throw new Error('key not found');
@@ -142,12 +147,12 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   get: function(key) {
-    var pair = this._assoc(key);
+    var pair = this.assoc(key);
     return pair ? pair.value : this.getDefault(key);
   },
   
   hasKey: function(key) {
-    return !!this._assoc(key);
+    return !!this.assoc(key);
   },
   
   hasValue: function(value) {
@@ -231,8 +236,19 @@ JS.Hash = new JS.Class('Hash', {
     }, this);
   },
   
+  replace: function(hash) {
+    this.clear();
+    this.update(hash);
+  },
+  
+  shift: function() {
+    var keys = this.keys();
+    if (keys.length === 0) return this.getDefault();
+    return this.remove(keys[0]);
+  },
+  
   store: function(key, value) {
-    this._assoc(key, true).setValue(value);
+    this.assoc(key, true).setValue(value);
     return value;
   },
   
@@ -246,6 +262,12 @@ JS.Hash = new JS.Class('Hash', {
     var values = [];
     this.forEach(function(pair) { values.push(pair.value) });
     return values;
+  },
+  
+  valuesAt: function() {
+    var i = arguments.length, results = [];
+    while (i--) results.push(this.get(arguments[i]));
+    return results;
   }
 });
 
