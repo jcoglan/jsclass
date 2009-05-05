@@ -8,9 +8,13 @@ JS.Package = new JS.Class('Package', {
   },
   
   addDependency: function(pkg) {
-    if (typeof pkg === 'string') pkg = this.klass.getByName(pkg);
-    if (!pkg) return;
     if (JS.indexOf(this._deps, pkg) === -1) this._deps.push(pkg);
+  },
+  
+  _getDependency: function(n) {
+    var dep = this._deps[n];
+    if (typeof dep === 'string') dep = this.klass.getByName(dep);
+    return dep;
   },
   
   addName: function(name) {
@@ -22,8 +26,11 @@ JS.Package = new JS.Class('Package', {
   },
   
   depsComplete: function() {
-    var n = this._deps.length;
-    while (n--) { if (!this._deps[n].isComplete()) return false; }
+    var n = this._deps.length, dep;
+    while (n--) {
+      dep = this._getDependency(n);
+      if (dep && !dep.isComplete()) return false;
+    }
     return true;
   },
   
@@ -49,9 +56,11 @@ JS.Package = new JS.Class('Package', {
   },
   
   expand: function(list) {
-    var deps = list || [], i, n;
-    for (i = 0, n = this._deps.length; i < n; i++)
-      this._deps[i].expand(deps);
+    var deps = list || [], dep, i, n;
+    for (i = 0, n = this._deps.length; i < n; i++) {
+      dep = this._getDependency(i);
+      dep && dep.expand(deps);
+    }
     if (JS.indexOf(deps, this) === -1) deps.push(this);
     return deps;
   },
