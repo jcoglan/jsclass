@@ -204,14 +204,16 @@ JS.Hash = new JS.Class('Hash', {
     this.update(temp);
   },
   
-  remove: function(key) {
+  remove: function(key, block) {
+    if (block === undefined) block = null;
+    
     var bucket = this._bucketForKey(key);
-    if (!bucket) return null;
+    if (!bucket) return JS.isFn(block) ? this.fetch(key, block) : this.getDefault(key);
     
     var index = this._indexInBucket(bucket, key);
-    if (index < 0) return null;
+    if (index < 0) return JS.isFn(block) ? this.fetch(key, block) : this.getDefault(key);
     
-    var result = bucket[index];
+    var result = bucket[index].value;
     bucket.splice(index, 1);
     this.size -= 1;
     this.length -= 1;
@@ -248,6 +250,8 @@ JS.Hash = new JS.Class('Hash', {
 });
 
 JS.Hash.include({
-  put: JS.Hash.instanceMethod('store')
+  includes: JS.Hash.instanceMethod('hasKey'),
+  index:    JS.Hash.instanceMethod('key'),
+  put:      JS.Hash.instanceMethod('store')
 });
 

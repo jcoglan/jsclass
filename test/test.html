@@ -689,14 +689,26 @@
             assert(hash.hasValue(new HashColor('black')));
             assert(!hash.hasValue(new HashColor('beige')));
             
+            otherHash.setDefault(new HashColor('purple'));
+            assertEqual('blue', otherHash.remove(new HashCar('ford')).code);
+            assertEqual('purple', otherHash.remove(new HashCar('chevvy')).code);
+            assertEqual('z not found', otherHash.remove(new HashCar('z'), function(key) { return key.brand + ' not found' }));
+            
+            hash.removeIf(function(pair) {
+                return pair.key.brand == 'lotus' || pair.value.code == 'black'
+            });
+            assertEqual(2, hash.size);
+            assertIdentical(null, hash.remove(new HashCar('audi')));
+            assertEqual(2, hash.size);
+            
             hash.setDefault(4);
             assertEqual(4, hash.get(new HashCar('nothing')));
             hash.setDefault(function(car) { return car.brand.toUpperCase() });
             assertEqual('VOLVO', hash.get(new HashCar('volvo')));
             
             var h = new JS.Hash();
-            assertEqual(null, h.getDefault());
-            assertEqual(null, h.getDefault(2));
+            assertIdentical(null, h.getDefault());
+            assertIdentical(null, h.getDefault(2));
             
             h = new JS.Hash('cat');
             assertEqual('cat', h.getDefault());
@@ -705,13 +717,6 @@
             h = new JS.Hash(function(h,k) { return h.put(k || 0, (k || 0) * 10) });
             assertEqual(0, h.getDefault());
             assertEqual(20, h.getDefault(2));
-
-            hash.removeIf(function(pair) {
-                return pair.key.brand == 'lotus' || pair.value.code == 'black'
-            });
-            assertEqual(2, hash.size);
-            assertIdentical(null, hash.remove(new HashCar('audi')));
-            assertEqual(2, hash.size);
             
             hash.setDefault();
             hash.compareByIdentity();
