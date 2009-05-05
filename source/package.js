@@ -8,6 +8,7 @@ JS.Package = new JS.Class('Package', {
   },
   
   addDependency: function(pkg) {
+    if (typeof pkg === 'string') pkg = this.klass.getByName(pkg);   // TODO lazy lookup
     if (JS.indexOf(this._deps, pkg) === -1) this._deps.push(pkg);
   },
   
