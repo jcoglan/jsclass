@@ -174,7 +174,7 @@ JS.Package = new JS.Class('Package', {
         return this;
       },
       
-      defines: function() {
+      provides: function() {
         var i = arguments.length;
         while (i--) this._pkg.addName(arguments[i]);
         return this;
@@ -183,10 +183,7 @@ JS.Package = new JS.Class('Package', {
   }
 });
 
-JS.Package.DSL.loader   = JS.Package.DSL.file;
-JS.Package.Description.include({
-  provides: JS.Package.Description.instanceMethod('defines')
-});
+JS.Package.DSL.loader = JS.Package.DSL.file;
 
 JS.Packages = function(declaration) {
   declaration.call(JS.Package.DSL);

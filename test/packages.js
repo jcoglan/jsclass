@@ -4,7 +4,7 @@ JS.Packages(function() { with(this) {
     var yui  = cdn + '2.6.0/build/';
     
     file(yui + 'yahoo-dom-event/yahoo-dom-event.js')
-    .defines( 'YAHOO',
+    .provides('YAHOO',
               'YAHOO.lang',
               'YAHOO.util.Dom',
               'YAHOO.util.Event');
@@ -15,7 +15,7 @@ JS.Packages(function() { with(this) {
     pkg('YAHOO.util.Get',           yui + 'get/get-min.js');
     
     file(yui + 'animation/animation-min.js')
-    .defines( 'YAHOO.util.Anim',
+    .provides('YAHOO.util.Anim',
               'YAHOO.util.ColorAnim')
     .requires('YAHOO',
               'YAHOO.util.Event');
