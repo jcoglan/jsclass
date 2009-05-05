@@ -1,6 +1,6 @@
 JS.Package = new JS.Class('Package', {
-  initialize: function(path) {
-    this._path    = path;
+  initialize: function(loader) {
+    this._loader  = loader;
     this._deps    = [];
     this._names   = [];
     this._waiters = [];
@@ -37,7 +37,7 @@ JS.Package = new JS.Class('Package', {
       object = this.klass.getObject(names[n]);
       if (object !== undefined) continue;
       if (withExceptions)
-        throw new Error('Expected package at ' + this._path + ' to define ' + names[n]);
+        throw new Error('Expected package at ' + this._loader + ' to define ' + names[n]);
       else
         return false;
     }
@@ -67,9 +67,19 @@ JS.Package = new JS.Class('Package', {
     this._waiters.push(handler);
     if (this._loading) return;
     
+    var fireCallbacks = function() {
+      self.isLoaded(true);
+      for (var i = 0, n = self._waiters.length; i < n; i++) self._waiters[i]();
+      self._waiters = [];
+    };
+    
+    this._loading = true;
+    
+    if (JS.isFn(this._loader)) return this._loader(fireCallbacks);
+    
     var tag  = document.createElement('script');
     tag.type = 'text/javascript';
-    tag.src  = this._path;
+    tag.src  = this._loader;
     
     tag.onload = tag.onreadystatechange = function() {
       if ( !tag.readyState ||
@@ -77,14 +87,11 @@ JS.Package = new JS.Class('Package', {
             tag.readyState === 'complete' ||
             (tag.readyState === 4 && tag.status === 200)
       ) {
-        self.isLoaded(true);
-        for (var i = 0, n = self._waiters.length; i < n; i++) self._waiters[i]();
-        self._waiters = [];
+        fireCallbacks();
         tag = null;
       }
     };
-    ;;; window.console && console.info('Loading ' + this._path);
-    this._loading = true;
+    ;;; window.console && console.info('Loading ' + this._loader);
     document.getElementsByTagName('head')[0].appendChild(tag);
   },
   
@@ -96,8 +103,9 @@ JS.Package = new JS.Class('Package', {
     _store:  {},
     _global: this,
     
-    getByPath: function(path) {
-      return this._store[path] || (this._store[path] = new this(path));
+    getByPath: function(loader) {
+      var path = loader.toString();
+      return this._store[path] || (this._store[path] = new this(loader));
     },
     
     getByName: function(name) {
@@ -173,6 +181,11 @@ JS.Package = new JS.Class('Package', {
       }
     })
   }
+});
+
+JS.Package.DSL.loader   = JS.Package.DSL.file;
+JS.Package.Description.include({
+  provides: JS.Package.Description.instanceMethod('defines')
 });
 
 JS.Packages = function(declaration) {
