@@ -94,10 +94,8 @@
           file('http://www.google.com/jsapi?key=MY_GOOGLE_KEY')
               .provides('google.load');
           
-          loader(function(cb) {
-              google.load('maps', '2.x', {callback: cb});
-          })  .provides('GMap2',
-                        'GClientGeocoder')
+          loader(function(cb) { google.load('maps', '2.x', {callback: cb}) })
+              .provides('GMap2', 'GClientGeocoder')
               .requires('google.load');
       }});</pre>
   
