@@ -276,9 +276,7 @@
         }},
         
         testInterfaces: function() { with(this) {
-            assertRaise('Error', function() {
-              JS.Interface.ensure({}, Dog.Interface);
-            });
+            assertRaise('Error', function() { JS.Interface.ensure({}, Dog.Interface) });
             assert(Dog.Interface.test(new Dog('Rex')));
             assert(!Dog.Interface.test({}));
         }},
@@ -647,6 +645,11 @@
             assertEqual('red', hash.get(new HashCar('ferari')).code);
             assertEqual('green', hash.get(new HashCar('JAGuar')).code);
             
+            assertEqual('red', hash.fetch(new HashCar('ferari')).code);
+            assertEqual('some color', hash.fetch(new HashCar('lada'), 'some color'));
+            assertRaise('Error', function() { hash.fetch(new HashCar('lada')) });
+            assertEqual('Go fish, z', hash.fetch('z', function(k) { return 'Go fish, ' + k }));
+            
             hash.put(new HashCar('jaGUar'), new HashColor('black'));
             assertEqual(4, hash.size);
             assertEqual('black', hash.get(new HashCar('JAGuar')).code);
@@ -672,6 +675,18 @@
             hash.setDefault(function(car) { return car.brand.toUpperCase() });
             assertEqual('VOLVO', hash.get(new HashCar('volvo')));
             
+            var h = new JS.Hash();
+            assertEqual(null, h.getDefault());
+            assertEqual(null, h.getDefault(2));
+            
+            h = new JS.Hash('cat');
+            assertEqual('cat', h.getDefault());
+            assertEqual('cat', h.getDefault(2));
+            
+            h = new JS.Hash(function(h,k) { return h.put(k || 0, (k || 0) * 10) });
+            assertEqual(0, h.getDefault());
+            assertEqual(20, h.getDefault(2));
+
             hash.removeIf(function(pair) {
                 return pair.key.brand == 'lotus' || pair.value.code == 'black'
             });
@@ -715,6 +730,10 @@
             ]).sort();
             
             assertEqual('bar', sortedHash[0].key);
+            
+            hash.clear();
+            assertEqual(0, hash.size);
+            assert(hash.isEmpty());
         }},
         
         testSet: function() { with(this) {
