@@ -13,11 +13,10 @@
   I just need to @require@ it, and supply a function to run once all the requisite code
   has loaded:
   
-  <pre class="prettyprint">
-  require('YAHOO.util.Selector', function() {
-    var myDivs = YAHOO.util.Selector.query('div.mine');
-    // .. more code (elided)
-  });</pre>
+  <pre class="prettyprint">    require('YAHOO.util.Selector', function() {
+          var myDivs = YAHOO.util.Selector.query('div.mine');
+          // .. more code (elided)
+      });</pre>
   
   h3. Setting up
   
@@ -34,61 +33,76 @@
   
   h3. The package listing
   
-  To describe your packages, you simply list out the name of every major object, function
-  or class in your application, and state the URL of the file that defines said object.
-  A typical setup for YUI might look like:
+  To describe your packages, you list the external script files used by your application,
+  stating which JavaScript objects are provided by the file and which objects it depends
+  on. For example, here's a typical package definition for "YUI":http://developer.yahoo.com/yui/:
   
-  <pre class="prettyprint">
-  JS.Packages(function() { with(this) {
-    var cdn  = 'http://yui.yahooapis.com/';
-    var yui  = cdn + '2.5.2/build/';
-    
-    pkg('YAHOO',                 yui + 'yahoo-dom-event/yahoo-dom-event.js');
-    pkg('YAHOO.lang',            yui + 'yahoo-dom-event/yahoo-dom-event.js');
-    pkg('YAHOO.util.Dom',        yui + 'yahoo-dom-event/yahoo-dom-event.js');
-    pkg('YAHOO.util.Event',      yui + 'yahoo-dom-event/yahoo-dom-event.js');
-    
-    pkg('YAHOO.util.Selector',   yui + 'selector/selector-beta-min.js');
-    
-    pkg('YAHOO.util.Anim',       yui + 'animation/animation-min.js');
-    pkg('YAHOO.util.ColorAnim',  yui + 'animation/animation-min.js');
-    
-    pkg('YAHOO.util.History',    yui + 'history/history-min.js');
-    
-    pkg('YAHOO.util.DD',         yui + 'dragdrop/dragdrop-min.js');
-    pkg('YAHOO.widget.Slider',   yui + 'slider/slider-min.js');
-  }});</pre>
+  <pre class="prettyprint">    JS.Packages(function() { with(this) {
+          var cdn  = 'http://yui.yahooapis.com/';
+          var yui  = cdn + '2.7.0/build/';
+          
+          file(yui + 'yahoo-dom-event/yahoo-dom-event.js')
+              .provides('YAHOO',
+                        'YAHOO.lang',
+                        'YAHOO.util.Dom',
+                        'YAHOO.util.Event');
+          
+          file(yui + 'selector/selector-min.js')
+              .provides('YAHOO.util.Selector')
+              .requires('YAHOO');
+          
+          file(yui + 'animation/animation-min.js')
+              .provides('YAHOO.util.Anim',
+                        'YAHOO.util.ColorAnim')
+              .requires('YAHOO');
+          
+          file(yui + 'dragdrop/dragdrop-min.js')
+              .provides('YAHOO.util.DD')
+              .requires('YAHOO',
+                        'YAHOO.util.Dom');
+          
+          file(yui + 'slider/slider-min.js')
+              .provides('YAHOO.widget.Slider')
+              .requires('YAHOO',
+                        'YAHOO.util.Anim',
+                        'YAHOO.util.DD');
+      }});</pre>
   
   (Yes, YUI has its own loader utility, I'm just using this as a well-known example.)
   
-  Don't worry about listing files twice, each file will only be loaded once. We use object
-  detection to figure out whether a particular object is loaded and only request its file
-  if an object is @require@-d and found to be missing.
+  Notice how two of the stated dependencies for @YAHOO.util.DD@ are provided by the same
+  file - @YAHOO@ and @YAHOO.util.Dom@. The package system will spot this and only loads
+  each file once. Object detection is used to figure out whether each file has been loaded
+  and a file is not requested unless some of its objects appear to be missing.
   
-  If you know YUI, you'll know that some of these files require others to be loaded before
-  they can work. For example, @Slider@ needs @YAHOO@, @Dom@, @Event@ and @DD@ in order
-  to function. We can add this to our configuration like so:
+  Where possible, the package system will attempt to load scripts in parallel where it
+  spots that execution order doesn't matter. If the load order of a set of scripts is
+  important, you must *make sure you make this clear using the @requires()@ statement*.
+  A file will not be requested until all the objects it @requires@ are present.
   
-  <pre class="prettyprint">
-  JS.Packages(function() { with(this) {
-    var cdn  = 'http://yui.yahooapis.com/';
-    var yui  = cdn + '2.5.2/build/';
-    
-    // .. other packages (see above)
-    
-    pkg('YAHOO.util.DD',         yui + 'dragdrop/dragdrop-min.js');
-    pkg('YAHOO.widget.Slider',   yui + 'slider/slider-min.js');
-    
-    pkg('YAHOO.util.DD')
-        .requires('YAHOO')
-        .requires('YAHOO.util.Dom')
-        .requires('YAHOO.util.Event');
-    
-    pkg('YAHOO.widget.Slider')
-        .requires('YAHOO.util.DD');
-  }});</pre>
+  h3. Custom loader functions
   
-  Again, don't worry that some of those dependencies live in the same file - each file will
-  only be requested and parsed once. This setup simply means you can easily change the
-  storage location of various bits of your application without worrying that you may have
-  broken any features.
+  Some libraries, such as the "Google Ajax APIs":http://code.google.com/apis/ajax/,
+  have their own systems for loading code on demand that involve more than simply
+  knowing the path to a script file. Our package system allows you to specify packages
+  that use a loader function rather than a path to load themselves; the function should
+  take a callback and call it when the library in question is done loading. For exmaple,
+  here's how you'd incorporate Google Maps into your library:
+  
+  <pre class="prettyprint">    JS.Packages(function() { with(this) {
+      
+          file('http://www.google.com/jsapi?key=MY_GOOGLE_KEY')
+              .provides('google.load');
+          
+          loader(function(cb) {
+              google.load('maps', '2.x', {callback: cb});
+          })  .provides('GMap2',
+                        'GClientGeocoder')
+              .requires('google.load');
+      }});</pre>
+  
+  The callback (@cb@) is a function generated by the package system that continues
+  to load and run dependent code once the custom loader has finished its work. If you
+  don't call @cb@ (or pass it to a function that will call it for you as above), code
+  that depends on this library will not run.
+  
