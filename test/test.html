@@ -633,6 +633,14 @@
             hash.store(new HashCar('lotus'), new HashColor('yellow'));
             assert(!hash.isEmpty());
             
+            assert( new JS.Set(hash.keys().pluck('brand'))
+            .equals(new JS.Set(['ferari', 'ford', 'jaguar', 'lotus'])) );
+            
+            assert( new JS.Set(hash.values().pluck('code'))
+            .equals(new JS.Set(['red', 'blue', 'green', 'yellow'])) );
+            
+            assertEqual('jaguar', hash.key(new HashColor('green')).brand);
+            
             var otherHash = new JS.Hash([
                 new HashCar('ferari'),  new HashColor('red'),
                 new HashCar('ford'),    new HashColor('blue'),
@@ -640,6 +648,17 @@
                 new HashCar('lotus'),   new HashColor('yellow')
             ]);
             assert(otherHash.equals(hash));
+            
+            assert(otherHash.merge(new JS.Hash([
+                new HashCar('extra'),   new HashColor('read-all-about-it')
+            ])).equals(new JS.Hash([
+                new HashCar('ferari'),  new HashColor('red'),
+                new HashCar('ford'),    new HashColor('blue'),
+                new HashCar('extra'),   new HashColor('read-all-about-it'),
+                new HashCar('jaguar'),  new HashColor('green'),
+                new HashCar('lotus'),   new HashColor('yellow')
+            ])));
+            assertEqual(4, otherHash.size);
             
             assertEqual(4, hash.size);
             assertEqual('red', hash.get(new HashCar('ferari')).code);
