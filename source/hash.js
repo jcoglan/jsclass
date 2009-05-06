@@ -268,7 +268,9 @@ JS.Hash = new JS.Class('Hash', {
   shift: function() {
     var keys = this.keys();
     if (keys.length === 0) return this.getDefault();
-    return this.remove(keys[0]);
+    var pair = this.assoc(keys[0]);
+    this.remove(pair.key);
+    return pair;
   },
   
   store: function(key, value) {

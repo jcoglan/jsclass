@@ -798,7 +798,7 @@
             assertEqual(4, hash.size);
             var keys = hash.values();
             assertEqual(4, keys.length);
-            keys.push(removed);
+            keys.push(removed.value);
             assertEqual('ABCDE', keys.pluck('brand').sort().join(''));
         }},
         
