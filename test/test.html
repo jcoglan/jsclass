@@ -624,6 +624,11 @@
         },
         
         testHash: function() { with(this) {
+            var primitive = new JS.Hash([ 3,6, 1,8, 8,5, 3,9, 0,4 ]);
+            assertEqual(4, primitive.size);
+            assertEqual(9, primitive.get(3));
+            assertEnumEqual([4,5], primitive.select(function(pair) { return pair.key % 4 === 0 }).pluck('value').sort());
+            
             var hash = new JS.Hash();
             assert(hash.isEmpty());
             var ferari = new HashCar('ferari'), red = new HashColor('red');

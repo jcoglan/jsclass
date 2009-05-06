@@ -9,8 +9,18 @@ JS.Hash = new JS.Class('Hash', {
         this[0] = this.key = key;
       },
       
+      hasKey: function(key) {
+        var my = this.key;
+        return my.equals ? my.equals(key) : my === key;
+      },
+      
       setValue: function(value) {
         this[1] = this.value = value;
+      },
+      
+      hasValue: function(value) {
+        var my = this.value;
+        return my.equals ? my.equals(value) : my === value;
       },
       
       compareTo: function(other) {
@@ -55,7 +65,7 @@ JS.Hash = new JS.Class('Hash', {
         ident = !!this._compareByIdentity;
         
     while (i--) {
-      if (ident ? (bucket[i].key === key) : bucket[i].key.equals(key))
+      if (ident ? (bucket[i].key === key) : bucket[i].hasKey(key))
         return i;
     }
     return -1;
@@ -106,15 +116,13 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   equals: function(other) {
-    if (this.length !== other.length || !(other instanceof JS.Hash))
+    if (!(other instanceof JS.Hash) || this.length !== other.length)
       return false;
     var result = true;
     this.forEach(function(pair) {
-      var otherValue = other.get(pair.key),
-          equal = otherValue.equals
-              ? otherValue.equals(pair.value)
-              : (otherValue === pair.value);
-      if (!equal) result = false;
+      if (!result) return;
+      var otherPair = other.assoc(pair.key);
+      if (otherPair === null || !otherPair.hasValue(pair.value)) result = false;
     });
     return result;
   },
