@@ -1,0 +1,125 @@
+:textile
+  h3. @JS.Hash@
+  
+  A @Hash@ is an unordered collection of key-value pairs. It can be thought of as a table that
+  maps 'key' objects (of which there are no duplicates within a @Hash@) to 'value' objects (of
+  which there may be duplicates). This implementation is close to Ruby's @Hash@ class, though
+  you may be familiar with the data structure in some other form; Java's @HashMap@, Python
+  dictionaries, JavaScript objects, PHP's associative arrays and Scheme's alists all perform
+  a similar function.
+  
+  JavaScript's native @Object@ class could be considered a basic kind of hashtable in which
+  the keys must be strings. This class provides a more general-purpose implementation with
+  many helpful methods not provided by JavaScript. The keys in a @Hash@ may be numbers,
+  strings, or any object that implements the "@equals()@ and @hash()@ methods":/equality.html.
+  
+  For our examples we're going to use two classes with pretty trivial equality operations. Note
+  how @hash()@ uses the same data as @equals()@ ensuring correct behaviour:
+  
+  <pre class="prettyprint">    State = new JS.Class({
+          initialize: function(name, code) {
+              this.name = name;
+              this.code = code;
+          },
+          equals: function(other) {
+              return (other instanceof this.klass) &&
+                     other.code === this.code;
+          },
+          hash: function() {
+              return this.code;
+          }
+      });
+      
+      Senator = new JS.Class({
+          initialize: function(name) {
+              this.name = name;
+          },
+          equals: function(other) {
+              return (other instanceof this.klass) &&
+                     other.name === this.name;
+          },
+          hash: function() {
+              return this.name;
+          }
+      });</pre>
+      
+  And we'll instantiate a few pieces of data to put in a @Hash@:
+  
+  <pre class="prettyprint">    var NY = new State('New York', 'NY'),
+          CA = new State('California', 'CA'),
+          IL = new State('Illinois', 'IL'),
+          TX = new State('Texas', 'TX'),
+          
+          hutchinson = new Senator('Kay Bailey Hutchison'),
+          burris     = new Senator('Roland Burris'),
+          feinstein  = new Senator('Dianne Feinstein'),
+          gillibrand = new Senator('Kirsten Gillibrand'),
+          hancock    = new Senator('John Hancock');</pre>
+  
+  h3. Instantiating a @Hash@
+  
+  There are three ways to instantiate a @Hash@. The first is to simply list the key-value
+  pairs as an array. Retrieving a key will then return the corresponding value:
+  
+  <pre class="prettyprint">    var senators = new JS.Hash([
+          NY,   gillibrand,
+          CA,   feinstein,
+          IL,   burris,
+          TX,   hutchinson
+      ]);
+      
+      senators.get(IL).name   // -> "Roland Burris"</pre>
+  
+  One important function of a @Hash@ is that you don't need the original key object to
+  retrieve its associated value, you just need some object equal to the key. States are
+  compared using their @code@, so we could create another object to represent Texas to get
+  its senator:
+  
+  <pre class="prettyprint">    senators.get(new State('Lone Star State', 'TX'))
+      // -> #<Senator name="Kay Bailey Hutchison"></pre>
+  
+  The second way is to instantiate the @Hash@ using a single default value; this value will
+  then be returned when you ask for a key the hash doesn't have:
+  
+  <pre class="prettyprint">    var senators = new JS.Hash(hancock);
+      senators.get(NY).name   // -> "John Hancock"</pre>
+  
+  The third and final way is to instantiate using a function, which will be called when a
+  nonexistent key is accessed. The function is passed the hash and the requested key, so
+  you can store the result in the hash if required:
+  
+  <pre class="prettyprint">    var senators = new JS.Hash(function(hash, key) {
+          var result = new Senator('The senator for ' + key.name
+                                                      + ' (' + key.code + ')');
+          hash.store(key, result);
+          return result;
+      });
+      
+      senators.size           // -> 0
+      senators.get(CA).name   // -> "The senator for California (CA)"
+      senators.size           // -> 1</pre>
+  
+  h3. Enumeration
+  
+  Hashes are "@Enumerable@":/enumerable.html, and their @forEach()@ method yields a @Hash.Pair@
+  object with each iteration. Each pair has a @key@ and a @value@. Iteration order is not
+  guaranteed, though on many JavaScript implementations you may find insertion order is
+  preserved. *Do not rely on order when using a @Hash@.* For example:
+  
+  <pre class="prettyprint">    var senators = new JS.Hash([
+          NY,   gillibrand,
+          CA,   feinstein,
+          IL,   burris,
+          TX,   hutchinson
+      ]);
+      
+      senators.forEach(function(pair) {
+          console.log(pair.key.code + ': ' + pair.value.name);
+      });
+      
+      // Prints:
+      // NY: Kirsten Gillibrand
+      // CA: Dianne Feinstein
+      // IL: Roland Burris
+      // TX: Kay Bailey Hutchison</pre>
+  
