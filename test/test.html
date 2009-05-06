@@ -718,7 +718,7 @@
             
             hash.setDefault(4);
             assertEqual(4, hash.get(new HashCar('nothing')));
-            hash.setDefault(function(car) { return car.brand.toUpperCase() });
+            hash.setDefault(function(hash, car) { return car.brand.toUpperCase() });
             assertEqual('VOLVO', hash.get(new HashCar('volvo')));
             
             var h = new JS.Hash();

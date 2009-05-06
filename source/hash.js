@@ -45,8 +45,6 @@ JS.Hash = new JS.Class('Hash', {
   
   initialize: function(object) {
     this.clear();
-    var proc = object, self = this;
-    if (JS.isFn(proc)) object = function(key) { return proc(self, key) };
     if (!(object instanceof Array)) return this.setDefault(object);
     for (var i = 0, n = object.length; i < n; i += 2)
       this.store(object[i], object[i+1]);
@@ -123,7 +121,7 @@ JS.Hash = new JS.Class('Hash', {
   
   getDefault: function(key) {
     return JS.isFn(this._default)
-        ? this._default(key)
+        ? this._default(this, key)
         : (this._default || null);
   },
   
