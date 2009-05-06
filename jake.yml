@@ -13,7 +13,7 @@ packages:
       - module
       - kernel
       - class
-      - circulate
+      - bootstrap
       - interface
       - singleton
   package:          package

@@ -3,6 +3,7 @@ JS.Module.include(JS.Kernel);
 JS.Class = JS.extend(new JS.Class('Class', JS.Module, JS.Class.prototype), JS.Kernel.__fns__);
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
+JS.extend(JS.Kernel, JS.Kernel.__fns__);
 
 JS.Module.extend({
   _observers: [],
