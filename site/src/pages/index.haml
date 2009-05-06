@@ -3,14 +3,13 @@
   implements Ruby's core object, module and class system and some of its metaprogramming facilities,
   giving you a powerful base to build well-structured OO programs.
   
-  <pre class="prettyprint">
-  var Event = new JS.Class({
-    include: JS.Observable,
-    
-    fire: function(data) {
-      this.notifyObservers('fire', data);
-    }
-  });</pre>
+  <pre class="prettyprint">    var Event = new JS.Class({
+          include: JS.Observable,
+          
+          fire: function(data) {
+              this.notifyObservers('fire', data);
+          }
+      });</pre>
   
   h3. Features
   

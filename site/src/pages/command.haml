@@ -9,35 +9,33 @@
   
   Here's your basic 'Hello world' command:
   
-  <pre class="prettyprint">
-  var helloWorld = new JS.Command({
-    execute: function() {
-      alert('Hello world!');
-    }
-  });
-  
-  helloWorld.execute()
-  // -> alerts "Hello world!"</pre>
+  <pre class="prettyprint">    var helloWorld = new JS.Command({
+          execute: function() {
+              alert('Hello world!');
+          }
+      });
+      
+      helloWorld.execute()
+      // -> alerts "Hello world!"</pre>
   
   If your action can be reversed and you want to implement an 'undo' function in your code,
   you need to tell the command how to reverse itself:
   
-  <pre class="prettyprint">
-  var incrementCounter = new JS.Command({
-    execute: function() {
-      someCounter += 1;
-    },
-    undo: function() {
-      someCounter -= 1;
-    }
-  });
-  
-  var someCounter = 0;
-  incrementCounter.execute();
-  incrementCounter.execute();
-  incrementCounter.undo();
-  
-  // someCounter is now == 1</pre>
+  <pre class="prettyprint">    var incrementCounter = new JS.Command({
+          execute: function() {
+              someCounter += 1;
+          },
+          undo: function() {
+              someCounter -= 1;
+          }
+      });
+      
+      var someCounter = 0;
+      incrementCounter.execute();
+      incrementCounter.execute();
+      incrementCounter.undo();
+      
+      // someCounter is now == 1</pre>
   
   h3. Creating your own command classes
   
@@ -45,29 +43,28 @@
   you might want to create a type of command that drew a circle at random on a @canvas@
   element:
   
-  <pre class="prettyprint">
-  var DrawCircleCommand = new JS.Class(JS.Command, {
-    initialize: function(ctx) {
-    
-      var x = Math.random() * 400,
-          y = Math.random() * 300,
-          r = Math.random() * 50;
-      
-      this.callSuper({
-        execute: function() {
-          ctx.fillStyle = 'rgb(255,0,0)';
-          ctx.beginPath();
-          ctx.arc(x, y, r, 0, 2*Math.PI, true);
-          ctx.fill();
-        }
+  <pre class="prettyprint">    var DrawCircleCommand = new JS.Class(JS.Command, {
+          initialize: function(ctx) {
+            
+              var x = Math.random() * 400,
+                  y = Math.random() * 300,
+                  r = Math.random() * 50;
+              
+              this.callSuper({
+                  execute: function() {
+                      ctx.fillStyle = 'rgb(255,0,0)';
+                      ctx.beginPath();
+                      ctx.arc(x, y, r, 0, 2*Math.PI, true);
+                      ctx.fill();
+                  }
+              });
+          }
       });
-    }
-  });
-  
-  var ctx = myCanvas.getContext('2d');
-  var randomCircle = new DrawCircleCommand(ctx);
-  
-  randomCircle.execute();</pre>
+      
+      var ctx = myCanvas.getContext('2d');
+      var randomCircle = new DrawCircleCommand(ctx);
+      
+      randomCircle.execute();</pre>
   
   Note the general pattern here: we create a subclass of @JS.Command@. This new subclass
   accepts a drawing context to instantiate it (@ctx@), chooses some random drawing points, then
@@ -81,15 +78,14 @@
   They contain hooks for talking to command stacks and must not be modified. Always use
   @callSuper()@ as shown above to set up your commands. Do not do this:
   
-  <pre class="prettyprint">
-  var BrokenCommand = new JS.Class(JS.Command, {
-    execute: function() {
-      doSomething();
-    },
-    undo: function() {
-      undoSomething();
-    }
-  });</pre>
+  <pre class="prettyprint">    var BrokenCommand = new JS.Class(JS.Command, {
+          execute: function() {
+              doSomething();
+          },
+          undo: function() {
+              undoSomething();
+          }
+      });</pre>
   
   This command will not work properly if you try to hook it up to a command stack as
   described below.
@@ -100,38 +96,35 @@
   can step back and forth through it later, we have a class called @JS.Command.Stack@.
   To use it, just create one and give it a name:
   
-  <pre class="prettyprint">
-  var counterStack = new JS.Command.Stack();</pre>
+  <pre class="prettyprint">    var counterStack = new JS.Command.Stack();</pre>
   
   You can then create commands that will automatically add themselves to this stack
   whenever they are executed, using the @stack@ option:
   
-  <pre class="prettyprint">
-  var incrementCounter = new JS.Command({
-    execute: function() {
-      someCounter += 1;
-    },
-    undo: function() {
-      someCounter -= 1;
-    },
-    stack: counterStack
-  });</pre>
+  <pre class="prettyprint">    var incrementCounter = new JS.Command({
+          execute: function() {
+              someCounter += 1;
+          },
+          undo: function() {
+              someCounter -= 1;
+          },
+          stack: counterStack
+      });</pre>
   
   Now, whenever @incrementCounter@ is executed, it gets added to the stack @counterStack@.
   You can use the stack's @undo()@ and @redo()@ methods to step back and forth through
   the command history:
   
-  <pre class="prettyprint">
-  var someCounter = 0;
-  
-  incrementCounter.execute();   // someCounter == 1
-  incrementCounter.execute();   // someCounter == 2
-  incrementCounter.execute();   // someCounter == 3
-  
-  counterStack.undo();          // someCounter == 2
-  counterStack.redo();          // someCounter == 3
-  counterStack.undo();          // someCounter == 2
-  counterStack.undo();          // someCounter == 1</pre>
+  <pre class="prettyprint">    var someCounter = 0;
+      
+      incrementCounter.execute();   // someCounter == 1
+      incrementCounter.execute();   // someCounter == 2
+      incrementCounter.execute();   // someCounter == 3
+      
+      counterStack.undo();          // someCounter == 2
+      counterStack.redo();          // someCounter == 3
+      counterStack.undo();          // someCounter == 2
+      counterStack.undo();          // someCounter == 1</pre>
   
   Of course, this is more useful when you have lots of different types of commands
   that can all be undone, and you want to provide a means of stepping through the
@@ -149,24 +142,23 @@
   point in the stack you happen to be, and any previously undone commands after
   this point are discarded. For example:
   
-  <pre class="prettyprint">
-  someCounter = 0;
-  counterStack.clear();         // 0 commands in stack
-  
-  incrementCounter.execute();   // 1 command
-  incrementCounter.execute();   // 2 commands
-  incrementCounter.execute();   // 3 commands
-  incrementCounter.execute();   // 4 commands
-                                // someCounter == 4
-  
-  counterStack.stepTo(2);       // still 4 commands in stack
-                                // stack pointer is after 2nd command
-                                // someCounter == 2
-  
-  incrementCounter.execute();   // stack truncated
-                                // contains 3 commands
-                                // pointer at end of stack
-                                // someCounter == 3</pre>
+  <pre class="prettyprint">    someCounter = 0;
+      counterStack.clear();         // 0 commands in stack
+      
+      incrementCounter.execute();   // 1 command
+      incrementCounter.execute();   // 2 commands
+      incrementCounter.execute();   // 3 commands
+      incrementCounter.execute();   // 4 commands
+                                    // someCounter == 4
+      
+      counterStack.stepTo(2);       // still 4 commands in stack
+                                    // stack pointer is after 2nd command
+                                    // someCounter == 2
+      
+      incrementCounter.execute();   // stack truncated
+                                    // contains 3 commands
+                                    // pointer at end of stack
+                                    // someCounter == 3</pre>
   
   h3. Redo from start
   
@@ -182,50 +174,49 @@
   As an example, here's a program that allows you to draw random squares
   on a canvas. Hooking this up to a GUI is trivial with this code in place:
   
-  <pre class="prettyprint">
-  // Canvas information
-  var canvas = document.getElementById('canvas'),
-          ctx = canvas.getContext('2d'),
-          W = 400, H = 300;
-  
-  // Command for clearing the drawing area
-  var clearCanvas = new JS.Command({
-      execute: function() {
-          ctx.fillStyle = 'rgb(255,255,255)';
-          ctx.fillRect(0, 0, W, H);
-      }
-  });
-  
-  // A redo-from-start stack
-  var drawingStack = new JS.Command.Stack({redo: clearCanvas});
-  
-  // Command for drawing a random square
-  var DrawSquareCommand = new JS.Class(JS.Command, {
-      initialize: function(ctx) {
-          
-          var x = Math.random() * W,
-                  y = Math.random() * H,
-                  r = Math.random() * 30;
-          
-          this.callSuper({
-              execute: function() {
-                  ctx.fillStyle = 'rgb(0,0,255)';
-                  ctx.fillRect(x, y, r, r);
-              },
-              stack: drawingStack
-          });
-          
-          this.name = 'Draw square at ' + x + ', ' + y;
-      }
-  });</pre>
+  <pre class="prettyprint">    // Canvas information
+      var canvas = document.getElementById('canvas'),
+          ctx    = canvas.getContext('2d'),
+          W      = 400,
+          H      = 300;
+      
+      // Command for clearing the drawing area
+      var clearCanvas = new JS.Command({
+          execute: function() {
+              ctx.fillStyle = 'rgb(255,255,255)';
+              ctx.fillRect(0, 0, W, H);
+          }
+      });
+      
+      // A redo-from-start stack
+      var drawingStack = new JS.Command.Stack({redo: clearCanvas});
+      
+      // Command for drawing a random square
+      var DrawSquareCommand = new JS.Class(JS.Command, {
+          initialize: function(ctx) {
+              
+              var x = Math.random() * W,
+                      y = Math.random() * H,
+                      r = Math.random() * 30;
+              
+              this.callSuper({
+                  execute: function() {
+                      ctx.fillStyle = 'rgb(0,0,255)';
+                      ctx.fillRect(x, y, r, r);
+                  },
+                  stack: drawingStack
+              });
+              
+              this.name = 'Draw square at ' + x + ', ' + y;
+          }
+      });</pre>
   
   To undo a step, the drawing stack clears the canvas and then re-runs all its
   commands up to the required step. Notice how the drawing command includes
   the line @stack: drawingStack@ to make sure it is remembered by the stack.
   To draw a square at random, you'd just do this:
   
-  <pre class="prettyprint">
-  new DrawSquareCommand(ctx).execute();</pre>
+  <pre class="prettyprint">    new DrawSquareCommand(ctx).execute();</pre>
   
   That could easily be hooked up to an interface button, as could a snippet of
   code for calling @drawingStack.undo()@.
@@ -246,33 +237,32 @@
   stack length. What does change is the stack's @pointer@ - this number tells
   you what point in the stack the most recently executed command is. For example:
   
-  <pre class="prettyprint">
-  var stack = new JS.Command.Stack();
-  var command = new JS.Command({
-    execute: function() { ... }
-  });
-  
-  // stack.length == 0
-  // stack.pointer == 0
-  
-  stack.push(command);
-  stack.push(command);
-  stack.push(command);
-  
-  // stack.length == 3
-  // stack.pointer == 3
-  
-  stack.undo();
-  stack.undo();
-  
-  // stack.length == 3
-  // stack.pointer == 1
-  
-  stack.push(command);
-  
-  // stack gets truncated
-  // stack.length == 2
-  // stack.pointer == 2</pre>
+  <pre class="prettyprint">    var stack = new JS.Command.Stack();
+      var command = new JS.Command({
+          execute: function() { ... }
+      });
+      
+      // stack.length == 0
+      // stack.pointer == 0
+      
+      stack.push(command);
+      stack.push(command);
+      stack.push(command);
+      
+      // stack.length == 3
+      // stack.pointer == 3
+      
+      stack.undo();
+      stack.undo();
+      
+      // stack.length == 3
+      // stack.pointer == 1
+      
+      stack.push(command);
+      
+      // stack gets truncated
+      // stack.length == 2
+      // stack.pointer == 2</pre>
   
   h3. They're @Observable@ and @Enumerable@
   
@@ -281,19 +271,18 @@
   _before_ you include the @Command@ code. This means you can implement a
   Photoshop-style action history with barely any code at all by observing the stack:
   
-  <pre class="prettyprint">
-  HTML:
-  <ul id="drawHistory"></ul>
-  
-  SCRIPT:
-  drawingStack.subscribe(function(stack) {
-    var list = document.getElementById('drawHistory'), str = '';
-    stack.forEach(function(command, i) {
-      var color = (i >= stack.pointer) ? '#999' : '#000';
-      str += '<li style="color: ' + color + ';">' + command.name + '</li>';
-    });
-    list.innerHTML = str;
-  });</pre>
+  <pre class="prettyprint">    <ul id="drawHistory"></ul>
+      
+      <script type="text/javascript">
+      drawingStack.subscribe(function(stack) {
+          var list = document.getElementById('drawHistory'), str = '';
+          stack.forEach(function(command, i) {
+              var color = (i >= stack.pointer) ? '#999' : '#000';
+              str += '<li style="color: ' + color + ';">' + command.name + '</li>';
+          });
+          list.innerHTML = str;
+      });
+      </script></pre>
   
   This creates a list that updates itself in response to stack changes. Your
   @subscribe@ callback is passed a reference to the stack whenever the stack

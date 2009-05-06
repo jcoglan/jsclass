@@ -6,11 +6,10 @@
   JavaScript has functions and treats them as first-class objects, so you can get
   a reference to a method and call it later:
   
-  <pre class="prettyprint">
-  var rex = new Dog('Rex');
-  var spk = rex.speak;    // a reference, we are not calling the method
-  spk('biscuits');
-      // -> "MY NAME IS AND I LIKE BISCUITS!"</pre>
+  <pre class="prettyprint">    var rex = new Dog('Rex');
+      var spk = rex.speak;    // a reference, we are not calling the method
+      spk('biscuits');
+          // -> "MY NAME IS AND I LIKE BISCUITS!"</pre>
   
   Where did Rex's name go? The thing is, we've not called @spk@ through the object @rex@, so
   @this@ inside the function no longer refers to the right thing. @JS.Class@ gives each object
@@ -18,24 +17,22 @@
   method is simply a JavaScript function that you can call on its own and maintain
   the binding of @this@:
   
-  <pre class="prettyprint">
-  var speak = rex.method('speak');
-  speak('biscuits');
-      // -> "MY NAME IS REX AND I LIKE BISCUITS!"</pre>
+  <pre class="prettyprint">    var speak = rex.method('speak');
+      speak('biscuits');
+          // -> "MY NAME IS REX AND I LIKE BISCUITS!"</pre>
   
   You can also do this with class methods, since classes are objects too:
   
-  <pre class="prettyprint">
-  var User = new JS.Class({
-    extend: {
-      create: function(name) {
-        return new this(name);
-      }
-    },
-    initialize: function(name) {
-      this.username = name;
-    }
-  });
-  
-  var u = User.method('create');
-  u('James')    // -> {username: 'James'}</pre>
+  <pre class="prettyprint">    var User = new JS.Class({
+          extend: {
+              create: function(name) {
+                  return new this(name);
+              }
+          },
+          initialize: function(name) {
+              this.username = name;
+          }
+      });
+      
+      var u = User.method('create');
+      u('James')    // -> {username: 'James'}</pre>

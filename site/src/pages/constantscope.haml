@@ -17,29 +17,28 @@
   if you want it to work properly. @JS.Class@ is not a code parser, which means it
   can't support the same constant semantics as Ruby. Let's take a concrete example:
   
-  <pre class="prettyprint">
-  class Outer
-    CONST = 45
-    
-    class Item          # (1)
-    end
-    
-    class Inner
-      class Item        # (2)
-        def initialize
-          puts CONST    # (3)
+  <pre class="prettyprint">    class Outer
+        CONST = 45
+        
+        class Item          # (1)
         end
-      end
-      
-      def create_item
-        Item.new        # (4)
-      end
-    end
-    
-    def create_item
-      Item.new          # (5)
-    end
-  end </pre>
+        
+        class Inner
+          class Item        # (2)
+            def initialize
+              puts CONST    # (3)
+            end
+          end
+          
+          def create_item
+            Item.new        # (4)
+          end
+        end
+        
+        def create_item
+          Item.new          # (5)
+        end
+      end </pre>
   
   In Ruby, any name beginning with a capital letter is considered a constant: the
   class @Outer@ contains three constants: @CONST@, @Item@ and @Inner@. They are
@@ -55,32 +54,31 @@
   To write this in @JS.Class@, we need to make the constants properties of the
   classes that contain them by @extend@-ing the classes:
   
-  <pre class="prettyprint">
-  Outer = new JS.Class({
-    extend: {
-      CONST: 45,
-      
-      Item: new JS.Class(),
-      
-      Inner: new JS.Class({
-        extend: {
-          Item: new JS.Class({
-            initialize: function() {
-              alert(Outer.CONST);
-            }
-          })
-        },
-        
-        create_item: function() {
-          return new this.klass.Item();
-        }
-      })
-    },
-    
-    create_item: function() {
-      return new this.klass.Item();
-    }
-  }); </pre>
+  <pre class="prettyprint">    Outer = new JS.Class({
+          extend: {
+              CONST: 45,
+              
+              Item: new JS.Class(),
+              
+              Inner: new JS.Class({
+                  extend: {
+                      Item: new JS.Class({
+                          initialize: function() {
+                              alert(Outer.CONST);
+                          }
+                      })
+                  },
+                  
+                  create_item: function() {
+                      return new this.klass.Item();
+                  }
+              })
+          },
+          
+          create_item: function() {
+              return new this.klass.Item();
+          }
+      }); </pre>
   
   This is noisy as it contains a lot of nesting that isn't present in the Ruby version.
   Also, we end up with more name duplication (@Outer.CONST@) since classes have no awareness
@@ -93,57 +91,55 @@
   of such a reference will follow the same lexical rules as exist in Ruby, so that we
   can rewrite the above code as:
   
-  <pre class="prettyprint">
-  Outer = new JS.Class({
-    include: JS.ConstantScope,
-    
-    CONST: 45,
-    
-    Item: new JS.Class(),
-    
-    Inner: new JS.Class({
-      Item: new JS.Class({
-        initialize: function() {
-          alert(this.CONST);
-        }
-      }),
-      
-      create_item: function() {
-        return new this.Item();
-      }
-    }),
-    
-    create_item: function() {
-      return new this.Item();
-    }
-  }); </pre>
+  <pre class="prettyprint">    Outer = new JS.Class({
+          include: JS.ConstantScope,
+          
+          CONST: 45,
+          
+          Item: new JS.Class(),
+          
+          Inner: new JS.Class({
+              Item: new JS.Class({
+                  initialize: function() {
+                      alert(this.CONST);
+                  }
+              }),
+              
+              create_item: function() {
+                  return new this.Item();
+              }
+          }),
+          
+          create_item: function() {
+              return new this.Item();
+          }
+      }); </pre>
   
   Notice we've got rid of the extra @Outer@ reference to look up @CONST@, there are no
   @extend@ blocks, and we no longer have any @this.klass.X@ references. This also means
   that the syntax for referring to a constant is the same in both class and instance
   methods:
   
-  <pre class="prettyprint">
-  SomeClass = new JS.Class({
-    include: JS.ConstantScope,
-    
-    MY_CONST:   'cheese',
-    
-    fetch: function() {
-      return this.MY_CONST;
-    },
-    
-    extend: {
-      get: function() {
-        return this.MY_CONST;
-      }
-    }
-  });
-  
-  SomeClass.get();      // -> "cheese"
-  
-  var s = new SomeClass();
-  s.fetch();            // -> "cheese"</pre>
+  <pre class="prettyprint">    SomeClass = new JS.Class({
+        include: JS.ConstantScope,
+        
+        MY_CONST:   'cheese',
+        
+        fetch: function() {
+            return this.MY_CONST;
+        },
+        
+        extend: {
+            get: function() {
+                return this.MY_CONST;
+            }
+        }
+      });
+      
+      SomeClass.get();      // -> "cheese"
+      
+      var s = new SomeClass();
+      s.fetch();            // -> "cheese"</pre>
   
   h3. Warnings
   
@@ -161,9 +157,8 @@
   accessor will not cause the new value to propagate, so make sure you reassign constants
   by @extend@-ing their containing class. Taking the above example:
   
-  <pre class="prettyprint">
-  // This will not propagate as expected
-  SomeClass.MY_CONST = 'cake';
-  
-  // Do this instead
-  SomeClass.extend({MY_CONST: 'cake'});</pre>
+  <pre class="prettyprint">    // This will not propagate as expected
+      SomeClass.MY_CONST = 'cake';
+      
+      // Do this instead
+      SomeClass.extend({MY_CONST: 'cake'});</pre>

@@ -10,36 +10,34 @@
   
   Here's a simple class that stores some of its instance data in a list, just so you get the idea:
   
-  <pre class="prettyprint">
-  var Collection = new JS.Class({
-    include: JS.Enumerable,
-    
-    initialize: function() {
-      this.list = [];
-      for (var i = 0, n = arguments.length; i < n; i++)
-        this.list.push(arguments[i]);
-    },
-    
-    forEach: function(block, context) {
-      for (var i = 0, n = this.list.length; i < n; i++)
-        block.call(context || null, this.list[i], i);
-    }
-  });</pre>
+  <pre class="prettyprint">    var Collection = new JS.Class({
+          include: JS.Enumerable,
+          
+          initialize: function() {
+              this.list = [];
+              for (var i = 0, n = arguments.length; i < n; i++)
+                  this.list.push(arguments[i]);
+          },
+          
+          forEach: function(block, context) {
+              for (var i = 0, n = this.list.length; i < n; i++)
+                  block.call(context || null, this.list[i], i);
+          }
+      });</pre>
   
   Let's create an instance and see what it does:
   
-  <pre class="prettyprint">
-  var list = new Collection(3,7,4,8,2);
-  list.forEach(function(x, i) {
-    console.log(x, i);
-  });
-  
-  // prints...
-  //    3 0
-  //    7 1
-  //    4 2
-  //    8 3
-  //    2 4</pre>
+  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
+      list.forEach(function(x, i) {
+          console.log(x, i);
+      });
+      
+      // prints...
+      //    3 0
+      //    7 1
+      //    4 2
+      //    8 3
+      //    2 4</pre>
   
   The API provided by the @Enumerable@ module to the @Collection@ class is as follows. In
   the argument list of each method, @block@ is a function and @context@ is an optional
@@ -49,31 +47,25 @@
   
   Returns @true@ iff @block@ returns @true@ for every member of the collection. Aliased as @every()@.
   
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).all(function(x) {
-    return x > 5;
-  })
-  // -> false
-  
-  new Collection(3,7,4,8,2).all(function(x) {
-    return typeof x == 'number';
-  })
-  // -> true</pre>
+  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
+      
+      list.all(function(x) { return x > 5 });
+      // -> false
+      
+      list.all(function(x) { return typeof x == 'number' });
+      // -> true</pre>
   
   h3. @any(block, context)@
   
   Returns @true@ if @block@ returns @true@ for one or more members of the collection. Aliased as @some()@.
   
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).any(function(x) {
-    return x > 5;
-  })
-  // -> true
-  
-  new Collection(3,7,4,8,2).any(function(x) {
-    return typeof x == 'object';
-  })
-  // -> false</pre>
+  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
+      
+      list.any(function(x) { return x > 5 });
+      // -> true
+      
+      list.any(function(x) { return typeof x == 'object' });
+      // -> false</pre>
   
   h3. @collect(block, context)@
   
@@ -91,35 +83,6 @@
   
   Alias for @all()@.
   
-  h3. @forEachCons(n, block, context)@
-  
-  Calls @block@ with every set of @n@ consecutive members of the collection.
-  
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).forEachCons(3, function(list) {
-    console.log(list);
-  });
-  
-  // prints
-  //    [3, 7, 4]
-  //    [7, 4, 8]
-  //    [4, 8, 2]</pre>
-  
-  h3. @forEachSlice(n, block, context)@
-  
-  Splits the collection up into pieces of length @n@, and call @block@ with each
-  piece in turn.
-  
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).forEachSlice(2, function(list) {
-    console.log(list);
-  });
-  
-  // prints
-  //    [3, 7]
-  //    [4, 8]
-  //    [2]</pre>
-  
   h3. @filter(block, context)@
   
   Alias for @select()@.
@@ -128,15 +91,39 @@
   
   Returns the first member of the collection for which @block@ returns @true@. Aliased as @detect()@.
   
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).find(function(x) {
-    return x > 5;
-  })
-  // -> 7</pre>
+  <pre class="prettyprint">    new Collection(3,7,4,8,2).find(function(x) { return x > 5 });
+      // -> 7</pre>
   
   h3. @findAll(block, context)@
   
   Alias for @select()@.
+  
+  h3. @forEachCons(n, block, context)@
+  
+  Calls @block@ with every set of @n@ consecutive members of the collection.
+  
+  <pre class="prettyprint">    new Collection(3,7,4,8,2).forEachCons(3, function(list) {
+          console.log(list);
+      });
+      
+      // prints
+      //    [3, 7, 4]
+      //    [7, 4, 8]
+      //    [4, 8, 2]</pre>
+  
+  h3. @forEachSlice(n, block, context)@
+  
+  Splits the collection up into pieces of length @n@, and call @block@ with each
+  piece in turn.
+  
+  <pre class="prettyprint">    new Collection(3,7,4,8,2).forEachSlice(2, function(list) {
+          console.log(list);
+      });
+      
+      // prints
+      //    [3, 7]
+      //    [4, 8]
+      //    [2]</pre>
   
   h3. @inject(memo, block, context)@
   
@@ -144,23 +131,17 @@
   function. The first time your @block@ is called, it is passed the value of @memo@ you
   specified. The return value of @block@ becomes the next value of @memo@.
   
-  <pre class="prettyprint">
-  // sum the values
-  new Collection(3,7,4,8,2).inject(0, function(memo, x) {
-    return memo + x;
-  })
-  // -> 24</pre>
+  <pre class="prettyprint">    // sum the values
+      new Collection(3,7,4,8,2).inject(0, function(memo, x) { return memo + x });
+      // -> 24</pre>
   
   h3. @map(block, context)@
   
   Returns an @Array@ formed by calling @block@ on each member of the collection. Aliased as @collect()@.
   
-  <pre class="prettyprint">
-  // square the numbers
-  new Collection(3,7,4,8,2).map(function(x) {
-    return x * x;
-  })
-  // -> [9, 49, 16, 64, 4]</pre>
+  <pre class="prettyprint">    // square the numbers
+      new Collection(3,7,4,8,2).map(function(x) { return x * x });
+      // -> [9, 49, 16, 64, 4]</pre>
   
   h3. @max(block, context)@
   
@@ -169,22 +150,21 @@
   it is used to sort the members. If no block is passed, a sensible default sort method
   is used.
   
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).max()   // -> 8
+  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
+      
+      list.max()   // -> 8
   
-  new Collection(3,7,4,8,2).max(function(a,b) {
-    return (a%7) - (b%7);
-  })
-  // -> 4</pre>
+      list.max(function(a,b) { return (a%7) - (b%7) });
+      // -> 4</pre>
   
   h3. @member(needle)@
   
   Returns @true@ iff the collection contains any members equal to @needle@. Items are checked for
   equality (@==@) rather than identity (@===@).
   
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).member('7')   // -> true
-  new Collection(3,7,4,8,2).member('foo') // -> false</pre>
+  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
+      list.member('7')   // -> true
+      list.member('foo') // -> false</pre>
   
   h3. @min(block, context)@
   
@@ -195,32 +175,23 @@
   Returns two arrays, one containing members for which @block@ returns @true@, the other
   containing those for which it returns @false@.
   
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).partition(function(x, i) {
-    return x > i;
-  })
-  // -> [ [3, 7, 4, 8], [2] ]</pre>
+  <pre class="prettyprint">    new Collection(3,7,4,8,2).partition(function(x, i) { return x > i });
+      // -> [ [3, 7, 4, 8], [2] ]</pre>
   
   h3. @select(block, context)@
   
   Returns a new @Array@ containing the members of the collection for which @block@ returns @true@.
   Aliased as @filter()@ and @findAll()@.
   
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).select(function(x) {
-    return x > 5;
-  })
-  // -> [7, 8]</pre>
+  <pre class="prettyprint">    new Collection(3,7,4,8,2).select(function(x) { return x > 5 });
+      // -> [7, 8]</pre>
   
   h3. @reject(block, context)@
   
   Returns a new @Array@ containing the members of the collection for which @block@ returns @false@.
   
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).reject(function(x) {
-    return x > 5;
-  })
-  // -> [3, 4, 2]</pre>
+  <pre class="prettyprint">    new Collection(3,7,4,8,2).reject(function(x) { return x > 5 });
+      // -> [3, 4, 2]</pre>
   
   h3. @some(block, context)@
   
@@ -233,27 +204,23 @@
   standard comparison operators. If no @block@ is passed, a sensible default sort method
   is used, otherwise the block itself is used to perform sorting.
   
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).sort()
-  // -> [2, 3, 4, 7, 8]
-  
-  // sort by comparing values modulo 7
-  new Collection(3,7,4,8,2).sort(function(a,b) {
-    return (a%7) - (b%7);
-  })
-  // -> [7, 8, 2, 3, 4]</pre>
+  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
+          
+      list.sort()
+      // -> [2, 3, 4, 7, 8]
+      
+      // sort by comparing values modulo 7
+      list.sort(function(a,b) { return (a%7) - (b%7) });
+      // -> [7, 8, 2, 3, 4]</pre>
   
   h3. @sortBy(block, context)@
   
   Returns a new @Array@ containing the members of the collection sorted according to the
   value that @block@ returns for them.
   
-  <pre class="prettyprint">
-  // sort values modulo 7
-  new Collection(3,7,4,8,2).sortBy(function(x) {
-    return x % 7;
-  })
-  // -> [7, 8, 2, 3, 4]</pre>
+  <pre class="prettyprint">    // sort values modulo 7
+      new Collection(3,7,4,8,2).sortBy(function(x) { return x % 7 });
+      // -> [7, 8, 2, 3, 4]</pre>
   
   h3. @toArray()@
   
@@ -271,25 +238,18 @@
   
   What this translates to in practise:
   
-  <pre class="prettyprint">
-  new Collection(3,7,4,8,2).zip([1,9,3,6,4], [6,3,3])
-  
-  // -> [ [3,1,6], [7,9,3], [4,3,3],
-  //        [8,6,null], [2,4,null] ]
-  
-  new Collection(3,7,4,8,2).zip([1,9,3,6,4], function(list) {
-    console.log(list)
-  })
-  
-  // prints...
-  //    [3, 1]
-  //    [7, 9]
-  //    [4, 3]
-  //    [8, 6]
-  //    [2, 4]</pre>
-  
-  
-  
-  
-  
-  
+  <pre class="prettyprint">    new Collection(3,7,4,8,2).zip([1,9,3,6,4], [6,3,3]);
+      // -> [ [3,1,6], [7,9,3], [4,3,3],
+      //        [8,6,null], [2,4,null] ]
+      
+      new Collection(3,7,4,8,2).zip([1,9,3,6,4], function(list) {
+          console.log(list)
+      });
+      
+      // prints...
+      //    [3, 1]
+      //    [7, 9]
+      //    [4, 3]
+      //    [8, 6]
+      //    [2, 4]</pre>
+

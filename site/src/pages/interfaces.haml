@@ -9,20 +9,17 @@
   
   To create an interface, just pass in an array of method names:
   
-  <pre class="prettyprint">
-  var IntComparable = new JS.Interface([
-    'compareTo', 'lt', 'lte', 'gt', 'gte', 'eq'
-  ]);
-  
-  var IntStateMachine = new JS.Interface([
-    'getInitialState', 'changeState'
-  ]);</pre>
+  <pre class="prettyprint">    var IntComparable = new JS.Interface([
+          'compareTo', 'lt', 'lte', 'gt', 'gte', 'eq'
+      ]);
+      
+      var IntStateMachine = new JS.Interface([
+          'getInitialState', 'changeState'
+      ]);</pre>
   
   You can then test any object to find out whether it implements the required interfaces:
   
-  <pre class="prettyprint">
-  JS.Interface.ensure(someObject,
-      IntComparable, IntStateMachine);</pre>
+  <pre class="prettyprint">    JS.Interface.ensure(someObject, IntComparable, IntStateMachine);</pre>
   
   @JS.Interface.ensure@ tests its first argument against all the supplied interfaces. If it fails
   one of the tests, an error is thrown that tells you the name of the first method found to be

@@ -8,23 +8,22 @@
   objects. As an example, let's create a class to represent to-do list items. These can be
   ordered according to their priority.
   
-  <pre class="prettyprint">
-  var TodoItem = new JS.Class({
-    include: JS.Comparable,
-    
-    initialize: function(task, priority) {
-      this.task = task;
-      this.priority = priority;
-    },
-    
-    // Must return -1 if this object is 'less than' other,
-    // +1 if it is 'greater than' other, or 0 if they are equal
-    compareTo: function(other) {
-      if (this.priority < other.priority) return -1;
-      if (this.priority > other.priority) return 1;
-      return 0;
-    }
-  });</pre>
+  <pre class="prettyprint">    var TodoItem = new JS.Class({
+          include: JS.Comparable,
+          
+          initialize: function(task, priority) {
+              this.task = task;
+              this.priority = priority;
+          },
+          
+          // Must return -1 if this object is 'less than' other,
+          // +1 if it is 'greater than' other, or 0 if they are equal
+          compareTo: function(other) {
+              if (this.priority < other.priority) return -1;
+              if (this.priority > other.priority) return 1;
+              return 0;
+          }
+      });</pre>
   
   @TodoItem@ now has the following instance methods:
   
@@ -40,25 +39,24 @@
   
   Let's create some items and see how they behave:
   
-  <pre class="prettyprint">
-  var items = [
-    new TodoItem('Go to work', 5),
-    new TodoItem('Buy milk', 3),
-    new TodoItem('Pay the rent', 2),
-    new TodoItem('Write code', 1),
-    new TodoItem('Head down the pub', 4)
-  ];
-  
-  items[2].lt(items[1])   // -> true
-  items[0].gte(items[3])  // -> true
-  items[4].eq(items[4])   // -> true
-  items[1].between(items[3], items[4])  // -> true
-  
-  items.sort(TodoItem.compare)
-      // -> [
-              {task: 'Write code', ...},
-              {task: 'Pay the rent', ...},
-              {task: 'Buy milk', ...},
-              {task: 'Head down the pub', ...},
-              {task: 'Go to work', ...}
-            ]</pre>
+  <pre class="prettyprint">    var items = [
+          new TodoItem('Go to work', 5),
+          new TodoItem('Buy milk', 3),
+          new TodoItem('Pay the rent', 2),
+          new TodoItem('Write code', 1),
+          new TodoItem('Head down the pub', 4)
+      ];
+      
+      items[2].lt(items[1])   // -> true
+      items[0].gte(items[3])  // -> true
+      items[4].eq(items[4])   // -> true
+      items[1].between(items[3], items[4])  // -> true
+      
+      items.sort(TodoItem.compare)
+          // -> [
+          //        {task: 'Write code', ...},
+          //        {task: 'Pay the rent', ...},
+          //        {task: 'Buy milk', ...},
+          //        {task: 'Head down the pub', ...},
+          //        {task: 'Go to work', ...}
+          //    ]</pre>

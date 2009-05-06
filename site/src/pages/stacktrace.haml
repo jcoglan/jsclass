@@ -11,76 +11,73 @@
   @StackTrace@. This shows how you can mix it in when defining a class or a module, how
   to add it to existing modules, and shows some complex output.
   
-  <pre class="prettyprint">
-  // Parent class. run() calls getString()
-  Parent = new JS.Class({
-    include: JS.StackTrace,
-    run: function() {
-      return this.getString();
-    },
-    getString: function() {
-      return 'Running';
-    }
-  });
-  
-  // Mixin module. run() calls the super method
-  Mixin = new JS.Module({
-    include: JS.StackTrace,
-    run: function() {
-      return this.callSuper().toUpperCase();
-    }
-  });
-  
-  // Augment Observable module with StackTrace
-  JS.Observable.include(JS.StackTrace);
-  
-  // Child class, inherits from Parent, includes Mixin and Observable
-  // run() calls fire(), which calls Observable#notifyObservers()
-  Child = new JS.Class(Parent, {
-    include: [Mixin, JS.Observable, JS.StackTrace],
-    run: function() {
-      this.fire();
-      return this.callSuper() + '!!!';
-    },
-    fire: function() {
-      this.notifyObservers();
-    }
-  });</pre>
+  <pre class="prettyprint">    // Parent class. run() calls getString()
+      Parent = new JS.Class({
+          include: JS.StackTrace,
+          run: function() {
+              return this.getString();
+          },
+          getString: function() {
+              return 'Running';
+          }
+      });
+      
+      // Mixin module. run() calls the super method
+      Mixin = new JS.Module({
+          include: JS.StackTrace,
+          run: function() {
+              return this.callSuper().toUpperCase();
+          }
+      });
+      
+      // Augment Observable module with StackTrace
+      JS.Observable.include(JS.StackTrace);
+      
+      // Child class, inherits from Parent, includes Mixin and Observable
+      // run() calls fire(), which calls Observable#notifyObservers()
+      Child = new JS.Class(Parent, {
+          include: [Mixin, JS.Observable, JS.StackTrace],
+          run: function() {
+              this.fire();
+              return this.callSuper() + '!!!';
+          },
+          fire: function() {
+              this.notifyObservers();
+          }
+      });</pre>
   
   Suppose that somewhere else in your code you have this:
   
-  <pre class="prettyprint">
-  var child = new Child, parent = new Parent;
-  child.addObserver(parent.method('run'));
-  child.run('something')</pre>
+  <pre class="prettyprint">    var child = new Child, parent = new Parent;
+      child.addObserver(parent.method('run'));
+      child.run('something')</pre>
   
   @StackTrace@ will print the following to the console. Every method call in traced classes
   is logged, with indentation to show how deep in the call stack you are. Vertical lines
   connect the beginning and end of a single method call.
   
-  <pre>
-  JS.Observable#addObserver( [function()] )
-  JS.Observable#addObserver() --> undefined
-  Child#run( ["something"] )
-  |  Child#fire( [] )
-  |  |  JS.Observable#notifyObservers( [] )
-  |  |  |  JS.Observable#isChanged( [] )
-  |  |  |  JS.Observable#isChanged() --> true
-  |  |  |  JS.Observable#countObservers( [] )
-  |  |  |  JS.Observable#countObservers() --> 1
-  |  |  |  Parent#run( [] )
-  |  |  |  |  Parent#getString( [] )
-  |  |  |  |  Parent#getString() --> Running
-  |  |  |  Parent#run() --> Running
-  |  |  JS.Observable#notifyObservers() --> undefined
-  |  Child#fire() --> undefined
-  |  Mixin#run( ["something"] )
-  |  |  Parent#run( ["something"] )
-  |  |  |  Parent#getString( [] )
-  |  |  |  Parent#getString() --> Running
-  |  |  Parent#run() --> Running
-  |  Mixin#run() --> RUNNING
-  Child#run() --> RUNNING!!!</pre>
+  <pre>    JS.Observable#addObserver( [function()] )
+      JS.Observable#addObserver() --> undefined
+      Child#run( ["something"] )
+      |  Child#fire( [] )
+      |  |  JS.Observable#notifyObservers( [] )
+      |  |  |  JS.Observable#isChanged( [] )
+      |  |  |  JS.Observable#isChanged() --> true
+      |  |  |  JS.Observable#countObservers( [] )
+      |  |  |  JS.Observable#countObservers() --> 1
+      |  |  |  Parent#run( [] )
+      |  |  |  |  Parent#getString( [] )
+      |  |  |  |  Parent#getString() --> Running
+      |  |  |  Parent#run() --> Running
+      |  |  JS.Observable#notifyObservers() --> undefined
+      |  Child#fire() --> undefined
+      |  Mixin#run( ["something"] )
+      |  |  Parent#run( ["something"] )
+      |  |  |  Parent#getString( [] )
+      |  |  |  Parent#getString() --> Running
+      |  |  Parent#run() --> Running
+      |  Mixin#run() --> RUNNING
+      Child#run() --> RUNNING!!!</pre>
   
   h3. Tracing modes
   
@@ -91,22 +88,20 @@
   the method that called _that_ next, and so on until we reach the outermost method.
   Suppose we make the following changes to our program:
   
-  <pre class="prettyprint">
-  Parent.define('getString', function() {
-    throw new TypeError;
-  });
-  
-  JS.StackTrace.logLevel = 'errors';</pre>
+  <pre class="prettyprint">    Parent.define('getString', function() {
+          throw new TypeError;
+      });
+      
+      JS.StackTrace.logLevel = 'errors';</pre>
   
   Then running the program again produces:
   
-  <pre>
-  TypeError thrown by Parent#getString. Backtrace:
-  Parent#getString( [] )
-  Parent#run( [] )
-  JS.Observable#notifyObservers( [] )
-  Child#fire( [] )
-  Child#run( ["something"] )</pre>
+  <pre>    TypeError thrown by Parent#getString. Backtrace:
+      Parent#getString( [] )
+      Parent#run( [] )
+      JS.Observable#notifyObservers( [] )
+      Child#fire( [] )
+      Child#run( ["something"] )</pre>
   
   This output has been condensed slightly for clarity. In practise, @StackTrace@ also
   logs the object that each method is called on so you can inspect it with Firebug.
@@ -136,10 +131,9 @@
   Finally, note that @StackTrace@ cannot find names for classes immediately, there is
   some delay in naming a class after you include @StackTrace@ into it. Consider this:
   
-  <pre class="prettyprint">
-  var Foo = new JS.Class({
-    include: JS.StackTrace
-  });</pre>
+  <pre class="prettyprint">    var Foo = new JS.Class({
+          include: JS.StackTrace
+      });</pre>
   
   This creates a new class, mixes @StackTrace@ into it, _then_ assigns the finished
   class to the variable @Foo@. So at the point that @StackTrace@ is mixed in, the

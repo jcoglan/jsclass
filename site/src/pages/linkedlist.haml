@@ -22,20 +22,19 @@
   
   To use a linked list, you create it as follows and add objects to it:
   
-  <pre class="prettyprint">
-  var list = new JS.LinkedList.Doubly.Circular();
-  var foo = {}, bar = {}, baz = {};
-  list.push(foo);
-  list.push(bar);
-  list.push(baz);
-  
-  // list.first == foo
-  // list.first.next == bar
-  // list.first.next.next == list.last == baz
-  
-  // circular list, so...
-  // list.first.prev == baz
-  // list.last.next == foo</pre>
+  <pre class="prettyprint">    var list = new JS.LinkedList.Doubly.Circular();
+      var foo = {}, bar = {}, baz = {};
+      list.push(foo);
+      list.push(bar);
+      list.push(baz);
+      
+      // list.first == foo
+      // list.first.next == bar
+      // list.first.next.next == list.last == baz
+      
+      // circular list, so...
+      // list.first.prev == baz
+      // list.last.next == foo</pre>
   
   The objects you add to a list are given @prev@ and @next@ properties to refer to their neighbours
   by. Note that the things you add to a linked list must be _objects_ (not numbers, strings, etc)
@@ -61,19 +60,18 @@
   pointers. If you want to add an object to several lists, you can wrap it in a node object before
   adding it to each list:
   
-  <pre class="prettyprint">
-  var listA = new JS.LinkedList.Doubly.Circular();
-  var listB = new JS.LinkedList.Doubly.Circular();
-  
-  var obj = {name: 'Jimmy'};
-  listA.push(new JS.LinkedList.Node(obj));
-  listB.push(new JS.LinkedList.Node(obj));
-  
-  listA.first.data.name   // -> "Jimmy"
-  listB.first.data.name   // -> "Jimmy"
-  
-  listA.first == listB.first    // -> false
-  listA.first.data == listB.first.data    // -> true</pre>
+  <pre class="prettyprint">    var listA = new JS.LinkedList.Doubly.Circular();
+      var listB = new JS.LinkedList.Doubly.Circular();
+      
+      var obj = {name: 'Jimmy'};
+      listA.push(new JS.LinkedList.Node(obj));
+      listB.push(new JS.LinkedList.Node(obj));
+      
+      listA.first.data.name   // -> "Jimmy"
+      listB.first.data.name   // -> "Jimmy"
+      
+      listA.first == listB.first    // -> false
+      listA.first.data == listB.first.data    // -> true</pre>
   
   Each node object is distinct, but has a @data@ pointer to the object it wraps. This also lets you
   add the same object to a list multiple times.
@@ -83,11 +81,10 @@
   If the "@Enumerable@":/enumerable.html module is loaded before the @LinkedList@ code,
   then you can treat linked lists as enumerable objects. You can loop over their nodes like so:
   
-  <pre class="prettyprint">
-  list.forEach(function(node, i) {
-    // do stuff with node
-    // i is the position in the list
-  }, context);</pre>
+  <pre class="prettyprint">    list.forEach(function(node, i) {
+          // do stuff with node
+          // i is the position in the list
+      }, context);</pre>
   
   @context@ is optional, and specifies the meaning of the @this@ keyword inside the function.
   All the usual @Enumerable@ methods are available on list objects - see "the @Enumerable@ docs":/enumerable.html

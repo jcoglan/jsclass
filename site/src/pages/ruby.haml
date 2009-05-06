@@ -10,22 +10,21 @@
   tries to implement its syntax. Specifically, it focuses on the idea that a class definition
   is a procedure rather than a static template. For example, consider this Ruby code:
   
-  <pre class="prettyprint">
-  class RubyClass
-    extend Forwardable
-    def_delegator :@list, :<<, :add
-    
-    attr_reader :list
-    
-    def initialize
-      @list = []
-    end
-  end
-  
-  r = RubyClass.new
-  r.add 4
-  r.add 67
-  r.list    # => [4, 67]</pre>
+  <pre class="prettyprint">    class RubyClass
+        extend Forwardable
+        def_delegator :@list, :<<, :add
+        
+        attr_reader :list
+        
+        def initialize
+          @list = []
+        end
+      end
+      
+      r = RubyClass.new
+      r.add 4
+      r.add 67
+      r.list    # => [4, 67]</pre>
   
   Notice that @def_delegator@ and @attr_reader@ are class methods, but you can call them
   at any point during the class definition. Also notice that @def_delegator@ is added by
@@ -34,75 +33,72 @@
   to the whole language while defining the class. For example I can store values in order
   to redefine methods:
   
-  <pre class="prettyprint">
-  class RubyClass
-    old_add = instance_method :add
-    
-    define_method :add do |value|
-      old_add.bind(self).call(2 * value)
-    end
-  end
-  
-  r = RubyClass.new
-  r.add 13
-  r.list    # => [26]</pre>
+  <pre class="prettyprint">    class RubyClass
+        old_add = instance_method :add
+        
+        define_method :add do |value|
+          old_add.bind(self).call(2 * value)
+        end
+      end
+      
+      r = RubyClass.new
+      r.add 13
+      r.list    # => [26]</pre>
   
   With vanilla @JS.Class@, such things are not possible. You would need to write all the
   above as:
   
-  <pre class="prettyprint">
-  var RubyClass = new JS.Class({
-    extend: JS.Forwardable,
-    
-    initialize: function() {
-      this.list = [];
-    }
-  });
-  
-  RubyClass.defineDelegator('list', 'push', 'add');
-  
-  var r = new RubyClass();
-  r.add(4);
-  r.add(67);
-  r.list;    // -> [4, 67]
-  
-  (function() {
-    var old_add = RubyClass.prototype.add;
-    RubyClass.include({
-      add: function(value) {
-        return old_add.call(this, 2 * value);
-      }
-    });
-  })();
-  
-  r = new RubyClass();
-  r.add(13);
-  r.list;   // -> [26]</pre>
+  <pre class="prettyprint">    var RubyClass = new JS.Class({
+          extend: JS.Forwardable,
+          
+          initialize: function() {
+              this.list = [];
+          }
+      });
+      
+      RubyClass.defineDelegator('list', 'push', 'add');
+      
+      var r = new RubyClass();
+      r.add(4);
+      r.add(67);
+      r.list;    // -> [4, 67]
+      
+      (function() {
+          var old_add = RubyClass.prototype.add;
+          RubyClass.include({
+              add: function(value) {
+                  return old_add.call(this, 2 * value);
+              }
+          });
+      })();
+      
+      r = new RubyClass();
+      r.add(13);
+      r.list;   // -> [26]</pre>
   
   Not quite as clean - we need to complete a class definition, then call some class methods,
   then use a closure to modify the class without creating new global variables. @JS.Ruby@ is
   designed to let you get as close as possible to the Ruby way of doing things as possible:
   
-  <pre class="prettyprint">
-  var RubyClass = new JS.Class();
-  JS.Ruby(RubyClass, function() { with(this) {
-    extend(JS.Forwardable);
-    defineDelegator('list', 'push', 'add');
-    
-    def('initialize', function() {
-      this.list = [];
-    });
-    
-    var old_add = instanceMethod('add');
-    
-    def('add', function(value) {
-      return old_add.call(this, 2 * value);
-    });
-  }});
-  
-  var r = new RubyClass();
-  r.add(9);
-  r.list;   // -> [18]</pre>
+  <pre class="prettyprint">    var RubyClass = new JS.Class();
+      JS.Ruby(RubyClass, function() { with(this) {
+          extend(JS.Forwardable);
+          defineDelegator('list', 'push', 'add');
+          
+          def('initialize', function() {
+              this.list = [];
+          });
+          
+          var old_add = instanceMethod('add');
+          
+          def('add', function(value) {
+              return old_add.call(this, 2 * value);
+          });
+      }});
+      
+      var r = new RubyClass();
+      r.add(9);
+      r.list;   // -> [18]</pre>
   
   h3. Features
   
@@ -120,10 +116,9 @@
   classes at this time, and it only works with classes created using @JS.Class@. The basic call
   structure is:
   
-  <pre class="prettyprint">
-  JS.Ruby(SomeExistingClass, function() { with(this) {
-    // code here
-  }});</pre>
+  <pre class="prettyprint">    JS.Ruby(SomeExistingClass, function() { with(this) {
+          // code here
+      }});</pre>
   
   h3. @def@ and @alias@
   
@@ -131,17 +126,16 @@
   a new alias for an instance method. The following code adds two methods, @get@ and @fetch@,
   that both do the same thing:
   
-  <pre class="prettyprint">
-  JS.Ruby(RubyClass, function() { with(this) {
-    def('get', function(index) {
-      return this.list[index];
-    });
-    alias('fetch', 'get');
-  }});
-  
-  var r = new RubyClass();
-  r.add(5); r.add(27);
-  r.fetch(1);   // -> 54</pre>
+  <pre class="prettyprint">    JS.Ruby(RubyClass, function() { with(this) {
+          def('get', function(index) {
+              return this.list[index];
+          });
+          alias('fetch', 'get');
+      }});
+      
+      var r = new RubyClass();
+      r.add(5); r.add(27);
+      r.fetch(1);   // -> 54</pre>
   
   h3. @include@ and @extend@
   
@@ -149,17 +143,16 @@
   that calling them will make sure that any new class methods are available to call inside
   your @JS.Ruby@ code.
   
-  <pre class="prettyprint">
-  var EventClass = new JS.Class();
-  JS.Ruby(EventClass, function() { with(this) {
-    
-    // adds instance methods 'addObserver' et all
-    include(JS.Observable);
-    
-    // adds class method 'defineDelegator'
-    extend(JS.Forwardable);
-    defineDelegator('subject', 'method', 'alias');
-  }});</pre>
+  <pre class="prettyprint">    var EventClass = new JS.Class();
+      JS.Ruby(EventClass, function() { with(this) {
+          
+          // adds instance methods 'addObserver' et all
+          include(JS.Observable);
+          
+          // adds class method 'defineDelegator'
+          extend(JS.Forwardable);
+          defineDelegator('subject', 'method', 'alias');
+      }});</pre>
   
   h3. @instanceMethod@
   
@@ -173,15 +166,14 @@
   In JavaScript, the syntax is @with (self) { ... }@, and you may use @def@ and @alias@ within
   such a block for creating and aliasing class methods.
   
-  <pre class="prettyprint">
-  JS.Ruby(RubyClass, function() { with(this) {
-    with (self) {
-      def('create', function() {
-        return new this();
-      });
-      alias('make', 'create');
-    }
-  }});
-  
-  var r = RubyClass.make();
-  r.add(9);</pre>
+  <pre class="prettyprint">    JS.Ruby(RubyClass, function() { with(this) {
+          with (self) {
+              def('create', function() {
+                  return new this();
+              });
+              alias('make', 'create');
+          }
+      }});
+      
+      var r = RubyClass.make();
+      r.add(9);</pre>

@@ -11,12 +11,11 @@
   checks or to call methods from that class. All objects created from @JS.Class@
   have a @klass@ property that points to the class the object belongs to:
   
-  <pre class="prettyprint">
-  var Foo = new JS.Class();
-  var obj = new Foo();
-  
-  obj.klass === Foo
-  Foo.klass === JS.Class</pre>
+  <pre class="prettyprint">    var Foo = new JS.Class();
+      var obj = new Foo();
+      
+      obj.klass === Foo
+      Foo.klass === JS.Class</pre>
   
   All classes are instances of the class @JS.Class@, just like in Ruby. In addition,
   all objects have an @isA()@ method. @obj.isA(Foo)@ returns @true@ if any of the
@@ -35,54 +34,50 @@
   tree, to inspect the method lookup process and to extract individual methods. Let's
   set up a few modules to work with:
   
-  <pre class="prettyprint">
-  var ModA = new JS.Module({
-    speak: function() {
-      return "speak() in ModA";
-    }
-  });
-  
-  var ModB = new JS.Module({
-    speak: function() {
-      return this.callSuper() + ", speak() in ModB";
-    }
-  });
-  
-  var ModC = new JS.Module({
-    include: ModB,
-    speak: function() {
-      return this.callSuper() + ", and in ModC";
-    }
-  });
-  
-  var Foo = new JS.Class({
-    include: [ModA, ModC],
-    speak: function() {
-      return this.callSuper() + ", and in class Foo";
-    }
-  });</pre>
+  <pre class="prettyprint">    var ModA = new JS.Module({
+          speak: function() {
+              return "speak() in ModA";
+          }
+      });
+      
+      var ModB = new JS.Module({
+          speak: function() {
+              return this.callSuper() + ", speak() in ModB";
+          }
+      });
+      
+      var ModC = new JS.Module({
+          include: ModB,
+          speak: function() {
+              return this.callSuper() + ", and in ModC";
+          }
+      });
+      
+      var Foo = new JS.Class({
+          include: [ModA, ModC],
+          speak: function() {
+              return this.callSuper() + ", and in class Foo";
+          }
+      });</pre>
   
   The @ancestors()@ method returns a list of all the classes and modules that a module
   inherits from, with more 'distant' ancestors at the start of the list. @JS.Class@ searches
   this list in reverse order when doing method lookups.
   
-  <pre class="prettyprint">
-  Foo.ancestors()
-  // -> [JS.Kernel, ModA, ModB, ModC, Foo]</pre>
+  <pre class="prettyprint">    Foo.ancestors()
+      // -> [JS.Kernel, ModA, ModB, ModC, Foo]</pre>
   
   If you're debugging using Firebug, it will just print @Object@ or @function()@ for
   each of those:
   
-  <pre class="prettyprint">
-  Foo.ancestors()
-  // -> [Object, Object, Object, Object, function()]</pre>
+  <pre class="prettyprint">    Foo.ancestors()
+      // -> [Object, Object, Object, Object, function()]</pre>
   
   You might not find that very helpful, but if you use "@StackTrace@":/stacktrace.html
   you can find the names of the modules in the tree:
   
-  <pre class="prettyprint">
-  JS.StackTrace.nameOf(Foo.ancestors())
-  // -> ["JS.Kernel", "ModA", "ModB", "ModC", "Foo"]</pre>
+  <pre class="prettyprint">    JS.StackTrace.nameOf(Foo.ancestors())
+      // -> ["JS.Kernel", "ModA", "ModB", "ModC", "Foo"]</pre>
   
   If that's not enough information, you can ask @JS.Class@ to explicitly look up methods
   for you so you can see the order that inherited methods will be called in. You can
@@ -91,15 +86,13 @@
   to be called, and if it uses @callSuper()@ the penultimate function will be called,
   and so on.
   
-  <pre class="prettyprint">
-  Foo.lookup('speak')
-  // -> [function(), function(), function(), function()]</pre>
+  <pre class="prettyprint">    Foo.lookup('speak')
+      // -> [function(), function(), function(), function()]</pre>
   
   Finally, you can extract a single named method from a module using @instanceMethod()@:
   
-  <pre class="prettyprint">
-  // Returns the speak() function from ModC
-  ModC.instanceMethod('speak')</pre>
+  <pre class="prettyprint">    // Returns the speak() function from ModC
+      ModC.instanceMethod('speak')</pre>
   
   h3. The eigenclass
   
@@ -110,7 +103,6 @@
   the eigenclass of any object by calling its @__eigen__()@ method. For example,
   you could inspect the call order of an inherited method using the eigenclass:
   
-  <pre class="prettyprint">
-  var obj = new Foo();
-  obj.__eigen__().lookup('speak')
-  // -> [function(), function(), function(), function()]</pre>
+  <pre class="prettyprint">    var obj = new Foo();
+      obj.__eigen__().lookup('speak')
+      // -> [function(), function(), function(), function()]</pre>

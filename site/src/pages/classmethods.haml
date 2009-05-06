@@ -7,65 +7,61 @@
   They are really just a special case of "singleton methods":/singletonmethods.html.
   To add class methods when defining a class, wrap them up in an @extend@ block:
   
-  <pre class="prettyprint">
-  var User = new JS.Class({
-    extend: {
-      find: function(id) {
-        // Return a User with id
-      },
-      create: function(name) {
-        return new this(name);
-      }
-    },
-    initialize: function(name) {
-      this.username = name;
-    }
-  });</pre>
+  <pre class="prettyprint">    var User = new JS.Class({
+          extend: {
+              find: function(id) {
+                  // Return a User with id
+              },
+              create: function(name) {
+                  return new this(name);
+              }
+          },
+          initialize: function(name) {
+              this.username = name;
+          }
+      });</pre>
   
   We could equally add the methods after the class was created:
   
-  <pre class="prettyprint">
-  var User = new JS.Class({
-    initialize: function(name) {
-      this.username = name;
-    }
-  });
-  
-  User.extend({
-    find: function(id) {
-      // Return a User with id
-    },
-    create: function(name) {
-      return new this(name);
-    }
-  });</pre>
+  <pre class="prettyprint">    var User = new JS.Class({
+          initialize: function(name) {
+              this.username = name;
+          }
+      });
+      
+      User.extend({
+          find: function(id) {
+              // Return a User with id
+          },
+          create: function(name) {
+              return new this(name);
+          }
+      });</pre>
   
   These two syntaxes apply equally to creating and extending "@Modules@":/modules.html.
   Within a class method, the keyword @this@ refers to the class itself - see the @User.create()@
   method:
   
-  <pre class="prettyprint">
-  var james = User.create('James');
-  james.username    // -> 'James'
-  james.klass       // -> User</pre>
+  <pre class="prettyprint">    var james = User.create('James');
+      james.username    // -> 'James'
+      james.klass       // -> User</pre>
   
   When you create a subclass, it will inherit any class methods of its parent, and you can use
   @callSuper()@ too:
   
-  <pre class="prettyprint">
-  var LoudUser = new JS.Class(User, {
-    extend: {
-      create: function(name) {
-        return this.callSuper(name.toUpperCase());
-      }
-    }
-  });
-  
-  var me = LoudUser.create('James');
-  me.username   // -> 'JAMES'
-  me.klass      // -> LoudUser
-  
-  var you = LoudUser.find(24)   // inherited from User</pre>
+  <pre class="prettyprint">    var LoudUser = new JS.Class(User, {
+          extend: {
+              create: function(name) {
+                  return this.callSuper(name.toUpperCase());
+              }
+          }
+      });
+      
+      var me = LoudUser.create('James');
+      me.username   // -> 'JAMES'
+      me.klass      // -> LoudUser
+      
+      var you = LoudUser.find(24)   // inherited from User</pre>
   
   Note how @this@, even in @callSuper@ methods, always refers to the same thing as in the original
   method call. We get back a @LoudUser@, not a @User@.
@@ -74,7 +70,6 @@
   class method from an instance of the class, you need to get a reference to the class through
   the object's @klass@ property.
   
-  <pre class="prettyprint">
-  User.define('copy', function() {
-    return this.klass.create(this.username);
-  });</pre>
+  <pre class="prettyprint">    User.define('copy', function() {
+          return this.klass.create(this.username);
+      });</pre>

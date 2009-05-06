@@ -11,54 +11,50 @@
   an array in one of its instance properties. You might implement some methods for
   manipulating the array through the class' own interface:
   
-  <pre class="prettyprint">
-  var RecordCollection = new JS.Class({
-    initialize: function() {
-      this.records = [];
-    },
-    push: function(record) {
-      return this.records.push(record);
-    },
-    shift: function() {
-      return this.records.shift();
-    }
-  });</pre>
+  <pre class="prettyprint">    var RecordCollection = new JS.Class({
+          initialize: function() {
+              this.records = [];
+          },
+          push: function(record) {
+              return this.records.push(record);
+          },
+          shift: function() {
+             return this.records.shift();
+          }
+      });</pre>
   
   Instead, you can @extend@ the class with @JS.Forwardable@, then use @defineDelegators@
   to create the methods. @defineDelegators@ takes the name of the instance property
   to delegate calls to as the first argument, and the names of the delegated methods
   as the other arguments:
   
-  <pre class="prettyprint">
-  var RecordCollection = new JS.Class({
-    extend: JS.Forwardable,
-    initialize: function() {
-      this.records = [];
-    }
-  });
-  RecordCollection.defineDelegators('records', 'push', 'shift');
-  
-  var recs = new RecordCollection();
-  recs.push('The White Stripes - Icky Thump');
-  recs.push('Battles - Mirrored');
-  
-  recs.shift()    // -> "The White Stripes - Icky Thump"</pre>
+  <pre class="prettyprint">    var RecordCollection = new JS.Class({
+          extend: JS.Forwardable,
+          initialize: function() {
+              this.records = [];
+          }
+      });
+      RecordCollection.defineDelegators('records', 'push', 'shift');
+      
+      var recs = new RecordCollection();
+      recs.push('The White Stripes - Icky Thump');
+      recs.push('Battles - Mirrored');
+      
+      recs.shift()    // -> "The White Stripes - Icky Thump"</pre>
   
   If you need to define extra class methods, you need to change the notation slightly:
   
-  <pre class="prettyprint">
-  var RecordCollection = new JS.Class({
-    extend: [JS.Forwardable, {
-      // class methods go here
-    }],
-    initialize: function() {
-      this.records = [];
-    }
-  });</pre>
+  <pre class="prettyprint">    var RecordCollection = new JS.Class({
+          extend: [JS.Forwardable, {
+              // class methods go here
+          }],
+          initialize: function() {
+              this.records = [];
+          }
+      });</pre>
   
   If you want to give the delegating method a different name, use the @defineDelegator@
   (singular) method instead:
   
-  <pre class="prettyprint">
-  // Add an instance method called 'add' that calls records.push
-  RecordCollection.defineDelegator('records', 'push', 'add');</pre>
+  <pre class="prettyprint">    // Add an instance method called 'add' that calls records.push
+      RecordCollection.defineDelegator('records', 'push', 'add');</pre>
