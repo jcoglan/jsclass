@@ -15,7 +15,7 @@
   h3. @object.equals(other)@
   
   Returns @true@ iff @object@ and @other@ are the same object. This can be overridden to
-  provide more meaningful equality tests. If you want to use an object as a key in a @Hash@
+  provide more meaningful equality tests. If you want to use an object as a key in a "@Hash@":/hash.html
   you must also override @Kernel#hash()@ (see below).
   
   h3. @object.extend(module)@
@@ -24,7 +24,7 @@
   
   h3. @object.hash()@
   
-  Returns a hashcode for the object, which is used by @Hash@ when storing keys. The default
+  Returns a hashcode for the object, which is used by "@Hash@":/hash.html when storing keys.The default
   implementation returns a unique hexadecimal number for each object. If two objects are
   equal according to the @equals()@ method, they must both return the same hashcode otherwise
   they will not work correctly as keys in a @Hash@.
