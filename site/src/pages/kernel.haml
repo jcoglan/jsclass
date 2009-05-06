@@ -1,0 +1,53 @@
+:textile
+  h3. The @Kernel@ module
+  
+  Ruby's @Kernel@ module defines the methods common to all objects. Similarly, the @JS.Kernel@
+  module defines methods shared by all objects (including class and module objects). Every
+  object created using @JS.Class@ has these methods, though they may be overridden depending
+  on the object's type.
+  
+  h3. @object.__eigen__()@
+  
+  Returns the @object@'s "metamodule", a module used to store any "singleton methods":/singletonmethods.html
+  attached to the object. Calling @__eigen__()@ on a class or module returns a module used
+  to store its class methods.
+  
+  h3. @object.equals(other)@
+  
+  Returns @true@ iff @object@ and @other@ are the same object. This can be overridden to
+  provide more meaningful equality tests. If you want to use an object as a key in a @Hash@
+  you must also override @Kernel#hash()@ (see below).
+  
+  h3. @object.extend(module)@
+  
+  Adds the methods from @module@ as "singleton methods":/singletonmethods.html to @object@.
+  
+  h3. @object.hash()@
+  
+  Returns a hashcode for the object, which is used by @Hash@ when storing keys. The default
+  implementation returns a unique hexadecimal number for each object. If two objects are
+  equal according to the @equals()@ method, they must both return the same hashcode otherwise
+  they will not work correctly as keys in a @Hash@.
+  
+  h3. @object.isA(type)@
+  
+  Returns @true@ iff @object@ is an instance of the given @type@, which should be a class
+  or module. If @type@ is anywhere in @object@'s inheritance hierarchy this method will
+  return @true@.
+  
+  h3. @object.method(name)@
+  
+  Returns a copy of the method with the given name from @object@, as a standalone function
+  bound to @object@'s instance variables. See "method binding":/binding.html.
+  
+  h3. @object.tap(block, context)@
+  
+  Calls the function @block@ in the given (optional) @context@, passing @object@ as a
+  parameter to @block@, and returns @object@. Useful for inspecting intermediate values
+  in a long method chain. For example:
+  
+  <pre class="prettyprint">    list                 .tap(function(x) { console.log("original: ", x) })
+        .toArray()         .tap(function(x) { console.log("array: ", x) })
+        .select(condition) .tap(function(x) { console.log("evens: ", x) })
+        .map(square)       .tap(function(x) { console.log("squares: ", x) });</pre>
+  
