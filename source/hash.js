@@ -219,10 +219,10 @@ JS.Hash = new JS.Class('Hash', {
     return keys;
   },
   
-  merge: function(hash) {
+  merge: function(hash, block, context) {
     var newHash = new this.klass;
     newHash.update(this);
-    newHash.update(hash);
+    newHash.update(hash, block, context);
     return newHash;
   },
   
@@ -276,9 +276,13 @@ JS.Hash = new JS.Class('Hash', {
     return value;
   },
   
-  update: function(hash) {
+  update: function(hash, block, context) {
+    var blockGiven = JS.isFn(block);
     hash.forEach(function(pair) {
-      this.store(pair.key, pair.value);
+      var key = pair.key, value = pair.value;
+      if (blockGiven && this.hasKey(key))
+        value = block.call(context || null, key, this.get(key), value);
+      this.store(key, value);
     }, this);
   },
   
