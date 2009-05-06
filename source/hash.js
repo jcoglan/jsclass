@@ -50,13 +50,13 @@ JS.Hash = new JS.Class('Hash', {
       this.store(object[i], object[i+1]);
   },
   
-  forEach: function(block, scope) {
+  forEach: function(block, context) {
     var hash, bucket, i;
     for (hash in this._buckets) {
       if (!this._buckets.hasOwnProperty(hash)) continue;
       bucket = this._buckets[hash];
       i = bucket.length;
-      while (i--) block.call(scope || null, bucket[i]);
+      while (i--) block.call(context || null, bucket[i]);
     }
   },
   
@@ -152,21 +152,21 @@ JS.Hash = new JS.Class('Hash', {
     return defaultValue;
   },
   
-  forEachKey: function(block, scope) {
+  forEachKey: function(block, context) {
     this.forEach(function(pair) {
-      block.call(scope || null, pair.key);
+      block.call(context || null, pair.key);
     });
   },
   
-  forEachPair: function(block, scope) {
+  forEachPair: function(block, context) {
     this.forEach(function(pair) {
-      block.call(scope || null, pair.key, pair.value);
+      block.call(context || null, pair.key, pair.value);
     });
   },
   
-  forEachValue: function(block, scope) {
+  forEachValue: function(block, context) {
     this.forEach(function(pair) {
-      block.call(scope || null, pair.value);
+      block.call(context || null, pair.value);
     });
   },
   
@@ -253,9 +253,9 @@ JS.Hash = new JS.Class('Hash', {
     return result;
   },
   
-  removeIf: function(predicate, scope) {
+  removeIf: function(predicate, context) {
     this.forEach(function(pair) {
-      if (predicate.call(scope || null, pair))
+      if (predicate.call(context || null, pair))
         this.remove(pair.key);
     }, this);
   },

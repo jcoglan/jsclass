@@ -66,10 +66,10 @@ JS.Package = new JS.Class('Package', {
     return deps;
   },
   
-  load: function(callback, scope) {
+  load: function(callback, context) {
     var self = this, handler = function() {
       self._loading = false;
-      callback.call(scope || null);
+      callback.call(context || null);
     };
     
     if (this.isLoaded()) return setTimeout(handler, 1);
@@ -139,9 +139,9 @@ JS.Package = new JS.Class('Package', {
       return packages;
     },
     
-    load: function(list, callback, scope) {
+    load: function(list, callback, context) {
       var fired = false, handler = function() {
-        if (!fired) callback.call(scope || null);
+        if (!fired) callback.call(context || null);
         fired = true;
       };
       

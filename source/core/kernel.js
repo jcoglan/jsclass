@@ -92,11 +92,11 @@ JS.Kernel = JS.extend(new JS.Module(/** @scope Kernel.prototype */{
    *         .map(square)       .tap(function(x) { console.log("squares: ", x) })
    * 
    * @param {Function} block
-   * @param {Object} scope
+   * @param {Object} context
    * @returns {Object}
    */
-  tap: function(block, scope) {
-    block.call(scope || null, this);
+  tap: function(block, context) {
+    block.call(context || null, this);
     return this;
   }
 }),
