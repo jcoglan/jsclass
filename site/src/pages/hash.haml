@@ -49,6 +49,7 @@
           CA = new State('California', 'CA'),
           IL = new State('Illinois', 'IL'),
           TX = new State('Texas', 'TX'),
+          VA = new State('Virginia', 'VA'),
           
           hutchinson = new Senator('Kay Bailey Hutchison'),
           burris     = new Senator('Roland Burris'),
@@ -122,4 +123,122 @@
       // CA: Dianne Feinstein
       // IL: Roland Burris
       // TX: Kay Bailey Hutchison</pre>
+  
+  The instance methods of @Hash@ are as follows:
+  
+  h3. @assoc(key)@
+  
+  Returns the @Hash.Pair@ object corresponding to the given @key@, or @null@ if so such key
+  is found.
+  
+  <pre class="prettyprint">    senators.assoc(NY).key.code     // -> "NY"
+      senators.assoc(IL).value.name   // -> "Roland Burris"
+      senators.assoc(VA)              // -> null</pre>
+  
+  h3. @rassoc(value)@
+  
+  Returns the first matching @Hash.Pair@ object for to the given @value@, or @null@ if so
+  such value is found.
+  
+  <pre class="prettyprint">    senators.rassoc(feinstein).key.code   // -> "CA"
+      senators.rassoc(burris).value.name    // -> "Roland Burris"
+      senators.rassoc(hancock)              // -> null</pre>
+  
+  h3. @clear()@
+  
+  Removes all the key-value pairs from the hash.
+  
+  <pre class="prettyprint">    senators.clear();
+      senators.size       // -> 0
+      senators.get(TX)    // -> null</pre>
+  
+  h3. @compareByIdentity()@
+  
+  Instructs the hash to use the @===@ identity operator instead of the @equals()@ method
+  to compare keys. Values must then be retrieved using _the same key object_ as was used
+  to store the value initially.
+  
+  h3. @comparesByIdentity()@
+  
+  Returns @true@ iff the hash is using the @===@ operator rather than the @equals()@ method
+  to compare keys.
+  
+  h3. @setDefault(value)@
+  
+  Sets the default value for the hash to the given @value@. The default value is returned
+  whenever a nonexistent key is accessed using @get()@, @remove()@ or @shift()@. The value
+  may be a function, in which case it is called with the hash and the accessed key and the
+  resulting value is returned.
+  
+  <pre class="prettyprint">    senators.get('foo');    // -> null
+      
+      senators.setDefault(hancock);
+      senators.get('foo')     // -> #<Senator name="John Hancock">
+      
+      senators.setDefault(function(hash, key) {
+          return new Senator('Senator for ' + key.code);
+      });
+      senators.get(VA)        // -> #<Senator name="Senator for VA"></pre>
+  
+  h3. @getDefault(key)@
+  
+  Returns the default value for the hash, or @null@ if none is set. The @key@ is only used
+  if the default value is a function (see @setDefault()@).
+  
+  h3. @equals(other)@
+  
+  Returns @true@ iff @other@ is a hash containing the same data (or equivalent data according
+  to @equals()@) as the receiver.
+  
+  h3. @fetch(key, defaultValue)@
+  
+  This is similar to @get(key)@, but allows you to override the default value of the hash
+  using @defaultValue@. If @defaultValue@ is a function it is called with only the key
+  as an argument. The the key is not found and no @defaultValue@ is given, an error is
+  thrown.
+  
+  <pre class="prettyprint">    // Assume no default value
+      
+      senators.fetch(CA)        // -> #<Senator name="Dianne Feinstein">
+      senators.fetch('foo')     // -> Error: key not found
+      
+      senators.fetch('foo', hancock)  // -> #<Senator name="John Hancock">
+      
+      senators.fetch('foo', function(key) {
+          return new Senator(key.toUpperCase());
+      });
+      // -> #<Senator name="FOO"></pre>
+  
+  h3. @forEachKey(block, context)@
+  
+  Iterates over the keys in the hash, yielding the key each time. The optional parameter
+  @context@ sets the binding of @this@ within the block.
+  
+  <pre class="prettyprint">    senators.forEachKey(function(key) {
+          // key is a State
+      });</pre>
+  
+  h3. @forEachPair(block, context)@
+  
+  Iterates over the pair in the hash, yielding the key and value each time. The optional
+  parameter @context@ sets the binding of @this@ within the block.
+  
+  <pre class="prettyprint">    senators.forEachPair(function(key, value) {
+          // key is a State, value is a Senator
+      });</pre>
+  
+  h3. @forEachValue(block, context)@
+  
+  Iterates over the values in the hash, yielding the value each time. The optional parameter
+  @context@ sets the binding of @this@ within the block.
+  
+  <pre class="prettyprint">    senators.forEachValue(function(value) {
+          // value is a Senator
+      });</pre>
+  
+  h3. @get(key)@
+  
+  Returns the value corresponding to the given @key@. If the key is not found, the default
+  value for the key is returned (see @setDefault()@). If no default value exists, @null@
+  is returned.
   
