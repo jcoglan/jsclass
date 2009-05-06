@@ -653,11 +653,12 @@
             
             var otherHash = new JS.Hash([
                 new HashCar('ferari'),  new HashColor('red'),
-                new HashCar('ford'),    new HashColor('blue'),
                 new HashCar('jaguar'),  new HashColor('green'),
+                new HashCar('ford'),    new HashColor('blue'),
                 new HashCar('lotus'),   new HashColor('yellow')
             ]);
             assert(otherHash.equals(hash));
+            assertEqual(otherHash.hash(), hash.hash());
             
             assertEnumEqual(['blue', 'yellow'],
                 otherHash.valuesAt(new HashCar('ford'), new HashCar('lotus'))
@@ -858,7 +859,9 @@
             assert(new JS.SortedSet().isSubset(new JS.Set([1,2,3])));
             
             sets.replace([0,3,8,2]);
-            assert(sets.equals(new JS.SortedSet([3,0,2,8])));
+            var sortee = new JS.SortedSet([3,0,2,8]);
+            assert(sets.equals(sortee));
+            assertEqual(sets.hash(), sortee.hash());
             
             c = new JS.Set([8,2,6,5,7]);
             c.remove(2);

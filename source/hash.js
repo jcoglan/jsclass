@@ -27,8 +27,20 @@ JS.Hash = new JS.Class('Hash', {
         return this.key.compareTo
             ? this.key.compareTo(other.key)
             : (this.key < other.key ? -1 : (this.key > other.key ? 1 : 0));
+      },
+      
+      hash: function() {
+        var key = JS.Hash.codeFor(this.key), value = JS.Hash.codeFor(this.value);
+        return [key, value].sort().join('');
       }
-    })
+    }),
+    
+    codeFor: function(object) {
+      if (typeof object !== 'object') return String(object);
+      return JS.isFn(object.hash)
+          ? object.hash()
+          : object.toString();
+    }
   },
   
   initialize: function(object) {
@@ -51,7 +63,7 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   _bucketForKey: function(key, createIfAbsent) {
-    var hash = key.hash ? key.hash() : key,
+    var hash = this.klass.codeFor(key),
         bucket = this._buckets[hash];
     
     if (!bucket && createIfAbsent)
@@ -125,6 +137,12 @@ JS.Hash = new JS.Class('Hash', {
       if (otherPair === null || !otherPair.hasValue(pair.value)) result = false;
     });
     return result;
+  },
+  
+  hash: function() {
+    var hashes = [];
+    this.forEach(function(pair) { hashes.push(pair.hash()) });
+    return hashes.sort().join('');
   },
   
   fetch: function(key, defaultValue) {
@@ -232,7 +250,7 @@ JS.Hash = new JS.Class('Hash', {
     this.length -= 1;
     
     if (bucket.length === 0)
-      delete this._buckets[key.hash ? key.hash() : key];
+      delete this._buckets[this.klass.codeFor(key)];
     
     return result;
   },

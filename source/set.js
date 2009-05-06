@@ -91,6 +91,12 @@ JS.Set = new JS.Class('Set', {
     return true;
   },
   
+  hash: function() {
+    var hashes = [];
+    this.forEach(function(object) { hashes.push(JS.Hash.codeFor(object)) });
+    return hashes.sort().join('');
+  },
+  
   flatten: function(set) {
     var members = this._members, item, i = members.length;
     if (!set) { this.clear(); set = this; }
