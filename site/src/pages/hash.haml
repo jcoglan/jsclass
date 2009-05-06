@@ -242,3 +242,127 @@
   value for the key is returned (see @setDefault()@). If no default value exists, @null@
   is returned.
   
+  h3. @hasKey(key)@
+  
+  Returns @true@ iff the hash contains the given @key@. Aliased as @includes()@.
+  
+  h3. @hasValue(value)@
+  
+  Returns @true@ iff the hash contains the given @value@.
+  
+  h3. @includes(key)@
+  
+  Alias for @kasKey()@.
+  
+  h3. @index(value)@
+  
+  Alias for @key()@.
+  
+  h3. @invert()@
+  
+  Returns a new hash created by using the hash's values as keys, and the keys as values.
+  
+  h3. @isEmpty()@
+  
+  Returns @true@ iff the hash contains no data.
+  
+  h3. @key(value)@
+  
+  Returns the first key from the hash whose corresponding value is @value@. Aliased as @index()@.
+  
+  <pre class="prettyprint">    senators.key(gillibrand);
+      // -> #<State code="NY" name="New York"></pre>
+  
+  h3. @keys()@
+  
+  Returns an array containing all the keys from the hash.
+  
+  h3. @merge(other, block, context)@
+  
+  Returns a new hash containing all the key-value pairs from both the receiver and @other@.
+  If a key exists in both hashes, the optional @block@ parameter is used to pick which value
+  to keep. If no block is given, values from @other@ overwrite values from the receiver.
+  See @Hash#update()@ for more information.
+  
+  h3. @put(key, value)@
+  
+  Alias for @store()@.
+  
+  h3. @rehash()@
+  
+  Call this if the state of any key changes such that its hashcode changes. This reindexes
+  the hash and makes sure all pairs are in the correct buckets.
+  
+  h3. @remove(key, block)@
+  
+  Deletes the given key from the hash and returns the corresponding value. If the key is
+  not found, the default value (see @setDefault()@) is returned. If the key is not found
+  and the optional function @block@ is passed, the result of calling @block@ with the
+  key is returned.
+  
+  <pre class="prettyprint">    var h = new JS.Hash([ 'a',100, 'b',200 ]);
+      h.remove('a')   // -> 100
+      h.remove('z')   // -> null
+      
+      h.remove('z', function(el) { return el + ' not found' })
+      // -> "z not found"</pre>
+  
+  h3. @removeIf(predicate, context)@
+  
+  Deletes all the pairs that satisfy the @predicate@ from the hash. @context@ sets the
+  binding of @this@ within the predicate function. For example:
+  
+  <pre class="prettyprint">    // Remove pairs for California and Illinois
+      senators.removeIf(function(pair) { return pair.key.code < 'M' });
+      
+      // senators is now:
+      // { NY => gillibrand, TX => hutchinson }</pre>
+  
+  h3. @replace(other)@
+  
+  Removes all existing key-value pairs from the receiver and replaces them with the contents
+  of the hash @other@.
+  
+  h3. @shift()@
+  
+  Removes a single key-value pair from the hash and returns it, or returns the hash's
+  default value if it is already empty.
+  
+  <pre class="prettyprint">    var h = new JS.Hash(50);
+      h.store('a', 100);
+      h.store('b', 200);
+      
+      h.shift()   // -> #<Pair key="a" value=100>
+      h.shift()   // -> #<Pair key="b" value=200>
+      h.shift()   // -> 50</pre>
+  
+  h3. @store(key, value)@
+  
+  Associates the given @key@ with the given @value@ in the receiving hash. If the state of
+  @key@ changes causing a change to its hashcode, call @rehash()@ on the hash to reindex it.
+  Aliased as @put()@.
+  
+  h3. @update(other, block, context)@
+  
+  Modifies the hash using the key-value pairs from the @other@ hash, overwriting pairs with
+  duplicate keys with the values from @other@. If the optional @block@ is passed, it can be
+  used to decide which value to keep for duplicate keys. The optional @context@ parameter
+  sets the binding of @this@ within @block@.
+  
+  <pre class="prettyprint">    var h = new JS.Hash([ 'a',1, 'b',2, 'c',3 ]),
+          g = new JS.Hash([ 'a',5, 'b',0 ]);
+      
+      h.update(g, function(key, oldVal, newVal) {
+          return oldVal > newVal ? oldVal : newVal;
+      });
+      
+      // h is now { 'a' => 5, 'b' => 2, 'c' => 3 }</pre>
+  
+  h3. @values()@
+  
+  Returns an array containing all the values from the hash.
+  
+  h3. @valuesAt(key1 [, key2 ...])@
+  
+  Returns an array of values corresponding to the given list of keys.
+  
