@@ -38,18 +38,18 @@ JS.Set = new JS.Class('Set', {
   },
   
   classify: function(block, context) {
-    var classes = {}, i = this._members.length, value;
-    while (i--) {
-      value = block.call(context || null, this._members[i]);
+    var classes = {};
+    this.forEach(function(item) {
+      value = block.call(context || null, item);
       if (!classes[value]) classes[value] = new this.klass;
-      classes[value].add(this._members[i]);
-    }
+      classes[value].add(item);
+    }, this);
     return classes;
   },
   
   clear: function() {
     this._members = [];
-    this.length = this.size = this._members.length;
+    this.length = this.size = 0;
   },
   
   complement: function(other) {
@@ -66,10 +66,10 @@ JS.Set = new JS.Class('Set', {
   
   difference: function(other) {
     other = (other instanceof JS.Set) ? other : new JS.Set(other);
-    var set = new this.klass, items = this._members, i = items.length;
-    while (i--) {
-      if (!other.contains(items[i])) set.add(items[i]);
-    }
+    var set = new this.klass;
+    this.forEach(function(item) {
+      if (!other.contains(item)) set.add(item);
+    });
     return set;
   },
   
@@ -84,11 +84,12 @@ JS.Set = new JS.Class('Set', {
   
   equals: function(other) {
     if (this.length !== other.length || !(other instanceof JS.Set)) return false;
-    var i = this._members.length;
-    while (i--) {
-      if (!other.contains(this._members[i])) return false;
-    }
-    return true;
+    var result = true;
+    this.forEach(function(item) {
+      if (!result) return;
+      if (!other.contains(item)) result = false;
+    });
+    return result;
   },
   
   hash: function() {
@@ -98,13 +99,13 @@ JS.Set = new JS.Class('Set', {
   },
   
   flatten: function(set) {
-    var members = this._members, item, i = members.length;
-    if (!set) { this.clear(); set = this; }
-    while (i--) {
-      item = members[i];
+    var copy = new this.klass;
+    copy._members = this._members;
+    if (!set) { set = this; set.clear(); }
+    copy.forEach(function(item) {
       if (item instanceof JS.Set) item.flatten(set);
       else set.add(item);
-    }
+    });
     return set;
   },
   
@@ -129,11 +130,12 @@ JS.Set = new JS.Class('Set', {
   },
   
   isSubset: function(other) {
-    var members = this._members, i = members.length;
-    while (i--) {
-      if (!other.contains(members[i])) return false;
-    }
-    return true;
+    var result = true;
+    this.forEach(function(item) {
+      if (!result) return;
+      if (!other.contains(item)) result = false;
+    });
+    return result;
   },
   
   isSuperset: function(other) {
@@ -183,7 +185,7 @@ JS.Set = new JS.Class('Set', {
   subtract: function(list) {
     this.klass.forEach(list, function(item) {
       this.remove(item);
-    }, this)
+    }, this);
   },
   
   union: function(other) {
@@ -195,11 +197,9 @@ JS.Set = new JS.Class('Set', {
   
   xor: function(other) {
     var set = new JS.Set(other);
-    var members = this._members, i = members.length, item;
-    while (i--) {
-      item = members[i];
+    this.forEach(function(item) {
       set[set.contains(item) ? 'remove' : 'add'](item);
-    }
+    });
     return set;
   },
   
@@ -257,6 +257,45 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     return insertionPoint
         ? (found ? null : i)
         : (found ? i : -1);
+  }
+});
+
+JS.HashSet = new JS.Class(JS.Set, {
+  forEach: function(block, context) {
+    this._members.forEachKey(block, context);
+  },
+  
+  add: function(item) {
+    if (this.contains(item)) return false;
+    this._members.store(item, true);
+    this.length = this.size = this._members.length;
+    return true;
+  },
+  
+  clear: function() {
+    this._members = new JS.Hash();
+    this.size = this.length = 0;
+  },
+  
+  contains: function(item) {
+    return this._members.hasKey(item);
+  },
+  
+  rebuild: function() {
+    this._members.rehash();
+    this.length = this.size = this._members.length;
+  },
+  
+  remove: function(item) {
+    this._members.remove(item);
+    this.length = this.size = this._members.length;
+  },
+  
+  removeIf: function(block, context) {
+    this._members.removeIf(function(pair) {
+      return block.call(context || null, pair.key);
+    });
+    this.length = this.size = this._members.length;
   }
 });
 

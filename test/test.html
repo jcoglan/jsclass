@@ -647,11 +647,8 @@
             assertEqual('jaguar', hash.rassoc(new HashColor('green'))[0].brand);
             assertEqual('green',  hash.rassoc(new HashColor('green'))[1].code);
             
-            assert( new JS.Set(hash.keys().pluck('brand'))
-            .equals(new JS.Set(['ferari', 'ford', 'jaguar', 'lotus'])) );
-            
-            assert( new JS.Set(hash.values().pluck('code'))
-            .equals(new JS.Set(['red', 'blue', 'green', 'yellow'])) );
+            assertEnumEqual(['ferari', 'ford', 'jaguar', 'lotus'], hash.keys().pluck('brand').sort());
+            assertEnumEqual(['blue', 'green', 'red', 'yellow'], hash.values().pluck('code').sort());
             
             assertEqual('jaguar', hash.key(new HashColor('green')).brand);
             
@@ -764,11 +761,6 @@
             hash.rehash();
             assertEqual('red', hash.get(ferari).code);
             
-            var keys = hash.keys().map(function(k) { return k.brand });
-            var values = hash.values().map(function(v) { return v.code });
-            assert(new JS.Set(keys).equals(new JS.Set(['jeep', 'lotus', 'jaguar', 'ford'])));
-            assert(new JS.Set(values).equals(new JS.Set(['yellow', 'blue', 'green' ,'red'])));
-            
             assertEqual('lotus', hash.key(new HashColor('yellow')).brand);
             
             var sortedHash = new JS.Hash([
@@ -803,98 +795,98 @@
         }},
         
         testSet: function() { with(this) {
-            assert((new JS.Set) instanceof JS.Set);
+            assert((new JS.HashSet) instanceof JS.HashSet);
             assert((new JS.SortedSet) instanceof JS.Set);
             assert((new JS.SortedSet) instanceof JS.SortedSet);
             
-            var a = new JS.Set([8,2,7,4,8,1]);
-            var b = new JS.Set([3,5,6,9,2,8]);
+            var a = new JS.HashSet([8,2,7,4,8,1]);
+            var b = new JS.HashSet([3,5,6,9,2,8]);
             assertEqual(5, a.size);
             assertEqual(6, b.size);
             assertEnumEqual([8,2,7,4,1,3,5,6,9], a.u(b).entries());
-            assertEqual(JS.Set, a.u(b).klass);
-            assertEqual(JS.Set, a.n(b).klass);
+            assertEqual(JS.HashSet, a.u(b).klass);
+            assertEqual(JS.HashSet, a.n(b).klass);
             assertEnumEqual([2,8], a.n(b).entries());
-            var c = new JS.Set([1,9,2,8,3,7,4,6,5]);
+            var c = new JS.HashSet([1,9,2,8,3,7,4,6,5]);
             var cats = c.classify(function(x) { return x % 3 });
-            assertEnumEqual([6,3,9], cats[0].entries());
-            assertEnumEqual([4,7,1], cats[1].entries());
-            assertEnumEqual([5,8,2], cats[2].entries());
+            assertEnumEqual([3,6,9], cats[0].entries().sort());
+            assertEnumEqual([1,4,7], cats[1].entries().sort());
+            assertEnumEqual([2,5,8], cats[2].entries().sort());
             
-            var container = new JS.Set;
-            container.add(new JS.Set);
+            var container = new JS.HashSet;
+            container.add(new JS.HashSet);
             container.add(new JS.SortedSet);
-            container.add(new JS.Set);
-            assert(container.contains(new JS.Set));
+            container.add(new JS.HashSet);
+            assert(container.contains(new JS.HashSet));
             assertEqual(1, container.size);
             container.add(new JS.SortedSet([12]));
             assertEqual(2, container.size);
             
             container = new JS.SortedSet;
-            container.add(new JS.Set);
+            container.add(new JS.HashSet);
             container.add(new JS.SortedSet);
-            container.add(new JS.Set);
-            assert(container.contains(new JS.Set));
+            container.add(new JS.HashSet);
+            assert(container.contains(new JS.HashSet));
             assertEqual(1, container.size);
             
             var list = [9,3,7,8,4];
             var sorted = new JS.SortedSet(['fred', 'baz']);
-            var inner = new JS.Set([5, sorted]);
-            var nest = new JS.Set([4, 'foo', list, inner, 12, new JS.Set([45,'twelve'])]);
+            var inner = new JS.HashSet([5, sorted]);
+            var nest = new JS.HashSet([4, 'foo', list, inner, 12, new JS.HashSet([45,'twelve'])]);
             nest.flatten();
-            assertEnumEqual(['twelve',45,12,'fred','baz',5,list,'foo',4], nest.entries());
+            assertEnumEqual([12,4,45,5,list,'baz','foo','fred','twelve'], nest.entries().sort());
             assertEnumEqual(['baz', 'fred'], sorted.entries());
             assertEnumEqual([5, sorted], inner.entries());
             
-            assertEnumEqual([4,9,8], new JS.Set([8,2,9,4,'foo']).difference(['foo',2]));
-            assertEnumEqual([0,1,7], new JS.SortedSet([3,9,4,6]).complement([1,0,3,7,6,9,4]));
+            assertEnumEqual([4,8,9], new JS.HashSet([8,2,9,4,'foo']).difference(['foo',2]).entries().sort());
+            assertEnumEqual([0,1,7], new JS.SortedSet([3,9,4,6]).complement([1,0,3,7,6,9,4]).entries().sort());
             
             var sets = a.u(b).divide(function(x) { return x % 3 });
-            assert(sets instanceof JS.Set);
-            assert(sets.contains(new JS.Set([6,9,3])));
+            assert(sets instanceof JS.HashSet);
+            assert(sets.contains(new JS.HashSet([6,9,3])));
             assert(sets.contains(new JS.SortedSet([7,1,4])));
-            assert(sets.contains(new JS.Set([8,2,5])));
+            assert(sets.contains(new JS.HashSet([8,2,5])));
             assertEqual(3, sets.size);
             
             // http://en.wikipedia.org/wiki/Subset
-            assert(new JS.Set([1,2]).isProperSubset(new JS.Set([1,2,3])));
-            assert(new JS.Set([3,1,2]).isSubset(new JS.Set([1,2,3])));
-            assert(!( new JS.Set([3,1,2]).isProperSubset(new JS.Set([1,2,3])) ));
-            assert(new JS.SortedSet().isSubset(new JS.Set([1,2,3])));
+            assert(new JS.HashSet([1,2]).isProperSubset(new JS.HashSet([1,2,3])));
+            assert(new JS.HashSet([3,1,2]).isSubset(new JS.HashSet([1,2,3])));
+            assert(!( new JS.HashSet([3,1,2]).isProperSubset(new JS.HashSet([1,2,3])) ));
+            assert(new JS.SortedSet().isSubset(new JS.HashSet([1,2,3])));
             
             sets.replace([0,3,8,2]);
             var sortee = new JS.SortedSet([3,0,2,8]);
             assert(sets.equals(sortee));
             assertEqual(sets.hash(), sortee.hash());
             
-            c = new JS.Set([8,2,6,5,7]);
+            c = new JS.HashSet([8,2,6,5,7]);
             c.remove(2);
-            assert(c.equals(new JS.Set([5,6,7,8])));
+            assert(c.equals(new JS.HashSet([5,6,7,8])));
             c.removeIf(function(x) { return x%2 == 0 });
-            assert(c.equals(new JS.Set([5,7])));
-            c = new JS.Set([new JS.Set()]);
+            assert(c.equals(new JS.HashSet([5,7])));
+            c = new JS.HashSet([new JS.HashSet()]);
             assertEqual(1, c.size);
             c.remove(new JS.SortedSet);
             assertEqual(0, c.size);
             
-            c = new JS.Set([8,2,6,5,7]);
+            c = new JS.HashSet([8,2,6,5,7]);
             c.subtract([7,6]);
-            assert(c.equals(new JS.Set([5,8,2])));
+            assert(c.equals(new JS.HashSet([5,8,2])));
             
             var k = new JS.SortedSet([1,2,3,4]), l = new JS.SortedSet([5,6,7,8]);
             assertEqual('1,5,1,6,1,7,1,8,2,5,2,6,2,7,2,8,3,5,3,6,3,7,3,8,4,5,4,6,4,7,4,8',
                     k.x(l).map(function(pair) { return pair.join(',') }).join(','));
             
-            var xa = new JS.Set([2,9,3,7,5]), xb = new JS.Set([8,1,5,2,6]);
+            var xa = new JS.HashSet([2,9,3,7,5]), xb = new JS.HashSet([8,1,5,2,6]);
             var x = xa.xor(xb);
-            assert(x.equals(new JS.Set([9,3,7,8,1,6])));
-            assert(xa.equals(new JS.Set([2,9,3,7,5])));
-            assert(xb.equals(new JS.Set([8,1,5,6,2])));
+            assert(x.equals(new JS.HashSet([9,3,7,8,1,6])));
+            assert(xa.equals(new JS.HashSet([2,9,3,7,5])));
+            assert(xb.equals(new JS.HashSet([8,1,5,6,2])));
             
             var s, ary, i, n = 10;
             
             for (i = 0; i < n; i++) {
-                ary = new JS.Set( $R(1,20).map(function() {
+                ary = new JS.HashSet( $R(1,20).map(function() {
                     return Math.round(100 * Math.random());
                 }) ).entries();
                 s = new JS.SortedSet(ary);
