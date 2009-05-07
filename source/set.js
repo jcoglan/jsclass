@@ -260,7 +260,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
   }
 });
 
-JS.HashSet = new JS.Class(JS.Set, {
+JS.HashSet = new JS.Class('HashSet', JS.Set, {
   forEach: function(block, context) {
     this._members.forEachKey(block, context);
   },
