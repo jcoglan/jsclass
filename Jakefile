@@ -6,3 +6,9 @@ jake :license do
   }.join("\n") + "\n */"
 end
 
+jake :after_build do |build|
+  %w[CHANGELOG MIT-LICENSE].each do |doc|
+    FileUtils.cp doc, "#{build.build_directory}/#{doc}"
+  end 
+end
+
