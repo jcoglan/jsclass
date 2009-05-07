@@ -1,0 +1,146 @@
+Version 1.6.3
+March 4 2009
+================================================================
+
+* Fixes a bug caused by Function#prototype becoming a non-
+  enumerable property in Safari 4, causing classes to inherit
+  from themselves and leading to stack overflows.
+
+
+Version 2.0.2
+October 1 2008
+================================================================
+
+* The function returned by object.method('callSuper') now behaves
+  correctly when called after the containing method has returned.
+
+
+Version 1.6.2
+October 1 2008
+================================================================
+
+* Fixes some bugs to make various forEach() methods more robust.
+
+
+Version 2.0.1
+September 14 2008
+================================================================
+
+* Fixes a super()-related bug in Command.
+* Better handling of 'include' and 'extend' directives such
+  that these are processed before all the other methods are
+  added. This allows mixins to override parts of the including
+  class to affect future method definitions.
+* Module#include() has been fixed so that overriding it produces
+  more sane behaviour with respect to classes that delegate to
+  a module behind the scenes to store methods.
+
+
+Version 2.0.0
+August 12 2008
+================================================================
+
+* Complete rewrite of the core, including a proper implementation
+  of Modules with all inheritance semantics based around this.
+  Ruby-style multiple inheritance now works correctly, and
+  callSuper() can call methods from mixins.
+* Class and Module are now classes, and must be created using
+  the 'new' keyword.
+* Some backward compatibility breaks; see http://jsclass.jcoglan.com/upgrade.html
+* New method: Object#__eigen__() returns an object's metaclass.
+* Performance of super() calls is much improved.
+* New libraries: Package, Set, SortedSet and StackTrace.
+* Package provides a dependency-aware system for loading new
+  JavaScript files on demand.
+
+
+Version 1.6.1
+April 17 2008
+================================================================
+
+* Fixes bug in Decorator and Proxy.Virtual caused by the 'klass'
+  property being treated as a method and delegated.
+
+
+Version 1.6.0
+April 10 2008
+================================================================
+
+* Adds a DSL for defining classes in a more Ruby-like way using
+  procedures rather than declarations (experimental).
+* New libraries: Forwardable, State.
+* The extended() hook is now supported.
+* The 'implement' directive is no longer supported.
+
+
+Version 1.5.0
+February 25 2008
+================================================================
+
+* Adds a standard library, including Command, Comparable,
+  Decorator, Enumerable, LinkedList, MethodChain, Observable
+  and Proxy.Virtual.
+* Renames _super() to callSuper() to avoid problems with PackR's
+  private variable shrinking.
+* Adds an Object#wait() method that calls a MethodChain on the
+  object using setTimeout().
+
+
+Version 1.0.1
+January 14 2008
+================================================================
+
+* Memoizes calls to Object#method() so that the same function
+  object is returned each time.
+
+
+Version 1.0.0
+January 4 2008
+================================================================
+
+* Singleton methods that call super() are now supported.
+* Object#is_a() has been renamed to Object#isA().
+* Classes now support inherited() and included() hooks.
+* Adds Interface class for easier duck-typing checks across
+  several methods.
+* New directive 'implement' can be used to check that a class
+  implements some interfaces.
+* Singletons are now supported as class-like definitions that
+  yield a single object.
+* Module has been added as a way to protect sets of methods by
+  wrapping them in a closure.
+* Removes the bindMethods class flag in favour of the more
+  efficient and Ruby-like Ojbect#method(). This can also be
+  used on classes to get bound class methods.
+* Exceptions thrown while calling super are no longer swallowed
+  inside the framework.
+* Class#method() is now Class#instanceMethod.
+
+
+Version 0.9.2
+November 13 2007
+================================================================
+
+* Fixes bug caused by multiple methods in the same call stack
+  clobbering _super().
+* Fixes some inheritance bugs related to class methods and
+  built-in instance methods.
+* Improves performance by bootstrapping JavaScript's prototypes
+  for instance method inheritance.
+* Allows inheritance from non-JS.Class-based classes.
+
+
+Version 0.9.1
+November 12 2007
+================================================================
+
+* Improves performance by checking whether methods use _super()
+  and only wrapping where necessary.
+
+
+Version 0.9.0
+November 11 2007
+================================================================
+
+* Initial release. Features single inheritance and _super().
+
