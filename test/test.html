@@ -792,6 +792,13 @@
             assertEqual(4, keys.length);
             keys.push(removed.value);
             assertEqual('ABCDE', keys.pluck('brand').sort().join(''));
+            
+            var A = {}, B = {}, C = {};
+            var pojos = new JS.Hash([ A,'a', B,'b', C,'c' ]);
+            assertEqual('a', pojos.get(A));
+            assertEqual('b', pojos.get(B));
+            assertEqual('c', pojos.get(C));
+            assertEqual(null, pojos.get(pojos));
         }},
         
         testSet: function() { with(this) {
