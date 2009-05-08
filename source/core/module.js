@@ -1,28 +1,29 @@
 /** section: core
  * class JS.Module
+ * includes JS.Kernel
  * 
- * Module is the core class in JS.Class. A module is simply an object that stores methods,
+ * `Module` is the core class in JS.Class. A module is simply an object that stores methods,
  * and is responsible for handling method lookups, inheritance relationships and the like.
  * All of Ruby's inheritance semantics are handled using modules in JS.Class.
  * 
  * The basic object/module/class model in Ruby is expressed in the diagram at
- * http://ruby-doc.org/core/classes/Class.html -- Class inherits from Module, which
- * inherits from Object (as do all custom classes). Kernel is a Module which is mixed
- * into Object to provide methods common to all objects.
+ * http://ruby-doc.org/core/classes/Class.html -- `Class` inherits from `Module`, which
+ * inherits from `Object` (as do all custom classes). `Kernel` is a `Module` which is mixed
+ * into `Object` to provide methods common to all objects.
  * 
- * In JS.Class, there is no Object class, but we do have Module, Class and Kernel. All
- * top-level (parentless) classes include the Kernel module, so all classes in effect
- * inherit from Kernel. All classes are instances of Class, and all modules instances of
- * Module. Module is a top-level class, from which Class inherits.
+ * In JS.Class, there is no `Object` class, but we do have `Module`, `Class` and `Kernel`.
+ * All top-level (parentless) classes include the `JS.Kernel` module, so all classes in effect
+ * inherit from `Kernel`. All classes are instances of `JS.Class`, and all modules instances
+ * of `JS.Module`. `Module` is a top-level class, from which `Class` inherits.
  * 
  * The following diagram shows this relationship; vertical lines indicate parent/child
  * class relationships, horizontal lines indicate module inclusions. (`C`) means a class,
  * (`M`) a module.
  * 
  * 
- *      ==============      ==============      ==================      ==============
- *      | M | Kernel |----->| C | Module |      | C | OtherClass |<-----| M | Kernel |
- *      ==============      ==============      ==================      ==============
+ *      ==============      ==============      ===================      ==============
+ *      | M | Kernel |----->| C | Module |      | C | ParentClass |<-----| M | Kernel |
+ *      ==============      ==============      ===================      ==============
  *                                ^                     ^
  *                                |                     |
  *                                |                     |
@@ -52,20 +53,20 @@
  * metamodule into the child class's metamodule, like so:
  * 
  * 
- *            ==================      ===========================
- *            | C | OtherClass |<>----| M | <Module:OtherClass> |------
- *            ==================      ===========================     |
- *                    ^                                               |
- *                    |                                               |
- *                    |                                               |
- *            ==================      ===========================     |
- *            | C | ChildClass |<>----| M | <Module:ChildClass> |<-----
- *            ==================      ===========================
+ *            ===================      ============================
+ *            | C | ParentClass |<>----| M | <Module:ParentClass> |------
+ *            ===================      ============================     |
+ *                    ^                                                 |
+ *                    |                                                 |
+ *                    |                                                 |
+ *            ===================      ===========================      |
+ *            | C | ChildClass  |<>----| M | <Module:ChildClass> |<------
+ *            ===================      ===========================
  * 
  * 
  * The parent-child relationships are also implemented using module inclusion, with some
- * extra checks and optimisations. Also, bear in mind that although Class appears to be a
- * subclass of Module, this particular parent-child relationship is faked using manual
+ * extra checks and optimisations. Also, bear in mind that although `Class` appears to be a
+ * subclass of `Module`, this particular parent-child relationship is faked using manual
  * delegation; every class has a hidden module attached to it that handles all the method
  * storage and lookup responsibilities.
  **/
@@ -79,9 +80,15 @@ JS.extend(JS.Module.prototype, {
    * - methods (Object): list of methods for the class
    * - options (Object): configuration options
    * 
-   * The `name` argument is both optional and may be omitted; `name` is not used to
-   * assign the class to a variable, it is only uses as metadata. The `options` object
-   * is used to specify the target object that the module is storing methods for.
+   * The `name` argument is optional and may be omitted; `name` is not used to assign
+   * the class to a variable, it is only uses as metadata. The `options` object is used
+   * to specify the target object that the module is storing methods for.
+   * 
+   *     var Runnable = new JS.Module('Runnable', {
+   *         run: function(args) {
+   *             // ...
+   *         }
+   *     });
    **/
   initialize: function(name, methods, options) {
     this.__mod__ = this;      // Mirror property found in Class. Think of this as toModule()
@@ -110,7 +117,7 @@ JS.extend(JS.Module.prototype, {
    * JS.Module#setName(name) -> undefined
    * - name (String): the name for the module
    * 
-   * Sets the display name of the module to the given value. Should be the fully-qualified
+   * Sets the `displayName` of the module to the given value. Should be the fully-qualified
    * name, including names of the containing modules.
    **/
   setName: function(name) {
@@ -125,7 +132,7 @@ JS.extend(JS.Module.prototype, {
    * - name (String): the name of the method to assign a `displayName` to
    * 
    * Assigns the `displayName` property to the named method using Ruby conventions for naming
-   * instance and singleton methods. If the named field contains another Module, the name
+   * instance and singleton methods. If the named field points to another `Module`, the name
    * change is applied recursively.
    **/
   __name__: function(name) {
@@ -142,7 +149,7 @@ JS.extend(JS.Module.prototype, {
    * - func (Function): a function implementing the method
    * - options (Object): execution options
    * 
-   * Adds an instance method to the module with the given name. The options parameter is
+   * Adds an instance method to the module with the given `name`. The `options` parameter is
    * for internal use to make sure callbacks fire on the correct objects, e.g. a class
    * uses a hidden module to store its methods, but callbacks should fire on the class,
    * not the module.
@@ -174,10 +181,11 @@ JS.extend(JS.Module.prototype, {
    * - options (Object): flags to control execution
    * - resolve (Boolean): flag to decide whether to resolve afterward
    * 
-   * Mixes a module into this one or, if module is plain old object (rather than a Module)
-   * adds methods directly into this module. The options and resolve arguments are mostly
-   * for internal use; options specifies objects that callbacks should fire on, and resolve
-   * tells the module whether to resolve methods onto its target after adding the methods.
+   * Mixes `module` into the receiver or, if `module` is plain old object (rather than a
+   * `JS.Module`) adds methods directly into the receiver. The `options` and `resolve` arguments
+   * are mostly for internal use; `options` specifies objects that callbacks should fire on,
+   * and `resolve` tells the module whether to resolve methods onto its target after adding
+   * the methods.
    **/
   include: function(module, options, resolve) {
     if (!module) return resolve && this.resolve();
@@ -237,8 +245,8 @@ JS.extend(JS.Module.prototype, {
    * JS.Module#includes(module) -> Boolean
    * - module (JS.Module): a module to check for inclusion
    * 
-   * Returns true iff this module includes (i.e. inherits from) the given module, or if
-   * the receiver and given module are the same object. Recurses over the receiver's
+   * Returns `true` iff the receiver includes (i.e. inherits from) the given `module`, or
+   * if the receiver and given `module` are the same object. Recurses over the receiver's
    * inheritance tree, could get expensive.
    **/
   includes: function(module) {
@@ -254,12 +262,12 @@ JS.extend(JS.Module.prototype, {
   },
   
   /**
-   * JS.Module#ancestors() -> Array
+   * JS.Module#ancestors([results]) -> Array
    * 
    * Returns an array of the module's ancestor modules/classes, with the most distant
    * first and the receiver last. This is the opposite order to that given by Ruby, but
    * this order makes it easier to eliminate duplicates and preserve Ruby's inheritance
-   * semantics with respect to the diamond problem. The results parameter is for internal
+   * semantics with respect to the diamond problem. The `results` parameter is for internal
    * use; we recurse over the tree passing the same array around rather than generating
    * lots of arrays and concatenating.
    **/
@@ -286,9 +294,9 @@ JS.extend(JS.Module.prototype, {
    * - name (String): the name of the method to search for
    * 
    * Returns an array of all the methods in the module's inheritance tree with the given
-   * name. Methods are returned in the same order as the modules in ancestors(), so the
-   * last method in the list will be called first, the penultimate on the first callSuper(),
-   * and so on back through the list.
+   * `name`. Methods are returned in the same order as the modules in `JS.Module#ancestors`,
+   * so the last method in the list will be called first, the penultimate on the first
+   * `callSuper()`, and so on back through the list.
    **/
   lookup: function(name) {
     var self = this.__mod__, cache = self.__mct__;
@@ -308,7 +316,7 @@ JS.extend(JS.Module.prototype, {
    * - func (Function): a function implementing the method
    * 
    * Returns a version of the function ready to be added to a prototype object. Functions
-   * that use callSuper() must be wrapped to support that behaviour, other functions can
+   * that use `callSuper()` must be wrapped to support that behaviour, other functions can
    * be used raw.
    **/
   make: function(name, func) {
@@ -325,8 +333,8 @@ JS.extend(JS.Module.prototype, {
    * - name (String): the name of the method being called
    * - args (Array): list of arguments to begin the call
    * 
-   * Performs calls to functions that use callSuper(). Ancestor methods are looked up
-   * dynamically at call-time; this allows callSuper() to be late-bound as in Ruby at the
+   * Performs calls to functions that use `callSuper()`. Ancestor methods are looked up
+   * dynamically at call-time; this allows `callSuper()` to be late-bound as in Ruby at the
    * cost of a little performance. Arguments to the call are stored so they can be passed
    * up the call stack automatically without the developer needing to pass them by hand.
    **/
@@ -365,7 +373,7 @@ JS.extend(JS.Module.prototype, {
    * JS.Module#resolve([target = this]) -> undefined
    * - target (Object): the object to reflect methods onto
    * 
-   * Copies methods from the module onto the target object, wrapping methods where
+   * Copies methods from the module onto the `target` object, wrapping methods where
    * necessary. The target will typically be a native JavaScript prototype object used
    * to represent a class. Recurses over this module's ancestors to make sure all applicable
    * methods exist.

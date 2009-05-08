@@ -1,3 +1,7 @@
+// This file bootstraps the framework by redefining Module and Class using their
+// own prototypes and mixing in methods from Kernel, making these classes appear
+// to be instances of themselves.
+
 JS.Module = JS.extend(new JS.Class('Module', JS.Module.prototype), JS.Kernel.__fns__);
 JS.Module.include(JS.Kernel);
 JS.Class = JS.extend(new JS.Class('Class', JS.Module, JS.Class.prototype), JS.Kernel.__fns__);

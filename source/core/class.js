@@ -1,14 +1,14 @@
 /** section: core
  * class JS.Class < JS.Module
  * 
- * Class is a subclass of Module; classes not only store methods but also spawn new
- * objects. In addition, classes have an extra type of inheritance on top of mixins,
+ * `Class` is a subclass of `JS.Module`; classes not only store methods but also spawn
+ * new objects. In addition, classes have an extra type of inheritance on top of mixins,
  * in that each class can have a single parent class from which it will inherit both
  * instance and singleton methods.
  * 
- * Refer to Module for details of how inheritance is implemented in JS.Class. Though
- * Class is supposed to appear to be a subclass of Module, this relationship is
- * implemented by letting each Class hold a reference to an anonymous Module and
+ * Refer to `JS.Module` for details of how inheritance is implemented in JS.Class. Though
+ * `Class` is supposed to appear to be a subclass of `Module`, this relationship is
+ * implemented by letting each `Class` hold a reference to an anonymous `Module` and
  * using manual delegation where necessary.
  **/
 JS.Class = JS.makeFunction();
@@ -97,9 +97,9 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
    * - options (Object): flags to control execution
    * - resolve (Boolean): flag to decide whether to resolve afterward
    * 
-   * Mixes a module into the class if it's Module instance, or adds instance methods to
-   * the class itself if given a plain old object. Overrides Module#include to make sure
-   * callbacks fire on the class rather than its delegating module.
+   * Mixes a `module` into the class if it's a `JS.Module` instance, or adds instance
+   * methods to the class itself if given a plain old object. Overrides `JS.Module#include`
+   * to make sure callbacks fire on the class rather than its delegating module.
    **/
   include: function(module, options, resolve) {
     if (!module) return;
@@ -109,12 +109,12 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   },
   
   /**
-   * JS.Class#define(name, func, options) -> undefined
+   * JS.Class#define(name, func[, options = {}]) -> undefined
    * - name (String): the name of the method
    * - func (Function): a function to implement the method
    * - options (Object): options for internal use
    * 
-   * Adds an instance method to the class with the given name. The options parameter is
+   * Adds an instance method to the class with the given `name`. The `options` parameter is
    * for internal use to make sure callbacks fire on the correct objects, e.g. a class
    * uses a hidden module to store its methods, but callbacks should fire on the class,
    * not the module.

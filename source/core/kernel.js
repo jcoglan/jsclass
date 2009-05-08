@@ -1,10 +1,10 @@
 /** section: core
  * mixin JS.Kernel
  * 
- * Kernel is the base module; all classes include the Kernel, so its methods become
- * available to all objects instantiated by JS.Class. As in Ruby, the core Object
- * methods are implemented here rather than in the base Object class. JS.Class does
- * not in fact have an Object class and does not modify the builtin JavaScript Object
+ * `Kernel` is the base module; all classes include the `Kernel`, so its methods become
+ * available to all objects instantiated by JS.Class. As in Ruby, the core `Object`
+ * methods are implemented here rather than in the base `Object` class. JS.Class does
+ * not in fact have an `Object` class and does not modify the builtin JavaScript `Object`
  * class either.
  **/
 JS.Kernel = JS.extend(new JS.Module({
@@ -12,7 +12,7 @@ JS.Kernel = JS.extend(new JS.Module({
    * JS.Kernel#__eigen__() -> JS.Module
    * 
    * Returns the object's metamodule, analogous to calling `(class << self; self; end)`
-   * in Ruby. Ruby's metaclasses are Classes, not just Modules, but so far I've not found
+   * in Ruby. Ruby's metaclasses are `Class`es, not just `Module`s, but so far I've not found
    * a compelling reason to enforce this. You cannot instantiate or subclass metaclasses
    * in Ruby, they only really exist to store methods so a module will suffice.
    **/
@@ -29,7 +29,7 @@ JS.Kernel = JS.extend(new JS.Module({
    * JS.Kernel#equals(object) -> Boolean
    * - object (Object): object to compare to the receiver
    * 
-   * Returns true iff this object is the same as the argument. Override to provide a
+   * Returns `true` iff `object` is the same object as the receiver. Override to provide a
    * more meaningful comparison for use in sets, hashtables etc.
    **/
   equals: function(object) {
@@ -41,9 +41,9 @@ JS.Kernel = JS.extend(new JS.Module({
    * - module (JS.Module): module with which to extend the object
    * - resolve (Boolean): whether to refresh method tables afterward
    * 
-   * Extends the object using the methods from module. If module is an instance of
-   * Module, it becomes part of the object's inheritance chain and any methods added
-   * directly to the object will take precedence. Pass false as a second argument
+   * Extends the object using the methods from `module`. If `module` is an instance of
+   * `JS.Module`, it becomes part of the object's inheritance chain and any methods added
+   * directly to the object will take precedence. Pass `false` as a second argument
    * to prevent the method resolution process from firing.
    **/
   extend: function(module, resolve) {
@@ -55,7 +55,7 @@ JS.Kernel = JS.extend(new JS.Module({
    * 
    * Returns a hexadecimal hashcode for the object for use in hashtables. By default,
    * this is a random number guaranteed to be unique to the object. If you override
-   * this method, make sure that a.equals(b) implies a.hash() == b.hash().
+   * this method, make sure that `a.equals(b)` implies `a.hash() === b.hash()`.
    **/
   hash: function() {
     return this.__hashcode__ = this.__hashcode__ || JS.Kernel.getHashCode();
@@ -65,7 +65,7 @@ JS.Kernel = JS.extend(new JS.Module({
    * JS.Kernel#isA(type) -> Boolean
    * - type (JS.Module): module or class to check the object's type against
    * 
-   * Returns true if the object is an instance of `type` or one of its
+   * Returns `true` iff the object is an instance of `type` or one of its
    * subclasses, or if the object's class includes the module `type`.
    **/
   isA: function(moduleOrClass) {

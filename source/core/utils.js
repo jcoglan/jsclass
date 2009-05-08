@@ -6,6 +6,10 @@
 
 /** section: core
  * JS
+ * 
+ * The `JS` object is used as a namespace by the rest of the JS.Class framework, and hosts
+ * various utility methods used throughout. None of these methods should be taken as being
+ * public API, they are all 'plumbing' and may be removed or changed at any time.
  **/
 JS = {
   /**
@@ -30,7 +34,7 @@ JS = {
    * JS.makeFunction() -> Function
    *
    * Returns a function for use as a constructor. These functions are used as the basis for
-   * classes. The constructor calls the object's initialize() method if it exists.
+   * classes. The constructor calls the object's `initialize()` method if it exists.
    **/
   makeFunction: function() {
     return function() {
@@ -45,7 +49,7 @@ JS = {
    * - klass (JS.Class): class from which you want to inherit
    *
    * Takes a class and returns an instance of it, without calling the class's constructor.
-   * Used for forging links between objects using JavaScript's inheritance model.
+   * Used for forging prototype links between objects using JavaScript's inheritance model.
    **/
   makeBridge: function(klass) {
     var bridge = function() {};
@@ -59,7 +63,7 @@ JS = {
    * - func (Function): function that the bound function should call
    *
    * Takes a function and an object, and returns a new function that calls the original
-   * function with 'this' set to refer to the object. Used to implement Object#method,
+   * function with `this` set to refer to the `object`. Used to implement `JS.Kernel#method`,
    * amongst other things.
    **/
   bind: function() {
@@ -73,10 +77,10 @@ JS = {
    * JS.callsSuper(func) -> Boolean
    * - func (Function): function to test for super() calls
    *
-   * Takes a function and returns true iff the function makes a call to callSuper(). Result
-   * is cached on the function itself since functions are immutable and decompiling them
-   * is expensive. We use this to determine whether to wrap the function when it's added
-   * to a class; wrapping impedes performance and should be avoided where possible.
+   * Takes a function and returns `true` iff the function makes a call to `callSuper()`.
+   * Result is cached on the function itself since functions are immutable and decompiling
+   * them is expensive. We use this to determine whether to wrap the function when it's
+   * added to a class; wrapping impedes performance and should be avoided where possible.
    **/
   callsSuper: function(func) {
     return func.SUPER === undefined
@@ -88,9 +92,9 @@ JS = {
    * JS.mask(func) -> Function
    * - func (Function): function to obfuscate
    *
-   * Disguises a function so that we cannot tell if it uses callSuper(). Sometimes we don't
+   * Disguises a function so that we cannot tell if it uses `callSuper()`. Sometimes we don't
    * want such functions to be wrapped by the inheritance system. Modifies the function's
-   * toString() method and returns the function.
+   * `toString()` method and returns the function.
    **/
   mask: function(func) {
     var string = func.toString().replace(/callSuper/g, 'super');
@@ -100,10 +104,10 @@ JS = {
   
   /**
    * JS.array(iterable) -> Array
-   * - iterable (Object): object you want to cast to an Array
+   * - iterable (Object): object you want to cast to an array
    *
-   * Takes any iterable object (something with a 'length' property) and returns a native
-   * JavaScript Array containing the same elements.
+   * Takes any iterable object (something with a `length` property) and returns a native
+   * JavaScript `Array` containing the same elements.
    **/
   array: function(iterable) {
     if (!iterable) return [];
@@ -118,9 +122,9 @@ JS = {
    * - haystack (Array): array to search
    * - needle (Object): object to search for
    *
-   * Returns the index of the needle in the haystack, which is typically an Array or an
+   * Returns the index of the `needle` in the `haystack`, which is typically an `Array` or an
    * array-like object. Returns -1 if no matching element is found. We need this as older
-   * IE versions don't implement Array#indexOf().
+   * IE versions don't implement `Array#indexOf`.
    **/
   indexOf: function(haystack, needle) {
     for (var i = 0, n = haystack.length; i < n; i++) {
@@ -133,7 +137,7 @@ JS = {
    * JS.isFn(object) -> Boolean
    * - object (Object): object to test
    *
-   * Returns true iff the argument is a function.
+   * Returns `true` iff the argument is a `Function`.
    **/
   isFn: function(object) {
     return object instanceof Function;
@@ -145,7 +149,7 @@ JS = {
    * - object (Object): value of the given field
    *
    * Used to determine whether a key-value pair should be added to a class or module. Pairs
-   * may be ignored if they have some special function, like 'include' or 'extend'.
+   * may be ignored if they have some special function, like `include` or `extend`.
    **/
   ignore: function(key, object) {
     return /^(include|extend)$/.test(key) && typeof object === 'object';
