@@ -1,14 +1,14 @@
 <%= license %>
 
 /**
- * == utils ==
+ * == core ==
  **/
 
-/** section: utils
+/** section: core
  * JS
  **/
 JS = {
-  /** section: utils
+  /**
    * JS.extend(target, extensions) -> Object
    * - target (Object): object to be extended
    * - extensions (Object): object containing key/value pairs to add to target
@@ -26,7 +26,7 @@ JS = {
     return target;
   },
   
-  /** section: utils
+  /**
    * JS.makeFunction() -> Function
    *
    * Returns a function for use as a constructor. These functions are used as the basis for
@@ -40,7 +40,7 @@ JS = {
     };
   },
   
-  /** section: utils
+  /**
    * JS.makeBridge(klass) -> Object
    * - klass (JS.Class): class from which you want to inherit
    *
@@ -53,7 +53,7 @@ JS = {
     return new bridge;
   },
   
-  /** section: utils
+  /**
    * JS.bind(object, func) -> Function
    * - object (Object): object to bind the function to
    * - func (Function): function that the bound function should call
@@ -69,7 +69,7 @@ JS = {
     };
   },
   
-  /** section: utils
+  /**
    * JS.callsSuper(func) -> Boolean
    * - func (Function): function to test for super() calls
    *
@@ -84,7 +84,7 @@ JS = {
         : func.SUPER;
   },
   
-  /** section: utils
+  /**
    * JS.mask(func) -> Function
    * - func (Function): function to obfuscate
    *
@@ -98,7 +98,7 @@ JS = {
     return func;
   },
   
-  /** section: utils
+  /**
    * JS.array(iterable) -> Array
    * - iterable (Object): object you want to cast to an Array
    *
@@ -113,7 +113,7 @@ JS = {
     return results;
   },
   
-  /** section: utils
+  /**
    * JS.indexOf(haystack, needle) -> Number
    * - haystack (Array): array to search
    * - needle (Object): object to search for
@@ -129,7 +129,7 @@ JS = {
     return -1;
   },
   
-  /** section: utils
+  /**
    * JS.isFn(object) -> Boolean
    * - object (Object): object to test
    *
@@ -139,7 +139,7 @@ JS = {
     return object instanceof Function;
   },
   
-  /** section: utils
+  /**
    * JS.ignore(key, object) -> Boolean
    * - key (String): name of field being added to an object
    * - object (Object): value of the given field
