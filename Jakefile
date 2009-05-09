@@ -7,7 +7,7 @@ jake :license do
 end
 
 jake :after_build do |build|
-  %w[CHANGELOG MIT-LICENSE].each do |doc|
+  %w[CHANGELOG MIT-LICENSE package-config.js].each do |doc|
     FileUtils.cp doc, "#{build.build_directory}/#{doc}"
   end 
 end
