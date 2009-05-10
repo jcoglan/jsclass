@@ -1,7 +1,4 @@
 JS.Packages(function() { with(this) {
-    
-    var JSCLASS_PATH = 'http://mydomain.com/path/to/jsclass/min/';
-    
     file(JSCLASS_PATH + 'core.js')
         .provides('JS.Module', 'JS.Class', 'JS.Kernel', 'JS.Singleton', 'JS.Interface');
     
