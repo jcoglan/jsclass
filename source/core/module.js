@@ -188,7 +188,7 @@ JS.extend(JS.Module.prototype, {
    * the methods.
    **/
   include: function(module, options, resolve) {
-    if (!module) return resolve && this.resolve();
+    if (!module) return resolve ? this.resolve() : this.uncache();
     options = options || {};
     
     var inc      = module.include,
@@ -238,7 +238,7 @@ JS.extend(JS.Module.prototype, {
         return includer.include(module, options, resolve);
       }
     }
-    resolve && this.resolve();
+    resolve ? this.resolve() : this.uncache();
   },
   
   /**
@@ -385,8 +385,7 @@ JS.extend(JS.Module.prototype, {
     
     // Resolve all dependent modules if the target is this module
     if (target === self) {
-      self.__anc__ = null;
-      self.__mct__ = {};
+      self.uncache(false);
       i = self.__dep__.length;
       while (i--) self.__dep__[i].resolve();
     }
@@ -402,6 +401,21 @@ JS.extend(JS.Module.prototype, {
       made = target.make(key, self.__fns__[key]);
       if (resolved[key] !== made) resolved[key] = made;
     }
+  },
+  
+  /**
+   * JS.Module#uncache([recursive = true]) -> undefined
+   * - recursive (Boolean): whether to clear the cache of all dependent modules
+   * 
+   * Clears the ancestor and method table cahces for the module. This is used to invalidate
+   * caches when modules are modified, to avoid some of the bugs that exist in Ruby.
+   **/
+  uncache: function(recursive) {
+    var self = this.__mod__, i = self.__dep__.length;
+    self.__anc__ = null;
+    self.__mct__ = {};
+    if (recursive === false) return;
+    while (i--) self.__dep__[i].uncache();
   }
 });
 

@@ -376,6 +376,15 @@
             assertEqual(4*6, Koala.count() + Bear.count() + Dog.count() + Pitbull.count());
         }},
         
+        testDoubleModuleIncludeFixed: function() { with(this) {
+            var M = new JS.Module();
+            var C = new JS.Class({include: M});
+            assertEnumEqual([JS.Kernel, M, C], C.ancestors());
+            var K = new JS.Module();
+            M.include(K);
+            assertEnumEqual([JS.Kernel, K, M, C], C.ancestors());
+        }},
+        
         testClassMethodsMustBeDeclaredWithExtend: function() { with(this) {
             Dog.eatFood = function(food) { return 'Dogs eat ' + food; };
             assertEqual('Dogs eat biscuits', Dog.eatFood('biscuits'));
