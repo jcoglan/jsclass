@@ -7,7 +7,7 @@
  * not in fact have an `Object` class and does not modify the builtin JavaScript `Object`
  * class either.
  **/
-JS.Kernel = JS.extend(new JS.Module({
+JS.Kernel = JS.extend(new JS.Module('Kernel', {
   /**
    * JS.Kernel#__eigen__() -> JS.Module
    * 
