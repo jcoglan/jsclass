@@ -176,10 +176,10 @@ JS.extend(JS.Module.prototype, {
   },
   
   /**
-   * JS.Module#include(module[, options = {}[, resolve = false]]) -> undefined
+   * JS.Module#include(module[, resolve = false[, options = {}]]) -> undefined
    * - module (JS.Module): the module to mix in
-   * - options (Object): flags to control execution
    * - resolve (Boolean): flag to decide whether to resolve afterward
+   * - options (Object): flags to control execution
    * 
    * Mixes `module` into the receiver or, if `module` is plain old object (rather than a
    * `JS.Module`) adds methods directly into the receiver. The `options` and `resolve` arguments
@@ -187,7 +187,7 @@ JS.extend(JS.Module.prototype, {
    * and `resolve` tells the module whether to resolve methods onto its target after adding
    * the methods.
    **/
-  include: function(module, options, resolve) {
+  include: function(module, resolve, options) {
     if (!module) return resolve ? this.resolve() : this.uncache();
     options = options || {};
     
@@ -221,7 +221,7 @@ JS.extend(JS.Module.prototype, {
         if (typeof inc === 'object') {
           modules = [].concat(inc);
           for (i = 0, n = modules.length; i < n; i++)
-            includer.include(modules[i], options);
+            includer.include(modules[i], resolve, options);
         }
         
         // Handle extensions
@@ -235,7 +235,7 @@ JS.extend(JS.Module.prototype, {
         // Make a second call to include(). This allows mixins to modify the
         // include() method and affect the addition of methods to this module
         options._recall = true;
-        return includer.include(module, options, resolve);
+        return includer.include(module, resolve, options);
       }
     }
     resolve ? this.resolve() : this.uncache();

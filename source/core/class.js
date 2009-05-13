@@ -85,27 +85,27 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     // -- Class does not really subclass Module, instead each
     // Class has a Module that it delegates to
     this.__mod__ = new JS.Module(this.__nom__, {}, {_resolve: this.prototype});
-    this.include(JS.Kernel, null, false);
+    this.include(JS.Kernel, false);
     
     if (klass !== Object) this.include(klass.__mod__ || new JS.Module(klass.prototype,
-        {_resolve: klass.prototype}), null, false);
+        {_resolve: klass.prototype}), false);
   },
   
   /**
-   * JS.Class#include(module[, options = {}[, resolve = true]]) -> undefined
+   * JS.Class#include(module[, resolve = true[, options = {}]]) -> undefined
    * - module (JS.Module): the module to mix in
-   * - options (Object): flags to control execution
    * - resolve (Boolean): flag to decide whether to resolve afterward
+   * - options (Object): flags to control execution
    * 
    * Mixes a `module` into the class if it's a `JS.Module` instance, or adds instance
    * methods to the class itself if given a plain old object. Overrides `JS.Module#include`
    * to make sure callbacks fire on the class rather than its delegating module.
    **/
-  include: function(module, options, resolve) {
+  include: function(module, resolve, options) {
     if (!module) return;
     var mod = this.__mod__, options = options || {};
     options._included = this;
-    return mod.include(module, options, resolve !== false);
+    return mod.include(module, resolve !== false, options);
   },
   
   /**

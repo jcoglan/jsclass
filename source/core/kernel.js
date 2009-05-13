@@ -47,7 +47,7 @@ JS.Kernel = JS.extend(new JS.Module('Kernel', {
    * to prevent the method resolution process from firing.
    **/
   extend: function(module, resolve) {
-    return this.__eigen__().include(module, {_extended: this}, resolve !== false);
+    return this.__eigen__().include(module, resolve !== false, {_extended: this});
   },
   
   /**
