@@ -119,12 +119,11 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
    * uses a hidden module to store its methods, but callbacks should fire on the class,
    * not the module.
    **/
-  define: function(name, func, options) {
+  define: function(name, func, resolve, options) {
     var module = this.__mod__;
     options = options || {};
     options._notify = this;
-    module.define(name, func, options);
-    module.resolve();
+    module.define(name, func, resolve, options);
   }
 });
 

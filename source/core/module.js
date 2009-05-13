@@ -154,14 +154,13 @@ JS.extend(JS.Module.prototype, {
    * uses a hidden module to store its methods, but callbacks should fire on the class,
    * not the module.
    **/
-  define: function(name, func, options) {
+  define: function(name, func, resolve, options) {
     var notify = (options || {})._notify || this;
     this.__fns__[name] = func;
     this.__name__(name);
     if (JS.Module._notify && notify && JS.isFn(func))
         JS.Module._notify(name, notify);
-    var i = this.__dep__.length;
-    while (i--) this.__dep__[i].resolve();
+    if (resolve !== false) this.resolve();
   },
   
   /**
@@ -212,8 +211,9 @@ JS.extend(JS.Module.prototype, {
         // Second call: add all the methods
         for (method in module) {
           if (JS.ignore(method, module[method])) continue;
-          this.define(method, module[method], {_notify: includer || options._extended || this});
+          this.define(method, module[method], false, {_notify: includer || options._extended || this});
         }
+        this.resolve();
       } else {
         // First call: handle include and extend blocks
         
