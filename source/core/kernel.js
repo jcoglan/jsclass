@@ -21,7 +21,7 @@ JS.Kernel = JS.extend(new JS.Module('Kernel', {
     var me = this.__nom__, klass = this.klass.__nom__;
     var name = me || (klass ? '#<' + klass + '>' : '');
     var module = this.__meta__ = new JS.Module(name ? name + '.' : '', {}, {_resolve: this});
-    module.include(this.klass.__mod__);
+    module.include(this.klass.__mod__, false);
     return module;
   },
   
@@ -47,7 +47,7 @@ JS.Kernel = JS.extend(new JS.Module('Kernel', {
    * to prevent the method resolution process from firing.
    **/
   extend: function(module, resolve) {
-    return this.__eigen__().include(module, resolve !== false, {_extended: this});
+    return this.__eigen__().include(module, resolve, {_extended: this});
   },
   
   /**

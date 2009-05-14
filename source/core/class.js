@@ -44,7 +44,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     // Set up parent-child relationship, then add methods. Setting up a parent
     // class in JavaScript wipes the existing prototype object.
     klass.inherit(parent);
-    klass.include(methods, null, false);
+    klass.include(methods, false);
     klass.resolve();
     
     // Fire inherited() callback on ancestors
@@ -67,12 +67,10 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     this.superclass = klass;
     
     // Mix the parent's metamodule into this class's metamodule
-    if (this.__eigen__) {
+    if (this.__eigen__)
       this.__eigen__().include(klass.__eigen__
           ? klass.__eigen__()
-          : new JS.Module(klass.prototype));
-      this.__meta__.resolve();
-    }
+          : new JS.Module(klass.prototype), true);
     
     this.subclasses = [];
     (klass.subclasses || []).push(this);
@@ -94,7 +92,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
   /**
    * JS.Class#include(module[, resolve = true[, options = {}]]) -> undefined
    * - module (JS.Module): the module to mix in
-   * - resolve (Boolean): flag to decide whether to resolve afterward
+   * - resolve (Boolean): sets whether to refresh method tables afterward
    * - options (Object): flags to control execution
    * 
    * Mixes a `module` into the class if it's a `JS.Module` instance, or adds instance
@@ -105,13 +103,14 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     if (!module) return;
     var mod = this.__mod__, options = options || {};
     options._included = this;
-    return mod.include(module, resolve !== false, options);
+    return mod.include(module, resolve, options);
   },
   
   /**
-   * JS.Class#define(name, func[, options = {}]) -> undefined
+   * JS.Class#define(name, func[, resolve = true[, options = {}]]) -> undefined
    * - name (String): the name of the method
    * - func (Function): a function to implement the method
+   * - resolve (Boolean): sets whether to refresh method tables afterward
    * - options (Object): options for internal use
    * 
    * Adds an instance method to the class with the given `name`. The `options` parameter is

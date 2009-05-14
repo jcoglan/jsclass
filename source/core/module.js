@@ -110,7 +110,7 @@ JS.extend(JS.Module.prototype, {
     // Object to resolve methods onto
     this.__res__ = options._resolve || null;
     
-    if (methods) this.include(methods);
+    if (methods) this.include(methods, false);
   },
   
   /**
@@ -144,9 +144,10 @@ JS.extend(JS.Module.prototype, {
   },
   
   /**
-   * JS.Module#define(name, func[, options]) -> undefined
+   * JS.Module#define(name, func[, resolve = true[, options = {}]]) -> undefined
    * - name (String): the name of the method
    * - func (Function): a function implementing the method
+   * - resolve (Boolean): sets whether to refresh method tables afterward
    * - options (Object): execution options
    * 
    * Adds an instance method to the module with the given `name`. The `options` parameter is
@@ -175,9 +176,9 @@ JS.extend(JS.Module.prototype, {
   },
   
   /**
-   * JS.Module#include(module[, resolve = false[, options = {}]]) -> undefined
+   * JS.Module#include(module[, resolve = true[, options = {}]]) -> undefined
    * - module (JS.Module): the module to mix in
-   * - resolve (Boolean): flag to decide whether to resolve afterward
+   * - resolve (Boolean): sets whether to refresh method tables afterward
    * - options (Object): flags to control execution
    * 
    * Mixes `module` into the receiver or, if `module` is plain old object (rather than a
@@ -187,6 +188,7 @@ JS.extend(JS.Module.prototype, {
    * the methods.
    **/
   include: function(module, resolve, options) {
+    resolve = (resolve !== false);
     if (!module) return resolve ? this.resolve() : this.uncache();
     options = options || {};
     
@@ -213,7 +215,6 @@ JS.extend(JS.Module.prototype, {
           if (JS.ignore(method, module[method])) continue;
           this.define(method, module[method], false, {_notify: includer || options._extended || this});
         }
-        this.resolve();
       } else {
         // First call: handle include and extend blocks
         

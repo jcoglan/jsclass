@@ -366,6 +366,23 @@
             assert(!yogi.isA(Dog));
         }},
         
+        testModuleUpdating: function() { with(this) {
+            var Mod1 = new JS.Module();
+            var Mod2 = new JS.Module({include: Mod1});
+            var klass = new JS.Class({include: Mod2});
+            
+            Mod2.include({
+                theMethod: function() { return 'success!' }
+            });
+            
+            Mod1.include({
+                theUpperMethod: function() { return 'success!' }
+            });
+            
+            assertEqual('success!', (new klass).theMethod());
+            assertEqual('success!', (new klass).theUpperMethod());
+        }},
+        
         testSubclassUpdating: function() { with(this) {
             var kevin = new Koala('Kevin');
             Animal.include({shout: function(thing) {
@@ -376,6 +393,7 @@
             assertEqual(4*6, Koala.count() + Bear.count() + Dog.count() + Pitbull.count());
         }},
         
+        // http://eigenclass.org/hiki/The+double+inclusion+problem
         testDoubleModuleIncludeFixed: function() { with(this) {
             var M = new JS.Module();
             var C = new JS.Class({include: M});
@@ -383,6 +401,14 @@
             var K = new JS.Module();
             M.include(K);
             assertEnumEqual([JS.Kernel, K, M, C], C.ancestors());
+            
+            var A = new JS.Module();
+            var B = new JS.Module({ foo: function() { return 'B#foo' } });
+            var C = new JS.Class(A);
+            var c = new C();
+            A.include(B);
+            assertEqual('B#foo', c.foo());
+            assertEnumEqual([JS.Kernel, B, A, C], C.ancestors());
         }},
         
         testClassMethodsMustBeDeclaredWithExtend: function() { with(this) {
@@ -413,23 +439,6 @@
             
             var itor = new ItemInheritor(2);
             assertEqual('Item 13', itor.items[6].getName());
-        }},
-        
-        testModuleUpdating: function() { with(this) {
-            var Mod1 = new JS.Module();
-            var Mod2 = new JS.Module({include: Mod1});
-            var klass = new JS.Class({include: Mod2});
-            
-            Mod2.include({
-                theMethod: function() { return 'success!' }
-            });
-            
-            Mod1.include({
-                theUpperMethod: function() { return 'success!' }
-            });
-            
-            assertEqual('success!', (new klass).theMethod());
-            assertEqual('success!', (new klass).theUpperMethod());
         }},
         
         testModule: function() { with(this) {
