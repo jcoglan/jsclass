@@ -216,7 +216,7 @@ JS.Set.include({
   n:  JS.Set.instanceMethod('intersection'),
   u:  JS.Set.instanceMethod('union'),
   x:  JS.Set.instanceMethod('product')
-});
+}, false);
 
 JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
   extend: {
@@ -304,4 +304,4 @@ JS.Enumerable.include({
     klass = klass || JS.Set;
     return new klass(this, block, context);
   }
-});
+}, true);

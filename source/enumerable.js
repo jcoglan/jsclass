@@ -179,6 +179,6 @@ JS.Enumerable.include({
   findAll:    JS.Enumerable.instanceMethod('select'),
   filter:     JS.Enumerable.instanceMethod('select'),
   some:       JS.Enumerable.instanceMethod('any')
-});
+}, true);
 
-JS.Enumerable.Collection.include(JS.Enumerable);
+JS.Enumerable.Collection.include(JS.Enumerable, true);

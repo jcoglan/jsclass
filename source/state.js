@@ -38,7 +38,7 @@ JS.State = new JS.Module('State', {
         klass = klass ? new JS.Class(klass, states[state]) : new JS.Class(states[state]);
         methods = {};
         for (name in stubs) { if (!klass.prototype[name]) methods[name] = stubs[name]; }
-        klass.include(methods);
+        klass.include(methods, false);
         collection[state] = new klass;
       }
       if (module.__res__) this.addMethods(stubs, module.__res__.klass);
@@ -69,4 +69,4 @@ JS.Module.include({define: (function(wrapped) {
       arguments[1] = JS.State.buildCollection(this, block);
     return wrapped.apply(this, arguments);
   };
-})(JS.Module.prototype.define)});
+})(JS.Module.prototype.define)}, true);

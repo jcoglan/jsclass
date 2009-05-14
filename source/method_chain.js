@@ -111,7 +111,7 @@ JS.Kernel.include({
             (typeof base === 'function' && base.apply(this, args)) ||
             this;
   }
-});
+}, true);
 
 JS.MethodChain.addMethods([
   "abbr", "abs", "accept", "acceptCharset", "accesskey", "acos", "action", "addEventListener", 

@@ -561,8 +561,8 @@ var Forwarder = new JS.Class({
         this.fiddler = new Fiddler;
     }
 });
-Forwarder.defineDelegators('fiddler', 'setState', 'stepForward');
 Forwarder.defineDelegator('fiddler', 'getCount', 'count');
+Forwarder.defineDelegators('fiddler', 'setState', 'stepForward');
 
 //================================================================
 //================================================================

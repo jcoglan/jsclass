@@ -10,7 +10,8 @@ JS.StackTrace = new JS.Module({
       } });
       
       for (var method in module.__fns__)
-        module.define(method, module.__fns__[method]);
+        module.define(method, module.__fns__[method], false);
+      module.resolve();
       
       if (!module.__name__) setTimeout(function() {
         module.__name__ = self.nameOf(base);

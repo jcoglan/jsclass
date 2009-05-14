@@ -1145,7 +1145,7 @@
                     }
                 }
             });
-            assertEqual('function', typeof new klass().add);
+            assertEqual('function', typeof klass.prototype.add);
         }},
         
         testForwardable: function() { with(this) {

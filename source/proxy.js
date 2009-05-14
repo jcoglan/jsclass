@@ -24,10 +24,10 @@ JS.Proxy.Virtual = new JS.Class({
       },
       klass: klass,
       constructor: klass
-    });
+    }, false);
     
-    proxy.include(new JS.Module(delegators));
-    proxy.include(this.klass.InstanceMethods);
+    proxy.include(new JS.Module(delegators), false);
+    proxy.include(this.klass.InstanceMethods, true);
     return proxy;
   },
   

@@ -45,4 +45,4 @@ JS.Observable = new JS.Module('Observable', {
 JS.Observable.include({
   subscribe:    JS.Observable.instanceMethod('addObserver'),
   unsubscribe:  JS.Observable.instanceMethod('removeObserver')
-});
+}, true);

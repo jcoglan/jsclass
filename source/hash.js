@@ -305,5 +305,5 @@ JS.Hash.include({
   includes: JS.Hash.instanceMethod('hasKey'),
   index:    JS.Hash.instanceMethod('key'),
   put:      JS.Hash.instanceMethod('store')
-});
+}, true);
 
