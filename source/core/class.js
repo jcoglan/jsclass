@@ -67,10 +67,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     this.superclass = klass;
     
     // Mix the parent's metamodule into this class's metamodule
-    if (this.__eigen__)
-      this.extend(klass.__eigen__
-          ? klass.__eigen__()
-          : new JS.Module(klass.prototype), true);
+    if (this.__eigen__ && klass.__eigen__) this.extend(klass.__eigen__(), true);
     
     this.subclasses = [];
     (klass.subclasses || []).push(this);
