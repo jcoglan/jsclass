@@ -40,7 +40,10 @@ JS.Package = new JS.Class('Package', {
   },
   
   isLoaded: function(withExceptions) {
-    var names = this._names, n = names.length, object;
+    var names = this._names,
+        n     = names.length,
+        object;
+    
     while (n--) {
       object = this.klass.getObject(names[n]);
       if (object !== undefined) continue;
@@ -67,7 +70,9 @@ JS.Package = new JS.Class('Package', {
   },
   
   load: function(callback, context) {
-    var self = this, handler = function() {
+    var self = this, handler, fireCallbacks, tag;
+    
+    handler = function() {
       self._loading = false;
       callback.call(context || null);
     };
@@ -77,7 +82,7 @@ JS.Package = new JS.Class('Package', {
     this._waiters.push(handler);
     if (this._loading) return;
     
-    var fireCallbacks = function() {
+    fireCallbacks = function() {
       self.isLoaded(true);
       for (var i = 0, n = self._waiters.length; i < n; i++) self._waiters[i]();
       self._waiters = [];
@@ -87,7 +92,7 @@ JS.Package = new JS.Class('Package', {
     
     if (JS.isFn(this._loader)) return this._loader(fireCallbacks);
     
-    var tag  = document.createElement('script');
+    tag  = document.createElement('script');
     tag.type = 'text/javascript';
     tag.src  = this._loader;
     
@@ -127,28 +132,33 @@ JS.Package = new JS.Class('Package', {
     },
     
     getObject: function(name) {
-      var object = this._global, parts = name.split('.'), part;
+      var object = this._global,
+          parts  = name.split('.'), part;
+      
       while (part = parts.shift()) object = (object||{})[part];
       return object;
     },
     
     expand: function(list) {
-      var packages = [];
-      for (var i = 0, n = list.length; i < n; i++)
+      var packages = [], i, n;
+      for (i = 0, n = list.length; i < n; i++)
         list[i].expand(packages);
       return packages;
     },
     
     load: function(list, callback, context) {
-      var fired = false, handler = function() {
+      var fired = false, handler, complete, ready, n;
+      
+      handler = function() {
         if (!fired) callback.call(context || null);
         fired = true;
       };
       
-      var complete = this._filter(list, 'isComplete');
+      complete = this._filter(list, 'isComplete');
       if (complete.length === list.length) return setTimeout(handler, 1);
       
-      var ready = this._filter(list, 'readyToLoad'), n = ready.length;
+      ready = this._filter(list, 'readyToLoad');
+      n = ready.length;
       while (n--) ready[n].load(function() { this.load(list, handler); }, this);
     },
     
@@ -200,7 +210,9 @@ JS.Packages = function(declaration) {
 };
  
 require = function() {
-  var args = JS.array(arguments), requirements = [];
+  var args         = JS.array(arguments),
+      requirements = [];
+  
   while (typeof args[0] === 'string') requirements.push(JS.Package.getByName(args.shift()));
   requirements = JS.Package.expand(requirements);
   JS.Package.load(requirements, args[0], args[1]);

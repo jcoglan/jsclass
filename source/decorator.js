@@ -1,7 +1,8 @@
 JS.Decorator = new JS.Class({
   initialize: function(decoree, methods) {
-    var decorator = new JS.Class(), method, func,
-        delegators = {};
+    var decorator  = new JS.Class(),
+        delegators = {},
+        method, func;
     
     for (method in decoree.prototype) {
       func = decoree.prototype[method];

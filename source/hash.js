@@ -30,7 +30,9 @@ JS.Hash = new JS.Class('Hash', {
       },
       
       hash: function() {
-        var key = JS.Hash.codeFor(this.key), value = JS.Hash.codeFor(this.value);
+        var key   = JS.Hash.codeFor(this.key),
+            value = JS.Hash.codeFor(this.value);
+        
         return [key, value].sort().join('');
       }
     }),
@@ -61,7 +63,7 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   _bucketForKey: function(key, createIfAbsent) {
-    var hash = this.klass.codeFor(key),
+    var hash   = this.klass.codeFor(key),
         bucket = this._buckets[hash];
     
     if (!bucket && createIfAbsent)
@@ -82,15 +84,17 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   assoc: function(key, createIfAbsent) {
-    var bucket = this._bucketForKey(key, createIfAbsent);
+    var bucket, index, pair;
+    
+    bucket = this._bucketForKey(key, createIfAbsent);
     if (!bucket) return null;
     
-    var index = this._indexInBucket(bucket, key);
+    index = this._indexInBucket(bucket, key);
     if (index > -1) return bucket[index];
     if (!createIfAbsent) return null;
     
     this.size += 1; this.length += 1;
-    var pair = new this.klass.Pair;
+    pair = new this.klass.Pair;
     pair.setKey(key);
     bucket.push(pair);
     return pair;
@@ -235,14 +239,15 @@ JS.Hash = new JS.Class('Hash', {
   
   remove: function(key, block) {
     if (block === undefined) block = null;
+    var bucket, index, result;
     
-    var bucket = this._bucketForKey(key);
+    bucket = this._bucketForKey(key);
     if (!bucket) return JS.isFn(block) ? this.fetch(key, block) : this.getDefault(key);
     
-    var index = this._indexInBucket(bucket, key);
+    index = this._indexInBucket(bucket, key);
     if (index < 0) return JS.isFn(block) ? this.fetch(key, block) : this.getDefault(key);
     
-    var result = bucket[index].value;
+    result = bucket[index].value;
     bucket.splice(index, 1);
     this.size -= 1;
     this.length -= 1;

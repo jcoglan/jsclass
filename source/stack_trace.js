@@ -1,7 +1,9 @@
 JS.StackTrace = new JS.Module({
   extend: {
     included: function(base) {
-      var module = base.__mod__ || base, self = this;
+      var module = base.__mod__ || base,
+          self   = this,
+          method;
       
       module.extend({define: function(name, func) {
         if (!JS.isFn(func)) return this.callSuper();
@@ -9,7 +11,7 @@ JS.StackTrace = new JS.Module({
         return this.callSuper(name, wrapper);
       } });
       
-      for (var method in module.__fns__)
+      for (method in module.__fns__)
         module.define(method, module.__fns__[method], false);
       module.resolve();
       
@@ -19,14 +21,18 @@ JS.StackTrace = new JS.Module({
     },
     
     nameOf: function(object, root) {
+      var results = [], i, n, field, l;
+      
       if (object instanceof Array) {
-        var results = [], i, n;
         for (i = 0, n = object.length; i < n; i++)
           results.push(this.nameOf(object[i]));
         return results;
       }
+      
       if (object.__name__) return object.__name__;
-      var field = [{name: null, o: root || this.root}], l = 0;
+      
+      field = [{name: null, o: root || this.root}];
+      l = 0;
       while (typeof field === 'object' && l < this.maxDepth) {
         l += 1;
         field = this.descend(field, object);
@@ -40,7 +46,11 @@ JS.StackTrace = new JS.Module({
     },
     
     descend: function(list, needle) {
-      var results = [], n = list.length, i = n, key, item, name;
+      var results = [],
+          n       = list.length,
+          i       = n,
+          key, item, name;
+      
       while (i--) {
         item = list[i];
         if (n > 1 && JS.indexOf(this.excluded, item.o) !== -1) continue;
@@ -63,7 +73,9 @@ JS.StackTrace = new JS.Module({
       _list: [],
       
       indent: function() {
-        var indent = '', n = this._list.length;
+        var indent = '',
+            n      = this._list.length;
+        
         while (n--) indent += '|  ';
         return indent;
       },
@@ -132,8 +144,8 @@ JS.StackTrace = new JS.Module({
 });
 
 (function() {
-  var module = JS.StackTrace;
-  for (var key in module.root) {
+  var module = JS.StackTrace, key;
+  for (key in module.root) {
     if (key !== 'JS') module.excluded.push(module.root[key]);
   }
 })();

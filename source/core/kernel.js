@@ -18,9 +18,12 @@ JS.Kernel = JS.extend(new JS.Module('Kernel', {
    **/
   __eigen__: function() {
     if (this.__meta__) return this.__meta__;
-    var me = this.__nom__, klass = this.klass.__nom__;
-    var name = me || (klass ? '#<' + klass + '>' : '');
-    var module = this.__meta__ = new JS.Module(name ? name + '.' : '', {}, {_resolve: this});
+    
+    var me     = this.__nom__,
+        klass  = this.klass.__nom__,
+        name   = me || (klass ? '#<' + klass + '>' : ''),
+        module = this.__meta__ = new JS.Module(name ? name + '.' : '', {}, {_resolve: this});
+    
     module.include(this.klass.__mod__, false);
     return module;
   },
@@ -79,7 +82,9 @@ JS.Kernel = JS.extend(new JS.Module('Kernel', {
    * Returns the named method from the object as a bound function.
    **/
   method: function(name) {
-    var self = this, cache = self.__mcache__ = self.__mcache__ || {};
+    var self  = this,
+        cache = self.__mcache__ = self.__mcache__ || {};
+    
     if ((cache[name] || {}).fn === self[name]) return cache[name].bd;
     return (cache[name] = {fn: self[name], bd: JS.bind(self[name], self)}).bd;
   },

@@ -197,7 +197,6 @@ JS.extend(JS.Module.prototype, {
         includer = options._included || this,
         modules, method, i, n;
     
-    
     if (module.__inc__ && module.__fns__) {
       // module is a Module instance: make links and fire callbacks
       
@@ -251,10 +250,12 @@ JS.extend(JS.Module.prototype, {
    * inheritance tree, could get expensive.
    **/
   includes: function(module) {
-    var self = this.__mod__;
+    var self = this.__mod__,
+        i    = self.__inc__.length;
+    
     if (Object === module || self === module || self.__res__ === module.prototype)
       return true;
-    var i = self.__inc__.length;
+    
     while (i--) {
       if (self.__inc__[i].includes(module))
         return true;
@@ -273,17 +274,20 @@ JS.extend(JS.Module.prototype, {
    * lots of arrays and concatenating.
    **/
   ancestors: function(results) {
-    var self = this.__mod__, cachable = (results === undefined);
+    var self     = this.__mod__,
+        cachable = (results === undefined),
+        klass    = (self.__res__||{}).klass,
+        result   = (klass && self.__res__ === klass.prototype) ? klass : self,
+        i, n;
+    
     if (cachable && self.__anc__) return self.__anc__.slice();
     results = results || [];
     
     // Recurse over inclusions first
-    for (var i = 0, n = self.__inc__.length; i < n; i++)
+    for (i = 0, n = self.__inc__.length; i < n; i++)
       self.__inc__[i].ancestors(results);
     
     // If this module is not already in the list, add it
-    var klass = (self.__res__||{}).klass,
-        result = (klass && self.__res__ === klass.prototype) ? klass : self;
     if (JS.indexOf(results, result) === -1) results.push(result);
     
     if (cachable) self.__anc__ = results.slice();
@@ -300,9 +304,15 @@ JS.extend(JS.Module.prototype, {
    * `callSuper()`, and so on back through the list.
    **/
   lookup: function(name) {
-    var self = this.__mod__, cache = self.__mct__;
+    var self  = this.__mod__,
+        cache = self.__mct__;
+    
     if (cache[name]) return cache[name].slice();
-    var ancestors = self.ancestors(), results = [], i, n, method;
+    
+    var ancestors = self.ancestors(),
+        results   = [],
+        i, n, method;
+    
     for (i = 0, n = ancestors.length; i < n; i++) {
       method = ancestors[i].__mod__.__fns__[name];
       if (method) results.push(method);
@@ -412,7 +422,9 @@ JS.extend(JS.Module.prototype, {
    * caches when modules are modified, to avoid some of the bugs that exist in Ruby.
    **/
   uncache: function(recursive) {
-    var self = this.__mod__, i = self.__dep__.length;
+    var self = this.__mod__,
+        i    = self.__dep__.length;
+    
     self.__anc__ = null;
     self.__mct__ = {};
     if (recursive === false) return;

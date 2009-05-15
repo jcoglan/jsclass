@@ -40,7 +40,7 @@ JS.Set = new JS.Class('Set', {
   classify: function(block, context) {
     var classes = {};
     this.forEach(function(item) {
-      value = block.call(context || null, item);
+      var value = block.call(context || null, item);
       if (!classes[value]) classes[value] = new this.klass;
       classes[value].add(item);
     }, this);
@@ -74,8 +74,11 @@ JS.Set = new JS.Class('Set', {
   },
   
   divide: function(block, context) {
-    var classes = this.classify(block, context), sets = new this.klass;
-    for (var key in classes) {
+    var classes = this.classify(block, context),
+        sets    = new this.klass,
+        key;
+    
+    for (key in classes) {
       if (!classes.hasOwnProperty(key)) continue;
       sets.add(classes[key]);
     }
@@ -170,7 +173,9 @@ JS.Set = new JS.Class('Set', {
   },
   
   removeIf: function(predicate, context) {
-    var members = this._members, i = members.length;
+    var members = this._members,
+        i       = members.length;
+    
     while (i--) {
       if (predicate.call(context || null, members[i]))
         this.remove(members[i]);
@@ -204,7 +209,9 @@ JS.Set = new JS.Class('Set', {
   },
   
   _indexOf: function(item) {
-    var i = this._members.length, equal = this.klass.areEqual;
+    var i     = this._members.length,
+        equal = this.klass.areEqual;
+    
     while (i--) {
       if (equal(item, this._members[i])) return i;
     }
@@ -235,9 +242,15 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
   },
   
   _indexOf: function(item, insertionPoint) {
-    var items = this._members, n = items.length, i = 0, d = n;
+    var items   = this._members,
+        n       = items.length,
+        i       = 0,
+        d       = n,
+        compare = this.klass.compare,
+        equal   = this.klass.areEqual,
+        found;
+    
     if (n === 0) return insertionPoint ? 0 : -1;
-    var compare = this.klass.compare, equal = this.klass.areEqual;
     
     if (compare(item, items[0]) < 1)   { d = 0; i = 0; }
     if (compare(item, items[n-1]) > 0) { d = 0; i = n; }
@@ -253,7 +266,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     while (items[i] && !equal(item, items[i]) &&
         compare(item, items[i]) === 0) i += 1;
     
-    var found = equal(item, items[i]);
+    found = equal(item, items[i]);
     return insertionPoint
         ? (found ? null : i)
         : (found ? i : -1);

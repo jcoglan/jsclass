@@ -1,5 +1,6 @@
 JS.MethodChain = function(base) {
-  var queue = [], baseObject = base || {};
+  var queue      = [],
+      baseObject = base || {};
   
   this.____ = function(method, args) {
     queue.push({func: method, args: args});
@@ -32,7 +33,9 @@ JS.MethodChain.fire = function(queue, object) {
 
 JS.MethodChain.prototype = {
   _: function() {
-    var base = arguments[0], args, i, n;
+    var base = arguments[0],
+        args, i, n;
+    
     switch (typeof base) {
       case 'object': case 'function':
         args = [];
@@ -105,7 +108,10 @@ JS.Kernel.include({
   },
   
   _: function() {
-    var base = arguments[0], args = [], i, n;
+    var base = arguments[0],
+        args = [],
+        i, n;
+    
     for (i = 1, n = arguments.length; i < n; i++) args.push(arguments[i]);
     return  (typeof base === 'object' && base) ||
             (typeof base === 'function' && base.apply(this, args)) ||

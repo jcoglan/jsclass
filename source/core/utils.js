@@ -67,7 +67,10 @@ JS = {
    * amongst other things.
    **/
   bind: function() {
-    var args = JS.array(arguments), method = args.shift(), object = args.shift() || null;
+    var args   = JS.array(arguments),
+        method = args.shift(),
+        object = args.shift() || null;
+    
     return function() {
       return method.apply(object, args.concat(JS.array(arguments)));
     };
@@ -112,7 +115,10 @@ JS = {
   array: function(iterable) {
     if (!iterable) return [];
     if (iterable.toArray) return iterable.toArray();
-    var length = iterable.length, results = [];
+    
+    var length  = iterable.length,
+        results = [];
+    
     while (length--) results[length] = iterable[length];
     return results;
   },

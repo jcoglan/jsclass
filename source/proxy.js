@@ -2,8 +2,10 @@ if (JS.Proxy === undefined) JS.Proxy = {};
 
 JS.Proxy.Virtual = new JS.Class({
   initialize: function(klass) {
-    var bridge = function() {}, proxy = new JS.Class(),
-        method, func, delegators = {};
+    var bridge     = function() {},
+        proxy      = new JS.Class(),
+        delegators = {},
+        method, func;
     
     bridge.prototype = klass.prototype;
     
@@ -15,7 +17,9 @@ JS.Proxy.Virtual = new JS.Class({
     
     proxy.include({
       initialize: function() {
-        var args = arguments, subject = null;
+        var args    = arguments,
+            subject = null;
+        
         this.__getSubject__ = function() {
           subject = new bridge;
           klass.apply(subject, args);

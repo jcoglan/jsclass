@@ -68,7 +68,7 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     
     // Mix the parent's metamodule into this class's metamodule
     if (this.__eigen__)
-      this.__eigen__().include(klass.__eigen__
+      this.extend(klass.__eigen__
           ? klass.__eigen__()
           : new JS.Module(klass.prototype), true);
     
@@ -101,7 +101,10 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
    **/
   include: function(module, resolve, options) {
     if (!module) return;
-    var mod = this.__mod__, options = options || {};
+    
+    var mod     = this.__mod__,
+        options = options || {};
+    
     options._included = this;
     return mod.include(module, resolve, options);
   },

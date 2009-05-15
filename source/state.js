@@ -29,10 +29,14 @@ JS.State = new JS.Module('State', {
     } },
     
     buildCollection: function(module, states) {
-      var stubs = {}, collection = {}, superstates = module.lookup('states').pop() || {};
+      var stubs       = {},
+          collection  = {},
+          superstates = module.lookup('states').pop() || {},
+          state, klass, methods, name;
+      
       this.buildStubs(stubs, collection, states);
       this.buildStubs(stubs, collection, superstates);
-      var state, klass, methods, name;
+      
       for (state in collection) {
         klass = (superstates[state]||{}).klass;
         klass = klass ? new JS.Class(klass, states[state]) : new JS.Class(states[state]);
@@ -47,8 +51,12 @@ JS.State = new JS.Module('State', {
     
     addMethods: function(state, klass) {
       if (!klass) return;
-      var methods = {}, p = klass.prototype;
-      for (var method in state) {
+      
+      var methods = {},
+          p       = klass.prototype,
+          method;
+      
+      for (method in state) {
         if (p[method]) continue;
         p[method] = klass.__mod__.__fns__[method] = this.wrapped(method);
       }

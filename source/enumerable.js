@@ -41,14 +41,22 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   forEachCons: function(n, block, context) {
-    var entries = this.entries(), size = entries.length, limit = size - n;
-    for (var i = 0; i <= limit; i++)
+    var entries = this.entries(),
+        size    = entries.length,
+        limit   = size - n,
+        i;
+    
+    for (i = 0; i <= limit; i++)
       block.call(context || null, entries.slice(i, i+n), i);
   },
   
   forEachSlice: function(n, block, context) {
-    var entries = this.entries(), size = entries.length, m = Math.ceil(size/n);
-    for (var i = 0; i < m; i++)
+    var entries = this.entries(),
+        size    = entries.length,
+        m       = Math.ceil(size/n),
+        i;
+    
+    for (i = 0; i < m; i++)
       block.call(context || null, entries.slice(i*n, (i+1)*n), i);
   },
   
@@ -120,7 +128,9 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   sort: function(block, context) {
-    var comparable = JS.Enumerable.isComparable(this), entries = this.entries();
+    var comparable = JS.Enumerable.isComparable(this),
+        entries    = this.entries();
+    
     block = block || (comparable
         ? function(a,b) { return a.compareTo(b); }
         : null);
@@ -130,9 +140,10 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   sortBy: function(block, context) {
-    var util = JS.Enumerable;
-    var map = new util.Collection(this.map(block, context));
-    var comparable = util.isComparable(map);
+    var util       = JS.Enumerable,
+        map        = new util.Collection(this.map(block, context)),
+        comparable = util.isComparable(map);
+    
     return new util.Collection(map.zip(this).sort(function(a, b) {
       a = a[0]; b = b[0];
       return comparable ? a.compareTo(b) : (a < b ? -1 : (a > b ? 1 : 0));
@@ -144,8 +155,12 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   zip: function() {
-    var util = JS.Enumerable;
-    var args = [], counter = 0, n = arguments.length, block, context;
+    var util    = JS.Enumerable,
+        args    = [],
+        counter = 0,
+        n       = arguments.length,
+        block, context;
+    
     if (arguments[n-1] instanceof Function) {
       block = arguments[n-1]; context = {};
     }
