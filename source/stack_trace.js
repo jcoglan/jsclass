@@ -15,8 +15,8 @@ JS.StackTrace = new JS.Module({
         module.define(method, module.__fns__[method], false);
       module.resolve();
       
-      if (!module.__name__) setTimeout(function() {
-        module.__name__ = self.nameOf(base);
+      if (!module.__nom__) setTimeout(function() {
+        module.__nom__ = self.nameOf(base);
       }, 1);
     },
     
@@ -29,7 +29,7 @@ JS.StackTrace = new JS.Module({
         return results;
       }
       
-      if (object.__name__) return object.__name__;
+      if (object.__nom__) return object.__nom__;
       
       field = [{name: null, o: root || this.root}];
       l = 0;
@@ -39,10 +39,10 @@ JS.StackTrace = new JS.Module({
       }
       if (typeof field == 'string') {
         field = field.replace(/\.prototype\./g, '#');
-        object.__name__ = field;
-        if (object.__meta__) object.__meta__.__name__ = field + '.__meta__';
+        object.__nom__ = field;
+        if (object.__meta__) object.__meta__.__nom__ = field + '.__meta__';
       }
-      return object.__name__;
+      return object.__nom__;
     },
     
     descend: function(list, needle) {
