@@ -19,6 +19,7 @@ JS.Package = new JS.Class('Package', {
   },
   
   addName: function(name) {
+    this.klass.PACKAGES.push(name);
     if (!this.contains(name)) this._names.push(name);
   },
   
@@ -118,6 +119,8 @@ JS.Package = new JS.Class('Package', {
     _store:  {},
     _global: this,
     
+    PACKAGES: [],
+    
     getByPath: function(loader) {
       var path = loader.toString();
       return this._store[path] || (this._store[path] = new this(loader));
@@ -150,7 +153,7 @@ JS.Package = new JS.Class('Package', {
       var fired = false, handler, complete, ready, n;
       
       handler = function() {
-        if (!fired) callback.call(context || null);
+        if (!fired && callback) callback.call(context || null);
         fired = true;
       };
       
@@ -159,7 +162,14 @@ JS.Package = new JS.Class('Package', {
       
       ready = this._filter(list, 'readyToLoad');
       n = ready.length;
-      while (n--) ready[n].load(function() { this.load(list, handler); }, this);
+      
+      if (this.parallel)
+        while (n--) ready[n].load(function() {
+          var self = this;
+          setTimeout(function() { self.load(list, handler) }, 1);
+        }, this);
+      else
+        ready[0].load(function() { this.load(list, handler) }, this);
     },
     
     _filter: function(list, test) {
