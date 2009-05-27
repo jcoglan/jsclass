@@ -33,6 +33,7 @@ JS.Packages(function() { with(this) {
 
 alert(window.YAHOO ? 'YUI version ' + YAHOO.VERSION : 'YAHOO not defined');
 
+JS.Package.parallel = true;
 require('YAHOO.util.Anim', function() {});
 
 require('YAHOO.util.Selector', function() {

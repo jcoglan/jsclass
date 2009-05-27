@@ -149,33 +149,30 @@ JS.Package = new JS.Class('Package', {
       return packages;
     },
     
-    load: function(list, callback, context) {
-      var fired = false, handler, complete, ready, n;
+    load: function(list, callback) {
+      var complete = [],
+          ready    = [],
+          deferred = [],
+          n        = list.length,
+          pkg, which, rest;
       
-      handler = function() {
-        if (!fired && callback) callback.call(context || null);
-        fired = true;
-      };
+      while (n--) {
+        pkg   = list[n];
+        which = pkg.isComplete() ? complete : (pkg.readyToLoad() ? ready : deferred);
+        which.push(pkg);
+      }
       
-      complete = this._filter(list, 'isComplete');
-      if (complete.length === list.length) return setTimeout(handler, 1);
+      rest = ready.concat(deferred);
+      if (rest.length === 0) return setTimeout(callback, 1);
       
-      ready = this._filter(list, 'readyToLoad');
       n = ready.length;
+      if (n === 0) return;
       
-      if (this.parallel)
-        while (n--) ready[n].load(function() {
-          var self = this;
-          setTimeout(function() { self.load(list, handler) }, 1);
-        }, this);
-      else
-        ready[0].load(function() { this.load(list, handler) }, this);
-    },
-    
-    _filter: function(list, test) {
-      var result = [], n = list.length;
-      while (n--) { if (list[n][test]()) result.push(list[n]); }
-      return result;
+      if (this.parallel) {
+        while (n--) ready[n].load(function() { this.load(deferred, callback) }, this);
+      } else {
+        rest[0].load(function() { this.load(rest.slice(1), callback) }, this);
+      }
     },
     
     DSL: {
@@ -225,6 +222,13 @@ require = function() {
   
   while (typeof args[0] === 'string') requirements.push(JS.Package.getByName(args.shift()));
   requirements = JS.Package.expand(requirements);
-  JS.Package.load(requirements, args[0], args[1]);
+  
+  var fired = false, handler = function() {
+    if (fired) return;
+    fired = true;
+    args[0].call(args[1] || null);
+  };
+  
+  JS.Package.load(requirements, handler);
 };
 
