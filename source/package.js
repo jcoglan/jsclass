@@ -2,20 +2,20 @@ JS.Package = new JS.Class('Package', {
   initialize: function(loader) {
     this._loader  = loader;
     this._deps    = [];
+    this._uses    = [];
     this._names   = [];
     this._waiters = [];
     this._loading = false;
   },
   
   addDependency: function(pkg) {
-    if (typeof pkg === 'string') pkg = this.klass.getByName(pkg);   // TODO lazy lookup
+    if (typeof pkg === 'string') pkg = this.klass.getByName(pkg);
     if (JS.indexOf(this._deps, pkg) === -1) this._deps.push(pkg);
   },
   
-  _getDependency: function(n) {
-    var dep = this._deps[n];
-    if (typeof dep === 'string') dep = this.klass.getByName(dep);
-    return dep;
+  addSoftDependency: function(pkg) {
+    if (typeof pkg === 'string') pkg = this.klass.getByName(pkg);
+    if (JS.indexOf(this._uses, pkg) === -1) this._uses.push(pkg);
   },
   
   addName: function(name) {
@@ -27,17 +27,19 @@ JS.Package = new JS.Class('Package', {
     return JS.indexOf(this._names, name) !== -1;
   },
   
-  depsComplete: function() {
-    var n = this._deps.length, dep;
+  depsComplete: function(deps) {
+    deps = deps || this._deps;
+    var n = deps.length, dep;
     while (n--) {
-      dep = this._getDependency(n);
-      if (dep && !dep.isComplete()) return false;
+      if (!deps[n].isComplete()) return false;
     }
     return true;
   },
   
   isComplete: function() {
-    return this.isLoaded() && this.depsComplete();
+    return this.isLoaded() &&
+           this.depsComplete(this._deps) &&
+           this.depsComplete(this._uses);
   },
   
   isLoaded: function(withExceptions) {
@@ -61,12 +63,12 @@ JS.Package = new JS.Class('Package', {
   },
   
   expand: function(list) {
-    var deps = list || [], dep, i, n;
-    for (i = 0, n = this._deps.length; i < n; i++) {
-      dep = this._getDependency(i);
-      dep && dep.expand(deps);
-    }
+    var deps = list || [], dep, n;
+    n = this._deps.length;
+    while (n--) this._deps[n].expand(deps);
     if (JS.indexOf(deps, this) === -1) deps.push(this);
+    n = this._uses.length;
+    while (n--) this._uses[n].expand(deps);
     return deps;
   },
   
@@ -191,15 +193,21 @@ JS.Package = new JS.Class('Package', {
         this._pkg = pkg;
       },
       
+      provides: function() {
+        var i = arguments.length;
+        while (i--) this._pkg.addName(arguments[i]);
+        return this;
+      },
+      
       requires: function() {
         var i = arguments.length;
         while (i--) this._pkg.addDependency(arguments[i]);
         return this;
       },
       
-      provides: function() {
+      uses: function() {
         var i = arguments.length;
-        while (i--) this._pkg.addName(arguments[i]);
+        while (i--) this._pkg.addSoftDependency(arguments[i]);
         return this;
       }
     })
@@ -222,7 +230,7 @@ require = function() {
   var fired = false, handler = function() {
     if (fired) return;
     fired = true;
-    args[0].call(args[1] || null);
+    args[0] && args[0].call(args[1] || null);
   };
   
   JS.Package.load(requirements, requirements.length, handler);

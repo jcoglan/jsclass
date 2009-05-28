@@ -32,8 +32,8 @@ JS.Packages(function() { with(this) {
                                       'JS.HashSet',
                                       'JS.SortedSet')
                             .requires('JS.Class',
-                                      'JS.Enumerable',
-                                      'JS.Hash');
+                                      'JS.Enumerable')
+                            .uses(    'JS.Hash');
     
     module('linked_list')   .provides('JS.LinkedList',
                                       'JS.LinkedList.Doubly',
