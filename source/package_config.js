@@ -1,5 +1,11 @@
 JS.Packages(function() { with(this) {
-    var module = function(name) { return file(JSCLASS_PATH + name + '.js') };
+    
+    var scripts = document.getElementsByTagName('script'),
+        n       = scripts.length,
+        self    = scripts[n - 1],
+        PATH    = self.src.replace(/[^\/]*$/g, '');
+    
+    var module = function(name) { return file(PATH + name + '.js') };
     
     module('core')          .provides('JS.Module',
                                       'JS.Class',

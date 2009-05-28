@@ -29,6 +29,14 @@ JS.Packages(function() { with(this) {
         .requires('YAHOO.util.Connect');
 }});
 
+require('JS.SortedSet', function() {
+    var E = JS.Enumerable ? 'yes' : 'NO',
+        C = JS.Comparable ? 'yes' : 'NO',
+        H = JS.Hash ? 'yes' : 'NO',
+        S = JS.Set ? 'yes' : 'NO';
+    alert('Enum: ' + E + ', Comp: ' + C + ', Hash: ' + H + ', Set: ' + S);
+});
+
 alert(window.YAHOO ? 'YUI version ' + YAHOO.VERSION : 'YAHOO not defined');
 
 require('YAHOO.util.Anim', 'YAHOO.util.History', function() {
