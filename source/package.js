@@ -133,7 +133,7 @@ JS.Package = new JS.Class('Package', {
         if (this._store[path].contains(name))
           return this._store[path];
       }
-      return null;
+      throw new Error('Could not find package containing ' + name);
     },
     
     getObject: function(name) {
