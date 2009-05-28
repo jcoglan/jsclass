@@ -1,7 +1,7 @@
 JS.Packages(function() { with(this) {
     
     var cdn  = 'http://yui.yahooapis.com/';
-    var yui  = cdn + '2.6.0/build/';
+    var yui  = cdn + '2.7.0/build/';
     
     file(yui + 'yahoo-dom-event/yahoo-dom-event.js')
     .provides('YAHOO',
@@ -9,10 +9,10 @@ JS.Packages(function() { with(this) {
               'YAHOO.util.Dom',
               'YAHOO.util.Event');
     
-    pkg('YAHOO.util.Selector',      yui + 'selector/selector-beta-min.js');
+    pkg('YAHOO.util.Selector',      yui + 'selector/selector-min.js');
     
-    pkg('YAHOO.util.Connect',       yui + 'connection/connection-min.js');
-    pkg('YAHOO.util.Get',           yui + 'get/get-min.js');
+    pkg('YAHOO.util.Connect',       yui + 'connection/connection-min.js')
+        .requires('YAHOO');
     
     file(yui + 'animation/animation-min.js')
     .provides('YAHOO.util.Anim',
@@ -20,25 +20,32 @@ JS.Packages(function() { with(this) {
     .requires('YAHOO',
               'YAHOO.util.Event');
     
-    pkg('YAHOO.util.History',       yui + 'history/history-min.js');
+    pkg('YAHOO.util.History',       yui + 'history/history-min.js')
+        .requires('YAHOO');
     
     pkg('YAHOO.util.Selector')
         .requires('YAHOO')
         .requires('YAHOO.util.Anim')
         .requires('YAHOO.util.Connect');
-    
-    pkg('YAHOO.util.Connect')
-        .requires('YAHOO');
 }});
 
 alert(window.YAHOO ? 'YUI version ' + YAHOO.VERSION : 'YAHOO not defined');
 
-JS.Package.parallel = true;
-require('YAHOO.util.Anim', function() {});
+require('YAHOO.util.Anim', 'YAHOO.util.History', function() {
+    var H = YAHOO.util.History ? 'yes' : 'NO',
+        A = YAHOO.util.Anim ? 'yes' : 'NO';
+    alert( 'History: ' + H );
+    alert( 'Animation: ' + A );
+    
+    require('YAHOO.util.Anim', 'YAHOO.util.History', function() {
+        alert('All present');
+    });
+});
 
 require('YAHOO.util.Selector', function() {
     setTimeout(function() {
-        alert('Using YAHOO.util.Selector: ' + YAHOO.util.Selector.query('td').length);
+        var n = YAHOO.util.Selector.query('li').length;
+        alert('Using YAHOO.util.Selector: ' + n);
     }, 2000);
 });
 

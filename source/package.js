@@ -112,7 +112,7 @@ JS.Package = new JS.Class('Package', {
   },
   
   toString: function() {
-    return 'Package:' + this._names[0];
+    return 'Package:' + this._names[this._names.length - 1];
   },
   
   extend: {
@@ -149,30 +149,26 @@ JS.Package = new JS.Class('Package', {
       return packages;
     },
     
-    load: function(list, callback) {
-      var complete = [],
-          ready    = [],
+    load: function(list, counter, callback) {
+      var ready    = [],
           deferred = [],
           n        = list.length,
-          pkg, which, rest;
+          pkg;
       
       while (n--) {
-        pkg   = list[n];
-        which = pkg.isComplete() ? complete : (pkg.readyToLoad() ? ready : deferred);
-        which.push(pkg);
+        pkg = list[n];
+        if (pkg.isComplete())
+          counter -= 1;
+        else
+          (pkg.readyToLoad() ? ready : deferred).push(pkg);
       }
       
-      rest = ready.concat(deferred);
-      if (rest.length === 0) return setTimeout(callback, 1);
+      if (counter === 0) return callback();
       
       n = ready.length;
-      if (n === 0) return;
-      
-      if (this.parallel) {
-        while (n--) ready[n].load(function() { this.load(deferred, callback) }, this);
-      } else {
-        rest[0].load(function() { this.load(rest.slice(1), callback) }, this);
-      }
+      while (n--) ready[n].load(function() {
+        this.load(deferred, --counter, callback);
+      }, this);
     },
     
     DSL: {
@@ -229,6 +225,6 @@ require = function() {
     args[0].call(args[1] || null);
   };
   
-  JS.Package.load(requirements, handler);
+  JS.Package.load(requirements, requirements.length, handler);
 };
 
