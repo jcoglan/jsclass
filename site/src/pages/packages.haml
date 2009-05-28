@@ -80,6 +80,30 @@
   important, you must *make sure you make this clear using the @requires()@ statement*.
   A file will not be requested until all the objects it @requires@ are present.
   
+  In addition to @requires()@, there is a statement called @uses()@ that specifies a
+  'soft dependency', i.e. an object the package needs but that does not necessarily
+  need to be loaded first. For example, "@HashSet@":/set.html uses a "@Hash@":/hash.html
+  for storage but you could load @Hash@ after the @Set@ package just fine. On the other
+  hand, @HashSet@ mixes in "@Enumerable@":/enumerable.html and this must be loaded
+  before @HashSet@ is defined. So the package config for this might look like:
+  
+  <pre class="prettyprint">    JS.Packages(function() { with(this) {
+          
+          file('/js-class/enumerable.js') .provides('JS.Enumerable');
+          
+          file('/js-class/hash.js')       .provides('JS.Hash');
+          
+          file('/js-class/set.js')        .provides('JS.Set',
+                                                    'JS.SortedSet',
+                                                    'JS.HashSet')
+                                          .requires('JS.Enumerable')
+                                          .uses(    'JS.Hash');
+      });</pre>
+  
+  The advantage of using @uses()@ is that it helps the package system optimise the
+  downloading of packages, since if the load order does not matter the packages can
+  be downloaded in parallel.
+  
   h3. Custom loader functions
   
   Some libraries, such as the "Google Ajax APIs":http://code.google.com/apis/ajax/,
@@ -103,4 +127,26 @@
   to load and run dependent code once the custom loader has finished its work. If you
   don't call @cb@ (or pass it to a function that will call it for you as above), code
   that depends on this library will not run.
+  
+  h3. The JS.Class @loader.js@ file
+  
+  The @JS.Class@ distribution comes with a file called @loader.js@. This contains the
+  core object system (@Module@, @Class@, @Singleton@ and @Interface@), the package system
+  and dependency information for all @JS.Class@ components. This lets you load the core
+  of the library and download the rest into your app on demand. You must host the library
+  on your servers, but it can figure out where it's being served from automatically to
+  load other packages. (Note: keep all the JS.Class files in one directory, as they
+  appear in the download, otherwise the loader will not be able to find them.) A simple
+  example:
+  
+  <pre class="prettyprint">    <!-- In HEAD -->
+      <script src="http://example.com/js-class/loader.js" type="text/javascript">
+      </script>
+      
+      <!-- Elsewhere in your app -->
+      <script type="text/javascript">
+          require('JS.SortedSet', function() {
+              // ...
+          });
+      </script></pre>
   
