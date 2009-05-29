@@ -9,17 +9,20 @@ JS.Package = new JS.Class('Package', {
   },
   
   addDependency: function(pkg) {
-    if (typeof pkg === 'string') pkg = this.klass.getByName(pkg);
     if (JS.indexOf(this._deps, pkg) === -1) this._deps.push(pkg);
   },
   
   addSoftDependency: function(pkg) {
-    if (typeof pkg === 'string') pkg = this.klass.getByName(pkg);
     if (JS.indexOf(this._uses, pkg) === -1) this._uses.push(pkg);
   },
   
+  _getPackage: function(list, index) {
+    var pkg = list[index];
+    if (typeof pkg === 'string') pkg = list[index] = this.klass.getByName(pkg);
+    return pkg;
+  },
+  
   addName: function(name) {
-    this.klass.PACKAGES.push(name);
     if (!this.contains(name)) this._names.push(name);
   },
   
@@ -31,7 +34,7 @@ JS.Package = new JS.Class('Package', {
     deps = deps || this._deps;
     var n = deps.length, dep;
     while (n--) {
-      if (!deps[n].isComplete()) return false;
+      if (!this._getPackage(deps, n).isComplete()) return false;
     }
     return true;
   },
@@ -43,6 +46,8 @@ JS.Package = new JS.Class('Package', {
   },
   
   isLoaded: function(withExceptions) {
+    if (this._isLoaded) return true;
+    
     var names = this._names,
         n     = names.length,
         object;
@@ -55,7 +60,7 @@ JS.Package = new JS.Class('Package', {
       else
         return false;
     }
-    return true;
+    return this._isLoaded = true;
   },
   
   readyToLoad: function() {
@@ -65,10 +70,10 @@ JS.Package = new JS.Class('Package', {
   expand: function(list) {
     var deps = list || [], dep, n;
     n = this._deps.length;
-    while (n--) this._deps[n].expand(deps);
+    while (n--) this._getPackage(this._deps, n).expand(deps);
     if (JS.indexOf(deps, this) === -1) deps.push(this);
     n = this._uses.length;
-    while (n--) this._uses[n].expand(deps);
+    while (n--) this._getPackage(this._uses, n).expand(deps);
     return deps;
   },
   
@@ -95,17 +100,15 @@ JS.Package = new JS.Class('Package', {
     
     if (JS.isFn(this._loader)) return this._loader(fireCallbacks);
     
-    tag  = document.createElement('script');
+    tag      = document.createElement('script');
     tag.type = 'text/javascript';
     tag.src  = this._loader;
     
     tag.onload = tag.onreadystatechange = function() {
-      if ( !tag.readyState ||
-            tag.readyState === 'loaded' ||
-            tag.readyState === 'complete' ||
-            (tag.readyState === 4 && tag.status === 200)
-      ) {
+      var state = tag.readyState, status = tag.status;
+      if ( !state || state === 'loaded' || state === 'complete' || (state === 4 && status === 200) ) {
         fireCallbacks();
+        tag.onload = tag.onreadystatechange = self.klass._K;
         tag = null;
       }
     };
@@ -118,10 +121,9 @@ JS.Package = new JS.Class('Package', {
   },
   
   extend: {
-    _store:  {},
-    _global: this,
-    
-    PACKAGES: [],
+    _store:   {},
+    _global:  this,
+    _K:       function() {},
     
     getByPath: function(loader) {
       var path = loader.toString();
@@ -194,20 +196,20 @@ JS.Package = new JS.Class('Package', {
       },
       
       provides: function() {
-        var i = arguments.length;
-        while (i--) this._pkg.addName(arguments[i]);
-        return this;
+        return this._batch('addName', arguments);
       },
       
       requires: function() {
-        var i = arguments.length;
-        while (i--) this._pkg.addDependency(arguments[i]);
-        return this;
+        return this._batch('addDependency', arguments);
       },
       
       uses: function() {
-        var i = arguments.length;
-        while (i--) this._pkg.addSoftDependency(arguments[i]);
+        return this._batch('addSoftDependency', arguments);
+      },
+      
+      _batch: function(method, args) {
+        var i = args.length, method = this._pkg[method];
+        while (i--) method.call(this._pkg, args[i]);
         return this;
       }
     })
