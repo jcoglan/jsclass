@@ -31,6 +31,8 @@
   written out to describe all the other files in your application and how they relate
   to each other.
   
+  Alternatively, use the @loader.js@ file, described in more detail below.
+  
   h3. The package listing
   
   To describe your packages, you list the external script files used by your application,
@@ -85,13 +87,15 @@
   need to be loaded first. For example, "@HashSet@":/set.html uses a "@Hash@":/hash.html
   for storage but you could load @Hash@ after the @Set@ package just fine. On the other
   hand, @HashSet@ mixes in "@Enumerable@":/enumerable.html and this must be loaded
-  before @HashSet@ is defined. So the package config for this might look like:
+  before @HashSet@ is defined. And, @Hash@ is itself based on @Enumerable@. So the package
+  config for this might look like:
   
   <pre class="prettyprint">    JS.Packages(function() { with(this) {
           
           file('/js-class/enumerable.js') .provides('JS.Enumerable');
           
-          file('/js-class/hash.js')       .provides('JS.Hash');
+          file('/js-class/hash.js')       .provides('JS.Hash')
+                                          .requires('JS.Enumerable');
           
           file('/js-class/set.js')        .provides('JS.Set',
                                                     'JS.SortedSet',
@@ -127,6 +131,36 @@
   to load and run dependent code once the custom loader has finished its work. If you
   don't call @cb@ (or pass it to a function that will call it for you as above), code
   that depends on this library will not run.
+  
+  @JS.Packages@ also provides post-load setup hooks that let you run some code after
+  a file loads. For example, a strategy for loading "YUI3":http://developer.yahoo.com/yui/3/
+  might involve loading the seed file, creating a new global instance of the library,
+  then using YUI's own loader functions to load further modules. Some sample code:
+  
+  <pre class="prettyprint">    JS.Packages(function() { with(this) {
+      
+          file('http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js')
+              .setup(function() { window.yui3 = YUI() })
+              .provides('YUI', 'yui3');
+          
+          loader(function(cb) { yui3.use('node', cb) })
+              .provides('yui3.Node')
+              .requires('yui3');
+      }});</pre>
+  
+  Loader functions can also be used to generate library objects that are expensive to
+  create without necessarily loading code from external files. Just remember to call @cb@
+  yourself when the generated object is ready:
+  
+  <pre class="prettyprint">    JS.Packages(function() { with(this) {
+      
+          loader(function(cb) {
+              window.ChocolateFactory = new WonkaVenture();
+              // Perform other expensive setup operations
+              cb();
+          })
+          .provides('ChocolateFactory');
+      }});</pre>
   
   h3. The JS.Class @loader.js@ file
   
