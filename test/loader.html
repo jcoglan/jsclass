@@ -10,7 +10,8 @@
     <script type="text/javascript" charset="utf-8">
     
         JS.Packages(function() { with(this) {
-            
+        //==============================================================
+        //= Yahoo User Interface 2.7 ===================================
             var cdn  = 'http://yui.yahooapis.com/';
             var yui  = cdn + '2.7.0/build/';
             
@@ -38,6 +39,16 @@
                       'YAHOO.lang',
                       'YAHOO.util.Dom',
                       'YAHOO.util.Event');
+        
+        //==============================================================
+        //= YUI 3 preview ==============================================
+            file('http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js')
+                .setup(function() { window.YUI3 = YUI() })
+                .provides('YUI', 'YUI3');
+            
+            loader(function(cb) { YUI3.use('node', cb) })
+                .provides('YUI3.Node')
+                .requires('YUI3');
         }});
 
         require('JS.SortedSet', function() {

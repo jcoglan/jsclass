@@ -77,6 +77,10 @@ JS.Package = new JS.Class('Package', {
     return deps;
   },
   
+  onload: function(block) {
+    this._onload = block;
+  },
+  
   load: function(callback, context) {
     var self = this, handler, fireCallbacks, tag;
     
@@ -91,6 +95,7 @@ JS.Package = new JS.Class('Package', {
     if (this._loading) return;
     
     fireCallbacks = function() {
+      if (JS.isFn(self._onload)) self._onload();
       self.isLoaded(true);
       for (var i = 0, n = self._waiters.length; i < n; i++) self._waiters[i]();
       self._waiters = [];
@@ -195,6 +200,12 @@ JS.Package = new JS.Class('Package', {
         this._pkg = pkg;
       },
       
+      _batch: function(method, args) {
+        var i = args.length, method = this._pkg[method];
+        while (i--) method.call(this._pkg, args[i]);
+        return this;
+      },
+      
       provides: function() {
         return this._batch('addName', arguments);
       },
@@ -207,9 +218,8 @@ JS.Package = new JS.Class('Package', {
         return this._batch('addSoftDependency', arguments);
       },
       
-      _batch: function(method, args) {
-        var i = args.length, method = this._pkg[method];
-        while (i--) method.call(this._pkg, args[i]);
+      setup: function(block) {
+        this._pkg.onload(block);
         return this;
       }
     })
