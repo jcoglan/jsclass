@@ -827,7 +827,7 @@
             var b = new JS.HashSet([3,5,6,9,2,8]);
             assertEqual(5, a.size);
             assertEqual(6, b.size);
-            assertEnumEqual([8,2,7,4,1,3,5,6,9], a.u(b).entries());
+            assertEnumEqual([8,2,7,4,1,3,5,6,9].sort(), a.u(b).entries().sort());
             assertEqual(JS.HashSet, a.u(b).klass);
             assertEqual(JS.HashSet, a.n(b).klass);
             assertEnumEqual([2,8], a.n(b).entries());
@@ -860,7 +860,7 @@
             nest.flatten();
             assertEnumEqual([12,4,45,5,list,'baz','foo','fred','twelve'], nest.entries().sort());
             assertEnumEqual(['baz', 'fred'], sorted.entries());
-            assertEnumEqual([5, sorted], inner.entries());
+            assertEnumEqual([5, sorted], inner.entries().sort());
             
             assertEnumEqual([4,8,9], new JS.HashSet([8,2,9,4,'foo']).difference(['foo',2]).entries().sort());
             assertEnumEqual([0,1,7], new JS.SortedSet([3,9,4,6]).complement([1,0,3,7,6,9,4]).entries().sort());
