@@ -82,7 +82,7 @@ JS.Package = new JS.Class('Package', {
   },
   
   load: function(callback, context) {
-    var self = this, handler, fireCallbacks, tag;
+    var self = this, handler, fireCallbacks;
     
     handler = function() {
       self._loading = false;
@@ -103,22 +103,9 @@ JS.Package = new JS.Class('Package', {
     
     this._loading = true;
     
-    if (JS.isFn(this._loader)) return this._loader(fireCallbacks);
-    
-    tag      = document.createElement('script');
-    tag.type = 'text/javascript';
-    tag.src  = this._loader;
-    
-    tag.onload = tag.onreadystatechange = function() {
-      var state = tag.readyState, status = tag.status;
-      if ( !state || state === 'loaded' || state === 'complete' || (state === 4 && status === 200) ) {
-        fireCallbacks();
-        tag.onload = tag.onreadystatechange = self.klass._K;
-        tag = null;
-      }
-    };
-    ;;; window.console && console.info('Loading ' + this._loader);
-    document.getElementsByTagName('head')[0].appendChild(tag);
+    JS.isFn(this._loader)
+        ? this._loader(fireCallbacks)
+        : this.klass.loadFile(this._loader, fireCallbacks);
   },
   
   toString: function() {
@@ -180,6 +167,25 @@ JS.Package = new JS.Class('Package', {
       }, this);
     },
     
+    loadFile: function(path, fireCallbacks) {
+      var self = this,
+          tag  = document.createElement('script');
+      
+      tag.type = 'text/javascript';
+      tag.src  = path;
+      
+      tag.onload = tag.onreadystatechange = function() {
+        var state = tag.readyState, status = tag.status;
+        if ( !state || state === 'loaded' || state === 'complete' || (state === 4 && status === 200) ) {
+          fireCallbacks();
+          tag.onload = tag.onreadystatechange = self._K;
+          tag = null;
+        }
+      };
+      ;;; window.console && console.info('Loading ' + path);
+      document.getElementsByTagName('head')[0].appendChild(tag);
+    },
+    
     DSL: {
       pkg: function(name, path) {
         var pkg = path
@@ -192,6 +198,10 @@ JS.Package = new JS.Class('Package', {
       file: function(path) {
         var pkg = JS.Package.getByPath(path);
         return new JS.Package.Description(pkg);
+      },
+      
+      load: function(path, fireCallbacks) {
+        JS.Package.loadFile(path, fireCallbacks);
       }
     },
     
