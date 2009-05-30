@@ -117,11 +117,6 @@ JS.Package = new JS.Class('Package', {
     _global:  this,
     _K:       function() {},
     
-    __FILE__: function() {
-      var scripts = document.getElementsByTagName('script');
-      return scripts[scripts.length - 1].src;
-    },
-    
     getByPath: function(loader) {
       var path = loader.toString();
       return this._store[path] || (this._store[path] = new this(loader));
@@ -192,6 +187,11 @@ JS.Package = new JS.Class('Package', {
     },
     
     DSL: {
+      __FILE__: function() {
+        var scripts = document.getElementsByTagName('script');
+        return scripts[scripts.length - 1].src;
+      },
+      
       pkg: function(name, path) {
         var pkg = path
             ? JS.Package.getByPath(path)
