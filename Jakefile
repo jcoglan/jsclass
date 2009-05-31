@@ -11,6 +11,8 @@ jake :after_build do |build|
     FileUtils.cp doc, "#{build.build_directory}/#{doc}"
   end
   
+  FileUtils.cp 'README.markdown', "#{build.build_directory}/README"
+  
   %w[core stdlib].each do |doc|
     FileUtils.cp build.package(doc).build_path(:min), "site/site/javascripts/js.class/#{doc}.js"
   end
