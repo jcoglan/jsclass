@@ -1,4 +1,4 @@
-JS.StackTrace = new JS.Module({
+JS.StackTrace = new JS.Module('StackTrace', {
   extend: {
     included: function(base) {
       var module = base.__mod__ || base,

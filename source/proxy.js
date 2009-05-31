@@ -1,6 +1,6 @@
 if (JS.Proxy === undefined) JS.Proxy = {};
 
-JS.Proxy.Virtual = new JS.Class({
+JS.Proxy.Virtual = new JS.Class('Proxy.Virtual', {
   initialize: function(klass) {
     var bridge     = function() {},
         proxy      = new JS.Class(),

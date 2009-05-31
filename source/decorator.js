@@ -1,4 +1,4 @@
-JS.Decorator = new JS.Class({
+JS.Decorator = new JS.Class('Decorator', {
   initialize: function(decoree, methods) {
     var decorator  = new JS.Class(),
         delegators = {},

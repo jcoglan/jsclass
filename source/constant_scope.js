@@ -1,4 +1,4 @@
-JS.ConstantScope = new JS.Module({
+JS.ConstantScope = new JS.Module('ConstantScope', {
   extend: {
     included: function(base) {
       base.__consts__ = new JS.Module();
