@@ -28,8 +28,8 @@ JS.Package.extend({
     },
     
     _batch: function(method, args) {
-      var i = args.length, method = this._pkg[method];
-      while (i--) method.call(this._pkg, args[i]);
+      var n = args.length, method = this._pkg[method], i;
+      for (i = 0; i < n; i++) method.call(this._pkg, args[i]);
       return this;
     },
     

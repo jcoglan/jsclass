@@ -109,7 +109,7 @@ JS.Package = new JS.Class('Package', {
   },
   
   toString: function() {
-    return 'Package:' + this._names[this._names.length - 1];
+    return 'Package:' + this._names[0];
   },
   
   extend: {
