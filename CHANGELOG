@@ -1,3 +1,20 @@
+Version 2.1.0
+June TODO 2009
+================================================================
+
+* New libraries: ConstantScope, Hash, HashSet.
+* Improved package manager, supports parallel downloads in
+  web browsers and now also works on server-side platforms
+  (tested on SpiderMonkey, Rhino and V8). Also supports custom
+  loader functions for integration with Google, YUI etc.
+* ObjectMethods module is now called Kernel.
+* New Kernel methods: tap(), equals(), hash().
+* Ancestor and method lookups are cached for improved performance.
+* Automatic generation of displayName on methods for integration
+  with the WebKit debugger.
+* PDoc documentation for the core classes.
+
+
 Version 1.6.3
 March 4 2009
 ================================================================
