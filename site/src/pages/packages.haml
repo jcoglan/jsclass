@@ -6,8 +6,9 @@
   for the files that contain them, so your application code only has to deal with knowing
   which objects it needs, not where to find those objects. Where possible, @JS.Package@
   will download scripts in parallel to improve load speed, and it makes sure interdependent
-  scripts are loaded in the correct order. It uses script tag injection rather than
-  @XMLHttpRequest@, so it works cross-domain.
+  scripts are loaded in the correct order. When used in a web browser, it uses script tag
+  injection rather than @XMLHttpRequest@, so it works cross-domain. It has also been tested
+  as a dependency manager on SpiderMonkey, Rhino and V8.
   
   For example, say I want to do something with "YUI's CSS selector":http://developer.yahoo.com/yui/selector/.
   I just need to @require@ it, and supply a function to run once all the requisite code
@@ -23,13 +24,13 @@
   Before you can use the @require@ statement, you need the following loaded into the
   page:
   
-  * The @JS.Class@ core (@class.js@)
+  * The @JS.Class@ core (@core.js@)
   * @JS.Package@, the dependency manager (@package.js@)
   * A list of dependencies
   
-  The first two are dealt with with a couple of @script@ tags. The third needs to be
-  written out to describe all the other files in your application and how they relate
-  to each other.
+  The first two are dealt with with a couple of @script@ tags (or @load()@ calls if using
+  a server-side platform). The third needs to be written out to describe all the other files
+  in your application and how they relate to each other.
   
   Alternatively, use the @loader.js@ file, described in more detail below.
   
@@ -183,4 +184,16 @@
               // ...
           });
       </script></pre>
+  
+  You can also use this file on server-side platforms such as SpiderMonkey, Rhino or V8
+  but you must tell the library the path where it is stored as this information cannot be
+  determined automatically on these platforms. You do this using the @JSCLASS_PATH@ variable,
+  for example:
+  
+  <pre class="prettyprint">    JSCLASS_PATH = 'path/to/js.class/';
+      load(JSCLASS_PATH + 'loader.js');
+      
+      require('JS.SortedSet', function() {
+          // do something with SortedSet
+      });</pre>
   

@@ -31,18 +31,18 @@ JS.Package.extend({
     _K: function() {}
   },
   
-  RhinoLoader: {
+  ServerLoader: {
     usable: function() {
-      return !!JS.Package.getObject('java.org.mozilla.javascript') ||
+      return JS.isFn(JS.Package.getObject('load')) &&
              JS.isFn(JS.Package.getObject('version'));
     },
     
     setup: function() {
       var self = this;
-      load = (function(rhinoLoad) {
+      load = (function(origLoad) {
         return function() {
           self._currentPath = arguments[0];
-          return rhinoLoad.apply(JS.Package._env, arguments);
+          return origLoad.apply(JS.Package._env, arguments);
         };
       })(load);
     },
@@ -60,7 +60,7 @@ JS.Package.extend({
 
 (function() {
   var candidates = [  JS.Package.DomLoader,
-                      JS.Package.RhinoLoader ],
+                      JS.Package.ServerLoader ],
       
       n = candidates.length,
       i, candidate;
