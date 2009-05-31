@@ -9,6 +9,10 @@ end
 jake :after_build do |build|
   %w[CHANGELOG MIT-LICENSE].each do |doc|
     FileUtils.cp doc, "#{build.build_directory}/#{doc}"
-  end 
+  end
+  
+  %w[core stdlib].each do |doc|
+    FileUtils.cp build.package(doc).build_path(:min), "site/site/javascripts/js.class/#{doc}.js"
+  end
 end
 
