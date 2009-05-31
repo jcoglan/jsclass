@@ -574,6 +574,7 @@ var RailsModule = new JS.Module({
     }
 });
 
+window = this;
 JS.Ruby(Rails, function() { with(this) {
     
     include(JS.Observable);

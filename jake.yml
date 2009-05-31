@@ -16,13 +16,20 @@ packages:
       - bootstrap
       - interface
       - singleton
-  loader:
-    extends: core
-    directory: .
+  package:
+    directory: package
     files:
       - package
-      - package_config
-  package:          package
+      - loader
+      - dsl
+  loader:
+    extends: core
+    directory: package
+    files:
+      - package
+      - loader
+      - dsl
+      - config
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable

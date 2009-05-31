@@ -5,20 +5,24 @@
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title>JS.Class tests</title>
-    <script src="prototype.js" type="text/javascript" charset="utf-8"></script>
-    <script src="unittest.js" type="text/javascript" charset="utf-8"></script>
-    <script src="globals.js" type="text/javascript"></script>
+    <script src="lib/prototype.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/unittest.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/globals.js" type="text/javascript"></script>
+    
     <script type="text/javascript" charset="utf-8">
       timeA = Number(new Date);
     </script>
+    
     <script src="../build/min/core.js" type="text/javascript" charset="utf-8"></script>
     <script src="../build/min/stdlib.js" type="text/javascript" charset="utf-8"></script>
+    
     <script type="text/javascript" charset="utf-8">
       timeB = Number(new Date);
       window.console && console.log((timeB - timeA) / 1000);
     </script>
+    
     <link rel="stylesheet" href="test.css" type="text/css" media="screen" title="no title" charset="utf-8">
-    <script src="./fixtures.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./fixtures/fixtures.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
       timeB = Number(new Date);
       window.console && console.log((timeB - timeA) / 1000);

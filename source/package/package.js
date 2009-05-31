@@ -105,7 +105,7 @@ JS.Package = new JS.Class('Package', {
     
     JS.isFn(this._loader)
         ? this._loader(fireCallbacks)
-        : this.klass.loadFile(this._loader, fireCallbacks);
+        : this.klass.Loader.loadFile(this._loader, fireCallbacks);
   },
   
   toString: function() {
@@ -114,8 +114,7 @@ JS.Package = new JS.Class('Package', {
   
   extend: {
     _store:   {},
-    _global:  this,
-    _K:       function() {},
+    _env:     this,
     
     getByPath: function(loader) {
       var path = loader.toString();
@@ -131,7 +130,7 @@ JS.Package = new JS.Class('Package', {
     },
     
     getObject: function(name) {
-      var object = this._global,
+      var object = this._env,
           parts  = name.split('.'), part;
       
       while (part = parts.shift()) object = (object||{})[part];
@@ -165,101 +164,7 @@ JS.Package = new JS.Class('Package', {
       while (n--) ready[n].load(function() {
         this.load(deferred, --counter, callback);
       }, this);
-    },
-    
-    loadFile: function(path, fireCallbacks) {
-      var self = this,
-          tag  = document.createElement('script');
-      
-      tag.type = 'text/javascript';
-      tag.src  = path;
-      
-      tag.onload = tag.onreadystatechange = function() {
-        var state = tag.readyState, status = tag.status;
-        if ( !state || state === 'loaded' || state === 'complete' || (state === 4 && status === 200) ) {
-          fireCallbacks();
-          tag.onload = tag.onreadystatechange = self._K;
-          tag = null;
-        }
-      };
-      ;;; window.console && console.info('Loading ' + path);
-      document.getElementsByTagName('head')[0].appendChild(tag);
-    },
-    
-    DSL: {
-      __FILE__: function() {
-        var scripts = document.getElementsByTagName('script');
-        return scripts[scripts.length - 1].src;
-      },
-      
-      pkg: function(name, path) {
-        var pkg = path
-            ? JS.Package.getByPath(path)
-            : JS.Package.getByName(name);
-        pkg.addName(name);
-        return new JS.Package.Description(pkg);
-      },
-      
-      file: function(path) {
-        var pkg = JS.Package.getByPath(path);
-        return new JS.Package.Description(pkg);
-      },
-      
-      load: function(path, fireCallbacks) {
-        JS.Package.loadFile(path, fireCallbacks);
-      }
-    },
-    
-    Description: new JS.Class({
-      initialize: function(pkg) {
-        this._pkg = pkg;
-      },
-      
-      _batch: function(method, args) {
-        var i = args.length, method = this._pkg[method];
-        while (i--) method.call(this._pkg, args[i]);
-        return this;
-      },
-      
-      provides: function() {
-        return this._batch('addName', arguments);
-      },
-      
-      requires: function() {
-        return this._batch('addDependency', arguments);
-      },
-      
-      uses: function() {
-        return this._batch('addSoftDependency', arguments);
-      },
-      
-      setup: function(block) {
-        this._pkg.onload(block);
-        return this;
-      }
-    })
+    }
   }
 });
-
-JS.Package.DSL.loader = JS.Package.DSL.file;
-
-JS.Packages = function(declaration) {
-  declaration.call(JS.Package.DSL);
-};
- 
-require = function() {
-  var args         = JS.array(arguments),
-      requirements = [];
-  
-  while (typeof args[0] === 'string') requirements.push(JS.Package.getByName(args.shift()));
-  requirements = JS.Package.expand(requirements);
-  
-  var fired = false, handler = function() {
-    if (fired) return;
-    fired = true;
-    args[0] && args[0].call(args[1] || null);
-  };
-  
-  JS.Package.load(requirements, requirements.length, handler);
-};
 
