@@ -1,6 +1,10 @@
 JS.Observable = new JS.Module('Observable', {
+  extend: {
+    DEFAULT_METHOD: 'update'
+  },
+  
   addObserver: function(observer, context) {
-    (this.__observers__ = this.__observers__ || []).push({bk: observer, cx: context || null});
+    (this.__observers__ = this.__observers__ || []).push({_block: observer, _context: context || null});
   },
   
   removeObserver: function(observer, context) {
@@ -8,7 +12,7 @@ JS.Observable = new JS.Module('Observable', {
     context = context || null;
     var i = this.countObservers();
     while (i--) {
-      if (this.__observers__[i].bk === observer && this.__observers__[i].cx === context) {
+      if (this.__observers__[i]._block === observer && this.__observers__[i]._context === context) {
         this.__observers__.splice(i,1);
         return;
       }
@@ -25,10 +29,13 @@ JS.Observable = new JS.Module('Observable', {
   
   notifyObservers: function() {
     if (!this.isChanged()) return;
-    var i = this.countObservers(), observer;
+    var i = this.countObservers(), observer, block, context;
     while (i--) {
       observer = this.__observers__[i];
-      observer.bk.apply(observer.cx, arguments);
+      block    = observer._block;
+      context  = observer._context;
+      if (JS.isFn(block)) block.apply(context || null, arguments);
+      else block[context || JS.Observable.DEFAULT_METHOD].apply(block, arguments);
     }
   },
   
@@ -46,3 +53,4 @@ JS.Observable.include({
   subscribe:    JS.Observable.instanceMethod('addObserver'),
   unsubscribe:  JS.Observable.instanceMethod('removeObserver')
 }, true);
+

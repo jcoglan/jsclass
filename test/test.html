@@ -958,27 +958,39 @@
         testObservableModule: function() { with(this) {
             var pub = new Publisher;
             this.counter = 0;
+            
+            var sub = {x: 0, update: function(x) { this.x -= x }};
             var increment = function() { this.counter++ };
+            
             pub.subscribe(increment, this);
             pub.subscribe(function(x) { this.counter += x }, this);
+            pub.subscribe(sub);
+            
             pub.notifyObservers(4);
             assertEqual(5, this.counter);
+            assertEqual(-4, sub.x);
             pub.unsubscribe(increment, this);
             pub.unsubscribe(increment, this);
+            
             pub.notifyObservers(9);
             assertEqual(14, this.counter);
+            
             pub.setChanged(false);
             pub.notifyObservers(905);
             assertEqual(14, this.counter);
+            
             pub.setChanged();
             pub.notifyObservers(905);
             assertEqual(919, this.counter);
+            
             pub.subscribe(increment, this);
             pub.notifyObservers(4);
             assertEqual(924, this.counter);
+            
             pub.unsubscribe(increment);
             pub.notifyObservers(4);
             assertEqual(929, this.counter);
+            
             pub.unsubscribe(increment, this);
             pub.notifyObservers(4);
             assertEqual(933, this.counter);
