@@ -52,6 +52,26 @@
         }},
         */
         
+        testClassDefinition: function() { with(this) {
+            var frog = new Animal('Kermit');
+            assertEqual('My name is Kermit and I like Ms. Piggy', frog.speak('Ms. Piggy'));
+            assertEqual('Animal finds food', Animal.find('food'));
+            assertEqual('Animal finds shelter and Animal creates shelter', Animal.create('shelter'));
+        }},
+        
+        testEmptyClass: function() { with(this) {
+            var klass = new JS.Class();
+            var instance = new klass;
+            assert(instance.isA(klass));
+        }},
+        
+        testInheritance: function() { with(this) {
+            var yogi = new Bear('Yogi');
+            assertEqual('MY NAME IS YOGI AND I LIKE PICNICS', yogi.speak('picnics'));
+            assertEqual('Animal finds honey', Bear.find('honey'));
+            assertEqual('Animal finds nothing and Animal creates nothing, but Bear creates other stuff', Bear.create('nothing'));
+        }},
+        
         testRubyishInheritance: function() { with(this) {
             var tester = new InheritanceTester();
             assertEqual("speak() in ModB, speak() in ModD, speak() in ModA, and in ModC, and in class Foo", tester.speak());
@@ -68,6 +88,8 @@
         
         testAncestors: function() { with(this) {
             assertEnumEqual([JS.Kernel, ModA, ModD, ModB, ModC, InheritanceTester], InheritanceTester.ancestors());
+            assertEnumEqual(['bark'], Dog.instanceMethods(false));
+            assertEnumEqual(['_', '__eigen__', 'bark', 'equals', 'extend', 'hash', 'initialize', 'isA', 'method', 'methods', 'speak', 'tap', 'wait'], Dog.instanceMethods(true).sort());
         }},
         
         testCoreClasses: function() { with(this) {
@@ -221,26 +243,6 @@
             
             assertEqual('I am working', klass.someMethod());
             assertEqual('I am working', (new klass).someMethod());
-        }},
-        
-        testClassDefinition: function() { with(this) {
-            var frog = new Animal('Kermit');
-            assertEqual('My name is Kermit and I like Ms. Piggy', frog.speak('Ms. Piggy'));
-            assertEqual('Animal finds food', Animal.find('food'));
-            assertEqual('Animal finds shelter and Animal creates shelter', Animal.create('shelter'));
-        }},
-        
-        testEmptyClass: function() { with(this) {
-            var klass = new JS.Class();
-            var instance = new klass;
-            assert(instance.isA(klass));
-        }},
-        
-        testInheritance: function() { with(this) {
-            var yogi = new Bear('Yogi');
-            assertEqual('MY NAME IS YOGI AND I LIKE PICNICS', yogi.speak('picnics'));
-            assertEqual('Animal finds honey', Bear.find('honey'));
-            assertEqual('Animal finds nothing and Animal creates nothing, but Bear creates other stuff', Bear.create('nothing'));
         }},
         
         // http://blog.jcoglan.com/2007/11/14/wheres-my-inheritance/

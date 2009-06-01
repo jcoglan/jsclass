@@ -90,6 +90,15 @@ JS.Kernel = JS.extend(new JS.Module('Kernel', {
   },
   
   /**
+   * JS.Kernel#methods() -> Array
+   * 
+   * Returns a list of all the method names defined on the object.
+   **/
+  methods: function() {
+    return this.__eigen__().instanceMethods(true);
+  },
+  
+  /**
    * JS.Kernel#tap(block[, context]) -> this
    * - block (Function): block of code to execute
    * - context (Object): sets the binding of `this` within `block`

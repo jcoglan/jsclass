@@ -176,6 +176,33 @@ JS.extend(JS.Module.prototype, {
   },
   
   /**
+   * JS.Module#instanceMethods([includeSuper = true[, results]]) -> Array
+   * - includeSuper (Boolean): whether to include ancestor methods
+   * - results (Array): list of found method names (internal use)
+   * 
+   * Returns an array of all the method names from the module. Pass `false` to ignore methods
+   * inherited from ancestors.
+   **/
+  instanceMethods: function(includeSuper, results) {
+    var self      = this.__mod__,
+        results   = results || [],
+        ancestors = self.ancestors(),
+        n         = ancestors.length,
+        name;
+    
+    for (name in self.__fns__) {
+      if (self.__fns__.hasOwnProperty(name) &&
+          JS.isFn(self.__fns__[name]) &&
+          JS.indexOf(results, name) === -1)
+        results.push(name);
+    }
+    if (includeSuper === false) return results;
+    
+    while (n--) ancestors[n].instanceMethods(false, results);
+    return results;
+  },
+  
+  /**
    * JS.Module#include(module[, resolve = true[, options = {}]]) -> undefined
    * - module (JS.Module): the module to mix in
    * - resolve (Boolean): sets whether to refresh method tables afterward
@@ -265,6 +292,7 @@ JS.extend(JS.Module.prototype, {
   
   /**
    * JS.Module#ancestors([results]) -> Array
+   * - results (Array): list of found ancestors (internal use)
    * 
    * Returns an array of the module's ancestor modules/classes, with the most distant
    * first and the receiver last. This is the opposite order to that given by Ruby, but
