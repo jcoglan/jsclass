@@ -556,6 +556,11 @@
                                  new Collection(1,2,3,4,5,6,7,8,9,10).forEachSlice(3)
                                  .entries().map(function(x) { return x.join(',') }));
             
+            this.assertEnumEqual([13,13,13,13,13,13],
+                                 collection.reverseForEach().withIndex(7).map(function(x,i) { return x + i }));
+            this.assertEnumEqual([6,6,6,6,6,6],
+                                 collection.reverseForEach().withIndex().map(function(x,i) { return x + i }));
+            
             results = collection.forEachWithObject([], function(x, i, k) { k.push(x*x) });
             this.assertEnumEqual([1,4,9,16,25,36], results);
             

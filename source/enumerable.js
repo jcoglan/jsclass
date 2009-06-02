@@ -396,6 +396,29 @@ JS.Enumerator = new JS.Class('Enumerator', {
     if (context) args.push(context);
     this._object[this._method].apply(this._object, args);
     return this;
+  },
+  
+  withIndex: function(offset, block, context) {
+    if (JS.isFn(offset)) {
+      context = block;
+      block   = offset;
+      offset  = 0;
+    }
+    offset = offset || 0;
+    
+    var enumtr = this.enumFor('withIndex', offset);
+    if (!block) return enumtr;
+    
+    this.forEach(function(item) {
+      block.call(context || null, item, offset);
+      offset += 1;
+    });
+    return enumtr;
+  },
+  
+  withObject: function(object, block, context) {
+    if (!block) return this.enumFor('withObject', object);
+    return this.forEachWithObject(object, block, context);
   }
 });
 
