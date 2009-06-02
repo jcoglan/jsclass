@@ -414,12 +414,13 @@ JS.Enumerator = new JS.Class('Enumerator', {
       offset += 1;
     });
     return enumtr;
-  },
-  
-  withObject: function(object, block, context) {
-    if (!block) return this.enumFor('withObject', object);
-    return this.forEachWithObject(object, block, context);
   }
+});
+
+JS.Enumerator.include({
+  cons:       JS.Enumerator.instanceMethod('forEachCons'),
+  slice:      JS.Enumerator.instanceMethod('forEachSlice'),
+  withObject: JS.Enumerator.instanceMethod('forEachWithObject')
 });
 
 JS.Kernel.include({
