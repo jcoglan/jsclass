@@ -10,11 +10,9 @@ JS.LinkedList = new JS.Class('LinkedList', {
   },
   
   forEach: function(block, context) {
+    if (!block) return this.enumFor('forEach');
     var node   = this.first,
-        enumtr = this.enumFor('forEach'),
         next, i, n;
-    
-    if (!block) return enumtr;
     
     for (i = 0, n = this.length; i < n; i++) {
       next = node.next;
@@ -22,7 +20,7 @@ JS.LinkedList = new JS.Class('LinkedList', {
       if (node === this.last) break;
       node = next;
     }
-    return enumtr;
+    return this;
   },
   
   at: function(n) {

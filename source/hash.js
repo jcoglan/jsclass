@@ -53,10 +53,8 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   forEach: function(block, context) {
-    var enumtr = this.enumFor('forEach'),
-        hash, bucket, i;
-    
-    if (!block) return enumtr;
+    if (!block) return this.enumFor('forEach');
+    var hash, bucket, i;
     
     for (hash in this._buckets) {
       if (!this._buckets.hasOwnProperty(hash)) continue;
@@ -64,7 +62,7 @@ JS.Hash = new JS.Class('Hash', {
       i = bucket.length;
       while (i--) block.call(context || null, bucket[i]);
     }
-    return enumtr;
+    return this;
   },
   
   _bucketForKey: function(key, createIfAbsent) {
@@ -162,33 +160,30 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   forEachKey: function(block, context) {
-    var enumtr = this.enumFor('forEachKey');
-    if (!block) return enumtr;
+    if (!block) return this.enumFor('forEachKey');
     
     this.forEach(function(pair) {
       block.call(context || null, pair.key);
     });
-    return enumtr;
+    return this;
   },
   
   forEachPair: function(block, context) {
-    var enumtr = this.enumFor('forEachPair');
-    if (!block) return enumtr;
+    if (!block) return this.enumFor('forEachPair');
     
     this.forEach(function(pair) {
       block.call(context || null, pair.key, pair.value);
     });
-    return enumtr;
+    return this;
   },
   
   forEachValue: function(block, context) {
-    var enumtr = this.enumFor('forEachValue');
-    if (!block) return enumtr;
+    if (!block) return this.enumFor('forEachValue');
     
     this.forEach(function(pair) {
       block.call(context || null, pair.value);
     });
-    return enumtr;
+    return this;
   },
   
   get: function(key) {
@@ -276,10 +271,12 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   removeIf: function(predicate, context) {
+    if (!predicate) return this.enumFor('removeIf');
     this.forEach(function(pair) {
       if (predicate.call(context || null, pair))
         this.remove(pair.key);
     }, this);
+    return this;
   },
   
   replace: function(hash) {

@@ -29,14 +29,13 @@ JS.Command = new JS.Class('Command', {
       },
       
       forEach: function(block, context) {
-        var enumtr = this.enumFor('forEach');
-        if (!block) return enumtr;
+        if (!block) return this.enumFor('forEach');
         
         for (var i = 0, n = this._stack.length; i < n; i++) {
           if (this._stack[i] !== undefined)
             block.call(context || null, this._stack[i], i);
         }
-        return enumtr;
+        return this;
       },
       
       clear: function() {

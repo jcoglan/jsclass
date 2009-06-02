@@ -27,8 +27,9 @@ JS.Set = new JS.Class('Set', {
   },
   
   forEach: function(block, context) {
+    if (!block) return this.enumFor('forEach');
     this.klass.forEach(this._members, block, context);
-    return this.enumFor('forEach');
+    return this;
   },
   
   add: function(item) {
@@ -39,6 +40,7 @@ JS.Set = new JS.Class('Set', {
   },
   
   classify: function(block, context) {
+    if (!block) return this.enumFor('classify');
     var classes = {};
     this.forEach(function(item) {
       var value = block.call(context || null, item);
@@ -75,6 +77,8 @@ JS.Set = new JS.Class('Set', {
   },
   
   divide: function(block, context) {
+    if (!block) return this.enumFor('divide');
+    
     var classes = this.classify(block, context),
         sets    = new this.klass,
         key;
@@ -174,6 +178,8 @@ JS.Set = new JS.Class('Set', {
   },
   
   removeIf: function(predicate, context) {
+    if (!predicate) return this.enumFor('removeIf');
+    
     var members = this._members,
         i       = members.length;
     
@@ -181,6 +187,7 @@ JS.Set = new JS.Class('Set', {
       if (predicate.call(context || null, members[i]))
         this.remove(members[i]);
     }
+    return this;
   },
   
   replace: function(other) {
@@ -276,8 +283,9 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
 
 JS.HashSet = new JS.Class('HashSet', JS.Set, {
   forEach: function(block, context) {
+    if (!block) return this.enumFor('forEach');
     this._members.forEachKey(block, context);
-    return this.enumFor('forEach');
+    return this;
   },
   
   add: function(item) {
@@ -307,10 +315,12 @@ JS.HashSet = new JS.Class('HashSet', JS.Set, {
   },
   
   removeIf: function(block, context) {
+    if (!block) return this.enumFor('removeIf');
     this._members.removeIf(function(pair) {
       return block.call(context || null, pair.key);
     });
     this.length = this.size = this._members.length;
+    return this;
   }
 });
 
