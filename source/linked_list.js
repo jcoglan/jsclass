@@ -10,13 +10,19 @@ JS.LinkedList = new JS.Class('LinkedList', {
   },
   
   forEach: function(block, context) {
-    var node = this.first, next, i, n;
+    var node   = this.first,
+        enumtr = this.enumFor('forEach'),
+        next, i, n;
+    
+    if (!block) return enumtr;
+    
     for (i = 0, n = this.length; i < n; i++) {
       next = node.next;
       block.call(context || null, node, i);
       if (node === this.last) break;
       node = next;
     }
+    return enumtr;
   },
   
   at: function(n) {

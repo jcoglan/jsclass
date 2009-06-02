@@ -53,13 +53,18 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   forEach: function(block, context) {
-    var hash, bucket, i;
+    var enumtr = this.enumFor('forEach'),
+        hash, bucket, i;
+    
+    if (!block) return enumtr;
+    
     for (hash in this._buckets) {
       if (!this._buckets.hasOwnProperty(hash)) continue;
       bucket = this._buckets[hash];
       i = bucket.length;
       while (i--) block.call(context || null, bucket[i]);
     }
+    return enumtr;
   },
   
   _bucketForKey: function(key, createIfAbsent) {
@@ -157,21 +162,33 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   forEachKey: function(block, context) {
+    var enumtr = this.enumFor('forEachKey');
+    if (!block) return enumtr;
+    
     this.forEach(function(pair) {
       block.call(context || null, pair.key);
     });
+    return enumtr;
   },
   
   forEachPair: function(block, context) {
+    var enumtr = this.enumFor('forEachPair');
+    if (!block) return enumtr;
+    
     this.forEach(function(pair) {
       block.call(context || null, pair.key, pair.value);
     });
+    return enumtr;
   },
   
   forEachValue: function(block, context) {
+    var enumtr = this.enumFor('forEachValue');
+    if (!block) return enumtr;
+    
     this.forEach(function(pair) {
       block.call(context || null, pair.value);
     });
+    return enumtr;
   },
   
   get: function(key) {

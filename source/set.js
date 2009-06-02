@@ -1,7 +1,7 @@
 JS.Set = new JS.Class('Set', {
   extend: {
     forEach: function(list, block, context) {
-      if (!list) return;
+      if (!list || !block) return;
       if (list.forEach) return list.forEach(block, context);
       for (var i = 0, n = list.length; i < n; i++) {
         if (list[i] !== undefined)
@@ -28,6 +28,7 @@ JS.Set = new JS.Class('Set', {
   
   forEach: function(block, context) {
     this.klass.forEach(this._members, block, context);
+    return this.enumFor('forEach');
   },
   
   add: function(item) {
@@ -276,6 +277,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
 JS.HashSet = new JS.Class('HashSet', JS.Set, {
   forEach: function(block, context) {
     this._members.forEachKey(block, context);
+    return this.enumFor('forEach');
   },
   
   add: function(item) {

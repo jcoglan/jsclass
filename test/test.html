@@ -89,7 +89,7 @@
         testAncestors: function() { with(this) {
             assertEnumEqual([JS.Kernel, ModA, ModD, ModB, ModC, InheritanceTester], InheritanceTester.ancestors());
             assertEnumEqual(['bark'], Dog.instanceMethods(false));
-            assertEnumEqual(['_', '__eigen__', 'bark', 'equals', 'extend', 'hash', 'initialize', 'isA', 'method', 'methods', 'speak', 'tap', 'wait'], Dog.instanceMethods(true).sort());
+            assertEnumEqual(['_', '__eigen__', 'bark', 'enumFor', 'equals', 'extend', 'hash', 'initialize', 'isA', 'method', 'methods', 'speak', 'tap', 'toEnum', 'wait'], Dog.instanceMethods(true).sort());
         }},
         
         testCoreClasses: function() { with(this) {
@@ -545,19 +545,16 @@
             this.assertEnumEqual([1,2,3], collection.take(3));
             this.assertEnumEqual([1,2,3,4], collection.takeWhile(function(x) { return x < 5 }));
             
-            results = ['1,2,3,4', '2,3,4,5', '3,4,5,6'];
-            collection.forEachCons(4, function(set, i) {
-                this.assertEqual(results[i], set.join(','));
-            }, this);
-            
-            results = ['1,2,3', '4,5,6', '7,8,9', '10'];
-            new Collection(1,2,3,4,5,6,7,8,9,10).forEachSlice(3, function(set, i) {
-                this.assertEqual(results[i], set.join(','));
-            }, this);
-            
             collection.forEach(function(x,i) {
                 this.assertEqual(foo[i], x);
             }, this);
+            
+            this.assertEnumEqual(['1,2,3,4','2,3,4,5','3,4,5,6'],
+                                 collection.forEachCons(4).entries().map(function(x) { return x.join(',') }));
+            
+            this.assertEnumEqual(['1,2,3','4,5,6','7,8,9','10'],
+                                 new Collection(1,2,3,4,5,6,7,8,9,10).forEachSlice(3)
+                                 .entries().map(function(x) { return x.join(',') }));
             
             results = collection.forEachWithObject([], function(x, i, k) { k.push(x*x) });
             this.assertEnumEqual([1,4,9,16,25,36], results);
