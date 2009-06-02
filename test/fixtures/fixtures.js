@@ -385,7 +385,7 @@ var Collection = new JS.Class({
     },
     forEach: function(block, context) {
       for (var i = 0, n = this._list.length; i < n; i++)
-        block.call(context || null, this._list[i], i);
+        block.call(context || null, this._list[i]);
     }
 });
 

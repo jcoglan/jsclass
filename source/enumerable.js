@@ -1,13 +1,12 @@
 JS.Enumerable = new JS.Module('Enumerable', {
   extend: {
     forEach: function(block, context) {
-      var enumtr = new JS.Enumerator(this, 'forEach');
-      if (!block) return enumtr;
+      if (!block) return new JS.Enumerator(this, 'forEach');
       for (var i = 0, n = this.length; i < n; i++) {
         if (this[i] !== undefined)
           block.call(context || null, this[i], i);
       }
-      return enumtr;
+      return this;
     },
     
     isComparable: function(list) {
@@ -69,6 +68,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   cycle: function(n, block, context) {
+    if (!block) return this.enumFor('cycle', n);
     while (n--) this.forEach(block, context);
   },
   
@@ -81,6 +81,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   dropWhile: function(block, context) {
+    if (!block) return this.enumFor('dropWhile');
     var entries = [],
         drop    = true;
     this.forEach(function(item) {
@@ -91,33 +92,31 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   forEachCons: function(n, block, context) {
+    if (!block) return this.enumFor('forEachCons', n);
+    
     var entries = this.toArray(),
         size    = entries.length,
         limit   = size - n,
-        enumtr  = this.enumFor('forEachCons', n),
         i;
-    
-    if (!block) return enumtr;
     
     for (i = 0; i <= limit; i++)
       block.call(context || null, entries.slice(i, i+n), i);
     
-    return enumtr;
+    return this;
   },
   
   forEachSlice: function(n, block, context) {
+    if (!block) return this.enumFor('forEachSlice', n);
+    
     var entries = this.toArray(),
         size    = entries.length,
         m       = Math.ceil(size/n),
-        enumtr  = this.enumFor('forEachSlice', n),
         i;
-    
-    if (!block) return enumtr;
     
     for (i = 0; i < m; i++)
       block.call(context || null, entries.slice(i*n, (i+1)*n), i);
     
-    return enumtr;
+    return this;
   },
   
   forEachWithIndex: function(offset, block, context) {
@@ -128,14 +127,13 @@ JS.Enumerable = new JS.Module('Enumerable', {
     }
     offset = offset || 0;
     
-    var enumtr = this.enumFor('forEachWithIndex', offset);
-    if (!block) return enumtr;
+    if (!block) return this.enumFor('forEachWithIndex', offset);
     
-    this.forEach(function(item) {
-      block.call(context || null, item, offset);
+    return this.forEach(function(item) {
+      var result = block.call(context || null, item, offset);
       offset += 1;
+      return result;
     });
-    return enumtr;
   },
   
   forEachWithObject: function(object, block, context) {
@@ -149,6 +147,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   find: function(block, context) {
+    if (!block) return this.enumFor('find');
     var needle = {}, K = needle;
     this.forEach(function(item) {
       if (needle !== K) return;
@@ -158,6 +157,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   findIndex: function(needle, context) {
+    if (needle === undefined) return this.enumFor('findIndex');
     var index = null,
         block = JS.isFn(needle);
     
@@ -185,6 +185,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   groupBy: function(block, context) {
+    if (!block) return this.enumFor('groupBy');
     var hash = new JS.Hash();
     this.forEach(function(item) {
       var value = block.apply(context || null, arguments);
@@ -208,6 +209,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   map: function(block, context) {
+    if (!block) return this.enumFor('map');
     var map = [];
     this.forEach(function() {
       map.push(block.apply(context || null, arguments));
@@ -220,6 +222,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   maxBy: function(block, context) {
+    if (!block) return this.enumFor('maxBy');
     return this.minmaxBy(block, context)[1];
   },
   
@@ -232,6 +235,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   minBy: function(block, context) {
+    if (!block) return this.enumFor('minBy');
     return this.minmaxBy(block, context)[0];
   },
   
@@ -241,6 +245,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   minmaxBy: function(block, context) {
+    if (!block) return this.enumFor('minmaxBy');
     var list = this.sortBy(block, context);
     return [list[0], list[list.length - 1]];
   },
@@ -258,6 +263,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   partition: function(block, context) {
+    if (!block) return this.enumFor('partition');
     var ayes = [], noes = [];
     this.forEach(function(item) {
       (block.apply(context || null, arguments) ? ayes : noes).push(item);
@@ -266,6 +272,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   reject: function(block, context) {
+    if (!block) return this.enumFor('reject');
     var map = [];
     this.forEach(function(item) {
       if (!block.apply(context || null, arguments)) map.push(item);
@@ -274,16 +281,16 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   reverseForEach: function(block, context) {
+    if (!block) return this.enumFor('reverseForEach');
     var entries = this.toArray(),
-        n       = entries.length,
-        enumtr  = this.enumFor('reverseForEach');
+        n       = entries.length;
     
-    if (!block) return enumtr;
     while (n--) block.call(context || null, entries[n], n);
-    return enumtr;
+    return this;
   },
   
   select: function(block, context) {
+    if (!block) return this.enumFor('select');
     var map = [];
     this.forEach(function(item) {
       if (block.apply(context || null, arguments)) map.push(item);
@@ -304,6 +311,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   sortBy: function(block, context) {
+    if (!block) return this.enumFor('sortBy');
     var util       = JS.Enumerable,
         map        = new util.Collection(this.map(block, context)),
         comparable = util.isComparable(map);
@@ -323,6 +331,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   takeWhile: function(block, context) {
+    if (!block) return this.enumFor('takeWhile');
     var entries = [],
         take    = true;
     this.forEach(function(item) {
@@ -398,8 +407,7 @@ JS.Enumerator = new JS.Class('Enumerator', {
     var args = this._args.slice();
     args.push(block);
     if (context) args.push(context);
-    this._object[this._method].apply(this._object, args);
-    return this;
+    return this._object[this._method].apply(this._object, args);
   },
   
   cons:       JS.Enumerable.instanceMethod('forEachCons'),
