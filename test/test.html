@@ -529,6 +529,22 @@
             var collection = new Collection(1,2,3,4,5,6);
             var collection2 = new Collection(5,6,7,8);
             
+            var c = new Collection(1,2,4,2);
+            this.assertEqual(4, c.count());
+            this.assertEqual(2, c.count(2));
+            this.assertEqual(3, c.count(function(x) { return x % 2 == 0 }));
+            
+            results = [];
+            c = new Collection('a', 'b', 'c');
+            c.cycle(2, function(x) { results.push(x) });
+            this.assertEqual('a,b,c,a,b,c', results.join(','));
+            
+            this.assertEnumEqual([4,5,6], collection.drop(3));
+            this.assertEnumEqual([5,6], collection.dropWhile(function(x) { return x < 5 }));
+            
+            this.assertEnumEqual([1,2,3], collection.take(3));
+            this.assertEnumEqual([1,2,3,4], collection.takeWhile(function(x) { return x < 5 }));
+            
             results = ['1,2,3,4', '2,3,4,5', '3,4,5,6'];
             collection.forEachCons(4, function(set, i) {
                 this.assertEqual(results[i], set.join(','));
@@ -542,6 +558,9 @@
             collection.forEach(function(x,i) {
                 this.assertEqual(foo[i], x);
             }, this);
+            
+            results = collection.forEachWithObject([], function(x, i, k) { k.push(x*x) });
+            this.assertEnumEqual([1,4,9,16,25,36], results);
             
             this.assertEqual(61, collection.inject(40, function(memo, item) { return memo + item; }));
             this.assertEqual(36, collection.inject(0, function(memo, item, i) { return memo + item + i; }));
@@ -564,12 +583,31 @@
             this.assert(collection.any(function(item) { return item == this.x }, this));
             this.assert(!collection.any(function(item) { return item == 9 }));
             
+            this.assert(!collection.none(function(item) { return item == 3 }));
+            this.assert(collection.none(function(item, i) { return item == i }));
+            
+            this.assert(collection.one(function(item) { return item == 3 }));
+            this.assert(!collection.one(function(item) { return item % 3 == 0 }));
+            
             this.assertEqual(3, collection.detect(function(x) { return x % 3 === 0 }));
             this.assertEqual(5, collection.find(function(x) { return x % 5 === 0 }));
             this.assertEqual(null, collection.find(function(x) { return x % 12 === 0 }));
             this.assertEqual(4, collection.detect(function(x) { return x * 8 === 32 }));
             
+            this.assertEqual(2, collection.findIndex(3));
+            this.assertEqual(null, collection.findIndex(30));
+            this.assertEqual(4, collection.findIndex(function(x) { return x % 5 == 0 }));
+            
             this.assertEqual('5,6', collection.select(function(x) { return x > 4 }).join(','));
+            
+            var groups = collection.groupBy(function(x) { return x % 3 });
+            this.assert(groups instanceof JS.Hash);
+            this.assertEnumEqual([3,6], groups.get(0));
+            this.assertEnumEqual([1,4], groups.get(1));
+            this.assertEnumEqual([2,5], groups.get(2));
+            
+            this.assertEnumEqual([5,6], collection2.first(2));
+            this.assertEqual(5, collection2.first());
             
             this.assertEqual('1,2,3,4,5,6', collection.entries().join(','));
             
@@ -609,6 +647,13 @@
             this.assertEqual('comes', new Collection('something', 'wicked', 'comes', 'this', 'way').min());
             this.assertEqual('3,4,5,7,8', new Collection(8,5,7,3,4).sort().join(','));
             this.assertEqual('8,7,5,4,3', new Collection(8,5,7,3,4).sort(function(a,b) { return (1/a) - (1/b) }).join(','));
+            
+            var animals = new Collection('albatross', 'dog', 'horse');
+            this.assertEqual('albatross', animals.maxBy(function(x) { return x.length }));
+            
+            this.assertEnumEqual(['dog', 'horse'], animals.grep(/o[gr]/));
+            this.assertEnumEqual(['DOG', 'HORSE'], animals.grep(/o[gr]/, function(x) { return x.toUpperCase() }));
+            this.assertEnumEqual(['dog'], animals.grep(function(x) { return x == 'dog' }));
             
             this.field = 'task';
             this.assertEqual("Go to work, Have nap, Make money, Organise to-do list, Play golf",
