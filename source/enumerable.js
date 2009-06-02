@@ -16,8 +16,8 @@ JS.Enumerable = new JS.Module('Enumerable', {
     match: function(pattern, object) {
       if (JS.isFn(pattern.match)) return pattern.match(object);
       
-      if (pattern.isA && pattern.isA(JS.Module))
-        return (object.isA && object.isA(pattern));
+      if (JS.isType(pattern, JS.Module))
+        return JS.isType(object, pattern);
       
       if (JS.isFn(pattern)) return pattern(object);
       
@@ -305,16 +305,16 @@ JS.Enumerable = new JS.Module('Enumerable', {
         n       = arguments.length,
         block, context;
     
-    if (arguments[n-1] instanceof Function) {
+    if (JS.isFn(arguments[n-1])) {
       block = arguments[n-1]; context = {};
     }
-    if (arguments[n-2] instanceof Function) {
+    if (JS.isFn(arguments[n-2])) {
       block = arguments[n-2]; context = arguments[n-1];
     }
     util.forEach.call(arguments, function(arg) {
       if (arg === block || arg === context) return;
       if (arg.toArray) arg = arg.toArray();
-      if (arg instanceof Array) args.push(arg);
+      if (JS.isType(arg, Array)) args.push(arg);
     });
     var results = this.map(function(item) {
       var zip = [item];

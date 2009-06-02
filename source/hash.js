@@ -47,7 +47,7 @@ JS.Hash = new JS.Class('Hash', {
   
   initialize: function(object) {
     this.clear();
-    if (!(object instanceof Array)) return this.setDefault(object);
+    if (!JS.isType(object, Array)) return this.setDefault(object);
     for (var i = 0, n = object.length; i < n; i += 2)
       this.store(object[i], object[i+1]);
   },
@@ -130,7 +130,7 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   equals: function(other) {
-    if (!(other instanceof JS.Hash) || this.length !== other.length)
+    if (!JS.isType(other, JS.Hash) || this.length !== other.length)
       return false;
     var result = true;
     this.forEach(function(pair) {

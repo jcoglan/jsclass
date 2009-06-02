@@ -65,7 +65,7 @@ JS.Set = new JS.Class('Set', {
   },
   
   difference: function(other) {
-    other = (other instanceof JS.Set) ? other : new JS.Set(other);
+    other = JS.isType(other, JS.Set) ? other : new JS.Set(other);
     var set = new this.klass;
     this.forEach(function(item) {
       if (!other.contains(item)) set.add(item);
@@ -86,7 +86,7 @@ JS.Set = new JS.Class('Set', {
   },
   
   equals: function(other) {
-    if (this.length !== other.length || !(other instanceof JS.Set)) return false;
+    if (this.length !== other.length || !JS.isType(other, JS.Set)) return false;
     var result = true;
     this.forEach(function(item) {
       if (!result) return;
@@ -106,7 +106,7 @@ JS.Set = new JS.Class('Set', {
     copy._members = this._members;
     if (!set) { set = this; set.clear(); }
     copy.forEach(function(item) {
-      if (item instanceof JS.Set) item.flatten(set);
+      if (JS.isType(item, JS.Set)) item.flatten(set);
       else set.add(item);
     });
     return set;

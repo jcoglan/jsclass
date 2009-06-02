@@ -27,7 +27,7 @@ JS.ConstantScope = new JS.Module('ConstantScope', {
     
     extract: function(inclusions, base) {
       if (!inclusions) return null;
-      if (inclusions.isA && inclusions.isA(JS.Module)) return null;
+      if (JS.isType(inclusions, JS.Module)) return null;
       var constants = {}, key, object;
       for (key in inclusions) {
         
@@ -37,7 +37,7 @@ JS.ConstantScope = new JS.Module('ConstantScope', {
         constants[key] = object;
         delete inclusions[key];
         
-        if (object.isA && object.isA(JS.Module)) {
+        if (JS.isType(object, JS.Module)) {
           object.include(this);
           object.__consts__.include(base.__consts__);
         }

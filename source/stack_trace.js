@@ -23,7 +23,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
     nameOf: function(object, root) {
       var results = [], i, n, field, l;
       
-      if (object instanceof Array) {
+      if (JS.isType(object, Array)) {
         for (i = 0, n = object.length; i < n; i++)
           results.push(this.nameOf(object[i]));
         return results;
@@ -54,7 +54,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
       while (i--) {
         item = list[i];
         if (n > 1 && JS.indexOf(this.excluded, item.o) !== -1) continue;
-        if (item.o instanceof Array) continue;
+        if (JS.isType(item.o, Array)) continue;
         name = item.name ? item.name + '.' : '';
         for (key in item.o) {
           if (needle && item.o[key] === needle) return name + key;

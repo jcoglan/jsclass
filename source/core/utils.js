@@ -150,6 +150,20 @@ JS = {
   },
   
   /**
+   * JS.isType(object, type) -> Boolean
+   * - object (Object): object whose type we wish to check
+   * - type (JS.Module): type to match against
+   * 
+   * Returns `true` iff `object is of the given `type`.
+   **/
+  isType: function(object, type) {
+    if (!object || !type) return false;
+    return (type instanceof Function && object instanceof type) ||
+           (typeof type === 'string' && typeof object === type) ||
+           (object.isA && object.isA(type));
+  },
+  
+  /**
    * JS.ignore(key, object) -> Boolean
    * - key (String): name of field being added to an object
    * - object (Object): value of the given field

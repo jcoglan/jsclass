@@ -4,19 +4,19 @@
     initialize: function(type) {
       this.type = type;
       switch (true) {
-        case type instanceof Function :
+        case JS.isType(type, Function) :
           this.test = this.testClass;
           break;
-        case type instanceof JS.Interface :
+        case JS.isType(type, JS.Interface) :
           this.test = this.testInterface;
           break;
-        case typeof type === 'string' || type instanceof String :
+        case JS.isType(type, 'string') || JS.isType(type, String) :
           this.test = this.testType;
           break;
       }
     },
     testClass: function(data) {
-      return data ? (data.isA ? data.isA(this.type) : (data instanceof this.type)) : false;
+      return data ? JS.isType(data, this.type) : false;
     },
     testInterface: function(data) {
       return this.type.test(data);
