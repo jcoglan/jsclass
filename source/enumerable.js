@@ -389,10 +389,12 @@ JS.Enumerator = new JS.Class('Enumerator', {
   },
   
   forEach: function(block, context) {
+    if (!block) return this;
     var args = this._args.slice();
     args.push(block);
     if (context) args.push(context);
-    return this._object[this._method].apply(this._object, args);
+    this._object[this._method].apply(this._object, args);
+    return this;
   }
 });
 
