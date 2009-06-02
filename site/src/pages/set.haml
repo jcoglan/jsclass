@@ -65,16 +65,17 @@
   
   h3. @classify(block, context)@
   
-  Splits the set into several sets based on the return value of @block@ for each member.
+  Splits the set into several sets based on the return value of @block@ for each member,
+  returning a "@Hash@":/hash.html whose keys are the distinct return values.
   
   <pre class="prettyprint">    // Classify by remainder when divided by 3
       
       var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
       var c = s.classify(function(x) { return x % 3 });
       
-      // c[0] == Set{3,6,9}
-      // c[1] == Set{1,4,7}
-      // c[2] == Set{2,5,8}</pre>
+      // c.get(0) == Set{3,6,9}
+      // c.get(1) == Set{1,4,7}
+      // c.get(2) == Set{2,5,8}</pre>
   
   h3. @clear()@
   

@@ -41,11 +41,11 @@ JS.Set = new JS.Class('Set', {
   
   classify: function(block, context) {
     if (!block) return this.enumFor('classify');
-    var classes = {};
+    var classes = new JS.Hash();
     this.forEach(function(item) {
       var value = block.call(context || null, item);
-      if (!classes[value]) classes[value] = new this.klass;
-      classes[value].add(item);
+      if (!classes.hasKey(value)) classes.store(value, new this.klass);
+      classes.get(value).add(item);
     }, this);
     return classes;
   },
@@ -80,13 +80,9 @@ JS.Set = new JS.Class('Set', {
     if (!block) return this.enumFor('divide');
     
     var classes = this.classify(block, context),
-        sets    = new this.klass,
-        key;
+        sets    = new this.klass;
     
-    for (key in classes) {
-      if (!classes.hasOwnProperty(key)) continue;
-      sets.add(classes[key]);
-    }
+    classes.forEachValue(sets.method('add'));
     return sets;
   },
   

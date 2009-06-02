@@ -9,6 +9,7 @@ June TODO 2009
   loader functions for integration with Google, YUI etc.
 * ObjectMethods module is now called Kernel.
 * New Kernel methods: tap(), equals(), hash().
+* API change: Set#classify now returns a Hash, not an Object.
 * Ancestor and method lookups are cached for improved performance.
 * Automatic generation of displayName on methods for integration
   with the WebKit debugger.
