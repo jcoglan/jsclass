@@ -135,6 +135,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   forEachWithObject: function(object, block, context) {
+    if (!block) return this.enumFor('forEachWithObject', object);
     this.forEach(function() {
       var args = JS.array(arguments);
       args.push(object);
