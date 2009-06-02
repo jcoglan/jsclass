@@ -570,6 +570,8 @@
             this.assertEqual(81, collection.inject(function(memo, item) { return memo + this.x * item; }, this));
             this.assertEqual(24, collection.inject(-60, function(memo, item) { return memo + this.x * item; }, this));
             
+            this.assert(collection.all());
+            this.assert(!new Collection(true, false).all());
             this.assert(collection.all(function(item, i) { return item == i + 1 }));
             this.assert(collection.member(4));
             this.assert(!collection.member('jam'));
@@ -577,15 +579,21 @@
             this.assertEqual('1,2', collection.partition(function(x) { return x <= 2 })[0].join(','));
             this.assertEqual('3,4,5,6', collection.partition(function(x) { return x <= 2 })[1].join(','));
             
+            this.assert(collection.any());
+            this.assert(new Collection(true, false).any());
             this.assert(collection.any(function(item) { return item == 3 }));
             this.assert(!collection.any(function(item, i) { return item == i }));
             this.assert(collection.any(function(item, i) { return item == i + 1 }));
             this.assert(collection.any(function(item) { return item == this.x }, this));
             this.assert(!collection.any(function(item) { return item == 9 }));
             
+            this.assert(!new Collection(true, false).none());
+            this.assert(new Collection(false, false).none());
             this.assert(!collection.none(function(item) { return item == 3 }));
             this.assert(collection.none(function(item, i) { return item == i }));
             
+            this.assert(!new Collection(true, true).one());
+            this.assert(new Collection(true, false).one());
             this.assert(collection.one(function(item) { return item == 3 }));
             this.assert(!collection.one(function(item) { return item % 3 == 0 }));
             

@@ -37,16 +37,16 @@ JS.Enumerable = new JS.Module('Enumerable', {
   
   all: function(block, context) {
     var truth = true;
-    this.forEach(function() {
-      truth = truth && block.apply(context || null, arguments);
+    this.forEach(function(item) {
+      truth = truth && (block ? block.apply(context || null, arguments) : item);
     });
     return !!truth;
   },
   
   any: function(block, context) {
     var truth = false;
-    this.forEach(function() {
-      truth = truth || block.apply(context || null, arguments);
+    this.forEach(function(item) {
+      truth = truth || (block ? block.apply(context || null, arguments) : item);
     });
     return !!truth;
   },
@@ -226,7 +226,11 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   one: function(block, context) {
-    return this.count(block, context) === 1;
+    var count = 0;
+    this.forEach(function(item) {
+      if (block ? block.apply(context || null, arguments) : item) count += 1;
+    });
+    return count === 1;
   },
   
   partition: function(block, context) {
