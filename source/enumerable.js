@@ -120,17 +120,21 @@ JS.Enumerable = new JS.Module('Enumerable', {
     return enumtr;
   },
   
-  forEachWithIndex: function(block, context) {
-    var index  = 0,
-        enumtr = this.enumFor('forEachWithIndex');
+  forEachWithIndex: function(offset, block, context) {
+    if (JS.isFn(offset)) {
+      context = block;
+      block   = offset;
+      offset  = 0;
+    }
+    offset = offset || 0;
     
+    var enumtr = this.enumFor('forEachWithIndex', offset);
     if (!block) return enumtr;
     
     this.forEach(function(item) {
-      block.call(context || null, item, index);
-      index += 1;
+      block.call(context || null, item, offset);
+      offset += 1;
     });
-    
     return enumtr;
   },
   
@@ -398,29 +402,11 @@ JS.Enumerator = new JS.Class('Enumerator', {
     return this;
   },
   
-  withIndex: function(offset, block, context) {
-    if (JS.isFn(offset)) {
-      context = block;
-      block   = offset;
-      offset  = 0;
-    }
-    offset = offset || 0;
-    
-    var enumtr = this.enumFor('withIndex', offset);
-    if (!block) return enumtr;
-    
-    this.forEach(function(item) {
-      block.call(context || null, item, offset);
-      offset += 1;
-    });
-    return enumtr;
-  }
-});
-
-JS.Enumerator.include({
-  cons:       JS.Enumerator.instanceMethod('forEachCons'),
-  slice:      JS.Enumerator.instanceMethod('forEachSlice'),
-  withObject: JS.Enumerator.instanceMethod('forEachWithObject')
+  cons:       JS.Enumerable.instanceMethod('forEachCons'),
+  reverse:    JS.Enumerable.instanceMethod('reverseForEach'),
+  slice:      JS.Enumerable.instanceMethod('forEachSlice'),
+  withIndex:  JS.Enumerable.instanceMethod('forEachWithIndex'),
+  withObject: JS.Enumerable.instanceMethod('forEachWithObject')
 });
 
 JS.Kernel.include({
