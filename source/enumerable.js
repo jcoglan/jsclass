@@ -4,7 +4,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
       if (!block) return new JS.Enumerator(this, 'forEach');
       for (var i = 0, n = this.length; i < n; i++) {
         if (this[i] !== undefined)
-          block.call(context || null, this[i], i);
+          block.call(context || null, this[i]);
       }
       return this;
     },
@@ -100,7 +100,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
         i;
     
     for (i = 0; i <= limit; i++)
-      block.call(context || null, entries.slice(i, i+n), i);
+      block.call(context || null, entries.slice(i, i+n));
     
     return this;
   },
@@ -114,7 +114,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
         i;
     
     for (i = 0; i < m; i++)
-      block.call(context || null, entries.slice(i*n, (i+1)*n), i);
+      block.call(context || null, entries.slice(i*n, (i+1)*n));
     
     return this;
   },
@@ -285,7 +285,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
     var entries = this.toArray(),
         n       = entries.length;
     
-    while (n--) block.call(context || null, entries[n], n);
+    while (n--) block.call(context || null, entries[n]);
     return this;
   },
   
@@ -384,44 +384,46 @@ JS.Enumerable.include({
   every:      JS.Enumerable.instanceMethod('all'),
   findAll:    JS.Enumerable.instanceMethod('select'),
   filter:     JS.Enumerable.instanceMethod('select'),
-  some:       JS.Enumerable.instanceMethod('any')
+  some:       JS.Enumerable.instanceMethod('any'),
+  
+  extend: {
+    Enumerator: new JS.Class({
+      include: JS.Enumerable,
+      
+      extend: {
+        DEFAULT_METHOD: 'forEach'
+      },
+      
+      initialize: function(object, method, args) {
+        this._object = object;
+        this._method = method || this.klass.DEFAULT_METHOD;
+        this._args   = (args || []).slice();
+      },
+      
+      forEach: function(block, context) {
+        if (!block) return this;
+        var args = this._args.slice();
+        args.push(block);
+        if (context) args.push(context);
+        return this._object[this._method].apply(this._object, args);
+      },
+      
+      cons:       JS.Enumerable.instanceMethod('forEachCons'),
+      reverse:    JS.Enumerable.instanceMethod('reverseForEach'),
+      slice:      JS.Enumerable.instanceMethod('forEachSlice'),
+      withIndex:  JS.Enumerable.instanceMethod('forEachWithIndex'),
+      withObject: JS.Enumerable.instanceMethod('forEachWithObject')
+    })
+  }
 }, false);
 
 JS.Enumerable.Collection.include(JS.Enumerable, true);
-
-JS.Enumerator = new JS.Class('Enumerator', {
-  include: JS.Enumerable,
-  
-  extend: {
-    DEFAULT_METHOD: 'forEach'
-  },
-  
-  initialize: function(object, method, args) {
-    this._object = object;
-    this._method = method || this.klass.DEFAULT_METHOD;
-    this._args   = (args || []).slice();
-  },
-  
-  forEach: function(block, context) {
-    if (!block) return this;
-    var args = this._args.slice();
-    args.push(block);
-    if (context) args.push(context);
-    return this._object[this._method].apply(this._object, args);
-  },
-  
-  cons:       JS.Enumerable.instanceMethod('forEachCons'),
-  reverse:    JS.Enumerable.instanceMethod('reverseForEach'),
-  slice:      JS.Enumerable.instanceMethod('forEachSlice'),
-  withIndex:  JS.Enumerable.instanceMethod('forEachWithIndex'),
-  withObject: JS.Enumerable.instanceMethod('forEachWithObject')
-});
 
 JS.Kernel.include({
   enumFor: function(method) {
     var args   = JS.array(arguments),
         method = args.shift();
-    return new JS.Enumerator(this, method, args);
+    return new JS.Enumerable.Enumerator(this, method, args);
   }
 }, false);
 
