@@ -566,6 +566,9 @@
             this.assertEnumEqual([6,6,6,6,6,6],
                                  collection.reverseForEach().withIndex().map(function(x,i) { return x + i }));
             
+            this.assertEnumEqual(['FOO', 'BAR'], new Collection('foo', 'bAr').map('toUpperCase'));
+            this.assertEnumEqual([3, 3], new Collection('foo', 'bAr').map('length'));
+            
             results = collection.forEachWithObject([], function(x, k) { k.push(x*x) });
             this.assertEnumEqual([1,4,9,16,25,36], results);
             
@@ -575,6 +578,15 @@
             this.x = 4;
             this.assertEqual(81, collection.inject(function(memo, item) { return memo + this.x * item; }, this));
             this.assertEqual(24, collection.inject(-60, function(memo, item) { return memo + this.x * item; }, this));
+            
+            this.assertEqual(21, collection.inject('+'));
+            this.assertEqual(26, collection.inject(5, '+'));
+            
+            var tree = {A: {B: {C: {D: 12}}}};
+            this.assertEqual(12, new Collection('A','B','C','D').inject(tree, '[]'));
+            
+            tree = new JS.Hash(['A', new JS.Hash(['B', new JS.Hash(['C', 3]) ]) ]);
+            this.assertEqual(3, new Collection('A','B','C').inject(tree, 'get'));
             
             this.assert(collection.all());
             this.assert(!new Collection(true, false).all());
@@ -663,6 +675,7 @@
             
             var animals = new Collection('albatross', 'dog', 'horse');
             this.assertEqual('albatross', animals.maxBy(function(x) { return x.length }));
+            this.assertEqual('albatross', animals.maxBy('length'));
             
             this.assertEnumEqual(['dog', 'horse'], animals.grep(/o[gr]/));
             this.assertEnumEqual(['DOG', 'HORSE'], animals.grep(/o[gr]/, function(x) { return x.toUpperCase() }));

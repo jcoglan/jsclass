@@ -54,6 +54,8 @@ JS.Hash = new JS.Class('Hash', {
   
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
+    block = JS.Enumerable.toFn(block);
+    
     var hash, bucket, i;
     
     for (hash in this._buckets) {
@@ -161,6 +163,7 @@ JS.Hash = new JS.Class('Hash', {
   
   forEachKey: function(block, context) {
     if (!block) return this.enumFor('forEachKey');
+    block = JS.Enumerable.toFn(block);
     
     this.forEach(function(pair) {
       block.call(context || null, pair.key);
@@ -170,6 +173,7 @@ JS.Hash = new JS.Class('Hash', {
   
   forEachPair: function(block, context) {
     if (!block) return this.enumFor('forEachPair');
+    block = JS.Enumerable.toFn(block);
     
     this.forEach(function(pair) {
       block.call(context || null, pair.key, pair.value);
@@ -179,6 +183,7 @@ JS.Hash = new JS.Class('Hash', {
   
   forEachValue: function(block, context) {
     if (!block) return this.enumFor('forEachValue');
+    block = JS.Enumerable.toFn(block);
     
     this.forEach(function(pair) {
       block.call(context || null, pair.value);
@@ -270,10 +275,12 @@ JS.Hash = new JS.Class('Hash', {
     return result;
   },
   
-  removeIf: function(predicate, context) {
-    if (!predicate) return this.enumFor('removeIf');
+  removeIf: function(block, context) {
+    if (!block) return this.enumFor('removeIf');
+    block = JS.Enumerable.toFn(block);
+    
     this.forEach(function(pair) {
-      if (predicate.call(context || null, pair))
+      if (block.call(context || null, pair))
         this.remove(pair.key);
     }, this);
     return this;

@@ -7,6 +7,8 @@ June TODO 2009
   web browsers and now also works on server-side platforms
   (tested on SpiderMonkey, Rhino and V8). Also supports custom
   loader functions for integration with Google, YUI etc.
+* Enumerable updated with Ruby 1.9 methods, enumerators, and
+  Symbol#to_proc functionality when passing strings to iterators.
 * ObjectMethods module is now called Kernel.
 * New Kernel methods: tap(), equals(), hash().
 * API change: Set#classify now returns a Hash, not an Object.

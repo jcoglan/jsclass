@@ -28,6 +28,8 @@ JS.Set = new JS.Class('Set', {
   
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
+    block = JS.Enumerable.toFn(block);
+    
     this.klass.forEach(this._members, block, context);
     return this;
   },
@@ -41,6 +43,8 @@ JS.Set = new JS.Class('Set', {
   
   classify: function(block, context) {
     if (!block) return this.enumFor('classify');
+    block = JS.Enumerable.toFn(block);
+    
     var classes = new JS.Hash();
     this.forEach(function(item) {
       var value = block.call(context || null, item);
@@ -78,6 +82,7 @@ JS.Set = new JS.Class('Set', {
   
   divide: function(block, context) {
     if (!block) return this.enumFor('divide');
+    block = JS.Enumerable.toFn(block);
     
     var classes = this.classify(block, context),
         sets    = new this.klass;
@@ -173,14 +178,15 @@ JS.Set = new JS.Class('Set', {
     this.length = this.size = this._members.length;
   },
   
-  removeIf: function(predicate, context) {
-    if (!predicate) return this.enumFor('removeIf');
+  removeIf: function(block, context) {
+    if (!block) return this.enumFor('removeIf');
+    block = JS.Enumerable.toFn(block);
     
     var members = this._members,
         i       = members.length;
     
     while (i--) {
-      if (predicate.call(context || null, members[i]))
+      if (block.call(context || null, members[i]))
         this.remove(members[i]);
     }
     return this;
@@ -280,6 +286,8 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
 JS.HashSet = new JS.Class('HashSet', JS.Set, {
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
+    block = JS.Enumerable.toFn(block);
+    
     this._members.forEachKey(block, context);
     return this;
   },
@@ -312,6 +320,8 @@ JS.HashSet = new JS.Class('HashSet', JS.Set, {
   
   removeIf: function(block, context) {
     if (!block) return this.enumFor('removeIf');
+    block = JS.Enumerable.toFn(block);
+    
     this._members.removeIf(function(pair) {
       return block.call(context || null, pair.key);
     });
@@ -326,3 +336,4 @@ JS.Enumerable.include({
     return new klass(this, block, context);
   }
 }, true);
+

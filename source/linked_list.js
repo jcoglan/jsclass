@@ -11,6 +11,8 @@ JS.LinkedList = new JS.Class('LinkedList', {
   
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
+    block = JS.Enumerable.toFn(block);
+    
     var node   = this.first,
         next, i, n;
     

@@ -30,6 +30,7 @@ JS.Command = new JS.Class('Command', {
       
       forEach: function(block, context) {
         if (!block) return this.enumFor('forEach');
+        block = JS.Enumerable.toFn(block);
         
         for (var i = 0, n = this._stack.length; i < n; i++) {
           if (this._stack[i] !== undefined)
