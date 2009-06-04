@@ -305,11 +305,11 @@
   h3. @member(needle)@
   
   Returns @true@ iff the collection contains any members equal to @needle@. Items are checked for
-  equality (@==@) rather than identity (@===@).
+  identity (@===@), or using the @equals()@ method if the objects implement it.
   
   <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
-      list.member('7')   // -> true
-      list.member('foo') // -> false</pre>
+      list.member('7')   // -> false
+      list.member(7)     // -> true</pre>
   
   h3. @min(block, context)@
   

@@ -7,12 +7,6 @@ JS.Set = new JS.Class('Set', {
         if (list[i] !== undefined)
           block.call(context || null, list[i], i);
       }
-    },
-    
-    areEqual: function(one, another) {
-      return one.equals
-          ? one.equals(another)
-          : (one === another);
     }
   },
   
@@ -220,7 +214,7 @@ JS.Set = new JS.Class('Set', {
   
   _indexOf: function(item) {
     var i     = this._members.length,
-        equal = this.klass.areEqual;
+        equal = JS.Enumerable.areEqual;
     
     while (i--) {
       if (equal(item, this._members[i])) return i;
@@ -257,7 +251,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
         i       = 0,
         d       = n,
         compare = this.klass.compare,
-        equal   = this.klass.areEqual,
+        equal   = JS.Enumerable.areEqual,
         found;
     
     if (n === 0) return insertionPoint ? 0 : -1;

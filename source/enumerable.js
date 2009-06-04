@@ -13,6 +13,12 @@ JS.Enumerable = new JS.Module('Enumerable', {
       return list.all(function(item) { return JS.isFn(item.compareTo) });
     },
     
+    areEqual: function(one, another) {
+      return one.equals
+          ? one.equals(another)
+          : (one === another);
+    },
+    
     Collection: new JS.Class({
       initialize: function(array) {
         this.length = 0;
@@ -47,7 +53,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
     var count = 0, object = block;
     
     if (block && !JS.isFn(block))
-      block = function(x) { return x === object };
+      block = function(x) { return JS.Enumerable.areEqual(x, object) };
     
     this.forEach(function() {
       if (!block || block.apply(context || null, arguments))
@@ -163,7 +169,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
     
     this.forEachWithIndex(function(item, i) {
       if (index !== null) return;
-      if (needle === item || (block && needle.apply(context || null, arguments)))
+      if (JS.Enumerable.areEqual(needle, item) || (block && needle.apply(context || null, arguments)))
         index = i;
     });
     return index;
@@ -246,7 +252,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   member: function(needle) {
-    return this.any(function(item) { return item === needle; });
+    return this.any(function(item) { return JS.Enumerable.areEqual(item, needle) });
   },
   
   min: function(block, context) {
