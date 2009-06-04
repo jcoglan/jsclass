@@ -567,6 +567,7 @@
                                  collection.reverseForEach().withIndex().map(function(x,i) { return x + i }));
             
             this.assertEnumEqual(['FOO', 'BAR'], new Collection('foo', 'bAr').map('toUpperCase'));
+            this.assertEnumEqual(['FOO', 'BAR'], new Collection('foo', 'bAr').map(it().toUpperCase()));
             this.assertEnumEqual([3, 3], new Collection('foo', 'bAr').map('length'));
             
             results = collection.forEachWithObject([], function(k,x) { k.push(x*x) });
