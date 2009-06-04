@@ -89,10 +89,27 @@
   <pre class="prettyprint">    Foo.lookup('speak')
       // -> [function(), function(), function(), function()]</pre>
   
-  Finally, you can extract a single named method from a module using @instanceMethod()@:
+  Finally, you can extract a single named method from a module using @instanceMethod()@, and
+  get a list of all the instance methods in a class using @instanceMethods@. Calling
+  @instanceMethods(false)@ returns the methods from _only_ that class/module, ignoring
+  iherited methods. To get all the methods defined on a single object, use @methods()@.
   
-  <pre class="prettyprint">    // Returns the speak() function from ModC
-      ModC.instanceMethod('speak')</pre>
+  <pre class="prettyprint">    ModC.instanceMethod('speak')
+      // -> function()
+      
+      Foo.instanceMethods()
+      // -> ["speak", "__eigen__", "equals", "extend", "hash",
+      //     "isA", "method", "methods", "tap", "wait", "_",
+      //     "enumFor", "toEnum"]
+      
+      Foo.instanceMethods(false)
+      // -> ["speak"]
+      
+      var f = new Foo();
+      f.methods()
+      // -> ["speak", "__eigen__", "equals", "extend", "hash",
+      //     "isA", "method", "methods", "tap", "wait", "_",
+      //     "enumFor", "toEnum"]</pre>
   
   h3. The eigenclass
   

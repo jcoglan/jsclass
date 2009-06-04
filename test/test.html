@@ -101,6 +101,7 @@
             assertEqual(1, JS.Class.subclasses.length);
             assertEqual(SpecialClass, JS.Class.subclasses[0]);
             assertEqual(JS.Module, JS.Class.superclass);
+            assertEqual(JS.Module, JS.Kernel.klass);
         }},
         
         testNaming: function() { with(this) {

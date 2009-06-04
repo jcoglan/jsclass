@@ -19,12 +19,26 @@ June TODO 2009
 * New Kernel methods: tap(), equals(), hash(), enumFor() and methods(),
   and new Module methods: instanceMethods() and match().
 
-* API change: Set#classify now returns a Hash, not an Object.
+* The double inclusion problem is now fixed, i.e. the following
+  works in JS.Class 2.1:
+  
+      A = new JS.Module();
+      C = new JS.Class({ include: A });
+      B = new JS.Module({ foo: function() { return 'B#foo' } });
+      A.include(B);
+      D = new JS.Class({ include: A });
+
+      new C().foo()   // -> 'B#foo'
+      new D().foo()   // -> 'B#foo'
+  
+  (See http://eigenclass.org/hiki/The+double+inclusion+problem)
 
 * Ancestor and method lookups are cached for improved performance.
 
 * Automatic generation of displayName on methods for integration
   with the WebKit debugger.
+
+* API change: Set#classify now returns a Hash, not an Object.
 
 * PDoc documentation for the core classes.
 

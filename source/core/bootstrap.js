@@ -7,6 +7,7 @@ JS.Module.include(JS.Kernel, true);
 JS.Class = JS.extend(new JS.Class('Class', JS.Module, JS.Class.prototype), JS.Kernel.__fns__);
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
+JS.Kernel.klass = JS.Kernel.constructor = JS.Module;
 JS.extend(JS.Kernel, JS.Kernel.__fns__);
 
 JS.Module.extend({

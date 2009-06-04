@@ -46,6 +46,8 @@
     @toFunction()@ can be used as an iterator.
   * The core object methods now live in "@Kernel@":/kernel.html, and we've added new methods:
     @tap()@, @equals()@, @hash()@ and @enumFor()@.
+  * The "double inclusion problem":http://eigenclass.org/hiki/The+double+inclusion+problem
+    is now fixed; no current Ruby implementation seems to support this properly.
   * Ancestor and method lookups are now cached so @callSuper@ runs about twice as fast.
   * Classes can be named to generate @displayName@ on methods for
     "use with the WebKit debugger":/debugging.html.
