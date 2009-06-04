@@ -10,57 +10,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
     },
     
     isComparable: function(list) {
-      return list.all(function(item) {
-        return JS.isFn(item.compareTo);
-      });
-    },
-    
-    match: function(pattern, object) {
-      if (JS.isFn(pattern.match)) return pattern.match(object);
-      
-      if (JS.isType(pattern, JS.Module))
-        return JS.isType(object, pattern);
-      
-      if (JS.isFn(pattern)) return pattern(object);
-      
-      return null;
-    },
-    
-    toFn: function(object) {
-      if (!object) return object;
-      if (object.toFunction) return object.toFunction();
-      if (this.OPS[object]) return this.OPS[object];
-      if (JS.isType(object, 'string') || JS.isType(object, String))
-        return function() {
-          var args   = JS.array(arguments),
-              target = args.shift(),
-              method = target[object];
-          return JS.isFn(method) ? method.apply(target, args) : method;
-        };
-      return object;
-    },
-    
-    OPS: {
-      '+':    function(a,b) { return a + b },
-      '-':    function(a,b) { return a - b },
-      '*':    function(a,b) { return a * b },
-      '/':    function(a,b) { return a / b },
-      '%':    function(a,b) { return a % b },
-      '^':    function(a,b) { return a ^ b },
-      '&':    function(a,b) { return a & b },
-      '&&':   function(a,b) { return a && b },
-      '|':    function(a,b) { return a | b },
-      '||':   function(a,b) { return a || b },
-      '==':   function(a,b) { return a == b },
-      '!=':   function(a,b) { return a != b },
-      '>':    function(a,b) { return a > b },
-      '>=':   function(a,b) { return a >= b },
-      '<':    function(a,b) { return a < b },
-      '<=':   function(a,b) { return a <= b },
-      '===':  function(a,b) { return a === b },
-      '!==':  function(a,b) { return a !== b },
-      '[]':   function(a,b) { return a[b] },
-      '()':   function(a,b) { return a(b) }
+      return list.all(function(item) { return JS.isFn(item.compareTo) });
     },
     
     Collection: new JS.Class({
@@ -187,8 +137,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
     block = JS.Enumerable.toFn(block);
     
     this.forEach(function() {
-      var args = JS.array(arguments);
-      args.push(object);
+      var args = [object].concat(JS.array(arguments));
       block.apply(context || null, args);
     });
     return object;
@@ -208,7 +157,6 @@ JS.Enumerable = new JS.Module('Enumerable', {
   
   findIndex: function(needle, context) {
     if (needle === undefined) return this.enumFor('findIndex');
-    block = JS.Enumerable.toFn(block);
     
     var index = null,
         block = JS.isFn(needle);
@@ -230,7 +178,8 @@ JS.Enumerable = new JS.Module('Enumerable', {
     block = JS.Enumerable.toFn(block);
     var results = [];
     this.forEach(function(item) {
-      if (!JS.Enumerable.match(pattern, item)) return;
+      var match = JS.isFn(pattern.match) ? pattern.match(item) : pattern(item);
+      if (!match) return;
       if (block) item = block.apply(context || null, arguments);
       results.push(item);
     });
@@ -470,6 +419,43 @@ JS.Enumerable.include({
   some:       JS.Enumerable.instanceMethod('any'),
   
   extend: {
+    toFn: function(object) {
+      if (!object) return object;
+      if (object.toFunction) return object.toFunction();
+      if (this.OPS[object]) return this.OPS[object];
+      if (JS.isType(object, 'string') || JS.isType(object, String))
+        return function() {
+          var args   = JS.array(arguments),
+              target = args.shift(),
+              method = target[object];
+          return JS.isFn(method) ? method.apply(target, args) : method;
+        };
+      return object;
+    },
+    
+    OPS: {
+      '+':    function(a,b) { return a + b },
+      '-':    function(a,b) { return a - b },
+      '*':    function(a,b) { return a * b },
+      '/':    function(a,b) { return a / b },
+      '%':    function(a,b) { return a % b },
+      '^':    function(a,b) { return a ^ b },
+      '&':    function(a,b) { return a & b },
+      '&&':   function(a,b) { return a && b },
+      '|':    function(a,b) { return a | b },
+      '||':   function(a,b) { return a || b },
+      '==':   function(a,b) { return a == b },
+      '!=':   function(a,b) { return a != b },
+      '>':    function(a,b) { return a > b },
+      '>=':   function(a,b) { return a >= b },
+      '<':    function(a,b) { return a < b },
+      '<=':   function(a,b) { return a <= b },
+      '===':  function(a,b) { return a === b },
+      '!==':  function(a,b) { return a !== b },
+      '[]':   function(a,b) { return a[b] },
+      '()':   function(a,b) { return a(b) }
+    },
+    
     Enumerator: new JS.Class({
       include: JS.Enumerable,
       

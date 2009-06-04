@@ -569,7 +569,7 @@
             this.assertEnumEqual(['FOO', 'BAR'], new Collection('foo', 'bAr').map('toUpperCase'));
             this.assertEnumEqual([3, 3], new Collection('foo', 'bAr').map('length'));
             
-            results = collection.forEachWithObject([], function(x, k) { k.push(x*x) });
+            results = collection.forEachWithObject([], function(k,x) { k.push(x*x) });
             this.assertEnumEqual([1,4,9,16,25,36], results);
             
             this.assertEqual(61, collection.inject(40, function(memo, item) { return memo + item; }));

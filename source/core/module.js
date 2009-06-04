@@ -291,6 +291,16 @@ JS.extend(JS.Module.prototype, {
   },
   
   /**
+   * JS.Module#match(object) -> Boolean
+   * - object (Object): object to type-check
+   * 
+   * Returns `true` if the receiver is in the inheritance chain of `object`.
+   **/
+  match: function(object) {
+    return object.isA && object.isA(this);
+  },
+  
+  /**
    * JS.Module#ancestors([results]) -> Array
    * - results (Array): list of found ancestors (internal use)
    * 

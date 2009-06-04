@@ -43,13 +43,44 @@
       // prints:
       //    3,  7,  4,  8,  2</pre>
   
-  The API provided by the @Enumerable@ module to the @Collection@ class is as follows. In
-  the argument list of each method, @block@ is a function and @context@ is an optional
-  argument that sets the meaning of the keyword @this@ inside @block@.
+  The API provided by the @Enumerable@ module to the @Collection@ class is listed below. In
+  the argument list of each method, @block@ is a function and @context@ is an optional argument
+  that sets the meaning of the keyword @this@ inside @block@. For many methods, @block@ may be
+  a @String@, emulating Ruby's "@Symbol#to_proc@":http://ruby-doc.org/core-1.9/classes/Symbol.html#M002518
+  functionality. Some examples:
+  
+  <pre class="prettyprint">    var strings = new Collection('iguana', 'labrador', 'albatross');
+      
+      strings.map('length')
+      // -> [6, 8, 9]
+      
+      strings.map('toUpperCase')
+      // -> ["IGUANA", "LABRADOR", "ALBATROSS"]</pre>
+  
+  The string may refer to a method or a property of the objects in the collection, and is
+  converted to a function that calls the named method on the first argument, passing the
+  remaining arguments as parameters to the call. In other words:
+  
+  <pre class="prettyprint">    strings.map('toUpperCase')
+      // is converted to:
+      
+      strings.map(function(a, b, ...) { return a.toUpperCase(b, ...) })</pre>
+  
+  Most of JavaScript's binary operators are supported, so you can use them with between items
+  in @inject@ loops, for example:
+  
+  <pre class="prettyprint">    new Collection(1,2,3,4).inject('+')
+      // -> 10
+      
+      var tree = {A: {B: {C: 87}}};
+      new Collection('A','B','C').inject(tree, '[]')
+      // -> 87</pre>
+  
   
   h3. @all(block, context)@
   
-  Returns @true@ iff @block@ returns @true@ for every member of the collection. Aliased as @every()@.
+  Returns @true@ iff @block@ returns @true@ for every member of the collection. If called without
+  a block, returns @true@ iff all the members of the collection have truthy values. Aliased as @every()@.
   
   <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
       
@@ -57,11 +88,15 @@
       // -> false
       
       list.all(function(x) { return typeof x == 'number' });
-      // -> true</pre>
+      // -> true
+      
+      new Collection(3,0,5).all();
+      // -> false</pre>
   
   h3. @any(block, context)@
   
-  Returns @true@ if @block@ returns @true@ for one or more members of the collection. Aliased as @some()@.
+  Returns @true@ iff @block@ returns @true@ for one or more members of the collection. If called
+  without a block, returns @true@ iff one or more members has a truthy value. Aliased as @some()@.
   
   <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
       
@@ -69,15 +104,50 @@
       // -> true
       
       list.any(function(x) { return typeof x == 'object' });
+      // -> false
+      
+      list.any();
+      // -> true
+      
+      new Collection(0, false, null).any();
       // -> false</pre>
   
   h3. @collect(block, context)@
   
   Alias for @map()@.
   
+  h3. @count(needle, context)@
+  
+  If called without arguments, returns the number of items in the collection. If called with
+  arguments, returns the number of members that are equal to @needle@ using the @===@ operator,
+  or for which @needle@ returns @true@ if @needle@ is a function.
+  
+  <pre class="prettyprint">    new Collection(3,7,4,8,2).count();
+      // -> 5
+      
+      new Collection(3,7,4,8,2).count(2);
+      // -> 1
+      
+      new Collection(3,7,4,8,2).count(function(x) { return x % 2 == 0 });
+      // -> 3</pre>
+  
+  h3. @cycle(n, block, context)@
+  
+  Loops over the collection @n@ times, calling @block@ with each member. Equivalent to calling
+  @forEach(block, context)@ @n@ times.
+  
   h3. @detect(block, context)@
   
   Alias for @find()@.
+  
+  h3. @drop(n)@
+  
+  Returns a new @Array@ containing all but the first @n@ members of the collection.
+  
+  h3. @dropWhile(block, context)@
+  
+  Returns the collection as a new @Array@, removing items from the front of the list up to
+  but not including the first item for which @block@ returns @false@.
   
   h3. @entries()@
   
@@ -101,6 +171,16 @@
   h3. @findAll(block, context)@
   
   Alias for @select()@.
+  
+  h3. @findIndex(needle, context)@
+  
+  Returns the index of the first member of the collection equal to @needle@, or for which
+  @needle@ returns @true@ if @needle@ is a function. Returns @null@ if no match is found.
+  
+  h3. @first(n)@
+  
+  Returns an @Array@ containing the first @n@ members, or returns just the first member
+  if @n@ is not specified.
   
   h3. @forEachCons(n, block, context)@
   
@@ -128,6 +208,63 @@
       //    [3, 7]
       //    [4, 8]
       //    [2]</pre>
+  
+  h3. @forEachWithIndex(block, context)@
+  
+  Calls the @block@ with each member of the collection in turn, passing the member and its
+  index to the @block@.
+  
+  <pre class="prettyprint">    new Collection(3,7,4,8,2).forEachWithIndex(function(x,i) {
+          console.log(x, i);
+      });
+      // prints
+      //    3, 0
+      //    7, 1
+      //    4, 2
+      //    8, 3
+      //    2, 4</pre>
+  
+  h3. @forEachWithObject(object, block, context)@
+  
+  Calls @block@ with each member of the collection, passing @object@ and the current member
+  with each call, and returns the current object.
+  
+  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
+      
+      list.forEachWithObject([], function(ary, item) {
+          ary.unshift(item * item);
+      });
+      // -> [4, 64, 16, 49, 9]</pre>
+  
+  h3. @grep(pattern, block, context)@
+  
+  Returns an @Array@ of all the members of the collection that match @pattern@ according to
+  the method @pattern.match()@. @pattern@ may be a @RegExp@, a @Module@ or @Class@, or a
+  function, in which case it is called with the item and @pattern(item)@ should return a
+  boolean value. If @block@ is given, each match is transformed by passing it to @block@.
+  
+  <pre class="prettyprint">    var strings = new Collection('iguana', 'labrador', 'albatross');
+      
+      strings.grep(/[aeiou]a/);
+      // -> ["iguana"]
+      
+      strings.grep(/[aeiou]a/, function(s) { return s.toUpperCase() });
+      // -> ["IGUANA"]</pre>
+  
+  h3. @groupBy(block, context)@
+  
+  Groups the members according to their return value when passed to @block@, and returns a
+  "@Hash@":/hash.html, where in each pair the key is a return value for @block@ and the value
+  is an @Array@ of items that produced that value.
+  
+  <pre class="prettyprint">    var list   = new Collection(1,2,3,4,5,6);
+      var groups = list.groupBy(function(x) { return x % 3 });
+      
+      groups.keys()   // -> [1, 2, 0]
+      groups.get(1)   // -> [1, 4]
+      groups.get(2)   // -> [2, 5]
+      groups.get(0)   // -> [3, 6]</pre>
+
   
   h3. @inject(memo, block, context)@
   
@@ -161,6 +298,10 @@
       list.max(function(a,b) { return (a%7) - (b%7) });
       // -> 4</pre>
   
+  h3. @maxBy(block, context)@
+  
+  Returns the member of the collection that gives the maximum value when passed to @block@.
+  
   h3. @member(needle)@
   
   Returns @true@ iff the collection contains any members equal to @needle@. Items are checked for
@@ -174,6 +315,27 @@
   
   Much like @max()@, except it returns the minimum value.
   
+  h3. @minBy(block, context)@
+  
+  Much like @maxBy()@, except it returns the member that gives the minimum value.
+  
+  h3. @minmax(block, context)@
+  
+  Returns the array @[min(block, context), max(block, context)]@.
+  
+  h3. @minmaxBy(block, context)@
+  
+  Returns the array @[minBy(block, context), maxBy(block, context)]@.
+  
+  h3. @none(block, context)@
+  
+  Returns @!collection.any(block, context)@.
+  
+  h3. @one(block, context)@
+  
+  Returns @true@ iff @block@ returns @true@ for exactly one member of the collection. If @block@
+  is not given, returns @true@ iff exactly one member has a truthy value.
+  
   h3. @partition(block, context)@
   
   Returns two arrays, one containing members for which @block@ returns @true@, the other
@@ -182,13 +344,9 @@
   <pre class="prettyprint">    new Collection(3,7,4,8,2).partition(function(x) { return x > 5 });
       // -> [ [7, 8], [3, 4, 2] ]</pre>
   
-  h3. @select(block, context)@
+  h3. @reverseForEach(block, context)@
   
-  Returns a new @Array@ containing the members of the collection for which @block@ returns @true@.
-  Aliased as @filter()@ and @findAll()@.
-  
-  <pre class="prettyprint">    new Collection(3,7,4,8,2).select(function(x) { return x > 5 });
-      // -> [7, 8]</pre>
+  Calls @block@ with each member of the collection, in the opposite order given by @forEach()@.
   
   h3. @reject(block, context)@
   
@@ -196,6 +354,14 @@
   
   <pre class="prettyprint">    new Collection(3,7,4,8,2).reject(function(x) { return x > 5 });
       // -> [3, 4, 2]</pre>
+  
+  h3. @select(block, context)@
+  
+  Returns a new @Array@ containing the members of the collection for which @block@ returns @true@.
+  Aliased as @filter()@ and @findAll()@.
+  
+  <pre class="prettyprint">    new Collection(3,7,4,8,2).select(function(x) { return x > 5 });
+      // -> [7, 8]</pre>
   
   h3. @some(block, context)@
   
@@ -225,6 +391,15 @@
   <pre class="prettyprint">    // sort values modulo 7
       new Collection(3,7,4,8,2).sortBy(function(x) { return x % 7 });
       // -> [7, 8, 2, 3, 4]</pre>
+  
+  h3. @take(n)@
+  
+  Returns the first @n@ members from the collection.
+  
+  h3. @takeWhile(block, context)@
+  
+  Returns items from the start of the collection, up to but not including the first item for
+  which @block@ returns @false@.
   
   h3. @toArray()@
   
