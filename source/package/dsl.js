@@ -58,7 +58,7 @@ JS.Packages = function(declaration) {
   declaration.call(JS.Package.DSL);
 };
  
-require = function() {
+JS.require = function() {
   var args         = JS.array(arguments),
       requirements = [];
   
@@ -73,4 +73,6 @@ require = function() {
   
   JS.Package.load(requirements, requirements.length, handler);
 };
+
+require = JS.require;
 
