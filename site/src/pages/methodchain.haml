@@ -74,7 +74,8 @@
   @it()@ and @its()@ are two global functions created by @MethodChain@ that just act as
   shorthand for returning new @MethodChain@ objects. You could use them to improve syntax
   in conjunction with @toFunction()@ for methods in your code that take functions as arguments.
-  An example from "Ojay":http://ojay.othermedia.org:
+  For example, many "@Enumerable@":/enumerable.html methods accept any object with a
+  @toFunction()@ method as an argument, allowing expressions like:
   
   <pre class="prettyprint">    [some, bunch, of, elements].forEach(it().addClass('foo'));</pre>
   
