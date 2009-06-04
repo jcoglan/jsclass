@@ -3,18 +3,29 @@ June TODO 2009
 ================================================================
 
 * New libraries: ConstantScope, Hash, HashSet.
+
 * Improved package manager, supports parallel downloads in
   web browsers and now also works on server-side platforms
   (tested on SpiderMonkey, Rhino and V8). Also supports custom
   loader functions for integration with Google, YUI etc.
+
 * Enumerable updated with Ruby 1.9 methods, enumerators, and
   Symbol#to_proc functionality when passing strings to iterators.
+  Any object with a toFunction() method can be used as an iterator.
+  Search methods now use equals() where possible.
+
 * ObjectMethods module is now called Kernel.
-* New Kernel methods: tap(), equals(), hash().
+
+* New Kernel methods: tap(), equals(), hash(), enumFor() and methods(),
+  and new Module methods: instanceMethods() and match().
+
 * API change: Set#classify now returns a Hash, not an Object.
+
 * Ancestor and method lookups are cached for improved performance.
+
 * Automatic generation of displayName on methods for integration
   with the WebKit debugger.
+
 * PDoc documentation for the core classes.
 
 
@@ -47,10 +58,12 @@ September 14 2008
 ================================================================
 
 * Fixes a super()-related bug in Command.
+
 * Better handling of 'include' and 'extend' directives such
   that these are processed before all the other methods are
   added. This allows mixins to override parts of the including
   class to affect future method definitions.
+
 * Module#include() has been fixed so that overriding it produces
   more sane behaviour with respect to classes that delegate to
   a module behind the scenes to store methods.
@@ -64,12 +77,18 @@ August 12 2008
   of Modules with all inheritance semantics based around this.
   Ruby-style multiple inheritance now works correctly, and
   callSuper() can call methods from mixins.
+
 * Class and Module are now classes, and must be created using
   the 'new' keyword.
+
 * Some backward compatibility breaks; see http://jsclass.jcoglan.com/upgrade.html
+
 * New method: Object#__eigen__() returns an object's metaclass.
+
 * Performance of super() calls is much improved.
+
 * New libraries: Package, Set, SortedSet and StackTrace.
+
 * Package provides a dependency-aware system for loading new
   JavaScript files on demand.
 
@@ -88,8 +107,11 @@ April 10 2008
 
 * Adds a DSL for defining classes in a more Ruby-like way using
   procedures rather than declarations (experimental).
+
 * New libraries: Forwardable, State.
+
 * The extended() hook is now supported.
+
 * The 'implement' directive is no longer supported.
 
 
@@ -100,8 +122,10 @@ February 25 2008
 * Adds a standard library, including Command, Comparable,
   Decorator, Enumerable, LinkedList, MethodChain, Observable
   and Proxy.Virtual.
+
 * Renames _super() to callSuper() to avoid problems with PackR's
   private variable shrinking.
+
 * Adds an Object#wait() method that calls a MethodChain on the
   object using setTimeout().
 
@@ -119,21 +143,30 @@ January 4 2008
 ================================================================
 
 * Singleton methods that call super() are now supported.
+
 * Object#is_a() has been renamed to Object#isA().
+
 * Classes now support inherited() and included() hooks.
+
 * Adds Interface class for easier duck-typing checks across
   several methods.
+
 * New directive 'implement' can be used to check that a class
   implements some interfaces.
+
 * Singletons are now supported as class-like definitions that
   yield a single object.
+
 * Module has been added as a way to protect sets of methods by
   wrapping them in a closure.
+
 * Removes the bindMethods class flag in favour of the more
   efficient and Ruby-like Ojbect#method(). This can also be
   used on classes to get bound class methods.
+
 * Exceptions thrown while calling super are no longer swallowed
   inside the framework.
+
 * Class#method() is now Class#instanceMethod.
 
 
@@ -143,10 +176,13 @@ November 13 2007
 
 * Fixes bug caused by multiple methods in the same call stack
   clobbering _super().
+
 * Fixes some inheritance bugs related to class methods and
   built-in instance methods.
+
 * Improves performance by bootstrapping JavaScript's prototypes
   for instance method inheritance.
+
 * Allows inheritance from non-JS.Class-based classes.
 
 

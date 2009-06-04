@@ -22,8 +22,8 @@
   * Singleton methods and eigenclasses
   * @included@, @extended@ and @inherited@ hooks
   * Method binding
-  * Ports of various standard Ruby modules, including @Enumerable@, @Observable@, @Comparable@,
-    @Forwardable@
+  * Ports of various standard Ruby modules, including @Enumerable@, @Hash@, @Set@, @Observable@,
+    @Comparable@, @Forwardable@
   
   Its inheritance system supports late-bound @super()@ calls to parent classes and modules,
   including calls from singleton methods. It has been designed to mimick Ruby as closely as
@@ -31,10 +31,24 @@
   
   h3. Download version 2.1
   
-  2.0 is a complete rewrite of the 1.6 core to build a more Ruby-like system. It fixes a number
-  of @Module@-related bugs in 1.6, has an inheritance model completely compatible with Ruby's,
-  and boosts method call performance. It also adds three new packages to the standard library:
-  @Package@, @Set@ and @StackTrace@.
+  Version 2.1 builds on the 2.0 core and libraries and adds several new core features and
+  packages. A quick tour of the new features:
+  
+  * New libraries: "@ConstantScope@":/constantscope.html, "@Hash@":/hash.html and
+    "@HashSet@":/set.html, a much faster @Set@ implementation.
+  * The "package manager":/packages.html has been improved with a new API, parallel downloading
+    of files, and support for server-side environments such as SpiderMonkey, Rhino and V8. It
+    also supports user-defined loader functions for transparent integration with Google and Yahoo!'s
+    packaging systems.
+  * The "@Enumerable@":/enumerable.html module has been updated with plenty of methods from
+    Ruby 1.9, and now supports "enumerators":/enumerator.html, and @Symbol#to_proc@-like
+    functionality whereby a string, "@MethodChain@":/methodchain.html or any object that implements
+    @toFunction()@ can be used as an iterator.
+  * The core object methods now live in "@Kernel@":/kernel.html, and we've added new methods:
+    @tap()@, @equals()@, @hash()@ and @enumFor()@.
+  * Ancestor and method lookups are now cached so @callSuper@ runs about twice as fast.
+  * Classes can be named to generate @displayName@ on methods for
+    "use with the WebKit debugger":/debugging.html.
   
   <a href="/assets/JS.Class.2-1-0.zip" onclick="trackDownload('2.1.0')">Download JS.Class 2.1.0</a>
   
