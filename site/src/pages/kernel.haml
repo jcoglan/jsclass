@@ -19,9 +19,8 @@
   is generated as follows:
   
   <pre class="prettyprint">    forEachCons: function(n, block, context) {
-          var enumtr = this.enumFor('forEachCons', n);
+          if (!block) return this.enumFor('forEachCons', n);
           // forEachCons implementation details ...
-          return enumtr;
       }</pre>
   
   h3. @object.equals(other)@
