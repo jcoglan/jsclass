@@ -92,6 +92,14 @@
             assertEnumEqual(['_', '__eigen__', 'bark', 'enumFor', 'equals', 'extend', 'hash', 'initialize', 'isA', 'method', 'methods', 'speak', 'tap', 'toEnum', 'wait'], Dog.instanceMethods(true).sort());
         }},
         
+        testClassesCanBeMixins: function() { with(this) {
+            assertEnumEqual([JS.Kernel, ClassAsMixin, MixesInAClass], MixesInAClass.ancestors());
+            
+            var object = new MixesInAClass();
+            assertEqual('inst', object.anInstanceMethod());
+            assertIdentical(undefined, MixesInAClass.aClassMethod);
+        }},
+        
         testCoreClasses: function() { with(this) {
             assertEqual(JS.Class, JS.Module.klass);
             assertEqual(JS.Class, JS.Class.klass);

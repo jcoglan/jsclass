@@ -2,15 +2,12 @@
 // own prototypes and mixing in methods from Kernel, making these classes appear
 // to be instances of themselves.
 
-JS.Module = JS.extend(new JS.Class('Module', JS.Module.prototype), JS.Kernel.__fns__);
-JS.Module.include(JS.Kernel, true);
-JS.Class = JS.extend(new JS.Class('Class', JS.Module, JS.Class.prototype), JS.Kernel.__fns__);
+JS.Module = new JS.Class('Module', JS.Module.prototype);
+JS.Class = new JS.Class('Class', JS.Module, JS.Class.prototype);
 JS.Module.klass = JS.Module.constructor =
 JS.Class.klass = JS.Class.constructor = JS.Class;
-JS.Kernel.klass = JS.Kernel.constructor = JS.Module;
-JS.extend(JS.Kernel, JS.Kernel.__fns__);
 
-JS.Module.extend({
+JS.extend(JS.Module, {
   _observers: [],
   methodAdded: function(block, context) {
     this._observers.push([block, context]);

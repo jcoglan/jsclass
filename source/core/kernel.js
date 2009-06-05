@@ -127,3 +127,8 @@ JS.Kernel = JS.extend(new JS.Module('Kernel', {
   }
 });
 
+JS.Module.include(JS.Kernel);
+JS.extend(JS.Module, JS.Kernel.__fns__);
+JS.Class.include(JS.Kernel);
+JS.extend(JS.Class, JS.Kernel.__fns__);
+

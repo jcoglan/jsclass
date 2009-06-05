@@ -11,9 +11,9 @@ packages:
     files:
       - utils
       - module
-      - kernel
       - class
       - bootstrap
+      - kernel
       - interface
       - singleton
   package:

@@ -219,6 +219,8 @@ JS.extend(JS.Module.prototype, {
     if (!module) return resolve ? this.resolve() : this.uncache();
     options = options || {};
     
+    if (module.__mod__) module = module.__mod__;
+    
     var inc      = module.include,
         ext      = module.extend,
         includer = options._included || this,
@@ -245,14 +247,14 @@ JS.extend(JS.Module.prototype, {
         // First call: handle include and extend blocks
         
         // Handle inclusions
-        if (typeof inc === 'object') {
+        if (typeof inc === 'object' || JS.isType(inc, JS.Module)) {
           modules = [].concat(inc);
           for (i = 0, n = modules.length; i < n; i++)
             includer.include(modules[i], resolve, options);
         }
         
         // Handle extensions
-        if (typeof ext === 'object') {
+        if (typeof ext === 'object' || JS.isType(ext, JS.Module)) {
           modules = [].concat(ext);
           for (i = 0, n = modules.length; i < n; i++)
             includer.extend(modules[i], false);

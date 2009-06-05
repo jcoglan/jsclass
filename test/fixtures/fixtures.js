@@ -113,6 +113,26 @@ ExtendingModule = new JS.Module({
     }
 });
 
+ClassAsMixin = new JS.Class({
+    extend: {
+        aClassMethod: function() {
+            return 'class'
+        }
+    },
+    
+    anInstanceMethod: function() {
+        return 'instance'
+    }
+});
+
+MixesInAClass = new JS.Class({
+    include: ClassAsMixin,
+    
+    anInstanceMethod: function() {
+        return this.callSuper().substring(0,4)
+    }
+});
+
 //================================================================
 //================================================================
 
