@@ -154,7 +154,7 @@ JS = {
    * - object (Object): object whose type we wish to check
    * - type (JS.Module): type to match against
    * 
-   * Returns `true` iff `object is of the given `type`.
+   * Returns `true` iff `object` is of the given `type`.
    **/
   isType: function(object, type) {
     if (!object || !type) return false;
