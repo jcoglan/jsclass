@@ -11,6 +11,14 @@ JS.Packages(function() { with(this) {
                                       'JS.Singleton',
                                       'JS.Interface');
     
+    module('test')          .provides('JS.Test',
+                                      'JS.Test.Unit',
+                                      'JS.Test.Unit.Assertions',
+                                      'JS.Test.Unit.TestCase')
+                            .requires('JS.Module',
+                                      'JS.Class',
+                                      'JS.Enumerable');
+    
     module('comparable')    .provides('JS.Comparable')
                             .requires('JS.Module');
     

@@ -30,6 +30,12 @@ packages:
       - loader
       - dsl
       - config
+  test:
+    directory: test
+    files:
+      - unit
+      - assertions
+      - test_case
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable
@@ -48,6 +54,7 @@ packages:
 bundles:
   stdlib:
     - method_chain
+    - test
     - package
     - comparable
     - enumerable
