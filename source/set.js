@@ -128,7 +128,7 @@ JS.Set = new JS.Class('Set', {
     return this._members.length < other._members.length && this.isSubset(other);
   },
   
-  isProperSuperset: function() {
+  isProperSuperset: function(other) {
     return this._members.length > other._members.length && this.isSuperset(other);
   },
   

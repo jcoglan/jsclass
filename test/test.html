@@ -961,6 +961,7 @@
             
             // http://en.wikipedia.org/wiki/Subset
             assert(new JS.HashSet([1,2]).isProperSubset(new JS.HashSet([1,2,3])));
+            assert(new JS.HashSet([1,3,2]).isProperSuperset(new JS.HashSet([1,2])));
             assert(new JS.HashSet([3,1,2]).isSubset(new JS.HashSet([1,2,3])));
             assert(!( new JS.HashSet([3,1,2]).isProperSubset(new JS.HashSet([1,2,3])) ));
             assert(new JS.SortedSet().isSubset(new JS.HashSet([1,2,3])));
