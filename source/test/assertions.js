@@ -2,7 +2,8 @@ JS.Test.Unit.extend({
   Assertions: new JS.Module({
     assertBlock: function(message, block, context) {
       this._wrapAssertion(function() {
-        if (!block.call(context || null)) throw (message || 'assertBlock failed.').toString();
+        if (!block.call(context || null))
+          throw new JS.Test.Unit.AssertionFailedError(message || 'assertBlock failed.');
       });
     },
     

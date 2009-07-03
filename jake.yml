@@ -35,6 +35,10 @@ packages:
     files:
       - unit
       - assertions
+      - failure
+      - error
+      - test_result
+      - test_suite
       - test_case
   comparable:       comparable
   constant_scope:   constant_scope
