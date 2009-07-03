@@ -8,7 +8,6 @@ JS.Test.Unit.extend({
     },
     
     assert: function(bool, message) {
-      this._assertionWrapped = true;    // TODO remove this line
       this._wrapAssertion(function() {
         this.assertBlock(this.buildMessage(message, "<?> is not true.", bool),
                          function() { return bool });
@@ -29,7 +28,6 @@ JS.Test.Unit.extend({
         try {
           this.addAssertion();
           return block.call(this);
-        } catch (e) {
         } finally {
           this._assertionWrapped = false;
         }
