@@ -1,5 +1,26 @@
 JS.Test.Unit.extend({
+  /** section: test
+   * mixin JS.Test.Unit.Assertions
+   *
+   * `JS.Test.Unit.Assertions` contains the standard `JS.Test.Unit` assertions.
+   * Assertions is included in `JS.Test.Unit.TestCase`.
+   * 
+   * To include it in your own code and use its functionality, you simply
+   * need to rescue `JS.Test.Unit.AssertionFailedError`. Additionally you may
+   * override `addAssertion` to get notified whenever an assertion is made.
+   * 
+   * Notes:
+   * * The message to each assertion, if given, will be propagated with the
+   *   failure.
+   * * It is easy to add your own assertions based on `assertBlock()`.
+   **/
   Assertions: new JS.Module({
+    /**
+     * JS.Test.Unit.Assertions#assertBlock(message, block, context) -> undefined
+     * 
+     * The assertion upon which all other assertions are based. Passes if the
+     * block yields true.
+     **/
     assertBlock: function(message, block, context) {
       this._wrapAssertion(function() {
         if (!block.call(context || null))
@@ -7,6 +28,20 @@ JS.Test.Unit.extend({
       });
     },
     
+    /**
+     * JS.Test.Unit.Assertions#flunk(message) -> undefined
+     * 
+     * Flunk always fails.
+     **/
+    flunk: function(message) {
+      this.assertBlock(this.buildMessage(message || 'Flunked'), function() { return false });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assert(bool, message) -> undefined
+     * 
+     * Asserts that `bool` is not falsey.
+     **/
     assert: function(bool, message) {
       this._wrapAssertion(function() {
         this.assertBlock(this.buildMessage(message, "<?> is not true.", bool),
@@ -14,6 +49,149 @@ JS.Test.Unit.extend({
       });
     },
     
+    /**
+     * JS.Test.Unit.Assertions#assertEqual(expected, actual, message) -> undefined
+     * 
+     * Passes if `expected` == `actual`.
+     * 
+     * Note that the ordering of arguments is important, since a helpful
+     * error message is generated when this one fails that tells you the
+     * values of expected and actual.
+     **/
+    assertEqual: function(expected, actual, message) {
+      var fullMessage = this.buildMessage(message, "<?> expected but was\n<?>.", expected, actual);
+      this.assertBlock(fullMessage, function() {
+        return (expected && expected.equals)
+            ? expected.equals(actual)
+            : expected == actual;
+      });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertNotEqual(expected, actual, message) -> undefined
+     * 
+     * Passes if `actual` is not equal to `expected`.
+     **/
+    assertNotEqual: function(expected, actual, message) {
+      var fullMessage = this.buildMessage(message, "<?> expected not to be equal to\n<?>.",
+                                                   expected,
+                                                   actual);
+      this.assertBlock(fullMessage, function() {
+        return (expected && expected.equals)
+            ? !expected.equals(actual)
+            : expected != actual;
+      });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertNull(object, message) -> undefined
+     * 
+     * Passes if `object` is `null`.
+     **/
+    assertNull: function(object, message) {
+      this.assertEqual(null, object, message);
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertNotNull(object, message) -> undefined
+     * 
+     * Passes if `object` is not `null`.
+     **/
+    assertNotNull: function(object, message) {
+      var fullMessage = this.buildMessage(message, "<?> expected not to be null.", object);
+      this.assertBlock(fullMessage, function() { return object !== null });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertKindOf(klass, object, message) -> undefined
+     * 
+     * Passes if `object` is a kind of `klass`.
+     **/
+    assertKindOf: function(klass, object, message) {
+      this._wrapAssertion(function() {
+        var fullMessage = this.buildMessage(message, "<?> expected to be an instance of\n" +
+                                                     "<?> but was\n" +
+                                                     "<?>.",
+                                                     object, klass, object.constructor);
+        this.assertBlock(fullMessage, function() { return JS.isType(object, klass) });
+      });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertRespondTo(object, method, message) -> undefined
+     * 
+     * Passes if `object` responds to `method`.
+     **/
+    assertRespondTo: function(object, method, message) {
+      this._wrapAssertion(function() {
+        var fullMessage = this.buildMessage('', "<?>\ngiven as the method name argument to #assertRespondTo must be a String.", method);
+        
+        this.assertBlock(fullMessage, function() { return typeof method === 'string' });
+        
+        fullMessage = this.buildMessage(message, "<?>\n" +
+                                                 "of type <?>\n" +
+                                                 "expected to respond to <?>.",
+                                                 object,
+                                                 object.constructor,
+                                                 method);
+        this.assertBlock(fullMessage, function() { return object[method] !== undefined });
+      });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertMatch(pattern, string, message) -> undefined
+     * 
+     * Passes if `string` matches `pattern`.
+     **/
+    assertMatch: function(pattern, string, message) {
+      this._wrapAssertion(function() {
+        var fullMessage = this.buildMessage(message, "<?> expected to match\n<?>.", string, pattern);
+        this.assertBlock(fullMessage, function() { return pattern.test(string) });
+      });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertNoMatch(pattern, string, message) -> undefined
+     * 
+     * Passes if `string` does not match `pattern`.
+     **/
+    assertNoMatch: function(pattern, string, message) {
+      this._wrapAssertion(function() {
+        var fullMessage = this.buildMessage(message, "<?> expected not to match\n<?>.", string, pattern);
+        this.assertBlock(fullMessage, function() { return !pattern.test(string) });
+      });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertSame(expected, actual, message) -> undefined
+     * 
+     * Passes if `actual` and `expected` are the same object.
+     **/
+    assertSame: function(expected, actual, message) {
+      var fullMessage = this.buildMessage(message, "<?> expected to be the same as\n" +
+                                                   "<?>.",
+                                                   expected, actual);
+      this.assertBlock(fullMessage, function() { return actual === expected });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertNotSame(expected, actual, message) -> undefined
+     * 
+     * Passes if `actual` and `expected` are not the same object.
+     **/
+    assertNotSame: function(expected, actual, message) {
+      var fullMessage = this.buildMessage(message, "<?> expected not to be the same as\n" +
+                                                   "<?>.",
+                                                   expected, actual);
+      this.assertBlock(fullMessage, function() { return actual !== expected });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#buildMessage(head, template, args) -> JS.Test.Unit.Assertions.AssertionMessage
+     * 
+     * Builds a failure message.  `head` is added before the `template` and
+     * `args` replaces the '?'s positionally in the template.
+     **/
     buildMessage: function() {
       var args     = JS.array(arguments),
           head     = args.shift(),
@@ -36,7 +214,13 @@ JS.Test.Unit.extend({
       }
     },
     
-    _addAssertion: function() {},
+    /**
+     * JS.Test.Unit.Assertions#addAssertion() -> undefined
+     * 
+     * Called whenever an assertion is made.  Define this in classes that
+     * include `JS.Test.Unit.Assertions` to record assertion counts.
+     **/
+    addAssertion: function() {},
     
     extend: {
       AssertionMessage: new JS.Class({
@@ -72,6 +256,7 @@ JS.Test.Unit.extend({
         },
         
         convert: function(object) {
+          if (object instanceof Array) return '[' + object.join(',') + ']';
           return (object && object.toString) ? object.toString() : String(object);
         },
         
