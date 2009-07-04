@@ -7,7 +7,7 @@
  **/
 JS.Test.Unit.extend({
   TestResult: new JS.Class({
-    // TODO include Util::Observable
+    include: JS.Test.Unit.Util.Observable,
     
     extend: {
       CHANGED:  'CHANGED',
@@ -33,7 +33,7 @@ JS.Test.Unit.extend({
      **/
     addRun: function() {
       this.runCount += 1;
-      // notify_listeners(CHANGED, self)
+      this.notifyListeners(this.klass.CHANGED, this);
     },
     
     /**
@@ -43,8 +43,8 @@ JS.Test.Unit.extend({
      **/
     addFailure: function(failure) {
       this._failures.push(failure);
-      // notify_listeners(FAULT, failure)
-      // notify_listeners(CHANGED, self)
+      this.notifyListeners(this.klass.FAULT, failure);
+      this.notifyListeners(this.klass.CHANGED, this);
     },
     
     /**
@@ -54,8 +54,8 @@ JS.Test.Unit.extend({
      **/
     addError: function(error) {
       this._errors.push(error);
-      // notify_listeners(FAULT, error)
-      // notify_listeners(CHANGED, self)
+      this.notifyListeners(this.klass.FAULT, error);
+      this.notifyListeners(this.klass.CHANGED, this);
     },
     
     /**
@@ -65,7 +65,7 @@ JS.Test.Unit.extend({
      **/
     addAssertion: function() {
       this.assertionCount += 1;
-      // notify_listeners(CHANGED, self)
+      this.notifyListeners(this.klass.CHANGED, this);
     },
     
     /**

@@ -34,6 +34,7 @@ packages:
     directory: test
     files:
       - unit
+      - util/observable
       - assertions
       - failure
       - error
