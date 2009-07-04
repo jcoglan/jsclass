@@ -18,7 +18,7 @@ JS.Test.Unit.extend({
         },
         
         /**
-         * JS.Test.Unit.Util.Observable#addListener(channelName, block, context) -> undefined
+         * JS.Test.Unit.Util.Observable#addListener(channelName, block, context) -> Function
          * 
          * Adds the passed block as a listener on the
          * channel indicated by `channelName`.
@@ -28,6 +28,7 @@ JS.Test.Unit.extend({
           
           this.channels()[channelName] = this.channels()[channelName] || [];
           this.channels()[channelName].push([block, context]);
+          return block;
         },
         
         /**

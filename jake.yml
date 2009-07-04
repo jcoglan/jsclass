@@ -41,6 +41,9 @@ packages:
       - test_result
       - test_suite
       - test_case
+      - ui/test_runner_utilities
+      - ui/test_runner_mediator
+      - ui/console/test_runner
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable
