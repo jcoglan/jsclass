@@ -14,7 +14,7 @@ JS.Test.Unit.extend({
        **/
       TestRunnerUtilities: new JS.Module({
         /**
-         * JS.Test.Unit.UI.TestRunnerUtilities#run(suite, outputLevel) -> JS.Test.Unit.UI.TestRunnerUtilities
+         * JS.Test.Unit.UI.TestRunnerUtilities#run(suite, outputLevel) -> JS.Test.Unit.TestResult
          * 
          * Creates a new TestRunner and runs the suite.
          **/
