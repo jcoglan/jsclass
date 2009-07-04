@@ -187,6 +187,56 @@ JS.Test.Unit.extend({
     },
     
     /**
+     * JS.Test.Unit.Assertions#assertInDelta(expected, actual, delta, message) -> undefined
+     * 
+     * Passes if `expected` and `actual` are equal
+     * within `delta` tolerance.
+     **/
+    assertInDelta: function(expected, actual, delta, message) {
+      this._wrapAssertion(function() {
+        this.assertKindOf('number', expected);
+        this.assertKindOf('number', actual);
+        this.assertKindOf('number', delta);
+        this.assert(delta >= 0, "The delta should not be negative");
+        
+        var fullMessage = this.buildMessage(message, "<?> and\n" +
+                                                     "<?> expected to be within\n" +
+                                                     "<?> of each other.",
+                                                     expected,
+                                                     actual,
+                                                     delta);
+        this.assertBlock(fullMessage, function() {
+          return Math.abs(expected - actual) <= delta;
+        });
+      });
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertSend(sendArray, message) -> undefined
+     * 
+     * Passes if the method send returns a true value.
+     * 
+     * `sendArray` is composed of:
+     * * A receiver
+     * * A method
+     * * Arguments to the method
+     **/
+    assertSend: function(sendArray, message) {
+      this._wrapAssertion(function() {
+        this.assertKindOf(Array, sendArray, "assertSend requires an array of send information");
+        this.assert(sendArray.length >= 2, "assertSend requires at least a receiver and a message name");
+        var fullMessage = this.buildMessage(message, "<?> expected to respond to\n" +
+                                                     "<?(?)> with a true value.",
+                                                     sendArray[0],
+                                                     JS.Test.Unit.Assertions.AssertionMessage.literal(sendArray[1]),
+                                                     sendArray.slice(2));
+        this.assertBlock(fullMessage, function() {
+          return sendArray[0][sendArray[1]].apply(sendArray[0], sendArray.slice(2));
+        });
+      });
+    },
+    
+    /**
      * JS.Test.Unit.Assertions#buildMessage(head, template, args) -> JS.Test.Unit.Assertions.AssertionMessage
      * 
      * Builds a failure message.  `head` is added before the `template` and
@@ -225,6 +275,21 @@ JS.Test.Unit.extend({
     extend: {
       AssertionMessage: new JS.Class({
         extend: {
+          Literal: new JS.Class({
+            initialize: function(value) {
+              this._value = value;
+              this.toString = this.inspect;
+            },
+            
+            inspect: function() {
+              return this._value.toString();
+            }
+          }),
+          
+          literal: function(value) {
+            return new this.Literal(value);
+          },
+          
           Template: new JS.Class({
             extend: {
               create: function(string) {

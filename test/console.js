@@ -66,6 +66,16 @@ require('JS.Test.Unit', function() {
       var a = [1,2,3];
       this.assertNotSame(a, [1,2,3]);
       this.assertNotSame(a, a);
+    },
+    
+    testAssertInDelta: function() {
+      this.assertInDelta(9,8,1);
+      this.assertInDelta(9,7,1);
+    },
+    
+    testAssertSend: function() {
+      this.assertSend([/foo/, 'test', 'food']);
+      this.assertSend([/foo/, 'test', 'foal']);
     }
   });
 
