@@ -76,6 +76,21 @@ require('JS.Test.Unit', function() {
     testAssertSend: function() {
       this.assertSend([/foo/, 'test', 'food']);
       this.assertSend([/foo/, 'test', 'foal']);
+    },
+    
+    testAssertThrowWithNoException: function() {
+      this.assertThrow(TypeError, function() { JS.foo() });
+      this.assertThrow(TypeError, String, 'No error!', function() { JS.makeFunction() }, this);
+    },
+    
+    testAssertThrowWithIncorrectException: function() {
+      this.assertThrows(TypeError, function() { JS.foo() });
+      this.assertThrow(JS.Test.Unit.AssertionFailedError, function() { JS.foo() });
+    },
+    
+    testAssertNothingThrown: function() {
+      this.assertNothingThrown(function() { JS.makeFunction() });
+      this.assertNothingThrown(function() { JS.foo() });
     }
   });
 

@@ -14,6 +14,13 @@ JS.Test.Unit.extend({
    * * The message to each assertion, if given, will be propagated with the
    *   failure.
    * * It is easy to add your own assertions based on `JS.Test.Unit.Assertions#assertBlock`.
+   * 
+   * Example custom assertion:
+   * 
+   *     deny: function(bool, message) {
+   *         message = this.buildMessage(message, "<?> is not false or null.", bool);
+   *         this.assertBlock(message, function() { return !bool });
+   *     }
    **/
   Assertions: new JS.Module({
     /**
@@ -237,6 +244,81 @@ JS.Test.Unit.extend({
       });
     },
     
+    __processExceptionArgs__: function(args) {
+      var args     = JS.array(args),
+          context  = JS.isFn(args[args.length - 1]) ? null : args.pop(),
+          block    = args.pop(),
+          message  = JS.isType(args[args.length - 1], 'string') ? args.pop() : '',
+          expected = new JS.Enumerable.Collection(args);
+      
+      return [args, expected, message, block, context];
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertThrow(args, message, block, context) -> undefined
+     * 
+     * Passes if the block throws one of the given exception types.
+     **/
+    assertThrow: function() {
+      var A        = this.__processExceptionArgs__(arguments),
+          args     = A[0],
+          expected = A[1],
+          message  = A[2],
+          block    = A[3],
+          context  = A[4];
+      
+      this.__wrapAssertion__(function() {
+        var fullMessage = this.buildMessage(message, "<?> exception expected but none was thrown.", args);
+        this.assertBlock(fullMessage, function() {
+          try {
+            block.call(context);
+          } catch (e) {
+            actualException = e;
+            return true;
+          }
+          return false;
+        });
+        
+        fullMessage = this.buildMessage(message, "<?> exception expected but was\n?", args, actualException);
+        this.assertBlock(fullMessage, function() {
+          return expected.any(function(type) { return JS.isType(actualException, type) });
+        });
+      });
+    },
+    
+    /** alias of: JS.Test.Unit.Assertions#assertThrow
+     * JS.Test.Unit.Assertions#assertThrows(args, message, block, context) -> undefined
+     **/
+    assertThrows: function() {
+      return this.assertThrow.apply(this, arguments);
+    },
+    
+    /**
+     * JS.Test.Unit.Assertions#assertNothingThrown(args, message, block, context) -> undefined
+     * 
+     * Passes if the block does not throw an exception.
+     **/
+    assertNothingThrown: function() {
+      var A        = this.__processExceptionArgs__(arguments),
+          args     = A[0],
+          expected = A[1],
+          message  = A[2],
+          block    = A[3],
+          context  = A[4];
+      
+      this.__wrapAssertion__(function() {
+        try {
+          block.call(context);
+        } catch (e) {
+          if ((args.length === 0 && !JS.isType(e, JS.Test.Unit.AssertionFailedError)) ||
+              expected.any(function(type) { return JS.isType(e, type) }))
+            this.assertBlock(this.buildMessage(message, "Exception thrown:\n?", e), function() { return false });
+          else
+            throw e;
+        }
+      });
+    },
+    
     /**
      * JS.Test.Unit.Assertions#buildMessage(head, template, args) -> JS.Test.Unit.Assertions.AssertionMessage
      * 
@@ -322,8 +404,15 @@ JS.Test.Unit.extend({
         },
         
         convert: function(object) {
-          if (object instanceof Array) return '[' + object.join(',') + ']';
-          return (object && object.toString) ? object.toString() : String(object);
+          if (object instanceof Array)
+            return '[' + new JS.Enumerable.Collection(object).map(function(item) {
+              return this.convert(item);
+            }, this).join(',') + ']';
+          
+          if (!object) return String(object);
+          
+          return object.name || object.displayName ||
+                 (object.toString ? object.toString() : String(object));
         },
         
         template: function() {
