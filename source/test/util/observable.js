@@ -12,7 +12,7 @@ JS.Test.Unit.extend({
         extend: {
           /**
            * JS.Test.Unit.Util.Observable.NOTHING = {}
-           * We use this for defaults since nil might mean something
+           * We use this for defaults since `null` might mean something
            **/
           NOTHING: {}
         },
@@ -20,7 +20,7 @@ JS.Test.Unit.extend({
         /**
          * JS.Test.Unit.Util.Observable#addListener(channelName, block, context) -> Function
          * 
-         * Adds the passed block as a listener on the
+         * Adds the passed `block` as a listener on the
          * channel indicated by `channelName`.
          **/
         addListener: function(channelName, block, context) {

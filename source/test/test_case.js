@@ -1,6 +1,7 @@
 JS.Test.Unit.extend({
   /** section: test
    * class JS.Test.Unit.TestCase
+   * includes JS.Test.Unit.Assertions
    *
    * Ties everything together. If you subclass and add your own
    * test methods, it takes care of making them into tests and
@@ -18,7 +19,7 @@ JS.Test.Unit.extend({
       /**
        * JS.Test.Unit.TestCase.suite() -> JS.Test.Unit.TestSuite
        * 
-       * Rolls up all of the test* methods in the fixture into
+       * Rolls up all of the `test*` methods in the fixture into
        * one suite, creating a new instance of the fixture for
        * each method.
        **/
@@ -55,7 +56,7 @@ JS.Test.Unit.extend({
      * 
      * Runs the individual test method represented by this
      * instance of the fixture, collecting statistics, failures
-     * and errors in result.
+     * and errors in `result`.
      **/
     run: function(result, block, context) {
       block.call(context || null, this.klass.STARTED, this.name());
@@ -106,8 +107,8 @@ JS.Test.Unit.extend({
      * JS.Test.Unit.TestCase#passed() -> Boolean
      * 
      * Returns whether this individual test passed or
-     * not. Primarily for use in teardown so that artifacts
-     * can be left behind if the test fails.
+     * not. Primarily for use in `JS.Test.Unit.TestCase#teardown`
+     * so that artifacts can be left behind if the test fails.
      **/
     passed: function() {
       return this._testPassed;
@@ -135,7 +136,7 @@ JS.Test.Unit.extend({
      * JS.Test.Unit.TestCase#name() -> String
      * 
      * Returns a human-readable name for the specific test that
-     * this instance of TestCase represents.
+     * this instance of `JS.Test.Unit.TestCase` represents.
      **/
     name: function() {
       return this._methodName + '(' + this.klass.displayName + ')';

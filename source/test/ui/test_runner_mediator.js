@@ -1,6 +1,7 @@
 JS.Test.Unit.UI.extend({
   /** section: test
    * class JS.Test.Unit.UI.TestRunnerMediator
+   * includes JS.Test.Unit.Util.Observable
    * 
    * Provides an interface to write any given UI against,
    * hopefully making it easy to write new UIs.

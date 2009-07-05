@@ -1,5 +1,7 @@
 /** section: test
  * class JS.Test.Unit.TestResult
+ * includes JS.Test.Unit.Util.Observable
+ * 
  * Collects `JS.Test.Unit.Failure` and `JS.Test.Unit.Error` so that
  * they can be displayed to the user. To this end, observers
  * can be added to it, allowing the dynamic updating of, say, a
@@ -17,7 +19,7 @@ JS.Test.Unit.extend({
     /**
      * new JS.Test.Unit.TestResult()
      * 
-     * Constructs a new, empty TestResult.
+     * Constructs a new, empty `JS.Test.Unit.TestResult`.
      **/
     initialize: function() {
       this.runCount = this.assertionCount = 0;
@@ -72,7 +74,7 @@ JS.Test.Unit.extend({
      * JS.Test.Unit.TestResult#toString() -> String
      * 
      * Returns a string contain the recorded runs, assertions,
-     * failures and errors in this TestResult.
+     * failures and errors in this `TestResult`.
      **/
     _toString: function() {
       return this.runCount + ' tests, ' + this.assertionCount + ' assertions, ' +
@@ -82,7 +84,7 @@ JS.Test.Unit.extend({
     /**
      * JS.Test.Unit.TestResult#passed() -> Boolean
      * 
-     * Returns whether or not this TestResult represents
+     * Returns whether or not this `TestResult` represents
      * successful completion.
      **/
     passed: function() {
@@ -92,7 +94,7 @@ JS.Test.Unit.extend({
     /**
      * JS.Test.Unit.TestResult#failureCount() -> Number
      * 
-     * Returns the number of failures this TestResult has
+     * Returns the number of failures this `TestResult` has
      * recorded.
      **/
     failureCount: function() {
@@ -102,7 +104,7 @@ JS.Test.Unit.extend({
     /**
      * JS.Test.Unit.TestResult#errorCount() -> Number
      * 
-     * Returns the number of errors this TestResult has
+     * Returns the number of errors this `TestResult` has
      * recorded.
      **/
     errorCount: function() {

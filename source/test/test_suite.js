@@ -1,13 +1,13 @@
 /** section: test
  * class JS.Test.Unit.TestSuite
  * 
- * A collection of tests which can be `run`.
+ * A collection of tests which can be `JS.Test.Unit.TestSuite#run`.
  * 
- * Note: It is easy to confuse a TestSuite instance with
- * something that has a static suite method; I know because _I_
+ * Note: It is easy to confuse a `TestSuite` instance with
+ * something that has a static `suite` method; I know because _I_
  * have trouble keeping them straight. Think of something that
  * has a suite method as simply providing a way to get a
- * meaningful TestSuite instance. [Nathaniel Talbott]
+ * meaningful `TestSuite` instance. [Nathaniel Talbott]
  **/
 JS.Test.Unit.extend({
   TestSuite: new JS.Class({
@@ -19,7 +19,7 @@ JS.Test.Unit.extend({
     /**
      * new JS.Test.Unit.TestSuite(name)
      * 
-     * Creates a new TestSuite with the given name.
+     * Creates a new `JS.Test.Unit.TestSuite` with the given `name`.
      **/
     initialize: function(name) {
       this.name = name || 'Unnamed TestSuite';
@@ -44,7 +44,7 @@ JS.Test.Unit.extend({
     /**
      * JS.Test.Unit.TestSuite#push(test) -> this
      * 
-     * Adds the test to the suite.
+     * Adds the `test` to the suite.
      **/
     push: function(test) {
       this.tests.push(test);

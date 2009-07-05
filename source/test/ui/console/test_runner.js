@@ -12,10 +12,8 @@ JS.Test.Unit.UI.extend({
         /**
          * new JS.Test.Unit.UI.Console.TestRunner(suite, outputLevel)
          * 
-         * Creates a new `TestRunner` for running the passed
-         * suite. If quiet_mode is `true`, the output while
-         * running is limited to progress dots, errors and
-         * failures, and the final result.
+         * Creates a new `JS.Test.Unit.UI.Console.TestRunner`
+         * for running the passed `suite`.
          **/
         initialize: function(suite, outputLevel) {
           this._suite = JS.isFn(suite.suite) ? suite.suite() : suite;

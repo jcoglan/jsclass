@@ -13,7 +13,7 @@ JS.Test.Unit.extend({
     /**
      * new JS.Test.Unit.Failure(testName, location, message)
      * 
-     * Creates a new `Failure` with the given location and
+     * Creates a new `JS.Test.Unit.Failure` with the given location and
      * message.
      **/
     initialize: function(testName, location, message) {

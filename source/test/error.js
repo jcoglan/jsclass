@@ -16,7 +16,7 @@ JS.Test.Unit.extend({
     /**
      * new JS.Test.Unit.Error(testName, exception)
      * 
-     * Creates a new `Error` with the given test name and
+     * Creates a new `JS.Test.Unit.Error` with the given test name and
      * exception.
      **/
     initialize: function(testName, exception) {

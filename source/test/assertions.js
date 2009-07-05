@@ -3,23 +3,24 @@ JS.Test.Unit.extend({
    * mixin JS.Test.Unit.Assertions
    *
    * `JS.Test.Unit.Assertions` contains the standard `JS.Test.Unit` assertions.
-   * Assertions is included in `JS.Test.Unit.TestCase`.
+   * `Assertions` is included in `JS.Test.Unit.TestCase`.
    * 
    * To include it in your own code and use its functionality, you simply
-   * need to rescue `JS.Test.Unit.AssertionFailedError`. Additionally you may
-   * override `addAssertion` to get notified whenever an assertion is made.
+   * need to `catch` `JS.Test.Unit.AssertionFailedError`. Additionally you may
+   * override `JS.Test.Unit.Assertions#addAssertion` to get notified whenever
+   * an assertion is made.
    * 
    * Notes:
    * * The message to each assertion, if given, will be propagated with the
    *   failure.
-   * * It is easy to add your own assertions based on `assertBlock()`.
+   * * It is easy to add your own assertions based on `JS.Test.Unit.Assertions#assertBlock`.
    **/
   Assertions: new JS.Module({
     /**
      * JS.Test.Unit.Assertions#assertBlock(message, block, context) -> undefined
      * 
      * The assertion upon which all other assertions are based. Passes if the
-     * block yields true.
+     * block yields `true`.
      **/
     assertBlock: function(message, block, context) {
       this._wrapAssertion(function() {
@@ -52,7 +53,7 @@ JS.Test.Unit.extend({
     /**
      * JS.Test.Unit.Assertions#assertEqual(expected, actual, message) -> undefined
      * 
-     * Passes if `expected` == `actual`.
+     * Passes if `expected == actual` or if `expected.equals(actual) == true`.
      * 
      * Note that the ordering of arguments is important, since a helpful
      * error message is generated when this one fails that tells you the
@@ -214,7 +215,7 @@ JS.Test.Unit.extend({
     /**
      * JS.Test.Unit.Assertions#assertSend(sendArray, message) -> undefined
      * 
-     * Passes if the method send returns a true value.
+     * Passes if the method send returns a truthy value.
      * 
      * `sendArray` is composed of:
      * * A receiver
@@ -240,7 +241,7 @@ JS.Test.Unit.extend({
      * JS.Test.Unit.Assertions#buildMessage(head, template, args) -> JS.Test.Unit.Assertions.AssertionMessage
      * 
      * Builds a failure message.  `head` is added before the `template` and
-     * `args` replaces the '?'s positionally in the template.
+     * `args` replaces the `?`s positionally in the template.
      **/
     buildMessage: function() {
       var args     = JS.array(arguments),
