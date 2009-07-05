@@ -483,10 +483,10 @@
                     log: function(klass) {}
                 }
             });
-            assert(Object.children.length > 0);
             assertEqual(SpecialSub, InheritanceTester.children[0]);
-            assertEqual(HookTester, InheritanceTester.children[1]);
-            assertEqual(foo, InheritanceTester.children[2]);
+            assertEqual(HookTesterParent, InheritanceTester.children[1]);
+            assertEqual(HookTester, InheritanceTester.children[2]);
+            assertEqual(foo, InheritanceTester.children[3]);
         }},
         
         testMethodChain: function() { with(this) {

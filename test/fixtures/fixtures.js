@@ -81,14 +81,8 @@ var SpecialSub = new SpecialClass(InheritanceTester, {
     }
 });
 
-var HookTester = new JS.Class(InheritanceTester);
-
-JS.extend(Object, {
-    children: [],
-    inherited: function(klass) {
-        this.children.push(klass);
-    }
-});
+var HookTesterParent = new JS.Class(InheritanceTester);
+var HookTester = new JS.Class(HookTesterParent);
 
 var Foo = new JS.Class({
     talk: function() {

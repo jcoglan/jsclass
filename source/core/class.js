@@ -47,10 +47,8 @@ JS.extend(JS.Class.prototype = JS.makeBridge(JS.Module), {
     klass.include(methods, false);
     klass.resolve();
     
-    // Fire inherited() callback on ancestors
-    do {
-      parent.inherited && parent.inherited(klass);
-    } while (parent = parent.superclass);
+    // Fire inherited() callback on parent
+    if (parent.inherited) parent.inherited(klass);
     
     return klass;
   },
