@@ -23,7 +23,7 @@ JS.Test.Unit.extend({
      * block yields `true`.
      **/
     assertBlock: function(message, block, context) {
-      this._wrapAssertion(function() {
+      this.__wrapAssertion__(function() {
         if (!block.call(context || null))
           throw new JS.Test.Unit.AssertionFailedError(message || 'assertBlock failed.');
       });
@@ -44,7 +44,7 @@ JS.Test.Unit.extend({
      * Asserts that `bool` is not falsey.
      **/
     assert: function(bool, message) {
-      this._wrapAssertion(function() {
+      this.__wrapAssertion__(function() {
         this.assertBlock(this.buildMessage(message, "<?> is not true.", bool),
                          function() { return bool });
       });
@@ -109,7 +109,7 @@ JS.Test.Unit.extend({
      * Passes if `object` is a kind of `klass`.
      **/
     assertKindOf: function(klass, object, message) {
-      this._wrapAssertion(function() {
+      this.__wrapAssertion__(function() {
         var fullMessage = this.buildMessage(message, "<?> expected to be an instance of\n" +
                                                      "<?> but was\n" +
                                                      "<?>.",
@@ -124,7 +124,7 @@ JS.Test.Unit.extend({
      * Passes if `object` responds to `method`.
      **/
     assertRespondTo: function(object, method, message) {
-      this._wrapAssertion(function() {
+      this.__wrapAssertion__(function() {
         var fullMessage = this.buildMessage('', "<?>\ngiven as the method name argument to #assertRespondTo must be a String.", method);
         
         this.assertBlock(fullMessage, function() { return typeof method === 'string' });
@@ -145,7 +145,7 @@ JS.Test.Unit.extend({
      * Passes if `string` matches `pattern`.
      **/
     assertMatch: function(pattern, string, message) {
-      this._wrapAssertion(function() {
+      this.__wrapAssertion__(function() {
         var fullMessage = this.buildMessage(message, "<?> expected to match\n<?>.", string, pattern);
         this.assertBlock(fullMessage, function() { return pattern.test(string) });
       });
@@ -157,7 +157,7 @@ JS.Test.Unit.extend({
      * Passes if `string` does not match `pattern`.
      **/
     assertNoMatch: function(pattern, string, message) {
-      this._wrapAssertion(function() {
+      this.__wrapAssertion__(function() {
         var fullMessage = this.buildMessage(message, "<?> expected not to match\n<?>.", string, pattern);
         this.assertBlock(fullMessage, function() { return !pattern.test(string) });
       });
@@ -194,7 +194,7 @@ JS.Test.Unit.extend({
      * within `delta` tolerance.
      **/
     assertInDelta: function(expected, actual, delta, message) {
-      this._wrapAssertion(function() {
+      this.__wrapAssertion__(function() {
         this.assertKindOf('number', expected);
         this.assertKindOf('number', actual);
         this.assertKindOf('number', delta);
@@ -223,7 +223,7 @@ JS.Test.Unit.extend({
      * * Arguments to the method
      **/
     assertSend: function(sendArray, message) {
-      this._wrapAssertion(function() {
+      this.__wrapAssertion__(function() {
         this.assertKindOf(Array, sendArray, "assertSend requires an array of send information");
         this.assert(sendArray.length >= 2, "assertSend requires at least a receiver and a message name");
         var fullMessage = this.buildMessage(message, "<?> expected to respond to\n" +
@@ -250,15 +250,15 @@ JS.Test.Unit.extend({
       return new JS.Test.Unit.Assertions.AssertionMessage(head, template, args);
     },
     
-    _wrapAssertion: function(block) {
-      if (this._assertionWrapped === undefined) this._assertionWrapped = false;
-      if (!this._assertionWrapped) {
-        this._assertionWrapped = true;
+    __wrapAssertion__: function(block) {
+      if (this.__assertionWrapped__ === undefined) this.__assertionWrapped__ = false;
+      if (!this.__assertionWrapped__) {
+        this.__assertionWrapped__ = true;
         try {
           this.addAssertion();
           return block.call(this);
         } finally {
-          this._assertionWrapped = false;
+          this.__assertionWrapped__ = false;
         }
       } else {
         return block.call(this);
