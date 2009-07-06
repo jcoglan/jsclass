@@ -232,7 +232,7 @@ JS.Set.include({
 JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
   extend: {
     compare: function(one, another) {
-      return one.compareTo
+      return JS.isType(one, Object)
           ? one.compareTo(another)
           : (one < another ? -1 : (one > another ? 1 : 0));
     }
