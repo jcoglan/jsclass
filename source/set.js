@@ -18,6 +18,7 @@ JS.Set = new JS.Class('Set', {
       this.add(block.call(context || null, item));
     }, this);
     else this.merge(list);
+    this.toString = this.inspect;
   },
   
   forEach: function(block, context) {
@@ -110,6 +111,14 @@ JS.Set = new JS.Class('Set', {
       else set.add(item);
     });
     return set;
+  },
+  
+  inspect: function() {
+    var items = [];
+    this.forEach(function(item) {
+      items.push(item.toString());
+    });
+    return this.klass.displayName + ':{' + items.join(',') + '}';
   },
   
   intersection: function(other) {

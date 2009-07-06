@@ -1,7 +1,7 @@
 JSCLASS_PATH = 'build/min/';
 load (JSCLASS_PATH + 'loader.js');
 
-require('JS.Test.Unit', function() {
+require('JS.Test.Unit', 'JS.Set', function() {
   TestFoo = new JS.Class('TestFoo', JS.Test.Unit.TestCase, {
     testError: function() {
       this.noneSuch();
@@ -29,6 +29,11 @@ require('JS.Test.Unit', function() {
     testAssertEqualArrays: function() {
       this.assertEqual([1,2,[3,4,5],6], [1,2,[3,4,5],6]);
       this.assertEqual([1,2,[3,8,5],6], [1,2,[3,4,5],6]);
+    },
+    
+    testAssertEqualSets: function() {
+      this.assertEqual(new JS.Set([1,2,3]), new JS.HashSet([3,2,1]));
+      this.assertEqual(new JS.Set([1,2,3]), new JS.HashSet([4,2,1]));
     },
     
     testAssertNull: function() {
