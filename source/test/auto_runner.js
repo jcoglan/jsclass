@@ -21,6 +21,7 @@ JS.Test.Unit.extend({
         for (var i = 0, n = suites.length; i < n; i++)
           suite.push(suites[i]);
         
+        JS.Test.Unit.TestCase.clear();
         return runner.run(suite, this.OUTPUT_LEVELS[outputLevel || 'normal']);
       },
       

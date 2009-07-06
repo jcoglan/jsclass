@@ -15,6 +15,10 @@ JS.Test.Unit.extend({
     extend: [JS.Enumerable, {
       testCases: [],
       
+      clear: function() {
+        this.testCases = [];
+      },
+      
       inherited: function(klass) {
         this.testCases.push(klass);
       },
