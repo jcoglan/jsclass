@@ -1,3 +1,12 @@
+Version 2.1.1
+July 6 2009
+================================================================
+
+* Fixes a couple of Set bugs: Set#isProperSuperset had a missing
+  argument, and incomparable objects were being allowed into
+  SortedSet collections.
+
+
 Version 2.1.0
 June 8 2009
 ================================================================

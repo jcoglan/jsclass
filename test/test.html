@@ -933,13 +933,6 @@
             container.add(new JS.SortedSet([12]));
             assertEqual(2, container.size);
             
-            container = new JS.SortedSet;
-            container.add(new JS.HashSet);
-            container.add(new JS.SortedSet);
-            container.add(new JS.HashSet);
-            assert(container.contains(new JS.HashSet));
-            assertEqual(1, container.size);
-            
             var list = [9,3,7,8,4];
             var sorted = new JS.SortedSet(['fred', 'baz']);
             var inner = new JS.HashSet([5, sorted]);
