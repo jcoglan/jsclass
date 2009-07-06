@@ -369,7 +369,23 @@ JS.Test.Unit.extend({
           return true;
         }
         
+        if ((expected instanceof Object) && !expected.equals) {
+          if (!(actual instanceof Object)) return false;
+          if (this.objectSize(expected) !== this.objectSize(actual)) return false;
+          for (var key in expected) {
+            if (!this.areEqual(expected[key], actual[key]))
+              return false;
+          }
+          return true;
+        }
+        
         return false;
+      },
+      
+      objectSize: function(object) {
+        var n = 0;
+        for (var key in object) n += 1;
+        return n;
       },
       
       AssertionMessage: new JS.Class({

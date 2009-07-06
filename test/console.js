@@ -31,6 +31,11 @@ require('JS.Test.Unit', 'JS.Set', function() {
       this.assertEqual([1,2,[3,8,5],6], [1,2,[3,4,5],6]);
     },
     
+    testAssertEqualObjects: function() {
+      this.assertEqual({foo: 1, bar: 2}, {bar: 2, foo: 1});
+      this.assertEqual({foo: 1, bar: 2}, {bar: 2, foo: 5});
+    },
+    
     testAssertEqualSets: function() {
       this.assertEqual(new JS.Set([1,2,3]), new JS.HashSet([3,2,1]));
       this.assertEqual(new JS.Set([1,2,3]), new JS.HashSet([4,2,1]));
