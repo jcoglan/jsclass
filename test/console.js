@@ -1,7 +1,8 @@
 JSCLASS_PATH = 'build/min/';
 load (JSCLASS_PATH + 'loader.js');
 
-require('JS.Test.Unit', 'JS.Set', function() {
+require('JS.Test.Unit', 'JS.Set', 'JS.Observable', function() {
+  
   TestFoo = new JS.Class('TestFoo', JS.Test.Unit.TestCase, {
     testError: function() {
       this.noneSuch();
@@ -51,9 +52,15 @@ require('JS.Test.Unit', 'JS.Set', function() {
       this.assertNotNull(null);
     },
     
-    testAssertKindOf: function() {
+    testAssertKindOfWithClass: function() {
       this.assertKindOf(Array, []);
       this.assertKindOf(Function, []);
+    },
+    
+    testAssertKindOfWithModule: function() {
+      this.assertKindOf(JS.Enumerable, new JS.Set());
+      this.assertKindOf(JS.Kernel, new JS.HashSet());
+      this.assertKindOf(JS.Observable, new JS.Set());
     },
     
     testAssertRespondTo: function() {
