@@ -22,7 +22,7 @@ JS.Test.Unit.extend({
      * Constructs a new, empty `JS.Test.Unit.TestResult`.
      **/
     initialize: function() {
-      this.runCount = this.assertionCount = 0;
+      this._runCount = this._assertionCount = 0;
       this._failures = [];
       this._errors   = [];
       this.toString  = this._toString;
@@ -34,7 +34,7 @@ JS.Test.Unit.extend({
      * Records a test run.
      **/
     addRun: function() {
-      this.runCount += 1;
+      this._runCount += 1;
       this.notifyListeners(this.klass.CHANGED, this);
     },
     
@@ -66,7 +66,7 @@ JS.Test.Unit.extend({
      * Records an individual assertion.
      **/
     addAssertion: function() {
-      this.assertionCount += 1;
+      this._assertionCount += 1;
       this.notifyListeners(this.klass.CHANGED, this);
     },
     
@@ -77,7 +77,7 @@ JS.Test.Unit.extend({
      * failures and errors in this `TestResult`.
      **/
     _toString: function() {
-      return this.runCount + ' tests, ' + this.assertionCount + ' assertions, ' +
+      return this._runCount + ' tests, ' + this._assertionCount + ' assertions, ' +
              this.failureCount() + ' failures, ' + this.errorCount() + ' errors';
     },
     

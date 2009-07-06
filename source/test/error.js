@@ -20,8 +20,8 @@ JS.Test.Unit.extend({
      * exception.
      **/
     initialize: function(testName, exception) {
-      this.testName  = testName;
-      this.exception = exception;
+      this._testName  = testName;
+      this._exception = exception;
       this.toString  = this.longDisplay;
     },
     
@@ -40,7 +40,7 @@ JS.Test.Unit.extend({
      * Returns the message associated with the error.
      **/
     message: function() {
-      return this.exception.name + ': ' + this.exception.message;
+      return this._exception.name + ': ' + this._exception.message;
     },
     
     /**
@@ -49,7 +49,7 @@ JS.Test.Unit.extend({
      * Returns a brief version of the error description.
      **/
     shortDisplay: function() {
-      return this.testName + ': ' + this.message().split("\n")[0];
+      return this._testName + ': ' + this.message().split("\n")[0];
     },
     
     /**
@@ -59,7 +59,7 @@ JS.Test.Unit.extend({
      **/
     longDisplay: function() {
       // TODO backtrace = filter_backtrace(@exception.backtrace).join("\n    ")
-      return "Error:\n" + this.testName + ":\n" + this.message(); // + "\n    " + backtrace
+      return "Error:\n" + this._testName + ":\n" + this.message(); // + "\n    " + backtrace
     }
   })
 });

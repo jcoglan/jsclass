@@ -17,9 +17,9 @@ JS.Test.Unit.extend({
      * message.
      **/
     initialize: function(testName, location, message) {
-      this.testName = testName;
-      this.location = location;
-      this.message  = message;
+      this._testName = testName;
+      this._location = location;
+      this._message  = message;
       this.toString = this.longDisplay;
     },
     
@@ -38,7 +38,7 @@ JS.Test.Unit.extend({
      * Returns a brief version of the error description.
      **/
     shortDisplay: function() {
-      return this.testName + ': ' + this.message.split("\n")[0];
+      return this._testName + ': ' + this._message.split("\n")[0];
     },
     
     /**
@@ -47,11 +47,11 @@ JS.Test.Unit.extend({
      * Returns a verbose version of the error description.
      **/
     longDisplay: function() {
-      var locationDisplay = (this.location.length === 1)
-          ? this.location[0].replace(/\A(.+:\d+).*/, ' [$1]')
-          : "\n    [" + this.location.join("\n     ") + "]";
+      var locationDisplay = (this._location.length === 1)
+          ? this._location[0].replace(/\A(.+:\d+).*/, ' [$1]')
+          : "\n    [" + this._location.join("\n     ") + "]";
       
-      return "Failure:\n" + this.testName + locationDisplay + ":\n" + this.message;
+      return "Failure:\n" + this._testName + locationDisplay + ":\n" + this._message;
     }
   })
 });
