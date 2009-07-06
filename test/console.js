@@ -26,6 +26,11 @@ require('JS.Test.Unit', function() {
       this.assertNotEqual('foo', 'foo');
     },
     
+    testAssertEqualArrays: function() {
+      this.assertEqual([1,2,[3,4,5],6], [1,2,[3,4,5],6]);
+      this.assertEqual([1,2,[3,8,5],6], [1,2,[3,4,5],6]);
+    },
+    
     testAssertNull: function() {
       this.assertNull(null);
       this.assertNull(false);

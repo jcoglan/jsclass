@@ -69,9 +69,7 @@ JS.Test.Unit.extend({
     assertEqual: function(expected, actual, message) {
       var fullMessage = this.buildMessage(message, "<?> expected but was\n<?>.", expected, actual);
       this.assertBlock(fullMessage, function() {
-        return (expected && expected.equals)
-            ? expected.equals(actual)
-            : expected == actual;
+        return JS.Test.Unit.Assertions.areEqual(expected, actual);
       });
     },
     
@@ -85,9 +83,7 @@ JS.Test.Unit.extend({
                                                    expected,
                                                    actual);
       this.assertBlock(fullMessage, function() {
-        return (expected && expected.equals)
-            ? !expected.equals(actual)
-            : expected != actual;
+        return !JS.Test.Unit.Assertions.areEqual(expected, actual);
       });
     },
     
@@ -356,6 +352,28 @@ JS.Test.Unit.extend({
     addAssertion: function() {},
     
     extend: {
+      areEqual: function(expected, actual) {
+        switch (true) {
+        case expected == actual || expected === actual:
+          return true;
+        
+        case expected && expected.equals:
+          return expected.equals(actual);
+        
+        case expected instanceof Array:
+          if (!(actual instanceof Array)) return false;
+          if (expected.length !== actual.length) return false;
+          for (var i = 0, n = expected.length; i < n; i++) {
+            if (!this.areEqual(expected[i], actual[i]))
+              return false;
+          }
+          return true;
+        
+        default:
+          return false;
+        }
+      },
+      
       AssertionMessage: new JS.Class({
         extend: {
           Literal: new JS.Class({
