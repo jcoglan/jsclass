@@ -11,14 +11,13 @@ JS.Test.Unit.extend({
     },
     
     /**
-     * new JS.Test.Unit.Failure(testName, location, message)
+     * new JS.Test.Unit.Failure(testName, message)
      * 
      * Creates a new `JS.Test.Unit.Failure` with the given location and
      * message.
      **/
-    initialize: function(testName, location, message) {
+    initialize: function(testName, message) {
       this._testName = testName;
-      this._location = location;
       this._message  = message;
       this.toString = this.longDisplay;
     },
@@ -47,11 +46,7 @@ JS.Test.Unit.extend({
      * Returns a verbose version of the error description.
      **/
     longDisplay: function() {
-      var locationDisplay = (this._location.length === 1)
-          ? this._location[0].replace(/\A(.+:\d+).*/, ' [$1]')
-          : "\n    [" + this._location.join("\n     ") + "]";
-      
-      return "Failure:\n" + this._testName + locationDisplay + ":\n" + this._message;
+      return "Failure:\n" + this._testName + ":\n" + this._message;
     }
   })
 });

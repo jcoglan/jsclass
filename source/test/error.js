@@ -7,8 +7,6 @@
  **/
 JS.Test.Unit.extend({
   Error: new JS.Class({
-    // TODO  include Util::BacktraceFilter
-    
     extend: {
       SINGLE_CHARACTER: 'E'
     },
@@ -58,8 +56,8 @@ JS.Test.Unit.extend({
      * Returns a verbose version of the error description.
      **/
     longDisplay: function() {
-      // TODO backtrace = filter_backtrace(@exception.backtrace).join("\n    ")
-      return "Error:\n" + this._testName + ":\n" + this.message(); // + "\n    " + backtrace
+      // var backtrace = this.klass.backtrace(this._exception).join("\n    ");
+      return "Error:\n" + this._testName + ":\n" + this.message(); // + "\n    " + backtrace;
     }
   })
 });

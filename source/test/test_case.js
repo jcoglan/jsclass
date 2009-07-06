@@ -66,7 +66,7 @@ JS.Test.Unit.extend({
         this[this._methodName]();
       } catch (e) {
         if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
-          this.addFailure(e.message /*, e.backtrace */);
+          this.addFailure(e.message);
         else
           this.addError(e);
       } finally {
@@ -74,7 +74,7 @@ JS.Test.Unit.extend({
           this.teardown();
         } catch (e) {
           if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
-            this.addFailure(e.message /*, e.backtrace */);
+            this.addFailure(e.message);
           else
             this.addError(e);
         }
@@ -124,7 +124,7 @@ JS.Test.Unit.extend({
     
     addFailure: function(message) {
       this._testPassed = false;
-      this._result.addFailure(new JS.Test.Unit.Failure(this.name(), [], message));
+      this._result.addFailure(new JS.Test.Unit.Failure(this.name(), message));
     },
     
     addError: function(exception) {
