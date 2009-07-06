@@ -31,7 +31,6 @@ JS.Test.Unit.UI.extend({
      * Runs the suite the `TestRunnerMediator` was created with.
      **/
     runSuite: function() {
-      JS.Test.Unit.run = true;
       var beginTime = new Date().getTime();
       this.notifyListeners(this.klass.RESET, this._suite.size());
       var result = this.createResult();

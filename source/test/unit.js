@@ -77,7 +77,7 @@ JS.Test = new JS.Module('Test', {
      * * Make assertions in your test method.
      * * Optionally define `setup` and/or `teardown` to set up and/or tear
      *   down your common test fixture.
-     * * TODO describe how to run tests
+     * * Call `JS.Test.Unit.AutoRunner.run()` to run your tests.
      * 
      * A really simple test might look like this (`setup` and `teardown` are
      * commented out to indicate that they are completely optional):
@@ -107,6 +107,11 @@ JS.Test = new JS.Module('Test', {
      * something like this:
      * 
      *     JS.Test.Unit.UI.Console.TestRunner.run(MyTest);
+     * 
+     * You can also use the `JS.Test.Unit.AutoRunner` class, which runs all
+     * defined tests using an automatically selected `TestRunner`.
+     * 
+     *     JS.Test.Unit.AutoRunner.run();
      **/
     Unit: new JS.Module({
       extend: {
@@ -114,9 +119,7 @@ JS.Test = new JS.Module('Test', {
           initialize: function(message) {
             this.message = message.toString();
           }
-        }),
-        
-        run: false
+        })
       }
     })
   }

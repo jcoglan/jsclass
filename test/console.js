@@ -3,7 +3,7 @@ load (JSCLASS_PATH + 'loader.js');
 
 require('JS.Test.Unit', 'JS.Set', 'JS.Observable', function() {
   
-  TestFoo = new JS.Class('TestFoo', JS.Test.Unit.TestCase, {
+  new JS.Class('TestFoo', JS.Test.Unit.TestCase, {
     testError: function() {
       this.noneSuch();
     },
@@ -115,7 +115,14 @@ require('JS.Test.Unit', 'JS.Set', 'JS.Observable', function() {
       this.assertNothingThrown(function() { JS.foo() });
     }
   });
+  
+  new JS.Class('ExtraTest', JS.Test.Unit.TestCase, {
+    testOhAndAnotherThing: function() {
+      this.assert(true);
+      this.assert(false);
+    }
+  });
 
-  JS.Test.Unit.UI.Console.TestRunner.run(TestFoo);
+  JS.Test.Unit.AutoRunner.run();
 });
 

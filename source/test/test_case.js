@@ -12,7 +12,18 @@ JS.Test.Unit.extend({
   TestCase: new JS.Class({
     include: JS.Test.Unit.Assertions,
     
-    extend: {
+    extend: [JS.Enumerable, {
+      testCases: [],
+      
+      inherited: function(klass) {
+        this.testCases.push(klass);
+      },
+      
+      forEach: function(block, context) {
+        for (var i = 0, n = this.testCases.length; i < n; i++)
+          block.call(context || null, this.testCases[i]);
+      },
+      
       STARTED:  'Test.Unit.TestCase.STARTED',
       FINISHED: 'Test.Unit.TestCase.FINISHED',
       
@@ -36,7 +47,7 @@ JS.Test.Unit.extend({
         }
         return suite;
       }
-    },
+    }],
     
     /**
      * new JS.Test.Unit.TestCase(testMethodName)

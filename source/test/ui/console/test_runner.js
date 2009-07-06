@@ -77,7 +77,7 @@ JS.Test.Unit.UI.extend({
             this._output((i + 1) + ') ' + this._faults[i].longDisplay());
           }
           this._nl();
-          this._output(this._result);
+          this._output(this._result, JS.Test.Unit.UI.PROGRESS_ONLY);
         },
         
         _testStarted: function(name) {
