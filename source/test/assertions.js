@@ -277,7 +277,10 @@ JS.Test.Unit.extend({
         
         fullMessage = this.buildMessage(message, "<?> exception expected but was\n?", args, actualException);
         this.assertBlock(fullMessage, function() {
-          return expected.any(function(type) { return JS.isType(actualException, type) });
+          return expected.any(function(type) {
+            return JS.isType(actualException, type) || (actualException.name &&
+                                                        actualException.name === type.name);
+          });
         });
       });
     },
