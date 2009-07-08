@@ -97,7 +97,7 @@ JS.Test.Unit.UI.extend({
         _output: function(something, level) {
           if (this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) {
             this._flushBuffer();
-            print(something);
+            this._print(something);
           }
         },
         
@@ -106,12 +106,17 @@ JS.Test.Unit.UI.extend({
         },
         
         _flushBuffer: function() {
-          if (this._outputBuffer.length > 0) print(this._outputBuffer.join(''));
+          if (this._outputBuffer.length > 0) this._print(this._outputBuffer.join(''));
           this._outputBuffer = [];
         },
         
         _shouldOutput: function(level) {
           return level <= this._outputLevel;
+        },
+        
+        _print: function(string) {
+          if (typeof WScript !== 'undefined') return WScript.Echo(string);
+          if (typeof print === 'function') return print(string);
         }
       })
     }
