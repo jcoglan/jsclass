@@ -32,6 +32,10 @@ JS.Packages(function() { with(this) {
                                       'JS.Enumerable',
                                       'JS.Comparable');
     
+    module('range')         .provides('JS.Range')
+                            .requires('JS.Class',
+                                      'JS.Enumerable');
+    
     module('set')           .provides('JS.Set',
                                       'JS.HashSet',
                                       'JS.SortedSet')

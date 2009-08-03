@@ -1030,6 +1030,33 @@
             assertEnumEqual([0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3], set.map(function(t) { return t.position }));
         }},
         
+        testRange: function() { with(this) {
+            assertIdentical(5, JS.Range.succ(4));
+            assertEqual('b', JS.Range.succ('a'));
+            
+            assertEnumEqual([1,2,3,4], new JS.Range(1,4).entries());
+            assertEnumEqual([1,2,3], new JS.Range(1,4,true).entries());
+            assertEnumEqual(['b','c','d','e','f','g','h'], new JS.Range('b','h').entries());
+            assertEnumEqual(['b','c','d','e','f','g'], new JS.Range('b','h',true).entries());
+            
+            assert(new JS.Range(1,4).match(3));
+            assert(!new JS.Range(1,4,true).match(4));
+            assert(new JS.Range('a','m').match('j'));
+            assert(!new JS.Range('a','m',true).match('m'));
+            
+            assertEnumEqual(['a','g','m'], new JS.Range('a','m').step(6).entries());
+            assertEnumEqual(['a','g'], new JS.Range('a','m',true).step(6).entries());
+            
+            var hash = new JS.Hash();
+            hash.store(new JS.Range(1,4), 9);
+            hash.store(new JS.Range(1,4,true), 8);
+            assertEqual(8, hash.get(new JS.Range(1,4,true)));
+            assertEqual(9, hash.get(new JS.Range(1,4)));
+            
+            var list = new JS.Enumerable.Collection([2,9,3,8,5,7]);
+            assertEnumEqual([5], list.grep(new JS.Range(4,6)).entries());
+        }},
+        
         testObservableModule: function() { with(this) {
             var pub = new Publisher;
             this.counter = 0;

@@ -42,6 +42,7 @@ packages:
   state:            state
   linked_list:      linked_list
   hash:             hash
+  range:            range
   set:              set
   stack_trace:      stack_trace
   ruby:             ruby
@@ -53,6 +54,7 @@ bundles:
     - enumerable
     - linked_list
     - hash
+    - range
     - set
     - observable
     - forwardable
