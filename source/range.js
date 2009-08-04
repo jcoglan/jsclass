@@ -22,6 +22,8 @@ JS.Range = new JS.Class('Range', {
   
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
+    block = JS.Enumerable.toFn(block);
+    
     var needle = this._first;
     while (!JS.Enumerable.areEqual(needle, this._last)) {
       block.call(context || null, needle);
@@ -61,6 +63,8 @@ JS.Range = new JS.Class('Range', {
   
   step: function(n, block, context) {
     if (!block) return this.enumFor('step', n);
+    block = JS.Enumerable.toFn(block);
+    
     var i = 0;
     this.forEach(function(member) {
       if (i % n === 0) block.call(context || null, member);
