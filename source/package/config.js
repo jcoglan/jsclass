@@ -11,6 +11,25 @@ JS.Packages(function() { with(this) {
                                       'JS.Singleton',
                                       'JS.Interface');
     
+    var test = 'JS.Test.Unit';
+    module('test')          .provides('JS.Test',
+                                      test,
+                                      test + '.Util.Observable',
+                                      test + '.Assertions',
+                                      test + '.Error',
+                                      test + '.Failure',
+                                      test + '.TestCase',
+                                      test + '.TestSuite',
+                                      test + '.TestResult',
+                                      test + '.UI',
+                                      test + '.UI.TestRunnerUtilities',
+                                      test + '.UI.TestRunnerMediator',
+                                      test + '.UI.Console',
+                                      test + '.UI.Console.TestRunner')
+                            .requires('JS.Module',
+                                      'JS.Class',
+                                      'JS.Enumerable');
+    
     module('comparable')    .provides('JS.Comparable')
                             .requires('JS.Module');
     

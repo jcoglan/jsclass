@@ -55,12 +55,37 @@ JS.Package.extend({
       load(path);
       fireCallbacks();
     }
+  },
+  
+  WshLoader: {
+    usable: function() {
+      return !!JS.Package.getObject('ActiveXObject') &&
+             !!JS.Package.getObject('WScript');
+    },
+    
+    __FILE__: function() {
+      return this._currentPath;
+    },
+    
+    loadFile: function(path, fireCallbacks) {
+      this._currentPath = path;
+      var fso = new ActiveXObject('Scripting.FileSystemObject'), file, runner;
+      try {
+        file   = fso.OpenTextFile(path);
+        runner = function() { eval(file.ReadAll()) };
+        runner();
+        fireCallbacks();
+      } finally {
+        try { if (file) file.Close() } catch (e) {}
+      }
+    }
   }
 });
 
 (function() {
   var candidates = [  JS.Package.DomLoader,
-                      JS.Package.ServerLoader ],
+                      JS.Package.ServerLoader,
+                      JS.Package.WshLoader ],
       
       n = candidates.length,
       i, candidate;

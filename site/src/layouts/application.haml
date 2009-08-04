@@ -4,7 +4,9 @@
     %meta{'http-equiv' => 'content-type', :content => 'text/html; charset=utf-8'}
     %title JS.Class - Ruby-style JavaScript
     =stylesheets 'application', 'prettify'
-    =javascripts 'prettify', 'js.class/core', 'js.class/stdlib'
+    :plain
+      <script type="text/javascript">JSCLASS_PATH = '/javascripts/js.class/';</script>
+    =javascripts 'prettify', 'js.class/loader'
   %body{:onload => 'prettyPrint()'}
     #header
       .sub

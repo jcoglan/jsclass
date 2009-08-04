@@ -13,7 +13,7 @@ jake_hook :build_complete do |build|
   
   FileUtils.cp 'README.markdown', "#{build.build_directory}/README"
   
-  %w[core stdlib].each do |doc|
+  build.packages.each do |doc|
     FileUtils.cp build.package(doc).build_path(:min), "site/site/javascripts/js.class/#{doc}.js"
   end
 end
