@@ -25,7 +25,6 @@ JS.Test.Unit.extend({
       this._runCount = this._assertionCount = 0;
       this._failures = [];
       this._errors   = [];
-      this.toString  = this._toString;
     },
     
     /**
@@ -76,7 +75,7 @@ JS.Test.Unit.extend({
      * Returns a string contain the recorded runs, assertions,
      * failures and errors in this `TestResult`.
      **/
-    _toString: function() {
+    toString: function() {
       return this._runCount + ' tests, ' + this._assertionCount + ' assertions, ' +
              this.failureCount() + ' failures, ' + this.errorCount() + ' errors';
     },

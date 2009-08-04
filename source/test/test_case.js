@@ -63,7 +63,6 @@ JS.Test.Unit.extend({
       if (!JS.isFn(this[testMethodName])) throw 'invalid_test';
       this._methodName = testMethodName;
       this._testPassed = true;
-      this.toString = this.name;
     },
     
     /**
@@ -155,6 +154,15 @@ JS.Test.Unit.extend({
      **/
     name: function() {
       return this._methodName + '(' + this.klass.displayName + ')';
+    },
+    
+    /**
+     * JS.Test.Unit.TestCase#toString() -> String
+     * 
+     * Overridden to return `name`.
+     **/
+    toString: function() {
+      return this.name();
     }
   })
 });

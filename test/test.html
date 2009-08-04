@@ -489,6 +489,10 @@
             assertEqual(foo, InheritanceTester.children[3]);
         }},
         
+        testToString: function() { with(this) {
+            assertEqual('nothing to see', new ToStringTest().method('toString')());
+        }},
+        
         testMethodChain: function() { with(this) {
             var chain = new JS.MethodChain(['foo', 'bar']);
             chain.map(function(s) { return s.toUpperCase() })

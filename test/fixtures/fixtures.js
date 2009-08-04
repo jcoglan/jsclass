@@ -127,6 +127,14 @@ MixesInAClass = new JS.Class({
     }
 });
 
+ToStringTest = new JS.Class({
+    toString: function() {
+        return 'nothing to see'
+    },
+    
+    __tos__: true
+});
+
 //================================================================
 //================================================================
 

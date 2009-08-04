@@ -20,7 +20,6 @@ JS.Test.Unit.extend({
     initialize: function(testName, exception) {
       this._testName  = testName;
       this._exception = exception;
-      this.toString  = this.longDisplay;
     },
     
     /**
@@ -58,6 +57,15 @@ JS.Test.Unit.extend({
     longDisplay: function() {
       // var backtrace = this.klass.backtrace(this._exception).join("\n    ");
       return "Error:\n" + this._testName + ":\n" + this.message(); // + "\n    " + backtrace;
+    },
+    
+    /**
+     * JS.Test.Unit.Error#toString() -> String
+     * 
+     * Overridden to return `longDisplay`.
+     **/
+    toString: function() {
+      return this.longDisplay();
     }
   })
 });

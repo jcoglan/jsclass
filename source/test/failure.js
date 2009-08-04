@@ -19,7 +19,6 @@ JS.Test.Unit.extend({
     initialize: function(testName, message) {
       this._testName = testName;
       this._message  = message;
-      this.toString = this.longDisplay;
     },
     
     /**
@@ -47,6 +46,15 @@ JS.Test.Unit.extend({
      **/
     longDisplay: function() {
       return "Failure:\n" + this._testName + ":\n" + this._message;
+    },
+    
+    /**
+     * JS.Test.Unit.Failure#toString() -> String
+     * 
+     * Overridden to return `longDisplay`.
+     **/
+    toString: function() {
+      return this.longDisplay();
     }
   })
 });

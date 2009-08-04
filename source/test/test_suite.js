@@ -24,7 +24,6 @@ JS.Test.Unit.extend({
     initialize: function(name) {
       this._name = name || 'Unnamed TestSuite';
       this._tests = [];
-      this.toString = function() { return this._name };
     },
     
     /**
@@ -81,6 +80,16 @@ JS.Test.Unit.extend({
      **/
     empty: function() {
       return this._tests.length === 0;
+    },
+    
+    /**
+     * JS.Test.Unit.TestSuite#toString() -> String
+     * 
+     * Overridden to return the name given the suite at
+     * creation.
+     **/
+    toString: function() {
+      return this._name;
     }
   })
 });

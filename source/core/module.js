@@ -239,10 +239,13 @@ JS.extend(JS.Module.prototype, {
       
       if (options._recall) {
         // Second call: add all the methods
-        for (method in module) {
-          if (JS.ignore(method, module[method])) continue;
-          this.define(method, module[method], false, {_notify: includer || options._extended || this});
-        }
+        var make = function(self, method) {
+          if (JS.ignore(method, module[method])) return;
+          self.define(method, module[method], false, {_notify: includer || options._extended || self});
+        };
+        for (method in module) make(this, method);
+        // IE never enumerates the toString property
+        if (module.hasOwnProperty('toString')) make(this, 'toString');
       } else {
         // First call: handle include and extend blocks
         
@@ -448,10 +451,13 @@ JS.extend(JS.Module.prototype, {
       self.__inc__[i].resolve(target);
     
     // Wrap and copy methods to the target
-    for (key in self.__fns__) {
-      made = target.make(key, self.__fns__[key]);
+    var make = function(key) {
+      var made = target.make(key, self.__fns__[key]);
       if (resolved[key] !== made) resolved[key] = made;
-    }
+    };
+    for (key in self.__fns__) make(key);
+    // IE never enumerates the toString property
+    if (self.__fns__.hasOwnProperty('toString')) make('toString');
   },
   
   /**

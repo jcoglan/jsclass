@@ -435,7 +435,6 @@ JS.Test.Unit.extend({
           this._head = head;
           this._templateString = template;
           this._parameters = new JS.Enumerable.Collection(parameters);
-          this.toString = this._toString;
         },
         
         convert: function(object) {
@@ -458,7 +457,7 @@ JS.Test.Unit.extend({
           return /\.$/.test(string) ? string : string + '.';
         },
         
-        _toString: function() {
+        toString: function() {
           var messageParts = [], head, tail;
           if (this._head) {
             head = this.convert(this._head);
