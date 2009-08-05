@@ -1083,8 +1083,14 @@
             assertEnumEqual(['100','101','102','103','104','105'], R('100','105').entries());
             assertEnumEqual(['100'], R('100','11').entries());
             assertEnumEqual(['100'], R('100','11',true).entries());
+            assertEnumEqual(['a'], R('a','a').entries());
+            assertEnumEqual([], R('a','a',true).entries());
             
             assertEnumEqual(["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "aa", "ab", "ac", "ad", "ae", "af", "ag", "ah", "ai", "aj", "ak", "al", "am", "an", "ao", "ap", "aq", "ar", "as", "at", "au", "av", "aw", "ax", "ay", "az", "ba", "bb", "bc", "bd", "be", "bf", "bg", "bh", "bi", "bj", "bk", "bl", "bm", "bn", "bo", "bp", "bq", "br", "bs", "bt", "bu", "bv", "bw", "bx", "by", "bz", "ca"], R('a','ca').entries());
+            
+            assertEnumEqual(["!","\"","#","$","%","&","'","(",")","*","+",",","-",".","/",
+                             "0","1","2","3","4","5","6","7","8","9"],
+                            R('!',']').entries());
         }},
         
         testObservableModule: function() { with(this) {

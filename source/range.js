@@ -55,18 +55,20 @@ JS.Range = new JS.Class('Range', {
     block = JS.Enumerable.toFn(block);
     
     var needle  = this._first,
-        reverse = (this.klass.compare(needle, this._last) > 0);
-    
-    if (!reverse && JS.isType(needle, 'string') && needle.length > this._last.length)
-      return block.call(context || null, needle);
+        reverse = (this.klass.compare(needle, this._last) > 0),
+        exclude = this._excludeEnd;
     
     if (reverse) return;
     
     while (!JS.Enumerable.areEqual(needle, this._last)) {
       block.call(context || null, needle);
       needle = this.klass.succ(needle);
+      if (JS.isType(needle, 'string') && needle.length > this._last.length) {
+        exclude = true;
+        break;
+      }
     }
-    if (!this._excludeEnd) block.call(context || null, needle);
+    if (!exclude) block.call(context || null, needle);
   },
   
   equals: function(other) {

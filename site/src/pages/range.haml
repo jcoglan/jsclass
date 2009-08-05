@@ -3,7 +3,7 @@
   
   The @JS.Range@ class is used to represent intervals - sequences with a start and end
   value. It is directly based on Ruby's "@Range@":http://ruby-doc.org/core/classes/Range.html
-  class. A @Range@ may be constructed using integers, characters, or any type of object
+  class. A @Range@ may be constructed using integers, strings, or any type of object
   that responds to the @succ()@ method. Ranges are a lightweight way to represent sequences
   of objects, and as collections they respond to all the "@Enumerable@":/enumerable.html
   methods.
@@ -11,23 +11,31 @@
   A range is constructed using a start and end value, and an optional flag that indicates
   whether the end value is included when iterating.
   
-  <pre class="prettyprint">    new JS.Range(1,10)          // -> 1..10
-      new JS.Range(4,8,true)      // -> 4..7
+  <pre class="prettyprint">    new JS.Range(1,5)           // -> 1,2,3,4,5
+      new JS.Range(4,8,true)      // -> 4,5,6,7
       
-      new JS.Range('a','m')       // -> a..m
-      new JS.Range('B','G',true)  // -> B..F
+      new JS.Range('a','d')       // -> 'a','b','c','d'
+      new JS.Range('B','G',true)  // -> 'B','C','D','E','F'
   </pre>
   
   The @Range@ object only stores the start and endpoints, not the intermediate values:
   these are generated using @succ()@ when iterating. For example, here's a quick class
   that implements enough of an API to be used as a @Range@ delimiter. We need @succ()@
-  to return the next object in the sequence, and we need @equals()@ to figure out when
-  we've generated an object equal to the end value. (Note that "you ought to override
-  @hash()@ if you override @equals()@":/equality.html.)
+  to return the next object in the sequence, "@compareTo()@":/comparable.html to allow
+  a @Range@ to determine whether the start value is less than the end value, and @equals()@
+  to figure out when we've generated an object equal to the end value. (Note that "you
+  ought to override @hash()@ if you override @equals()@":/equality.html.)
   
   <pre class="prettyprint">    var NumberWrapper = new JS.Class({
+          include: JS.Comparable,
+          
           initialize: function(value) {
               this._value = value;
+          },
+          
+          compareTo: function(object) {
+              var a = this._value, b = object._value;
+              return a < b ? -1 : (a > b ? 1 : 0);
           },
           
           equals: function(object) {
