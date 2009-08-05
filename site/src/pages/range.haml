@@ -21,14 +21,10 @@
   The @Range@ object only stores the start and endpoints, not the intermediate values:
   these are generated using @succ()@ when iterating. For example, here's a quick class
   that implements enough of an API to be used as a @Range@ delimiter. We need @succ()@
-  to return the next object in the sequence, "@compareTo()@":/comparable.html to allow
-  a @Range@ to determine whether the start value is less than the end value, and @equals()@
-  to figure out when we've generated an object equal to the end value. (Note that "you
-  ought to override @hash()@ if you override @equals()@":/equality.html.)
+  to return the next object in the sequence, and "@compareTo()@":/comparable.html to allow
+  a @Range@ to determine whether a given object is within the range:
   
   <pre class="prettyprint">    var NumberWrapper = new JS.Class({
-          include: JS.Comparable,
-          
           initialize: function(value) {
               this._value = value;
           },
@@ -36,11 +32,6 @@
           compareTo: function(object) {
               var a = this._value, b = object._value;
               return a < b ? -1 : (a > b ? 1 : 0);
-          },
-          
-          equals: function(object) {
-              return (object instanceof NumberWrapper) &&
-                     object._value === this._value;
           },
           
           succ: function() {

@@ -60,7 +60,11 @@ JS.Range = new JS.Class('Range', {
     
     if (reverse) return;
     
-    while (!JS.Enumerable.areEqual(needle, this._last)) {
+    var check = JS.isType(needle, Object)
+        ? function(a,b) { return a.compareTo(b) < 0 }
+        : function(a,b) { return !JS.Enumerable.areEqual(a,b) };
+    
+    while (check(needle, this._last)) {
       block.call(context || null, needle);
       needle = this.klass.succ(needle);
       if (JS.isType(needle, 'string') && needle.length > this._last.length) {
@@ -92,12 +96,10 @@ JS.Range = new JS.Class('Range', {
   excludesEnd: function() { return this._excludeEnd },
   
   includes: function(object) {
-    var result = false;
-    this.forEach(function(member) {
-      if (result || JS.Enumerable.areEqual(member, object))
-        result = true;
-    });
-    return result;
+    var a = this.klass.compare(object, this._first),
+        b = this.klass.compare(object, this._last);
+    
+    return a >= 0 && (this._excludeEnd ? b < 0 : b <= 0);
   },
   
   step: function(n, block, context) {

@@ -443,6 +443,21 @@ var KeyValueHash = new JS.Class({
     }
 });
 
+var StringWrapper = new JS.Class({
+    initialize: function(value) {
+        this._value = value;
+    },
+    
+    compareTo: function(object) {
+        var a = this._value, b = object._value;
+        return a < b ? -1 : (a > b ? 1 : 0);
+    },
+    
+    succ: function() {
+        return new this.klass(JS.Range.succ(this._value));
+    }
+});
+
 //================================================================
 //================================================================
 

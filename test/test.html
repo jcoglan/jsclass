@@ -1091,6 +1091,10 @@
             assertEnumEqual(["!","\"","#","$","%","&","'","(",")","*","+",",","-",".","/",
                              "0","1","2","3","4","5","6","7","8","9"],
                             R('!',']').entries());
+            
+            assertEnumEqual(['j','k','l','m'], R(new StringWrapper('j'), new StringWrapper('n'), true)
+                                              .entries()
+                                              .map(function(s) { return s._value }));
         }},
         
         testObservableModule: function() { with(this) {
