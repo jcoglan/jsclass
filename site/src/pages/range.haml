@@ -103,10 +103,18 @@
   
   h3. @includes(item)@
   
-  Returns @true@ iff @item@ is contained in the @Range@.
+  Returns @true@ iff @item@ is contained in the @Range@, that is if it is between
+  the start and end values of the range.
   
   <pre class="prettyprint">    new JS.Range(1,4).includes(3)         // -> true
       new JS.Range(2,6,true).includes(6)    // -> false
+  </pre>
+  
+  Note that an object may be considered to be included in a range even though it
+  does not appear during iteration and may even lie outside the iteration range.
+  For example the following expression is @true@ as 8.5 is less than 9:
+  
+  <pre class="prettyprint">    new JS.Range(6,9,true).includes(8.5)   // -> true
   </pre>
   
   Aliased as @covers()@, @member()@ and @match()@, so a @Range@ may be used as
