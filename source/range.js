@@ -2,14 +2,44 @@ JS.Range = new JS.Class('Range', {
   include: JS.Enumerable || {},
   
   extend: {
+    compare: function(one, another) {
+      return JS.isType(one, Object)
+          ? one.compareTo(another)
+          : (one < another ? -1 : (one > another ? 1 : 0));
+    },
+    
     succ: function(object) {
-      if (JS.isFn(object.succ)) return object.succ();
       if (JS.isType(object, 'string')) {
-        if (object.length !== 1)
-          throw new Error('Only single-character strings may be used in Ranges');
-        return String.fromCharCode(object.charCodeAt(0) + 1);
+        var chars = object.split(''),
+            i     = chars.length,
+            next  = null,
+            set   = null,
+            roll  = true;
+        
+        while (roll && i--) {
+          next = null;
+          
+          JS.Enumerable.forEach.call(this.SETS, function(name) {
+            var range = this[name];
+            if (chars[i] !== range._last) return;
+            set  = range;
+            next = range._first;
+          }, this);
+          
+          if (next === null) {
+            next = String.fromCharCode(chars[i].charCodeAt(0) + 1);
+            roll = false;
+          }
+          chars[i] = next;
+        }
+        
+        if (roll) chars.unshift( set._first === '0' ? '1' : set._first );
+        
+        return chars.join('');
       }
+      
       if (JS.isType(object, 'number')) return object + 1;
+      if (JS.isFn(object.succ)) return object.succ();
       return null;
     }
   },
@@ -24,12 +54,19 @@ JS.Range = new JS.Class('Range', {
     if (!block) return this.enumFor('forEach');
     block = JS.Enumerable.toFn(block);
     
-    var needle = this._first;
+    var needle  = this._first,
+        reverse = (this.klass.compare(needle, this._last) > 0);
+    
+    if (!reverse && JS.isType(needle, 'string') && needle.length > this._last.length)
+      return block.call(context || null, needle);
+    
+    if (reverse) return;
+    
     while (!JS.Enumerable.areEqual(needle, this._last)) {
       block.call(context || null, needle);
       needle = this.klass.succ(needle);
     }
-    if (!this._excludeEnd) block.call(context || null, this._last);
+    if (!this._excludeEnd) block.call(context || null, needle);
   },
   
   equals: function(other) {
@@ -71,6 +108,13 @@ JS.Range = new JS.Class('Range', {
       i += 1;
     });
   }
+});
+
+JS.Range.extend({
+  DIGITS:     new JS.Range('0','9'),
+  LOWERCASE:  new JS.Range('a','z'),
+  UPPERCASE:  new JS.Range('A','Z'),
+  SETS: ['DIGITS', 'LOWERCASE', 'UPPERCASE']
 });
 
 JS.Range.include({

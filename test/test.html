@@ -1035,30 +1035,56 @@
         }},
         
         testRange: function() { with(this) {
-            assertIdentical(5, JS.Range.succ(4));
-            assertEqual('b', JS.Range.succ('a'));
+            var R = function(a,b,e) { return new JS.Range(a,b,e) };
+            var s = JS.Range.method('succ');
             
-            assertEnumEqual([1,2,3,4], new JS.Range(1,4).entries());
-            assertEnumEqual([1,2,3], new JS.Range(1,4,true).entries());
-            assertEnumEqual(['b','c','d','e','f','g','h'], new JS.Range('b','h').entries());
-            assertEnumEqual(['b','c','d','e','f','g'], new JS.Range('b','h',true).entries());
+            assertIdentical(5,    s(4));
+            assertIdentical(10,   s(9));
+            assertIdentical(100,  s(99));
+            assertIdentical(101,  s(100));
             
-            assert(new JS.Range(1,4).match(3));
-            assert(!new JS.Range(1,4,true).match(4));
-            assert(new JS.Range('a','m').match('j'));
-            assert(!new JS.Range('a','m',true).match('m'));
+            assertIdentical('6',  s('5'));
+            assertIdentical('10', s('9'));
+            assertEqual('b',      s('a'));
+            assertEqual('bla',    s('bkz'));
+            assertEqual('N',      s('M'));
+            assertEqual('AA',     s('Z'));
             
-            assertEnumEqual(['a','g','m'], new JS.Range('a','m').step(6).entries());
-            assertEnumEqual(['a','g'], new JS.Range('a','m',true).step(6).entries());
+            assertEnumEqual([1,2,3,4], R(1,4).entries());
+            assertEnumEqual([1,2,3], R(1,4,true).entries());
+            assertEnumEqual(['b','c','d','e','f','g','h'], R('b','h').entries());
+            assertEnumEqual(['b','c','d','e','f','g'], R('b','h',true).entries());
+            
+            assert(R(1,4).match(3));
+            assert(!R(1,4,true).match(4));
+            assert(R('a','m').match('j'));
+            assert(!R('a','m',true).match('m'));
+            
+            assertEnumEqual(['a','g','m'], R('a','m').step(6).entries());
+            assertEnumEqual(['a','g'], R('a','m',true).step(6).entries());
             
             var hash = new JS.Hash();
-            hash.store(new JS.Range(1,4), 9);
-            hash.store(new JS.Range(1,4,true), 8);
-            assertEqual(8, hash.get(new JS.Range(1,4,true)));
-            assertEqual(9, hash.get(new JS.Range(1,4)));
+            hash.store(R(1,4), 9);
+            hash.store(R(1,4,true), 8);
+            assertEqual(8, hash.get(R(1,4,true)));
+            assertEqual(9, hash.get(R(1,4)));
             
             var list = new JS.Enumerable.Collection([2,9,3,8,5,7]);
-            assertEnumEqual([5], list.grep(new JS.Range(4,6)).entries());
+            assertEnumEqual([5], list.grep(R(4,6)).entries());
+            
+            assertEnumEqual(['2','3','4','5','6','7','8','9'], R('2','9').entries());
+            assertEnumEqual(['2','3','4','5','6','7','8'], R('2','9', true).entries());
+            
+            assertEnumEqual(['2','3','4','5','6','7','8','9','10',
+                '11','12','13','14','15','16','17','18','19','20','21'], R('2','21').entries());
+            
+            assertEnumEqual([], R('2','13').entries());
+            assertEnumEqual([], R('100','10').entries());
+            assertEnumEqual(['100','101','102','103','104','105'], R('100','105').entries());
+            assertEnumEqual(['100'], R('100','11').entries());
+            assertEnumEqual(['100'], R('100','11',true).entries());
+            
+            assertEnumEqual(["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "aa", "ab", "ac", "ad", "ae", "af", "ag", "ah", "ai", "aj", "ak", "al", "am", "an", "ao", "ap", "aq", "ar", "as", "at", "au", "av", "aw", "ax", "ay", "az", "ba", "bb", "bc", "bd", "be", "bf", "bg", "bh", "bi", "bj", "bk", "bl", "bm", "bn", "bo", "bp", "bq", "br", "bs", "bt", "bu", "bv", "bw", "bx", "by", "bz", "ca"], R('a','ca').entries());
         }},
         
         testObservableModule: function() { with(this) {
