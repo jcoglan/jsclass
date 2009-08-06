@@ -14,7 +14,7 @@ if (typeof load === 'undefined') {
 JSCLASS_PATH = 'build/min/';
 load (JSCLASS_PATH + 'loader.js');
 
-require('JS.Test.Unit', 'JS.Set', 'JS.Observable', function() {
+require('JS.Test.Unit', 'JS.Range', 'JS.Set', 'JS.Observable', function() {
   
   new JS.Class('TestFoo', JS.Test.Unit.TestCase, {
     testError: function() {
@@ -84,6 +84,12 @@ require('JS.Test.Unit', 'JS.Set', 'JS.Observable', function() {
     testAssertMatch: function() {
       this.assertMatch(/foo/, 'food');
       this.assertMatch(/foo/, 'foal');
+    },
+    
+    testAssertMatchRange: function() {
+      var R = new JS.Range(1,5);
+      this.assertMatch(R, 3);
+      this.assertMatch(R, 30);
     },
     
     testAssertNoMatch: function() {

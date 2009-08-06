@@ -150,7 +150,9 @@ JS.Test.Unit.extend({
     assertMatch: function(pattern, string, message) {
       this.__wrapAssertion__(function() {
         var fullMessage = this.buildMessage(message, "<?> expected to match\n<?>.", string, pattern);
-        this.assertBlock(fullMessage, function() { return pattern.test(string) });
+        this.assertBlock(fullMessage, function() {
+          return JS.isFn(pattern.test) ? pattern.test(string) : pattern.match(string);
+        });
       });
     },
     
@@ -162,7 +164,9 @@ JS.Test.Unit.extend({
     assertNoMatch: function(pattern, string, message) {
       this.__wrapAssertion__(function() {
         var fullMessage = this.buildMessage(message, "<?> expected not to match\n<?>.", string, pattern);
-        this.assertBlock(fullMessage, function() { return !pattern.test(string) });
+        this.assertBlock(fullMessage, function() {
+          return JS.isFn(pattern.test) ? !pattern.test(string) : !pattern.match(string);
+        });
       });
     },
     
