@@ -111,6 +111,13 @@ JS.Range = new JS.Class('Range', {
       if (i % n === 0) block.call(context || null, member);
       i += 1;
     });
+  },
+  
+  toString: function() {
+    var str = this._first.toString() + '..';
+    if (this._excludeEnd) str += '.';
+    str += this._last.toString();
+    return str;
   }
 });
 
