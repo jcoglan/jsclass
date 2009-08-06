@@ -115,6 +115,16 @@ JS.Kernel = JS.extend(new JS.Module('Kernel', {
   tap: function(block, context) {
     block.call(context || null, this);
     return this;
+  },
+  
+  /**
+   * JS.Kernel#toString() -> String
+   * 
+   * Returns a string representation of the object; the default representation
+   * just includes the object's type and hashcode.
+   **/
+  toString: function(className) {
+    return '#<' + (className || this.klass.toString()) + ':' + this.hash() + '>';
   }
 }),
 

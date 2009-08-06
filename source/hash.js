@@ -304,6 +304,12 @@ JS.Hash = new JS.Class('Hash', {
     return value;
   },
   
+  toString: function() {
+    return '{' + this.map(function(pair) {
+      return pair.key.toString() + '=>' + pair.value.toString();
+    }).join(',') + '}';
+  },
+  
   update: function(hash, block, context) {
     var blockGiven = JS.isFn(block);
     hash.forEach(function(pair) {

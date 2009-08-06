@@ -89,7 +89,7 @@
         testAncestors: function() { with(this) {
             assertEnumEqual([JS.Kernel, ModA, ModD, ModB, ModC, InheritanceTester], InheritanceTester.ancestors());
             assertEnumEqual(['bark'], Dog.instanceMethods(false));
-            assertEnumEqual(['_', '__eigen__', 'bark', 'enumFor', 'equals', 'extend', 'hash', 'initialize', 'isA', 'method', 'methods', 'speak', 'tap', 'toEnum', 'wait'], Dog.instanceMethods(true).sort());
+            assertEnumEqual(['_', '__eigen__', 'bark', 'enumFor', 'equals', 'extend', 'hash', 'initialize', 'isA', 'method', 'methods', 'speak', 'tap', 'toEnum', 'toString', 'wait'], Dog.instanceMethods(true).sort());
         }},
         
         testClassesCanBeMixins: function() { with(this) {

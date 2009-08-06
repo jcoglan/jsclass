@@ -1,5 +1,8 @@
 JS.Packages(function() { with(this) {
     
+    // Debugging
+    // JSCLASS_PATH = 'build/min/';
+    
     var PATH = JS.Package._env.JSCLASS_PATH ||
                __FILE__().replace(/[^\/]*$/g, '');
     
