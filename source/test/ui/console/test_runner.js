@@ -7,7 +7,10 @@ JS.Test.Unit.UI.extend({
        * Runs a `JS.Test.Unit.TestSuite` on the console.
        **/
       TestRunner: new JS.Class({
-        extend: JS.Test.Unit.UI.TestRunnerUtilities,
+        extend: [JS.Test.Unit.UI.TestRunnerUtilities, {
+          
+          ANSI_CSI: String.fromCharCode(0x1B) + '['
+        }],
         
         /**
          * new JS.Test.Unit.UI.Console.TestRunner(suite, outputLevel)
@@ -20,7 +23,7 @@ JS.Test.Unit.UI.extend({
           this._outputLevel = outputLevel || JS.Test.Unit.UI.NORMAL;
           this._alreadyOutputted = false;
           this._faults = [];
-          this._outputBuffer = [];
+          this._lineBuffer = [];
         },
         
         /**
@@ -95,19 +98,16 @@ JS.Test.Unit.UI.extend({
         },
         
         _output: function(something, level) {
-          if (this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) {
-            this._flushBuffer();
-            this._print(something);
-          }
+          if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
+          this._lineBuffer = [];
+          this._print(something);
         },
         
         _outputSingle: function(something, level) {
-          if (this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) this._outputBuffer.push(something);
-        },
-        
-        _flushBuffer: function() {
-          if (this._outputBuffer.length > 0) this._print(this._outputBuffer.join(''));
-          this._outputBuffer = [];
+          if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
+          var esc = (this._lineBuffer.length === 0) ? '' : this._escape('F') + this._escape('K');
+          this._lineBuffer.push(something);
+          this._print(esc + this._lineBuffer.join(''));
         },
         
         _shouldOutput: function(level) {
@@ -117,6 +117,10 @@ JS.Test.Unit.UI.extend({
         _print: function(string) {
           if (typeof WScript !== 'undefined') return WScript.Echo(string);
           if (typeof print === 'function') return print(string);
+        },
+        
+        _escape: function(string) {
+          return this.klass.ANSI_CSI + string;
         }
       })
     }
