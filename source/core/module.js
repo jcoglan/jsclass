@@ -190,12 +190,15 @@ JS.extend(JS.Module.prototype, {
         n         = ancestors.length,
         name;
     
-    for (name in self.__fns__) {
+    var add = function(name) {
       if (self.__fns__.hasOwnProperty(name) &&
           JS.isFn(self.__fns__[name]) &&
           JS.indexOf(results, name) === -1)
         results.push(name);
-    }
+    };
+    for (name in self.__fns__) add(name);
+    add('toString');  // IE will not enumerate this
+    
     if (includeSuper === false) return results;
     
     while (n--) ancestors[n].instanceMethods(false, results);
