@@ -80,6 +80,5 @@ bundles:
     - command
     - state
     - stack_trace
-    - linked_list
     - ruby
 
