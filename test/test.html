@@ -901,12 +901,23 @@
             keys.push(removed.value);
             assertEqual('ABCDE', keys.pluck('brand').sort().join(''));
             
-            var A = {}, B = {}, C = {};
-            var pojos = new JS.Hash([ A,'a', B,'b', C,'c' ]);
+            var A = {foo:1}, B = {foo:2}, C = {foo:1};
+            
+            var pojos = new JS.Hash();
+            pojos.store(A,'a');
+            pojos.store(B,'b');
+            pojos.store(C,'c');
+            assertEqual('c', pojos.get(A));
+            assertEqual('b', pojos.get(B));
+            assertEqual('c', pojos.get(C));
+            
+            pojos = new JS.Hash().compareByIdentity();
+            pojos.store(A,'a');
+            pojos.store(B,'b');
+            pojos.store(C,'c');
             assertEqual('a', pojos.get(A));
             assertEqual('b', pojos.get(B));
             assertEqual('c', pojos.get(C));
-            assertEqual(null, pojos.get(pojos));
         }},
         
         testSet: function() { with(this) {
@@ -936,6 +947,9 @@
             assertEqual(1, container.size);
             container.add(new JS.SortedSet([12]));
             assertEqual(2, container.size);
+            
+            var arraySet = new JS.HashSet([[1,2,3], [4,5,6], [1,2,3]]);
+            assertEqual(2, arraySet.entries().length);
             
             var list = [9,3,7,8,4];
             var sorted = new JS.SortedSet(['fred', 'baz']);

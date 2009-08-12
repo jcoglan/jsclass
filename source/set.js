@@ -225,11 +225,11 @@ JS.Set = new JS.Class('Set', {
   },
   
   _indexOf: function(item) {
-    var i     = this._members.length,
-        equal = JS.Enumerable.areEqual;
+    var i    = this._members.length,
+        Enum = JS.Enumerable;
     
     while (i--) {
-      if (equal(item, this._members[i])) return i;
+      if (Enum.areEqual(item, this._members[i])) return i;
     }
     return -1;
   }
@@ -263,7 +263,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
         i       = 0,
         d       = n,
         compare = this.klass.compare,
-        equal   = JS.Enumerable.areEqual,
+        Enum    = JS.Enumerable,
         found;
     
     if (n === 0) return insertionPoint ? 0 : -1;
@@ -271,7 +271,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     if (compare(item, items[0]) < 1)   { d = 0; i = 0; }
     if (compare(item, items[n-1]) > 0) { d = 0; i = n; }
     
-    while (!equal(item, items[i]) && d > 0.5) {
+    while (!Enum.areEqual(item, items[i]) && d > 0.5) {
       d = d / 2;
       i += (compare(item, items[i]) > 0 ? 1 : -1) * Math.round(d);
       if (i > 0 && compare(item, items[i-1]) > 0 && compare(item, items[i]) < 1) d = 0;
@@ -279,10 +279,10 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     
     // The pointer will end up at the start of any homogenous section. Step
     // through the section until we find the needle or until the section ends.
-    while (items[i] && !equal(item, items[i]) &&
+    while (items[i] && !Enum.areEqual(item, items[i]) &&
         compare(item, items[i]) === 0) i += 1;
     
-    found = equal(item, items[i]);
+    found = Enum.areEqual(item, items[i]);
     return insertionPoint
         ? (found ? null : i)
         : (found ? i : -1);

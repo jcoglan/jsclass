@@ -13,10 +13,40 @@ JS.Enumerable = new JS.Module('Enumerable', {
       return list.all(function(item) { return JS.isFn(item.compareTo) });
     },
     
-    areEqual: function(one, another) {
-      return one.equals
-          ? one.equals(another)
-          : (one === another);
+    areEqual: function(expected, actual) {
+      if (expected === actual)
+        return true;
+      
+      if (expected && JS.isFn(expected.equals))
+        return expected.equals(actual);
+      
+      if (expected instanceof Array) {
+        if (!(actual instanceof Array)) return false;
+        if (expected.length !== actual.length) return false;
+        for (var i = 0, n = expected.length; i < n; i++) {
+          if (!this.areEqual(expected[i], actual[i]))
+            return false;
+        }
+        return true;
+      }
+      
+      if ((expected instanceof Object)) {
+        if (!(actual instanceof Object)) return false;
+        if (this.objectSize(expected) !== this.objectSize(actual)) return false;
+        for (var key in expected) {
+          if (!this.areEqual(expected[key], actual[key]))
+            return false;
+        }
+        return true;
+      }
+      
+      return false;
+    },
+    
+    objectSize: function(object) {
+      var n = 0;
+      for (var key in object) n += 1;
+      return n;
     },
     
     Collection: new JS.Class({

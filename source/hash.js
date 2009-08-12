@@ -10,8 +10,7 @@ JS.Hash = new JS.Class('Hash', {
       },
       
       hasKey: function(key) {
-        var my = this.key;
-        return my.equals ? my.equals(key) : my === key;
+        return JS.Enumerable.areEqual(this.key, key);
       },
       
       setValue: function(value) {
@@ -19,8 +18,7 @@ JS.Hash = new JS.Class('Hash', {
       },
       
       hasValue: function(value) {
-        var my = this.value;
-        return my.equals ? my.equals(value) : my === value;
+        return JS.Enumerable.areEqual(this.value, value);
       },
       
       compareTo: function(other) {
@@ -117,6 +115,7 @@ JS.Hash = new JS.Class('Hash', {
   
   compareByIdentity: function() {
     this._compareByIdentity = true;
+    return this;
   },
   
   comparesByIdentity: function() {
@@ -203,7 +202,8 @@ JS.Hash = new JS.Class('Hash', {
   hasValue: function(value) {
     var has = false, ident = !!this._compareByIdentity;
     this.forEach(function(pair) {
-      if ((value.equals && !ident) ? value.equals(pair.value) : value === pair.value)
+      if (has) return;
+      if (ident ? value === pair.value : JS.Enumerable.areEqual(value, pair.value))
         has = true;
     });
     return has;
@@ -228,7 +228,7 @@ JS.Hash = new JS.Class('Hash', {
   key: function(value) {
     var result = null;
     this.forEach(function(pair) {
-      if (value.equals ? value.equals(pair.value) : (value === pair.value))
+      if (!result && JS.Enumerable.areEqual(value, pair.value))
         result = pair.key;
     });
     return result;
