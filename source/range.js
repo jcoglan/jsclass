@@ -62,7 +62,7 @@ JS.Range = new JS.Class('Range', {
     
     var check = JS.isType(needle, Object)
         ? function(a,b) { return a.compareTo(b) < 0 }
-        : function(a,b) { return !JS.Enumerable.areEqual(a,b) };
+        : function(a,b) { return a !== b };
     
     while (check(needle, this._last)) {
       block.call(context || null, needle);

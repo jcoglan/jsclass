@@ -35,13 +35,23 @@
   This returns @true@ iff @object@ and @other@ are meaningfully equal. The default implementation
   of this method in "@Kernel@":/kernel.html just uses @===@ to compare the objects;
   classes may override this method to provide more meaningful comparison. For example,
-  "@Set#equals()@":/set.html returns true iff used to compare two sets that contain the
+  "@Set#equals()@":/set.html returns @true@ iff used to compare two sets that contain the
   same members. The following classes expect objects to implement @equals()@:
   
   * "@Hash@":/hash.html uses @equals()@ to make sure keys are unique, falling back to @===@
     if they keys do not implement @equals()@. See also @object.hash()@ below.
+  * "@Range@":/range.html uses @equals()@ to figure out whether the endpoints of two
+    ranges are the same in its own @equals()@ method. It uses @compareTo()@ to figure
+    out whether the end of a range has been found or exceeded while iterating using
+    @forEach()@.
   * "@Set@":/set.html uses @equals()@ to make sure elements are unique, falling back to
     @===@ if the elements do not implement @equals()@.
+  
+  @JS.Class@ does not modify built-in JavaScript classes, but the above classes do
+  contain methods for comparing @Array@ and @Object@ instances. Two arrays are considered
+  equal if their elements are all equal, and two objects with no @equals()@ method are
+  considered equal if they have the same set of keys-value pairs, much like @Hash@
+  equality.
   
   If you implement @equals()@ in one of your own classes, it should obey these rules:
   

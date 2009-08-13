@@ -20,10 +20,11 @@
     to guarantee iteration order, and gives the class a search performance benefit over the
     base @Set@ class, especially on larger data sets.
   
-  If you try to add an object that has an @equals()@ method to a set, that method will be used to compare
-  the object to the set's members. @equals()@ should accept one argument and return a boolean
-  to indicate whether the two objects are to be considered equal. If no @equals()@ method
-  exists on the object, the @===@ operator is used instead. An example class might look like:
+  If you try to add an object that has an "@equals()@ method":/equality.html to a set, that
+  method will be used to compare the object to the set's members. @equals()@ should accept one
+  argument and return a boolean to indicate whether the two objects are to be considered equal.
+  If no @equals()@ method exists on the object, the @===@ operator is used instead. An example
+  class might look like:
   
   <pre class="prettyprint">    Widget = new JS.Class({
           initialize: function(name) {
@@ -34,6 +35,10 @@
                   && object.name == this.name;
           }
       });</pre>
+  
+  Although JavaScript's built-in @Array@ and @Object@ classes do not have an @equals()@
+  method, the @Set@ classes can detect when two such objects are equal. So, you cannot
+  put two arrays with the same elements into a set together.
   
   Bear in mind that uniqueness (and sort order for @SortedSet@) is only maintained when new
   objects are added to the set. Objects can be changed such that two objects that are
