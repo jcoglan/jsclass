@@ -82,8 +82,8 @@ JS.MethodChain.addMethods = function(object) {
   i = methods.length;
   while (i--) this.addMethod(methods[i]);
   
-  object.prototype &&
-    this.addMethods(object.prototype);
+  object.__fns__ && this.addMethods(object.__fns__);
+  object.prototype && this.addMethods(object.prototype);
 };
 
 it = its = function() { return new JS.MethodChain; };
