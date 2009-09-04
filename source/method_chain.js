@@ -119,6 +119,14 @@ JS.Kernel.include({
   }
 }, true);
 
+(function() {
+  var queue = JS.Module.__chainq__,
+      n     = queue.length;
+  
+  while (n--) JS.MethodChain.addMethods(queue[n]);
+  JS.Module.__chainq__ = null;
+})();
+
 JS.MethodChain.addMethods([
   "abbr", "abs", "accept", "acceptCharset", "accesskey", "acos", "action", "addEventListener", 
   "adjacentNode", "align", "alignWithTop", "alink", "alt", "anchor", "appendChild", "appendedNode", 

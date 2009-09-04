@@ -9,9 +9,13 @@ JS.Class.klass = JS.Class.constructor = JS.Class;
 
 JS.extend(JS.Module, {
   _observers: [],
+  
+  __chainq__: [],
+  
   methodAdded: function(block, context) {
     this._observers.push([block, context]);
   },
+  
   _notify: function(name, object) {
     var obs = this._observers, i = obs.length;
     while (i--) obs[i][0].call(obs[i][1] || null, name, object);
