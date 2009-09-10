@@ -67,11 +67,15 @@ JS.Package = new JS.Class('Package', {
   
   expand: function(list) {
     var deps = list || [], dep, n;
+    
     n = this._deps.length;
     while (n--) this._getPackage(this._deps, n).expand(deps);
+    
     if (JS.indexOf(deps, this) === -1) deps.push(this);
+    
     n = this._uses.length;
     while (n--) this._getPackage(this._uses, n).expand(deps);
+    
     return deps;
   },
   
@@ -80,6 +84,9 @@ JS.Package = new JS.Class('Package', {
   },
   
   load: function(callback, context) {
+    if (this._loader === undefined)
+      throw new Error('No load path specified for ' + this._names.join(', '));
+    
     var self = this, handler, fireCallbacks;
     
     handler = function() {
@@ -127,7 +134,10 @@ JS.Package = new JS.Class('Package', {
     getByName: function(name) {
       var cached = this.getFromCache(name);
       if (cached.pkg) return cached.pkg;
-      throw new Error('Could not find package containing ' + name);
+      
+      var placeholder = new JS.Package();
+      placeholder.addName(name);
+      return placeholder;
     },
     
     getObject: function(name) {

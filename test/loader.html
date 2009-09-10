@@ -35,6 +35,7 @@
                 .requires('YAHOO.util.Connect');
             
             file(yui + 'yahoo-dom-event/yahoo-dom-event.js')
+            .requires('document.getElementById')
             .provides('YAHOO',
                       'YAHOO.lang',
                       'YAHOO.util.Dom',
