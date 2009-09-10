@@ -135,7 +135,7 @@ JS.Package = new JS.Class('Package', {
       var cached = this.getFromCache(name);
       if (cached.pkg) return cached.pkg;
       
-      var placeholder = new JS.Package();
+      var placeholder = new this();
       placeholder.addName(name);
       return placeholder;
     },
