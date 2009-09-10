@@ -23,11 +23,9 @@ JS.Package = new JS.Class('Package', {
   },
   
   addName: function(name) {
-    if (!this.contains(name)) this._names.push(name);
-  },
-  
-  contains: function(name) {
-    return JS.indexOf(this._names, name) !== -1;
+    if (JS.indexOf(this._names, name) !== -1) return;
+    this._names.push(name);
+    this.klass.getFromCache(name).pkg = this;
   },
   
   depsComplete: function(deps) {
@@ -114,6 +112,7 @@ JS.Package = new JS.Class('Package', {
   
   extend: {
     _store:   {},
+    _cache:   {},
     _env:     this,
     
     getByPath: function(loader) {
@@ -121,20 +120,26 @@ JS.Package = new JS.Class('Package', {
       return this._store[path] || (this._store[path] = new this(loader));
     },
     
+    getFromCache: function(name) {
+      return this._cache[name] = this._cache[name] || {};
+    },
+    
     getByName: function(name) {
-      for (var path in this._store) {
-        if (this._store[path].contains(name))
-          return this._store[path];
-      }
+      var cached = this.getFromCache(name);
+      if (cached.pkg) return cached.pkg;
       throw new Error('Could not find package containing ' + name);
     },
     
     getObject: function(name) {
+      var cached = this.getFromCache(name);
+      if (cached.obj !== undefined) return cached.obj;
+      
       var object = this._env,
           parts  = name.split('.'), part;
       
-      while (part = parts.shift()) object = (object||{})[part];
-      return object;
+      while (part = parts.shift()) object = object && object[part];
+      
+      return this.getFromCache(name).obj = object;
     },
     
     expand: function(list) {
