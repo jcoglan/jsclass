@@ -572,6 +572,51 @@ var AnotherChildStateMachine = new JS.Class(ChildStateMachine, {
     }
 });
 
+
+var TopState = new JS.Class({
+    include: JS.State,
+
+    initialize: function() {
+        this.setState('CREATED');
+    },
+
+    states: {
+        CREATED: {
+            setup: function() {
+                this.setState('READY');
+                return 'Ready!';
+        }   },
+        
+        READY: {
+            say: function() {
+                return 'Hello';
+    }   }   }
+});
+
+var StateMixin = new JS.Module({
+    states: {
+        CREATED: {
+            setup: function() {
+                return 'Running setup from StateMixin. ' + this.callSuper();
+            },
+            
+            say: function() {
+                return 'Hunh?';
+    }   }   }
+});
+
+console.log('now');
+
+var LowerState = new JS.Class(TopState, {
+    include: StateMixin,
+
+    initialize: function() {
+        this.callSuper();
+    },
+    
+    states: {}
+});
+
 //================================================================
 //================================================================
 

@@ -28,21 +28,36 @@ JS.State = new JS.Module('State', {
         for (method in states[state]) stubs[method] = this.stub;
     } },
     
+    findStates: function(collections, name) {
+      var i = collections.length, results = [];
+      while (i--) {
+        if (collections[i].hasOwnProperty(name))
+          results.push(collections[i][name]);
+      }
+      return results;
+    },
+    
     buildCollection: function(module, states) {
       var stubs       = {},
           collection  = {},
-          superstates = module.lookup('states').pop() || {},
-          state, klass, methods, name;
+          superstates = module.lookup('states'),
+          state, klass, methods, name, mixins, i, n;
       
       this.buildStubs(stubs, collection, states);
-      this.buildStubs(stubs, collection, superstates);
+      
+      for (i = 0, n = superstates.length; i < n;  i++)
+        this.buildStubs(stubs, collection, superstates[i]);
       
       for (state in collection) {
-        klass = (superstates[state]||{}).klass;
-        klass = klass ? new JS.Class(klass, states[state]) : new JS.Class(states[state]);
+        klass  = new JS.Class(states[state]);
+        mixins = this.findStates(superstates, state);
+        
+        i = mixins.length;
+        while (i--) klass.include(mixins[i].klass);
+        
         methods = {};
         for (name in stubs) { if (!klass.prototype[name]) methods[name] = stubs[name]; }
-        klass.include(methods, false);
+        klass.include(methods);
         collection[state] = new klass;
       }
       if (module.__res__) this.addMethods(stubs, module.__res__.klass);

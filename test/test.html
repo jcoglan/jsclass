@@ -1199,6 +1199,11 @@
             assertEqual("Jenny likes ponies! aren't they cute?", child.speak());
             child.setState('poundingTechnoMusic');
             assertEqual('Do you know where your children are?', child.speak());
+            
+            var lower = new LowerState();
+            assertEqual('Hunh?', lower.say());
+            assertEqual('Running setup from StateMixin. Ready!', lower.setup());
+            assertEqual('Hello', lower.say());
         }},
         
         testDecoratedStateClass: function() { with(this) {
