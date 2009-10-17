@@ -24,7 +24,7 @@ JS.Package.extend({
           tag = null;
         }
       };
-      ;;; window.console && console.info('Loading ' + path);
+      window.console && console.info('Loading ' + path);
       document.getElementsByTagName('head')[0].appendChild(tag);
     },
     

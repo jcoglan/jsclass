@@ -18,7 +18,7 @@ JS.Package.extend({
     },
     
     load: function(path, fireCallbacks) {
-      JS.Package.loadFile(path, fireCallbacks);
+      JS.Package.Loader.loadFile(path, fireCallbacks);
     }
   },
   

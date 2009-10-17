@@ -111,6 +111,8 @@ JS.extend(JS.Module.prototype, {
     this.__res__ = options._resolve || null;
     
     if (methods) this.include(methods, false);
+    
+    if (JS.Module.__chainq__) JS.Module.__chainq__.push(this);
   },
   
   /**
