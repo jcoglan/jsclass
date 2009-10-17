@@ -2,12 +2,13 @@ JSCLASS_PATH = 'build/src/';
 load(JSCLASS_PATH + 'loader.js');
 
 JS.Packages(function() { with(this) {
-  autoload(/^.*Spec$/, {from: 'test/specs'});
-  
-  pkg('ModuleSpec').requires('JS.Module');
+    autoload(/^(.*)Spec$/, {from: 'test/specs', require: 'JS.$1'});
 }});
 
 require('JS.Test', function() {
-  require('ModuleSpec', JS.Test.method('autorun'))
+    require('ModuleSpec',
+            'SetSpec',
+            
+    JS.Test.method('autorun'))
 });
 

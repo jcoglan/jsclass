@@ -136,13 +136,12 @@ JS.Package = new JS.Class('Package', {
       var cached = this.getFromCache(name);
       if (cached.pkg) return cached.pkg;
       
-      for (var i = 0, n = this._auto.length; i < n; i++) {
-        var auto = this._auto[i];
-        if (!auto._pattern.test(name)) continue;
-        
-        var pkg = new this(function(cb) { auto._loader(name, cb) });
-        pkg.addName(name);
-        return pkg;
+      var i, n, auto;
+      
+      for (i = 0, n = this._auto.length; i < n; i++) {
+        auto = this._auto[i];
+        if (auto._pattern.test(name))
+          return this.manufacture(auto._pattern, name, auto._loader);
       }
       
       var placeholder = new this();
@@ -193,6 +192,31 @@ JS.Package = new JS.Class('Package', {
     
     autoload: function(pattern, loader) {
       this._auto.push({_pattern: pattern, _loader: loader});
+    },
+    
+    manufacture: function(pattern, name, loader) {
+      var loaderFn = loader, dir, pkg, requirement;
+      
+      if (!JS.isFn(loader) && loader.from) {
+        dir = loader.from;
+        loaderFn = function(name, cb) {
+          var file = JS.Package.DSL.pathFor(name),
+              path = dir.replace(/\/?$/, '/') + file + '.js';
+          JS.Package.DSL.load(path, cb);
+        };
+      }
+      
+      pkg = new this(function(cb) { loaderFn(name, cb) });
+      pkg.addName(name);
+      
+      if (loader.require) {
+        requirement = loader.require.replace(/\$(\d+)/, function(match, index) {
+          return name.match(pattern)[parseInt(index)];
+        });
+        pkg.addDependency(requirement);
+      }
+      
+      return pkg;
     }
   }
 });

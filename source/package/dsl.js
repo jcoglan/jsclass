@@ -22,14 +22,6 @@ JS.Package.extend({
     },
     
     autoload: function(pattern, loader) {
-      if (!JS.isFn(loader) && loader.from) {
-        var dir = loader.from;
-        loader = function(name, cb) {
-          var file = JS.Package.DSL.pathFor(name),
-              path = dir.replace(/\/?$/, '/') + file + '.js';
-          JS.Package.DSL.load(path, cb);
-        };
-      }
       JS.Package.autoload(pattern, loader);
     },
     
