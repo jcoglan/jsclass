@@ -104,20 +104,3 @@ JS.Test.extend({
   context:  JS.Test.describe
 });
 
-JS.Test.Unit.TestSuite.include({
-  run: function(result, block, context) {
-    block.call(context || null, this.klass.STARTED, this._name);
-    
-    var first = this._tests[0], ivarsFromCallback = null;
-    if (first.runAllCallbacks) ivarsFromCallback = first.runAllCallbacks('before');
-    
-    for (var i = 0, n = this._tests.length; i < n; i++) {
-      if (ivarsFromCallback) this._tests[i].setValuesFromCallbacks(ivarsFromCallback);
-      this._tests[i].run(result, block, context);
-    }
-    
-    if (ivarsFromCallback) first.runAllCallbacks('after');
-    block.call(context || null, this.klass.FINISHED, this._name);
-  }
-});
-

@@ -48,6 +48,7 @@ packages:
       - context/context
       - context/life_cycle
       - context/test
+      - context/suite
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable
