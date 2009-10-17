@@ -1,3 +1,24 @@
+Version 2.1.3
+October 10 2009
+================================================================
+
+* Fixes the load() function in the Packages DSL, and adds some
+  caching to improve lookup times for finding a package by the
+  name of its provided objects.
+
+* Non-existent package errors are now defered until you require()
+  an object rather than being thrown at package definition time.
+  This means require() won't complain about being passed native
+  objects or objects loaded by other means, as long as the
+  required object does actually exist.
+
+* MethodChain now adds instance methods from Modules, and adds
+  methods that were defined *before* MethodChain was loaded.
+
+* State now supports callSuper() to state methods imported from
+  mixins; previously you could only callSuper() to the superclass.
+
+
 Version 2.1.2
 August 11 2009
 ================================================================
