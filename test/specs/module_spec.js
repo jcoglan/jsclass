@@ -17,6 +17,11 @@ ModuleSpec = JS.Test.describe("Module", function() { with(this) {
         assertEqual( "NameOfTheModule", module.displayName );
     }})
     
+    it("should give display names to its methods", function() { with(this) {
+        assertEqual( "NameOfTheModule#firstMethod", module.instanceMethod('firstMethod').displayName );
+        assertEqual( "NameOfTheModule#secondMethod", module.instanceMethod('secondMethod').displayName );
+    }})
+    
     it("should have only itself as an ancestor", function() { with(this) {
         assertEqual( [module], module.ancestors() );
     }})
