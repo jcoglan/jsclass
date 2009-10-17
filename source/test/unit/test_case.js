@@ -39,7 +39,7 @@ JS.Test.Unit.extend({
        * each method.
        **/
       suite: function() {
-        var methodNames = new JS.Enumerable.Collection(this.instanceMethods()),
+        var methodNames = new JS.Enumerable.Collection(this.instanceMethods(false)),
             tests = methodNames.select(function(name) { return /^test./.test(name) }).sort(),
             suite = new JS.Test.Unit.TestSuite(this.displayName);
         
