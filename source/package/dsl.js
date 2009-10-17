@@ -19,6 +19,25 @@ JS.Package.extend({
     
     load: function(path, fireCallbacks) {
       JS.Package.Loader.loadFile(path, fireCallbacks);
+    },
+    
+    autoload: function(pattern, loader) {
+      if (!JS.isFn(loader) && loader.from) {
+        var dir = loader.from;
+        loader = function(name, cb) {
+          var file = JS.Package.DSL.pathFor(name),
+              path = dir.replace(/\/?$/, '/') + file + '.js';
+          JS.Package.DSL.load(path, cb);
+        };
+      }
+      JS.Package.autoload(pattern, loader);
+    },
+    
+    pathFor: function(name) {
+      return name.charAt(0).toLowerCase() +
+          name.substring(1).replace(/([a-z])([A-Z])/, function(m,a,b) {
+              return a + '_' + b.toLowerCase();
+          });
     }
   },
   

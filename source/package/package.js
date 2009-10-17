@@ -120,6 +120,7 @@ JS.Package = new JS.Class('Package', {
   extend: {
     _store:   {},
     _cache:   {},
+    _auto:    [],
     _env:     this,
     
     getByPath: function(loader) {
@@ -134,6 +135,15 @@ JS.Package = new JS.Class('Package', {
     getByName: function(name) {
       var cached = this.getFromCache(name);
       if (cached.pkg) return cached.pkg;
+      
+      for (var i = 0, n = this._auto.length; i < n; i++) {
+        var auto = this._auto[i];
+        if (!auto._pattern.test(name)) continue;
+        
+        var pkg = new this(function(cb) { auto._loader(name, cb) });
+        pkg.addName(name);
+        return pkg;
+      }
       
       var placeholder = new this();
       placeholder.addName(name);
@@ -179,6 +189,10 @@ JS.Package = new JS.Class('Package', {
       while (n--) ready[n].load(function() {
         this.load(deferred, --counter, callback);
       }, this);
+    },
+    
+    autoload: function(pattern, loader) {
+      this._auto.push({_pattern: pattern, _loader: loader});
     }
   }
 });
