@@ -30,9 +30,16 @@ JS.Test.Unit.extend({
      * block yields `true`.
      **/
     assertBlock: function(message, block, context) {
+      if (JS.isFn(message)) {
+        context = block;
+        block   = message;
+        message = null;
+      }
       this.__wrapAssertion__(function() {
-        if (!block.call(context || null))
-          throw new JS.Test.Unit.AssertionFailedError(message || 'assertBlock failed.');
+        if (!block.call(context || null)) {
+          message = this.buildMessage(message || 'assertBlock failed.');
+          throw new JS.Test.Unit.AssertionFailedError(message);
+        }
       });
     },
     
@@ -406,15 +413,26 @@ JS.Test.Unit.extend({
         },
         
         convert: function(object) {
+          var E = JS.Enumerable;
+          if (!object) return String(object);
+          
           if (object instanceof Array)
-            return '[' + new JS.Enumerable.Collection(object).map(function(item) {
+            return '[' + new E.Collection(object).map(function(item) {
               return this.convert(item);
             }, this).join(',') + ']';
           
-          if (!object) return String(object);
+          if (object instanceof String || typeof object === 'string')
+            return '"' + object + '"';
           
-          return object.name || object.displayName ||
-                 (object.toString ? object.toString() : String(object));
+          if (object instanceof Function)
+            return object.displayName || object.name || '#function';
+          
+          if (object.toString && object.toString !== Object.prototype.toString)
+            return object.toString();
+          
+          return '{' + new E.Collection(E.objectKeys(object).sort()).map(function(key) {
+            return this.convert(key) + ':' + this.convert(object[key]);
+          }, this).join(',') + '}';
         },
         
         template: function() {
@@ -427,10 +445,7 @@ JS.Test.Unit.extend({
         
         toString: function() {
           var messageParts = [], head, tail;
-          if (this._head) {
-            head = this.convert(this._head);
-            if (head !== '') messageParts.push(this.addPeriod(head));
-          }
+          if (this._head) messageParts.push(this.addPeriod(this._head));
           tail = this.template().result(this._parameters.collect(function(e) {
             return this.convert(e);
           }, this));

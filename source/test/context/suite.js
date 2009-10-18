@@ -3,7 +3,7 @@ JS.Test.Unit.TestCase.extend({
   // get weird default tests
   suite: function() {
     var methodNames = new JS.Enumerable.Collection(this.instanceMethods(false)),
-        tests = methodNames.select(function(name) { return /^test./.test(name) }),
+        tests = methodNames.select(function(name) { return /^test./.test(name) }).sort(),
         suite = new JS.Test.Unit.TestSuite(this.displayName);
     
     for (var i = 0, n = tests.length; i < n; i++) {

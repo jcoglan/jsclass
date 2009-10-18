@@ -76,7 +76,7 @@ JS.Test.Unit.extend({
      * failures and errors in this `TestResult`.
      **/
     toString: function() {
-      return this._runCount + ' tests, ' + this._assertionCount + ' assertions, ' +
+      return this.runCount() + ' tests, ' + this.assertionCount() + ' assertions, ' +
              this.failureCount() + ' failures, ' + this.errorCount() + ' errors';
     },
     
@@ -88,6 +88,26 @@ JS.Test.Unit.extend({
      **/
     passed: function() {
       return this._failures.length === 0 && this._errors.length === 0;
+    },
+    
+    /**
+     * JS.Test.Unit.TestResult#runCount() -> Number
+     * 
+     * Returns the number of test runs this `TestResult` has
+     * recorded.
+     **/
+    runCount: function() {
+      return this._runCount;
+    },
+    
+    /**
+     * JS.Test.Unit.TestResult#assertionCount() -> Number
+     * 
+     * Returns the number of assertion this `TestResult` has
+     * recorded.
+     **/
+    assertionCount: function() {
+      return this._assertionCount;
     },
     
     /**

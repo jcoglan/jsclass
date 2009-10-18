@@ -81,6 +81,7 @@ JS.Test.extend({
         context: function(name, block) {
           var klass = new JS.Class(this);
           klass.setContextName(name);
+          klass.setName(klass.getContextName());
           JS.Ruby(klass, block);
           return klass;
         }

@@ -20,6 +20,9 @@ JS.Enumerable = new JS.Module('Enumerable', {
       if (expected && JS.isFn(expected.equals))
         return expected.equals(actual);
       
+      if (expected instanceof Function)
+        return expected === actual;
+      
       if (expected instanceof Array) {
         if (!(actual instanceof Array)) return false;
         if (expected.length !== actual.length) return false;
@@ -43,10 +46,14 @@ JS.Enumerable = new JS.Module('Enumerable', {
       return false;
     },
     
+    objectKeys: function(object) {
+      var keys = [];
+      for (var key in object) keys.push(key);
+      return keys;
+    },
+    
     objectSize: function(object) {
-      var n = 0;
-      for (var key in object) n += 1;
-      return n;
+      return this.objectKeys(object).length;
     },
     
     Collection: new JS.Class({

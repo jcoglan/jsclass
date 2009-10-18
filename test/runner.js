@@ -1,14 +1,15 @@
-JSCLASS_PATH = 'build/src/';
-load(JSCLASS_PATH + 'loader.js');
+JSCLASS_PATH = 'build/min/'
+load(JSCLASS_PATH + 'loader.js')
 
 JS.Packages(function() { with(this) {
-    autoload(/^(.*)Spec$/, {from: 'test/specs', require: 'JS.$1'});
-}});
+    autoload(/^(.*)Spec$/, {from: 'test/specs', require: 'JS.$1'})
+    
+    pkg('TestSpec').requires('JS.Set')
+}})
 
 require('JS.Test', function() {
-    require('ModuleSpec',
-            'SetSpec',
+    require('TestSpec',
             
     JS.Test.method('autorun'))
-});
+})
 
