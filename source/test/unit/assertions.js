@@ -120,10 +120,11 @@ JS.Test.Unit.extend({
      **/
     assertKindOf: function(klass, object, message) {
       this.__wrapAssertion__(function() {
+        var type = (!object || typeof klass === 'string') ? typeof object : object.constructor;
         var fullMessage = this.buildMessage(message, "<?> expected to be an instance of\n" +
                                                      "<?> but was\n" +
                                                      "<?>.",
-                                                     object, klass, object.constructor);
+                                                     object, klass, type);
         this.assertBlock(fullMessage, function() { return JS.isType(object, klass) });
       });
     },

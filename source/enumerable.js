@@ -2,10 +2,8 @@ JS.Enumerable = new JS.Module('Enumerable', {
   extend: {
     forEach: function(block, context) {
       if (!block) return new JS.Enumerator(this, 'forEach');
-      for (var i = 0, n = this.length; i < n; i++) {
-        if (this[i] !== undefined)
-          block.call(context || null, this[i]);
-      }
+      for (var i = 0; i < this.length; i++)
+        block.call(context || null, this[i]);
       return this;
     },
     

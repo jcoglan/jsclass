@@ -1,10 +1,14 @@
-TestSpec = JS.Test.describe("Test", function() { with(this) {
-  
-  def("suite", function(tests) {
+TestSpecHelpers = new JS.Module({
+  suite: function(tests) {
     return new JS.Class("TestedSuite", JS.Test.Unit.TestCase, tests).suite()
-  })
+  },
   
-  def("assertTestResult", function(runs, assertions, failures, errors) { with(this) {
+  runTests: function(tests) {
+    if (tests) this.testcase = this.suite(tests)
+    this.testcase.run(this.result, function() {})
+  },
+  
+  assertTestResult: function(runs, assertions, failures, errors) { with(this) {
     __wrapAssertion__(function() { with(this) {
       assertEqual( runs,        result.runCount() )
       assertEqual( assertions,  result.assertionCount() )
@@ -13,20 +17,20 @@ TestSpec = JS.Test.describe("Test", function() { with(this) {
       
       assertEqual( failures + errors, faults.length )
     }})
-  }})
+  }},
   
-  def("assertMessage", function(index, message) { with(this) {
+  assertMessage: function(index, message) { with(this) {
     if (typeof index === "string") {
       message = index
       index   = 1
     }
     assertEqual( message, faults[index-1].longDisplay() )
-  }})
+  }}
+})
+
+TestSpec = JS.Test.describe("Test", function() { with(this) {
   
-  def("runTests", function(tests) {
-    if (tests) this.testcase = this.suite(tests)
-    this.testcase.run(this.result, function() {})
-  })
+  include(TestSpecHelpers)
   
   before("each", function() {
     this.result = new JS.Test.Unit.TestResult()
@@ -274,6 +278,143 @@ TestSpec = JS.Test.describe("Test", function() { with(this) {
         assertTestResult( 2, 2, 2, 0 )
         assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<#function> expected but was\n<#function>." )
         assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected not to be equal to\n<Set>." )
+      }})
+    }})
+  }})
+  
+  describe("#assertNull", function() { with(this) {
+    it("passes when given null", function() { with(this) {
+      runTests({
+        testAssertNull: function() { with(this) {
+          assertNull( null )
+          assertNotNull( false )
+        }}
+      })
+      assertTestResult( 1, 2, 0, 0 )
+    }})
+    
+    it("fails when not given null", function() { with(this) {
+      runTests({
+        test1: function() { with(this) {
+          assertNull( false )
+        }},
+        
+        test2: function() { with(this) {
+          assertNotNull( null, "it's null" )
+        }}
+      })
+      assertTestResult( 2, 2, 2, 0 )
+      assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<null> expected but was\n<false>." )
+      assertMessage( 2, "Failure:\ntest2(TestedSuite):\nit's null.\n<null> expected not to be null." )
+    }})
+  }})
+  
+  describe("#assertKindOf", function() { with(this) {
+    describe("with string types", function() { with(this) {
+      it("passes when the object is of the named type", function() { with(this) {
+        runTests({
+          testAssertKindOf: function() { with(this) {
+            assertKindOf( "string", "foo" )
+            assertKindOf( "number", 9 )
+            assertKindOf( "boolean", true )
+            assertKindOf( "undefined", undefined )
+            assertKindOf( "object", null )
+            assertKindOf( "object", {} )
+            assertKindOf( "object", [] )
+            assertKindOf( "function", function() {} )
+          }}
+        })
+        assertTestResult( 1, 8, 0, 0 )
+      }})
+      
+      it("fails when the object is not of the named type", function() { with(this) {
+        runTests({
+          test1: function() { with(this) { assertKindOf( "string",    67 )        }},
+          test2: function() { with(this) { assertKindOf( "number",    "four" )    }},
+          test3: function() { with(this) { assertKindOf( "boolean",   undefined ) }},
+          test4: function() { with(this) { assertKindOf( "undefined", null )      }},
+          test5: function() { with(this) { assertKindOf( "object",    "string" )  }},
+          test6: function() { with(this) { assertKindOf( "array",     [] )        }}
+        })
+        assertTestResult( 6, 6, 6, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<67> expected to be an instance of\n<\"string\"> but was\n<\"number\">." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"four\"> expected to be an instance of\n<\"number\"> but was\n<\"string\">." )
+        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<undefined> expected to be an instance of\n<\"boolean\"> but was\n<\"undefined\">." )
+        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<null> expected to be an instance of\n<\"undefined\"> but was\n<\"object\">." )
+        assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<\"string\"> expected to be an instance of\n<\"object\"> but was\n<\"string\">." )
+        assertMessage( 6, "Failure:\ntest6(TestedSuite):\n<[]> expected to be an instance of\n<\"array\"> but was\n<\"object\">." )
+      }})
+    }})
+    
+    describe("with functional types", function() { with(this) {
+      it("passes when the object is of the referenced type", function() { with(this) {
+        runTests({
+          testAssertKindOf: function() { with(this) {
+            assertKindOf( Object, {} )
+            assertKindOf( Array, [] )
+            assertKindOf( Function, function() {} )
+            assertKindOf( Object, [] )
+            assertKindOf( Object, function() {} )
+          }}
+        })
+        assertTestResult( 1, 5, 0, 0 )
+      }})
+      
+      it("fails when the object is not of the referenced type", function() { with(this) {
+        runTests({
+          test1: function() { with(this) { assertKindOf( Object,    "foo" )     }},
+          test2: function() { with(this) { assertKindOf( Array,     {} )        }},
+          test3: function() { with(this) { assertKindOf( Function,  [] )        }},
+          test4: function() { with(this) { assertKindOf( String,    true )      }},
+          test5: function() { with(this) { assertKindOf( Array,     undefined ) }}
+        })
+        assertTestResult( 5, 5, 5, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"foo\"> expected to be an instance of\n<Object> but was\n<String>." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<{}> expected to be an instance of\n<Array> but was\n<Object>." )
+        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[]> expected to be an instance of\n<Function> but was\n<Array>." )
+        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<true> expected to be an instance of\n<String> but was\n<Boolean>." )
+        assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<undefined> expected to be an instance of\n<Array> but was\n<\"undefined\">." )
+      }})
+    }})
+    
+    describe("with modular types", function() { with(this) {
+      it("passes when the object's inheritance chain includes the given module", function() { with(this) {
+        runTests({
+          testAssertKindOf: function() { with(this) {
+            var set = new JS.HashSet([1,2])
+            
+            assertKindOf( JS.Module,  JS.Set )
+            assertKindOf( JS.Class,   JS.Set )
+            assertKindOf( JS.Kernel,  JS.Set )
+            
+            assertKindOf( JS.Set,         set )
+            assertKindOf( JS.HashSet,     set )
+            assertKindOf( JS.Kernel,      set )
+            assertKindOf( JS.Enumerable,  set )
+            
+            set.extend(JS.Observable)
+            assertKindOf( JS.Observable,  set )
+          }}
+        })
+        assertTestResult( 1, 8, 0, 0 )
+      }})
+      
+      it("fails when the object's inheritance chain does not include the given module", function() { with(this) {
+        runTests({
+          test1: function() { with(this) { assertKindOf( Array,         JS.Set ) }},
+          test2: function() { with(this) { assertKindOf( JS.Enumerable, JS.Set ) }},
+          test3: function() { with(this) { assertKindOf( JS.Observable, JS.Set ) }},
+          test4: function() { with(this) { assertKindOf( JS.Module,     new JS.Set([1,2]) ) }},
+          test5: function() { with(this) { assertKindOf( JS.Class,      new JS.Set([1,2]) ) }},
+          test6: function() { with(this) { assertKindOf( JS.Observable, new JS.Set([1,2]) ) }}
+        })
+        assertTestResult( 6, 6, 6, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set> expected to be an instance of\n<Array> but was\n<Class>." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected to be an instance of\n<Enumerable> but was\n<Class>." )
+        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<Set> expected to be an instance of\n<Observable> but was\n<Class>." )
+        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Module> but was\n<Set>." )
+        assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Class> but was\n<Set>." )
+        assertMessage( 6, "Failure:\ntest6(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Observable> but was\n<Set>." )
       }})
     }})
   }})
