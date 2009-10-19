@@ -140,13 +140,14 @@ JS.Test.Unit.extend({
         
         this.assertBlock(fullMessage, function() { return typeof method === 'string' });
         
+        var type = object ? object.constructor : typeof object;
         fullMessage = this.buildMessage(message, "<?>\n" +
                                                  "of type <?>\n" +
                                                  "expected to respond to <?>.",
                                                  object,
-                                                 object.constructor,
+                                                 type,
                                                  method);
-        this.assertBlock(fullMessage, function() { return object[method] !== undefined });
+        this.assertBlock(fullMessage, function() { return object && object[method] !== undefined });
       });
     },
     

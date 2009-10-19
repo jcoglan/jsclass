@@ -419,5 +419,43 @@ TestSpec = JS.Test.describe("Test", function() { with(this) {
     }})
   }})
   
+  describe("#assertRespondTo", function() { with(this) {
+    it("passes when the object responds to the named message", function() { with(this) {
+      runTests({
+        testAssertRespondTo: function() { with(this) {
+          assertRespondTo( Object, "prototype" )
+          assertRespondTo( [], "length" )
+          assertRespondTo( "foo", "toUpperCase" )
+        }}
+      })
+      assertTestResult( 1, 3, 0, 0 )
+    }})
+    
+    it("fails when the object does not respond to the named message", function() { with(this) {
+      runTests({
+        test1: function() { with(this) {
+          assertRespondTo( Object, "foo" )
+        }},
+        
+        test2: function() { with(this) {
+          assertRespondTo( "foo", "downcase" )
+        }},
+        
+        test3: function() { with(this) {
+          assertRespondTo( undefined, "downcase" )
+        }},
+        
+        test4: function() { with(this) {
+          assertRespondTo( JS.Class, "nomethod" )
+        }}
+      })
+      assertTestResult( 4, 4, 4, 0 )
+      assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Object>\nof type <Function>\nexpected to respond to <\"foo\">." )
+      assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"foo\">\nof type <String>\nexpected to respond to <\"downcase\">." )
+      assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<undefined>\nof type <\"undefined\">\nexpected to respond to <\"downcase\">." )
+      assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Class>\nof type <Class>\nexpected to respond to <\"nomethod\">." )
+    }})
+  }})
+  
 }})
 
