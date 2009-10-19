@@ -355,9 +355,12 @@ TestSpec = JS.Test.describe("Test", function() { with(this) {
             assertKindOf( Function, function() {} )
             assertKindOf( Object, [] )
             assertKindOf( Object, function() {} )
+            assertKindOf( String, "foo" )
+            assertKindOf( Number, 9 )
+            assertKindOf( Boolean, false )
           }}
         })
-        assertTestResult( 1, 5, 0, 0 )
+        assertTestResult( 1, 8, 0, 0 )
       }})
       
       it("fails when the object is not of the referenced type", function() { with(this) {
