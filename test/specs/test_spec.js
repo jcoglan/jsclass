@@ -460,5 +460,88 @@ TestSpec = JS.Test.describe("Test", function() { with(this) {
     }})
   }})
   
+  describe("#assertMatch", function() { with(this) {
+    describe("with regular expressions", function() { with(this) {
+      it("passes if the string matches the pattern", function() { with(this) {
+        runTests({
+          testAssertMatch: function() { with(this) {
+            assertMatch( /Foo/i, "food" )
+            assertNoMatch( /Foo/, "food" )
+          }}
+        })
+        assertTestResult( 1, 2, 0, 0 )
+      }})
+      
+      it("fails if the string does not match the pattern", function() { with(this) {
+        runTests({
+          test1: function() { with(this) {
+            assertMatch( /Foo/, "food" )
+          }},
+          
+          test2: function() { with(this) {
+            assertNoMatch( /Foo/i, "food" )
+          }}
+        })
+        assertTestResult( 2, 2, 2, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"food\"> expected to match\n</Foo/>." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"food\"> expected not to match\n</Foo/i>." )
+      }})
+    }})
+    
+    describe("with modules", function() { with(this) {
+      it("passes if the object is of the given type", function() { with(this) {
+        runTests({
+          testAssertMatch: function() { with(this) {
+            assertMatch( JS.Module, JS.Enumerable )
+            assertNoMatch( JS.Class, new JS.Set([1,2]) )
+          }}
+        })
+        assertTestResult( 1, 2, 0, 0 )
+      }})
+      
+      it("fails if the object is not of the given type", function() { with(this) {
+        runTests({
+          test1: function() { with(this) {
+            assertMatch( JS.Class, new JS.Set([1,2]) )
+          }},
+          
+          test2: function() { with(this) {
+            assertNoMatch( JS.Module, JS.Enumerable )
+          }}
+        })
+        assertTestResult( 2, 2, 2, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set:{1,2}> expected to match\n<Class>." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Enumerable> expected not to match\n<Module>." )
+      }})
+    }})
+    
+    describe("with ranges", function() { with(this) {
+      it("passes if the object is in the given range", function() { with(this) {
+        runTests({
+          testAssertMatch: function() { with(this) {
+            assertMatch( new JS.Range(1,10), 10 )
+            assertNoMatch( new JS.Range(1,10,true), 10 )
+          }}
+        })
+        assertTestResult( 1, 2, 0, 0 )
+      }})
+      
+      it("fails if the object is not in the given range", function() { with(this) {
+        runTests({
+          test1: function() { with(this) {
+            assertMatch( new JS.Range(1,10,true), 10 )
+          }},
+          
+          test2: function() { with(this) {
+            assertNoMatch( new JS.Range(1,10), 10 )
+          }}
+        })
+        assertTestResult( 2, 2, 2, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<10> expected to match\n<1...10>." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<10> expected not to match\n<1..10>." )
+      }})
+    }})
+  }})
+  
 }})
 
