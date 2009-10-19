@@ -195,18 +195,15 @@ JS.Package = new JS.Class('Package', {
     },
     
     manufacture: function(pattern, name, loader) {
-      var loaderFn = loader, dir, pkg, requirement;
+      var path, pkg, requirement;
       
-      if (!JS.isFn(loader) && loader.from) {
-        dir = loader.from;
-        loaderFn = function(name, cb) {
-          var file = JS.Package.DSL.pathFor(name),
-              path = dir.replace(/\/?$/, '/') + file + '.js';
-          JS.Package.DSL.load(path, cb);
-        };
+      if (JS.isFn(loader)) {
+        pkg  = new this(function(cb) { loader(name, cb) });
+      } else {
+        path = loader.from.replace(/\/?$/, '/') + JS.Package.DSL.pathFor(name) + '.js';
+        pkg  = new this(path);
       }
       
-      pkg = new this(function(cb) { loaderFn(name, cb) });
       pkg.addName(name);
       
       if (loader.require) {
