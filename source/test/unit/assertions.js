@@ -427,7 +427,10 @@ JS.Test.Unit.extend({
             return '"' + object + '"';
           
           if (object instanceof Function)
-            return object.displayName || object.name || '#function';
+            return object.displayName ||
+                   object.name ||
+                  (object.toString().match(/^\s*function ([^\(]+)\(/) || [])[1] ||
+                   '#function';
           
           if (object.toString && object.toString !== Object.prototype.toString)
             return object.toString();
