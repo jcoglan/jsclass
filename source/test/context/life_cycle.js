@@ -53,7 +53,7 @@ JS.Test.Context.LifeCycle = new JS.Module({
           callbacks.push(mine[i]);
         
         return callbacks;
-      },
+      }
     })
   },
   
