@@ -587,5 +587,62 @@ TestSpec = JS.Test.describe("Test", function() { with(this) {
     }})
   }})
   
+  describe("#assertInDelta", function() { with(this) {
+    it("passes when the value is within delta of the expected result", function() { with(this) {
+      runTests({
+        testAssertInDelta: function() { with(this) {
+          assertInDelta(5, 4, 1)
+          assertInDelta(5, 2, 3)
+          assertInDelta(-3, 4, 7)
+        }}
+      })
+      assertTestResult( 1, 3, 0, 0 )
+    }})
+    
+    it("fails when the value differs from the expected result by more than delta", function() { with(this) {
+      runTests({
+        test1: function() { with(this) {
+          assertInDelta(5, 3.9, 1, "out by 0.1")
+        }},
+        test2: function() { with(this) {
+          assertInDelta(5, 1, 3)
+        }},
+        test3: function() { with(this) {
+          assertInDelta(-3, 5, 7)
+        }}
+      })
+      assertTestResult( 3, 3, 3, 0 )
+      assertMessage( 1, "Failure:\ntest1(TestedSuite):\nout by 0.1.\n<5> and\n<3.9> expected to be within\n<1> of each other." )
+      assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<5> and\n<1> expected to be within\n<3> of each other." )
+      assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<-3> and\n<5> expected to be within\n<7> of each other." )
+    }})
+  }})
+  
+  describe("#assertSend", function() { with(this) {
+    it("passes when the constructed method call returns true", function() { with(this) {
+      runTests({
+        testAssertSend: function() { with(this) {
+          assertSend( [JS.Set, 'includes', JS.Enumerable] )
+          assertSend( [JS.Set, 'isA', JS.Class] )
+        }}
+      })
+      assertTestResult( 1, 2, 0, 0 )
+    }})
+    
+    it("fails when the constructed method call returns false", function() { with(this) {
+      runTests({
+        test1: function() { with(this) {
+          assertSend( [JS.Set, 'isA', JS.Enumerable], "classes are not enumerable" )
+        }},
+        test2: function() { with(this) {
+          assertSend( [JS.Set, 'includes', JS.Class] )
+        }}
+      })
+      assertTestResult( 2, 2, 2, 0 )
+      assertMessage( 1, "Failure:\ntest1(TestedSuite):\nclasses are not enumerable.\n<Set> expected to respond to\n<isA([Enumerable])> with a true value." )
+      assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected to respond to\n<includes([Class])> with a true value." )
+    }})
+  }})
+  
 }})
 
