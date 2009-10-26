@@ -154,10 +154,11 @@ TestSpec = JS.Test.describe("Test", function() { with(this) {
           assertNotEqual( {foo: 2}, {foo: 3} )
           assertNotEqual( {foo: 2}, {foo: 2, bar: 1} )
           assertNotEqual( {foo: 2, bar: 1}, {foo: 2} )
+          assertNotEqual( new JS.Set([3,2]), new JS.Set([2,1]) )
           assertNotEqual( function() {}, function() {} )
         }}
       })
-      assertTestResult( 1, 23, 0, 0 )
+      assertTestResult( 1, 24, 0, 0 )
     }})
     
     describe("with booleans", function() { with(this) {
@@ -540,6 +541,49 @@ TestSpec = JS.Test.describe("Test", function() { with(this) {
         assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<10> expected to match\n<1...10>." )
         assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<10> expected not to match\n<1..10>." )
       }})
+    }})
+  }})
+  
+  describe("#assertSame", function() { with(this) {
+    it("passes when the objects are identical", function() { with(this) {
+      runTests({
+        testAssertSame: function() { with(this) {
+          var obj = {}, arr = [], fn = function() {}, set = new JS.Set([1,2])
+          
+          assertSame( obj, obj )
+          assertSame( arr, arr )
+          assertSame( fn,  fn  )
+          assertSame( set, set )
+          
+          assertNotSame( obj, {} )
+          assertNotSame( arr, [] )
+          assertNotSame( fn,  function() {}  )
+          assertNotSame( set, new JS.Set([1,2]) )
+        }}
+      })
+      assertTestResult( 1, 8, 0, 0 )
+    }})
+    
+    it("fails when the objects are not identical", function() { with(this) {
+      runTests({
+        test1: function() { with(this) {
+          assertSame( {}, {} )
+        }},
+        test2: function() { with(this) {
+          assertSame( [], [], "custom message" )
+        }},
+        test3: function() { with(this) {
+          assertNotSame( Object, Object )
+        }},
+        test4: function() { with(this) {
+          assertSame( new JS.Set([2,1]), new JS.Set([2,1]) )
+        }}
+      })
+      assertTestResult( 4, 4, 4, 0 )
+      assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<{}> expected to be the same as\n<{}>." )
+      assertMessage( 2, "Failure:\ntest2(TestedSuite):\ncustom message.\n<[]> expected to be the same as\n<[]>." )
+      assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<Object> expected not to be the same as\n<Object>." )
+      assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Set:{2,1}> expected to be the same as\n<Set:{2,1}>." )
     }})
   }})
   
