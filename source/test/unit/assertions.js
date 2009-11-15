@@ -277,7 +277,9 @@ JS.Test.Unit.extend({
           context  = A[4];
       
       this.__wrapAssertion__(function() {
-        var fullMessage = this.buildMessage(message, "<?> exception expected but none was thrown.", args);
+        var fullMessage = this.buildMessage(message, "<?> exception expected but none was thrown.", args),
+            actualException;
+        
         this.assertBlock(fullMessage, function() {
           try {
             block.call(context);

@@ -644,5 +644,122 @@ TestSpec = JS.Test.describe("Test", function() { with(this) {
     }})
   }})
   
+  describe("#assertThrow", function() { with(this) {
+    describe("with one exception type", function() { with(this) {
+      it("passes when the block throws the referenced exception type", function() { with(this) {
+        runTests({
+          testAssertThrow: function() { with(this) {
+            assertThrow(TypeError,  function() { throw new TypeError() })
+            assertThrow(TypeError,  function() { throw TypeError })
+            assertThrow(String,     function() { throw "a string" })
+          }}
+        })
+        assertTestResult( 1, 3, 0, 0 )
+      }})
+      
+      it("fails when the block does not throw any exceptions", function() { with(this) {
+        runTests({
+          test1: function() { with(this) {
+            assertThrow(TypeError,  function() {  })
+          }},
+          test2: function() { with(this) {
+            assertThrow(String,     function() {  })
+          }}
+        })
+        assertTestResult( 2, 2, 2, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError]> exception expected but none was thrown." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but none was thrown." )
+      }})
+      
+      it("fails when the block throws the wrong type of exception", function() { with(this) {
+        runTests({
+          test1: function() { with(this) {
+            assertThrow(TypeError,  function() { throw new RangeError("this is the wrong type") })
+          }},
+          test2: function() { with(this) {
+            assertThrow(String,     function() { throw TypeError })
+          }},
+          test3: function() { with(this) {
+            assertThrow(TypeError,  function() { throw "string error" })
+          }}
+        })
+        assertTestResult( 3, 3, 3, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError]> exception expected but was\nRangeError: this is the wrong type." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but was\nTypeError." )
+        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[TypeError]> exception expected but was\n\"string error\"." )
+      }})
+    }})
+    
+    describe("with several exception types", function() { with(this) {
+      it("passes when the block throws one of the referenced exception types", function() { with(this) {
+        runTests({
+          testAssertThrow: function() { with(this) {
+            assertThrow(TypeError, RangeError, function() { throw new RangeError() })
+            assertThrow(ReferenceError, SyntaxError, function() { throw SyntaxError })
+            assertThrow(SyntaxError, String, function() { throw "a string" })
+          }}
+        })
+        assertTestResult( 1, 3, 0, 0 )
+      }})
+      
+      it("fails when the block does not throw an exception", function() { with(this) {
+        runTests({
+          test1: function() { with(this) {
+            assertThrow(TypeError, RangeError, function() {  })
+          }},
+          test2: function() { with(this) {
+            assertThrow(ReferenceError, SyntaxError, function() {  })
+          }},
+          test3: function() { with(this) {
+            assertThrow(SyntaxError, String, function() {  })
+          }}
+        })
+        assertTestResult( 3, 3, 3, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError,RangeError]> exception expected but none was thrown." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[ReferenceError,SyntaxError]> exception expected but none was thrown." )
+        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[SyntaxError,String]> exception expected but none was thrown." )
+      }})
+      
+      it("fails when the block throws the wrong type of exception", function() { with(this) {
+        runTests({
+          test1: function() { with(this) {
+            assertThrow(TypeError, RangeError, function() { throw "a string" })
+          }},
+          test2: function() { with(this) {
+            assertThrow(ReferenceError, SyntaxError, function() { throw TypeError })
+          }},
+          test3: function() { with(this) {
+            assertThrow(SyntaxError, String, function() { throw new TypeError("a type error") })
+          }}
+        })
+        assertTestResult( 3, 3, 3, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError,RangeError]> exception expected but was\n\"a string\"." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[ReferenceError,SyntaxError]> exception expected but was\nTypeError." )
+        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[SyntaxError,String]> exception expected but was\nTypeError: a type error." )
+      }})
+    }})
+  }})
+  
+  describe("#assertNothingThrown", function() { with(this) {
+    it("passes when the block throws no exceptions", function() { with(this) {
+      runTests({
+        testAssertNothingThrown: function() { with(this) {
+          assertNothingThrown(function() {})
+        }}
+      })
+      assertTestResult( 1, 1, 0, 0 )
+    }})
+    
+    it("fails and reports the exception when the block throws an exception", function() { with(this) {
+      runTests({
+        test1: function() { with(this) {
+          assertNothingThrown("but there was an error", function() { throw new TypeError("the wrong type") })
+        }}
+      })
+      assertTestResult( 1, 1, 1, 0 )
+      assertMessage( 1, "Failure:\ntest1(TestedSuite):\nbut there was an error.\nException thrown:\nTypeError: the wrong type." )
+    }})
+  }})
+  
 }})
 
