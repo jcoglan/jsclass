@@ -80,7 +80,7 @@ JS.Test.extend({
          **/
         context: function(name, block) {
           var klass = new JS.Class(this);
-          klass.setContextName(name);
+          klass.setContextName(name.toString());
           klass.setName(klass.getContextName());
           JS.Ruby(klass, block);
           return klass;
@@ -90,7 +90,7 @@ JS.Test.extend({
   }),
   
   describe: function(name, block) {
-    var klass = new JS.Class(name, JS.Test.Unit.TestCase);
+    var klass = new JS.Class(name.toString(), JS.Test.Unit.TestCase);
     klass.include(JS.Test.Context);
     JS.Ruby(klass, block);
     return klass;

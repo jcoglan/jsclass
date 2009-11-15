@@ -28,7 +28,7 @@ TestSpecHelpers = new JS.Module({
   }}
 })
 
-TestSpec = JS.Test.describe("Test", function() { with(this) {
+TestSpec = JS.Test.describe(JS.Test, function() { with(this) {
   
   include(TestSpecHelpers)
   
