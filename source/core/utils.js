@@ -157,9 +157,12 @@ JS = {
    * Returns `true` iff `object` is of the given `type`.
    **/
   isType: function(object, type) {
-    if (!object || !type) return false;
-    return (type instanceof Function && object instanceof type) ||
-           (typeof type === 'string' && typeof object === type) ||
+    if (object === null || object === undefined || typeof type === 'string')
+      return typeof object === type;
+    
+    return (type instanceof Function &&
+             (object instanceof type || object.constructor === type))
+           ||
            (object.isA && object.isA(type));
   },
   

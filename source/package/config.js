@@ -33,7 +33,8 @@ JS.Packages(function() { with(this) {
                                       test + '.UI.Console.TestRunner')
                             .requires('JS.Module',
                                       'JS.Class',
-                                      'JS.Enumerable');
+                                      'JS.Enumerable',
+                                      'JS.Ruby');
     
     module('comparable')    .provides('JS.Comparable')
                             .requires('JS.Module');

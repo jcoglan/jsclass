@@ -2,10 +2,8 @@ JS.Enumerable = new JS.Module('Enumerable', {
   extend: {
     forEach: function(block, context) {
       if (!block) return new JS.Enumerator(this, 'forEach');
-      for (var i = 0, n = this.length; i < n; i++) {
-        if (this[i] !== undefined)
-          block.call(context || null, this[i]);
-      }
+      for (var i = 0; i < this.length; i++)
+        block.call(context || null, this[i]);
       return this;
     },
     
@@ -19,6 +17,9 @@ JS.Enumerable = new JS.Module('Enumerable', {
       
       if (expected && JS.isFn(expected.equals))
         return expected.equals(actual);
+      
+      if (expected instanceof Function)
+        return expected === actual;
       
       if (expected instanceof Array) {
         if (!(actual instanceof Array)) return false;
@@ -43,10 +44,14 @@ JS.Enumerable = new JS.Module('Enumerable', {
       return false;
     },
     
+    objectKeys: function(object) {
+      var keys = [];
+      for (var key in object) keys.push(key);
+      return keys;
+    },
+    
     objectSize: function(object) {
-      var n = 0;
-      for (var key in object) n += 1;
-      return n;
+      return this.objectKeys(object).length;
     },
     
     Collection: new JS.Class({

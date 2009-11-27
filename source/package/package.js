@@ -120,6 +120,7 @@ JS.Package = new JS.Class('Package', {
   extend: {
     _store:   {},
     _cache:   {},
+    _auto:    [],
     _env:     this,
     
     getByPath: function(loader) {
@@ -134,6 +135,14 @@ JS.Package = new JS.Class('Package', {
     getByName: function(name) {
       var cached = this.getFromCache(name);
       if (cached.pkg) return cached.pkg;
+      
+      var i, n, auto;
+      
+      for (i = 0, n = this._auto.length; i < n; i++) {
+        auto = this._auto[i];
+        if (auto._pattern.test(name))
+          return this.manufacture(auto._pattern, name, auto._loader);
+      }
       
       var placeholder = new this();
       placeholder.addName(name);
@@ -179,6 +188,32 @@ JS.Package = new JS.Class('Package', {
       while (n--) ready[n].load(function() {
         this.load(deferred, --counter, callback);
       }, this);
+    },
+    
+    autoload: function(pattern, loader) {
+      this._auto.push({_pattern: pattern, _loader: loader});
+    },
+    
+    manufacture: function(pattern, name, loader) {
+      var path, pkg, requirement;
+      
+      if (JS.isFn(loader)) {
+        pkg  = new this(function(cb) { loader(name, cb) });
+      } else {
+        path = loader.from.replace(/\/?$/, '/') + JS.Package.DSL.pathFor(name) + '.js';
+        pkg  = new this(path);
+      }
+      
+      pkg.addName(name);
+      
+      if (loader.require) {
+        requirement = loader.require.replace(/\$(\d+)/, function(match, index) {
+          return name.match(pattern)[parseInt(index)];
+        });
+        pkg.addDependency(requirement);
+      }
+      
+      return pkg;
     }
   }
 });

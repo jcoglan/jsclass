@@ -19,6 +19,17 @@ JS.Package.extend({
     
     load: function(path, fireCallbacks) {
       JS.Package.Loader.loadFile(path, fireCallbacks);
+    },
+    
+    autoload: function(pattern, loader) {
+      JS.Package.autoload(pattern, loader);
+    },
+    
+    pathFor: function(name) {
+      return name.charAt(0).toLowerCase() +
+          name.substring(1).replace(/([a-z])([A-Z])/, function(m,a,b) {
+              return a + '_' + b.toLowerCase();
+          });
     }
   },
   

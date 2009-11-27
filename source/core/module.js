@@ -466,17 +466,6 @@ JS.extend(JS.Module.prototype, {
   },
   
   /**
-   * JS.Module#toString() -> String
-   * 
-   * Returns a string representation of the module, which will be its display name
-   * if one is set, or a generic classname/hash representation from Kernel.
-   **/
-  toString: function() {
-    var name = this.displayName;
-    return name ? name : JS.Kernel.__fns__.toString.call(this, this.klass.displayName);
-  },
-  
-  /**
    * JS.Module#uncache([recursive = true]) -> undefined
    * - recursive (Boolean): whether to clear the cache of all dependent modules
    * 
@@ -493,4 +482,15 @@ JS.extend(JS.Module.prototype, {
     while (i--) self.__dep__[i].uncache();
   }
 });
+
+/**
+ * JS.Module#toString() -> String
+ * 
+ * Returns a string representation of the module, which will be its display name
+ * if one is set, or a generic classname/hash representation from Kernel.
+ **/
+JS.Module.prototype.toString = function() {
+  var name = this.displayName;
+  return name ? name : JS.Kernel.__fns__.toString.call(this, this.klass.displayName);
+};
 

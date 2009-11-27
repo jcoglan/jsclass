@@ -39,3 +39,5 @@ JS.Test.Unit.extend({
   })
 });
 
+JS.Test.extend({ autorun: JS.Test.Unit.AutoRunner.method('run') });
+
