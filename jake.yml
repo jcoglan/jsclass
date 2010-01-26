@@ -23,12 +23,8 @@ packages:
       - loader
       - dsl
   loader:
-    extends: core
-    directory: package
+    extends: package
     files:
-      - package
-      - loader
-      - dsl
       - config
   comparable:       comparable
   constant_scope:   constant_scope
