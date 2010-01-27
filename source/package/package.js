@@ -148,7 +148,7 @@ JS.Package = function(loader) {
   
   klass.getByPath = function(loader) {
     var path = loader.toString();
-    return this._indexByPath[path] || (this._indexByPath[path] = new this(loader));
+    return this._indexByPath[path] = this._indexByPath[path] || new this(loader);
   };
   
   klass.getFromCache = function(name) {
