@@ -39,33 +39,37 @@ JS.Package = function(loader) {
     this._uses.push(pkg);
   };
   
-  instance._getPackage = function(list, index) {
-    var pkg = list[index];
-    return klass.getByName(pkg);
-  };
-  
   instance.addName = function(name) {
     this._names.push(name);
     klass.getFromCache(name).pkg = this;
+  };
+  
+  instance.onload = function(block) {
+    this._onload = block;
+  };
+  
+  instance._getPackage = function(list, index) {
+    var pkg = list[index];
+    return klass.getByName(pkg);
   };
   
   instance._depsComplete = function(deps) {
     deps = (deps || this._deps).list;
     var n = deps.length, dep;
     while (n--) {
-      if (!this._getPackage(deps, n).isComplete()) return false;
+      if (!this._getPackage(deps, n)._isComplete()) return false;
     }
     return true;
   };
   
-  instance.isComplete = function() {
-    return this.isLoaded() &&
+  instance._isComplete = function() {
+    return this._isLoaded() &&
            this._depsComplete(this._deps) &&
            this._depsComplete(this._uses);
   };
   
-  instance.isLoaded = function(withExceptions) {
-    if (this._isLoaded) return true;
+  instance._isLoaded = function(withExceptions) {
+    if (this.__isLoaded) return true;
     
     var names = this._names.list,
         i     = names.length,
@@ -79,30 +83,26 @@ JS.Package = function(loader) {
       else
         return false;
     }
-    return this._isLoaded = true;
+    return this.__isLoaded = true;
   };
   
-  instance.readyToLoad = function() {
-    return !this.isLoaded() && this._depsComplete();
+  instance._readyToLoad = function() {
+    return !this._isLoaded() && this._depsComplete();
   };
   
-  instance.expand = function(set) {
+  instance._expand = function(set) {
     var deps, n;
     
     deps = this._deps.list; n = deps.length;
-    while (n--) this._getPackage(deps, n).expand(set);
+    while (n--) this._getPackage(deps, n)._expand(set);
     
     set.push(this);
     
     deps = this._uses.list; n = deps.length;
-    while (n--) this._getPackage(deps, n).expand(set);
+    while (n--) this._getPackage(deps, n)._expand(set);
   };
   
-  instance.onload = function(block) {
-    this._onload = block;
-  };
-  
-  instance.load = function(callback, context) {
+  instance._load = function(callback, context) {
     if (this._loader === undefined)
       throw new Error('No load path specified for ' + this.toString());
     
@@ -113,14 +113,14 @@ JS.Package = function(loader) {
       callback.call(context || null);
     };
     
-    if (this.isLoaded()) return setTimeout(handler, 1);
+    if (this._isLoaded()) return setTimeout(handler, 1);
     
     this._waiters.push(handler);
     if (this._loading) return;
     
     fireCallbacks = function() {
       if (typeof self._onload === 'function') self._onload();
-      self.isLoaded(true);
+      self._isLoaded(true);
       for (var i = 0, n = self._waiters.length; i < n; i++) self._waiters[i]();
       self._waiters = [];
     };
@@ -179,7 +179,7 @@ JS.Package = function(loader) {
   klass.expand = function(list) {
     var packages = new klass.OrderedSet(), i, n;
     for (i = 0, n = list.length; i < n; i++)
-      list[i].expand(packages);
+      list[i]._expand(packages);
     return packages.list;
   };
   
@@ -191,16 +191,16 @@ JS.Package = function(loader) {
     
     while (n--) {
       pkg = list[n];
-      if (pkg.isComplete())
+      if (pkg._isComplete())
         counter -= 1;
       else
-        (pkg.readyToLoad() ? ready : deferred).push(pkg);
+        (pkg._readyToLoad() ? ready : deferred).push(pkg);
     }
     
     if (counter === 0) return callback();
     
     n = ready.length;
-    while (n--) ready[n].load(function() {
+    while (n--) ready[n]._load(function() {
       this.load(deferred, --counter, callback);
     }, this);
   };
