@@ -1,38 +1,56 @@
 this.JS = this.JS || {};
 
 JS.Package = function(loader) {
+  var Set = JS.Package.OrderedSet;
+  JS.Package._index(this);
+  
   this._loader  = loader;
-  this._deps    = [];
-  this._uses    = [];
-  this._names   = {};
+  this._deps    = new Set();
+  this._uses    = new Set();
+  this._names   = new Set();
   this._waiters = [];
   this._loading = false;
 };
+
+(function() {
+  var Set = JS.Package.OrderedSet = function() {
+    this._members = this.list = [];
+    this._index = {};
+  };
+
+  Set.prototype.push = function(item) {
+    var key   = (item.id !== undefined) ? item.id : item,
+        index = this._index;
+    
+    if (index.hasOwnProperty(key)) return;
+    index[key] = this._members.length;
+    this._members.push(item);
+  };
+})();
 
 (function(klass) {
   var instance = klass.prototype;
   
   instance.addDependency = function(pkg) {
-    if (klass.indexOf(this._deps, pkg) === -1) this._deps.push(pkg);
+    this._deps.push(pkg);
   };
   
   instance.addSoftDependency = function(pkg) {
-    if (klass.indexOf(this._uses, pkg) === -1) this._uses.push(pkg);
+    this._uses.push(pkg);
   };
   
   instance._getPackage = function(list, index) {
     var pkg = list[index];
-    if (typeof pkg === 'string') pkg = list[index] = klass.getByName(pkg);
-    return pkg;
+    return klass.getByName(pkg);
   };
   
   instance.addName = function(name) {
-    this._names[name] = true;
+    this._names.push(name);
     klass.getFromCache(name).pkg = this;
   };
   
-  instance.depsComplete = function(deps) {
-    deps = deps || this._deps;
+  instance._depsComplete = function(deps) {
+    deps = (deps || this._deps).list;
     var n = deps.length, dep;
     while (n--) {
       if (!this._getPackage(deps, n).isComplete()) return false;
@@ -42,17 +60,18 @@ JS.Package = function(loader) {
   
   instance.isComplete = function() {
     return this.isLoaded() &&
-           this.depsComplete(this._deps) &&
-           this.depsComplete(this._uses);
+           this._depsComplete(this._deps) &&
+           this._depsComplete(this._uses);
   };
   
   instance.isLoaded = function(withExceptions) {
     if (this._isLoaded) return true;
     
-    var names = this._names, name, object;
+    var names = this._names.list,
+        i     = names.length,
+        name, object;
     
-    for (name in names) {
-      if (!names.hasOwnProperty(name)) continue;
+    while (i--) { name = names[i];
       object = klass.getObject(name);
       if (object !== undefined) continue;
       if (withExceptions)
@@ -64,21 +83,19 @@ JS.Package = function(loader) {
   };
   
   instance.readyToLoad = function() {
-    return !this.isLoaded() && this.depsComplete();
+    return !this.isLoaded() && this._depsComplete();
   };
   
-  instance.expand = function(list) {
-    var deps = list || [], dep, n;
+  instance.expand = function(set) {
+    var deps, n;
     
-    n = this._deps.length;
-    while (n--) this._getPackage(this._deps, n).expand(deps);
+    deps = this._deps.list; n = deps.length;
+    while (n--) this._getPackage(deps, n).expand(set);
     
-    if (klass.indexOf(deps, this) === -1) deps.push(this);
+    set.push(this);
     
-    n = this._uses.length;
-    while (n--) this._getPackage(this._uses, n).expand(deps);
-    
-    return deps;
+    deps = this._uses.list; n = deps.length;
+    while (n--) this._getPackage(deps, n).expand(set);
   };
   
   instance.onload = function(block) {
@@ -116,32 +133,26 @@ JS.Package = function(loader) {
   };
   
   instance.toString = function() {
-    var names = [], name;
-    for (name in this._names) {
-      if (this._names.hasOwnProperty(name)) names.push(name);
-    }
-    return 'Package:' + names.join(',');
+    return 'Package:' + this._names.list.join(',');
   };
   
-  klass.indexOf = function(list, item) {
-    if (list.indexOf) return list.indexOf(item);
-    for (var i = 0, n = list.length; i < n; i++) {
-      if (list[i] === item) return i;
-    }
-    return -1;
-  };
+  klass._autoIncrement = 1;
+  klass._env = this;
+  klass._indexByPath = {};
+  klass._indexByName = {};
   
-  klass._store =  {};
-  klass._cache =  {},
-  klass._env   =  this;
+  klass._index = function(pkg) {
+    pkg.id = this._autoIncrement;
+    this._autoIncrement += 1;
+  };
   
   klass.getByPath = function(loader) {
     var path = loader.toString();
-    return this._store[path] || (this._store[path] = new this(loader));
+    return this._indexByPath[path] || (this._indexByPath[path] = new this(loader));
   };
   
   klass.getFromCache = function(name) {
-    return this._cache[name] = this._cache[name] || {};
+    return this._indexByName[name] = this._indexByName[name] || {};
   };
   
   klass.getByName = function(name) {
@@ -166,10 +177,10 @@ JS.Package = function(loader) {
   };
   
   klass.expand = function(list) {
-    var packages = [], i, n;
+    var packages = new klass.OrderedSet(), i, n;
     for (i = 0, n = list.length; i < n; i++)
       list[i].expand(packages);
-    return packages;
+    return packages.list;
   };
   
   klass.load = function(list, counter, callback) {
