@@ -59,19 +59,14 @@ JS.Packages = function(declaration) {
 };
  
 JS.require = function() {
-  var args         = Array.prototype.slice.call(arguments),
-      requirements = [];
+  var requirements = [], i = 0;
   
-  while (typeof args[0] === 'string') requirements.push(JS.Package.getByName(args.shift()));
-  requirements = JS.Package.expand(requirements);
+  while (typeof arguments[i] === 'string'){
+    requirements.push(arguments[i]);
+    i += 1;
+  }
   
-  var fired = false, handler = function() {
-    if (fired) return;
-    fired = true;
-    args[0] && args[0].call(args[1] || null);
-  };
-  
-  JS.Package.load(requirements, requirements.length, handler);
+  JS.Package.oncomplete(requirements, arguments[i], arguments[i+1]);
 };
 
 require = JS.require;

@@ -1,9 +1,7 @@
 JS.Packages(function() { with(this) {
     
     var PATH = JS.Package._env.JSCLASS_PATH ||
-               __FILE__().replace(/[^\/]*$/g, '');
-    
-    PATH = PATH.replace(/\/?$/g, '/');
+               __FILE__().replace(/\/?[^\/]*$/g, '/');
     
     var module = function(name) { return file(PATH + name + '.js') };
     
