@@ -12,11 +12,17 @@ JS.Package = function(loader) {
   this._events    = {};
 };
 
-(function() {
-  var Set = JS.Package.OrderedSet = function() {
+(function(klass) {
+  //================================================================
+  // Ordered list of unique elements, for storing dependencies
+  
+  var Set = klass.OrderedSet = function(list, transform) {
     this._members = this.list = [];
     this._index = {};
-    this.length = 0;
+    if (!list) return;
+    
+    for (var i = 0, n = list.length; i < n; i++)
+      this.push(transform ? transform(list[i]) : list[i]);
   };
 
   Set.prototype.push = function(item) {
@@ -26,15 +32,23 @@ JS.Package = function(loader) {
     if (index.hasOwnProperty(key)) return;
     index[key] = this._members.length;
     this._members.push(item);
-    this.length = this._members.length;
   };
-})();
-
-(function(klass) {
-  var instance = klass.prototype;
+  
+  //================================================================
+  // Environment settings
+  
+  klass._env = this;
+  
+  if ((this.document || {}).getElementsByTagName) {
+    var script = document.getElementsByTagName('script')[0];
+    klass._isIE = (script.readyState !== undefined);
+  }
+  
   
   //================================================================
   // Configuration methods, called by the DSL
+  
+  var instance = klass.prototype;
   
   instance.addDependency = function(pkg) {
     this._deps.push(pkg);
@@ -100,21 +114,27 @@ JS.Package = function(loader) {
   instance.load = function() {
     if (!this.fire('request')) return;
     
-    klass.oncomplete(this._deps.list, function() {
-      var self = this,
+    var allDeps    = this._deps.list.concat(this._uses.list),
+        startEvent = klass._isIE ? 'load' : 'download',
+        listener   = {};
+    
+    listener[startEvent] = this._deps.list;
+    
+    klass.when(listener, function() {
+      klass.when({complete: allDeps, load: [this]}, function() {
+        this.fire('complete');
+      }, this);
       
-          waitForSoftDeps = function() {
-            klass.oncomplete(self._uses.list, function() { self.fire('complete') });
-          },
-          
-          fireOnLoad = function() {
-            if (self._onload) self._onload();
-            self.isLoaded(true);
-            self.fire('load');
-            waitForSoftDeps();
-          };
+      var self = this, fireOnLoad = function() {
+        if (self._onload) self._onload();
+        self.isLoaded(true);
+        self.fire('load');
+      };
       
-      if (this.isLoaded()) return waitForSoftDeps();
+      if (this.isLoaded()) {
+        this.fire('download');
+        return this.fire('load');
+      }
       
       if (this._loader === undefined)
         throw new Error('No load path found for ' + this._names.list[0]);
@@ -122,6 +142,8 @@ JS.Package = function(loader) {
       typeof this._loader === 'function'
             ? this._loader(fireOnLoad)
             : klass.Loader.loadFile(this._loader, fireOnLoad);
+      
+      this.fire('download');
     }, this);
   };
   
@@ -132,20 +154,24 @@ JS.Package = function(loader) {
   //================================================================
   // Class-level event API, handles group listeners
   
-  klass.oncomplete = function(names, block, scope) {
-    var packages = new klass.OrderedSet(), i = names.length;
-    while (i--) packages.push(this.getByName(names[i]));
+  klass.when = function(eventTable, block, scope) {
+    var eventList = [], event, names, i;
+    for (event in eventTable) {
+      if (!eventTable.hasOwnProperty(event)) continue;
+      names = new klass.OrderedSet(eventTable[event], function(name) { return klass.getByName(name) });
+      i = names.list.length;
+      while (i--) eventList.push([event, this.getByName(names.list[i])]);
+    }
     
-    var waiting = i = packages.list.length, object;
+    var waiting = i = eventList.length;
     if (waiting === 0) return block && block.call(scope);
     
     while (i--) {
-      object = packages.list[i];
-      object.on('complete', function() {
+      eventList[i][1].on(eventList[i][0], function() {
         waiting -= 1;
         if (waiting === 0 && block) block.call(scope);
       });
-      object.load();
+      eventList[i][1].load();
     }
   };
   
@@ -153,7 +179,6 @@ JS.Package = function(loader) {
   // Indexes for fast lookup by path and name, and assigning IDs
   
   klass._autoIncrement = 1;
-  klass._env = this;
   klass._indexByPath = {};
   klass._indexByName = {};
   
@@ -168,6 +193,7 @@ JS.Package = function(loader) {
   };
   
   klass.getByName = function(name) {
+    if (typeof name !== 'string') return name;
     var cached = this.getFromCache(name);
     if (cached.pkg) return cached.pkg;
     

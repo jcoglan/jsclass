@@ -66,7 +66,7 @@ JS.require = function() {
     i += 1;
   }
   
-  JS.Package.oncomplete(requirements, arguments[i], arguments[i+1]);
+  JS.Package.when({complete: requirements}, arguments[i], arguments[i+1]);
 };
 
 require = JS.require;
