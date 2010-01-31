@@ -155,12 +155,12 @@ JS.Package = function(loader) {
   // Class-level event API, handles group listeners
   
   klass.when = function(eventTable, block, scope) {
-    var eventList = [], event, names, i;
+    var eventList = [], event, packages, i;
     for (event in eventTable) {
       if (!eventTable.hasOwnProperty(event)) continue;
-      names = new klass.OrderedSet(eventTable[event], function(name) { return klass.getByName(name) });
-      i = names.list.length;
-      while (i--) eventList.push([event, this.getByName(names.list[i])]);
+      packages = new klass.OrderedSet(eventTable[event], function(name) { return klass.getByName(name) });
+      i = packages.list.length;
+      while (i--) eventList.push([event, packages.list[i]]);
     }
     
     var waiting = i = eventList.length;
