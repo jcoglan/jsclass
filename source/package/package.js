@@ -115,8 +115,8 @@ JS.Package = function(loader) {
     if (!this.fire('request')) return;
     
     var allDeps    = this._deps.list.concat(this._uses.list),
-        startEvent = klass._isIE ? 'load' : 'download',
-        listener   = {};
+        startEvent = 'load',  // could potentially use 'download' event in
+        listener   = {};      // browsers that guarantee execution order
     
     listener[startEvent] = this._deps.list;
     
