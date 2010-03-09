@@ -26,5 +26,5 @@ License
 ---
 
 Distributed under the MIT license.
-Copyright (c) 2007-2009 James Coglan
+Copyright (c) 2007-2010 James Coglan
 

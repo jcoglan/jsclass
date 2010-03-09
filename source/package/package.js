@@ -1,220 +1,225 @@
-JS.Package = new JS.Class('Package', {
-  initialize: function(loader) {
-    this._loader  = loader;
-    this._deps    = [];
-    this._uses    = [];
-    this._names   = [];
-    this._waiters = [];
-    this._loading = false;
-  },
+this.JS = this.JS || {};
+
+JS.Package = function(loader) {
+  var Set = JS.Package.OrderedSet;
+  JS.Package._index(this);
   
-  addDependency: function(pkg) {
-    if (JS.indexOf(this._deps, pkg) === -1) this._deps.push(pkg);
-  },
+  this._loader    = loader;
+  this._names     = new Set();
+  this._deps      = new Set();
+  this._uses      = new Set();
+  this._observers = {};
+  this._events    = {};
+};
+
+(function(klass) {
+  //================================================================
+  // Ordered list of unique elements, for storing dependencies
   
-  addSoftDependency: function(pkg) {
-    if (JS.indexOf(this._uses, pkg) === -1) this._uses.push(pkg);
-  },
+  var Set = klass.OrderedSet = function(list, transform) {
+    this._members = this.list = [];
+    this._index = {};
+    if (!list) return;
+    
+    for (var i = 0, n = list.length; i < n; i++)
+      this.push(transform ? transform(list[i]) : list[i]);
+  };
+
+  Set.prototype.push = function(item) {
+    var key   = (item.id !== undefined) ? item.id : item,
+        index = this._index;
+    
+    if (index.hasOwnProperty(key)) return;
+    index[key] = this._members.length;
+    this._members.push(item);
+  };
   
-  _getPackage: function(list, index) {
-    var pkg = list[index];
-    if (typeof pkg === 'string') pkg = list[index] = this.klass.getByName(pkg);
-    return pkg;
-  },
+  //================================================================
+  // Environment settings
   
-  addName: function(name) {
-    if (JS.indexOf(this._names, name) !== -1) return;
+  klass._env = this;
+  
+  if ((this.document || {}).getElementsByTagName) {
+    var script = document.getElementsByTagName('script')[0];
+    klass._isIE = (script.readyState !== undefined);
+  }
+  
+  
+  //================================================================
+  // Configuration methods, called by the DSL
+  
+  var instance = klass.prototype;
+  
+  instance.addDependency = function(pkg) {
+    this._deps.push(pkg);
+  };
+  
+  instance.addSoftDependency = function(pkg) {
+    this._uses.push(pkg);
+  };
+  
+  instance.addName = function(name) {
     this._names.push(name);
-    this.klass.getFromCache(name).pkg = this;
-  },
+    klass.getFromCache(name).pkg = this;
+  };
   
-  depsComplete: function(deps) {
-    deps = deps || this._deps;
-    var n = deps.length, dep;
-    while (n--) {
-      if (!this._getPackage(deps, n).isComplete()) return false;
-    }
+  instance.onload = function(block) {
+    this._onload = block;
+  };
+  
+  //================================================================
+  // Event dispatchers, for communication between packages
+  
+  instance.on = function(eventType, block, scope) {
+    if (this._events[eventType]) return block.call(scope);
+    var list = this._observers[eventType] = this._observers[eventType] || [];
+    list.push([block, scope]);
+  };
+  
+  instance.fire = function(eventType) {
+    if (this._events[eventType]) return false;
+    this._events[eventType] = true;
+    
+    var list = this._observers[eventType];
+    if (!list) return true;
+    delete this._observers[eventType];
+    
+    for (var i = 0, n = list.length; i < n; i++)
+      list[i][0].call(list[i][1]);
+    
     return true;
-  },
+  };
   
-  isComplete: function() {
-    return this.isLoaded() &&
-           this.depsComplete(this._deps) &&
-           this.depsComplete(this._uses);
-  },
+  //================================================================
+  // Loading frontend and other miscellany
   
-  isLoaded: function(withExceptions) {
-    if (this._isLoaded) return true;
+  instance.isLoaded = function(withExceptions) {
+    if (!withExceptions && this._isLoaded !== undefined) return this._isLoaded;
     
-    var names = this._names,
-        n     = names.length,
-        object;
+    var names = this._names.list,
+        i     = names.length,
+        name, object;
     
-    while (n--) {
-      object = this.klass.getObject(names[n]);
+    while (i--) { name = names[i];
+      object = klass.getObject(name);
       if (object !== undefined) continue;
       if (withExceptions)
-        throw new Error('Expected package at ' + this._loader + ' to define ' + names[n]);
+        throw new Error('Expected package at ' + this._loader + ' to define ' + name);
       else
-        return false;
+        return this._isLoaded = false;
     }
     return this._isLoaded = true;
-  },
+  };
   
-  readyToLoad: function() {
-    return !this.isLoaded() && this.depsComplete();
-  },
-  
-  expand: function(list) {
-    var deps = list || [], dep, n;
+  instance.load = function() {
+    if (!this.fire('request')) return;
     
-    n = this._deps.length;
-    while (n--) this._getPackage(this._deps, n).expand(deps);
+    var allDeps    = this._deps.list.concat(this._uses.list),
+        startEvent = 'load',  // could potentially use 'download' event in
+        listener   = {};      // browsers that guarantee execution order
     
-    if (JS.indexOf(deps, this) === -1) deps.push(this);
+    listener[startEvent] = this._deps.list;
     
-    n = this._uses.length;
-    while (n--) this._getPackage(this._uses, n).expand(deps);
-    
-    return deps;
-  },
-  
-  onload: function(block) {
-    this._onload = block;
-  },
-  
-  load: function(callback, context) {
-    if (this._loader === undefined)
-      throw new Error('No load path specified for ' + this._names.join(', '));
-    
-    var self = this, handler, fireCallbacks;
-    
-    handler = function() {
-      self._loading = false;
-      callback.call(context || null);
-    };
-    
-    if (this.isLoaded()) return setTimeout(handler, 1);
-    
-    this._waiters.push(handler);
-    if (this._loading) return;
-    
-    fireCallbacks = function() {
-      if (JS.isFn(self._onload)) self._onload();
-      self.isLoaded(true);
-      for (var i = 0, n = self._waiters.length; i < n; i++) self._waiters[i]();
-      self._waiters = [];
-    };
-    
-    this._loading = true;
-    
-    JS.isFn(this._loader)
-        ? this._loader(fireCallbacks)
-        : this.klass.Loader.loadFile(this._loader, fireCallbacks);
-  },
-  
-  toString: function() {
-    return 'Package:' + this._names[0];
-  },
-  
-  extend: {
-    _store:   {},
-    _cache:   {},
-    _auto:    [],
-    _env:     this,
-    
-    getByPath: function(loader) {
-      var path = loader.toString();
-      return this._store[path] || (this._store[path] = new this(loader));
-    },
-    
-    getFromCache: function(name) {
-      return this._cache[name] = this._cache[name] || {};
-    },
-    
-    getByName: function(name) {
-      var cached = this.getFromCache(name);
-      if (cached.pkg) return cached.pkg;
-      
-      var i, n, auto;
-      
-      for (i = 0, n = this._auto.length; i < n; i++) {
-        auto = this._auto[i];
-        if (auto._pattern.test(name))
-          return this.manufacture(auto._pattern, name, auto._loader);
-      }
-      
-      var placeholder = new this();
-      placeholder.addName(name);
-      return placeholder;
-    },
-    
-    getObject: function(name) {
-      var cached = this.getFromCache(name);
-      if (cached.obj !== undefined) return cached.obj;
-      
-      var object = this._env,
-          parts  = name.split('.'), part;
-      
-      while (part = parts.shift()) object = object && object[part];
-      
-      return this.getFromCache(name).obj = object;
-    },
-    
-    expand: function(list) {
-      var packages = [], i, n;
-      for (i = 0, n = list.length; i < n; i++)
-        list[i].expand(packages);
-      return packages;
-    },
-    
-    load: function(list, counter, callback) {
-      var ready    = [],
-          deferred = [],
-          n        = list.length,
-          pkg;
-      
-      while (n--) {
-        pkg = list[n];
-        if (pkg.isComplete())
-          counter -= 1;
-        else
-          (pkg.readyToLoad() ? ready : deferred).push(pkg);
-      }
-      
-      if (counter === 0) return callback();
-      
-      n = ready.length;
-      while (n--) ready[n].load(function() {
-        this.load(deferred, --counter, callback);
+    klass.when(listener, function() {
+      klass.when({complete: allDeps, load: [this]}, function() {
+        this.fire('complete');
       }, this);
-    },
-    
-    autoload: function(pattern, loader) {
-      this._auto.push({_pattern: pattern, _loader: loader});
-    },
-    
-    manufacture: function(pattern, name, loader) {
-      var path, pkg, requirement;
       
-      if (JS.isFn(loader)) {
-        pkg  = new this(function(cb) { loader(name, cb) });
-      } else {
-        path = loader.from.replace(/\/?$/, '/') + JS.Package.DSL.pathFor(name) + '.js';
-        pkg  = new this(path);
+      var self = this, fireOnLoad = function() {
+        if (self._onload) self._onload();
+        self.isLoaded(true);
+        self.fire('load');
+      };
+      
+      if (this.isLoaded()) {
+        this.fire('download');
+        return this.fire('load');
       }
       
-      pkg.addName(name);
+      if (this._loader === undefined)
+        throw new Error('No load path found for ' + this._names.list[0]);
       
-      if (loader.require) {
-        requirement = loader.require.replace(/\$(\d+)/, function(match, index) {
-          return name.match(pattern)[parseInt(index)];
-        });
-        pkg.addDependency(requirement);
-      }
+      typeof this._loader === 'function'
+            ? this._loader(fireOnLoad)
+            : klass.Loader.loadFile(this._loader, fireOnLoad);
       
-      return pkg;
+      this.fire('download');
+    }, this);
+  };
+  
+  instance.toString = function() {
+    return 'Package:' + this._names.list.join(',');
+  };
+  
+  //================================================================
+  // Class-level event API, handles group listeners
+  
+  klass.when = function(eventTable, block, scope) {
+    var eventList = [], event, packages, i;
+    for (event in eventTable) {
+      if (!eventTable.hasOwnProperty(event)) continue;
+      packages = new klass.OrderedSet(eventTable[event], function(name) { return klass.getByName(name) });
+      i = packages.list.length;
+      while (i--) eventList.push([event, packages.list[i]]);
     }
-  }
-});
+    
+    var waiting = i = eventList.length;
+    if (waiting === 0) return block && block.call(scope);
+    
+    while (i--) {
+      eventList[i][1].on(eventList[i][0], function() {
+        waiting -= 1;
+        if (waiting === 0 && block) block.call(scope);
+      });
+      eventList[i][1].load();
+    }
+  };
+  
+  //================================================================
+  // Indexes for fast lookup by path and name, and assigning IDs
+  
+  klass._autoIncrement = 1;
+  klass._indexByPath = {};
+  klass._indexByName = {};
+  
+  klass._index = function(pkg) {
+    pkg.id = this._autoIncrement;
+    this._autoIncrement += 1;
+  };
+  
+  klass.getByPath = function(loader) {
+    var path = loader.toString();
+    return this._indexByPath[path] = this._indexByPath[path] || new this(loader);
+  };
+  
+  klass.getByName = function(name) {
+    if (typeof name !== 'string') return name;
+    var cached = this.getFromCache(name);
+    if (cached.pkg) return cached.pkg;
+    
+    var placeholder = new this();
+    placeholder.addName(name);
+    return placeholder;
+  };
+  
+  //================================================================
+  // Cache for named packages and runtime objects
+  
+  klass.getFromCache = function(name) {
+    return this._indexByName[name] = this._indexByName[name] || {};
+  };
+  
+  klass.getObject = function(name) {
+    var cached = this.getFromCache(name);
+    if (cached.obj !== undefined) return cached.obj;
+    
+    var object = this._env,
+        parts  = name.split('.'), part;
+    
+    while (part = parts.shift()) object = object && object[part];
+    
+    return this.getFromCache(name).obj = object;
+  };
+  
+})(JS.Package);
 

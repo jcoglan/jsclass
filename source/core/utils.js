@@ -11,7 +11,8 @@
  * various utility methods used throughout. None of these methods should be taken as being
  * public API, they are all 'plumbing' and may be removed or changed at any time.
  **/
-JS = {
+this.JS = this.JS || {};
+
   /**
    * JS.extend(target, extensions) -> Object
    * - target (Object): object to be extended
@@ -21,14 +22,16 @@ JS = {
    * needlessly overwrite fields with identical values; if an object has inherited a property
    * we should not add the property to the object itself.
    **/
-  extend: function(target, extensions) {
+  JS.extend = function(target, extensions) {
     extensions = extensions || {};
     for (var prop in extensions) {
       if (target[prop] === extensions[prop]) continue;
       target[prop] = extensions[prop];
     }
     return target;
-  },
+  };
+  
+JS.extend(JS, {
   
   /**
    * JS.makeFunction() -> Function
@@ -177,5 +180,5 @@ JS = {
   ignore: function(key, object) {
     return /^(include|extend)$/.test(key) && typeof object === 'object';
   }
-};
+});
 

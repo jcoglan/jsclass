@@ -27,7 +27,9 @@
                       'YAHOO.util.Event');
             
             pkg('YAHOO.util.History',       yui + 'history/history-min.js')
-                .requires('YAHOO');
+                .requires('YAHOO')
+                .provides('YAHOO.Fake')
+                .setup(function() { YAHOO.Fake = 27 });
             
             pkg('YAHOO.util.Selector')
                 .requires('YAHOO')
@@ -67,11 +69,14 @@
                 A = YAHOO.util.Anim ? 'yes' : 'NO';
             alert( 'History: ' + H );
             alert( 'Animation: ' + A );
+            alert( 'YAHOO.Fake: ' + YAHOO.Fake );
             
             require('YAHOO.util.Anim', 'YAHOO.util.History', function() {
                 alert('All present');
             });
         });
+        
+        require('YAHOO.util.Anim', function() { alert('Second block requiring Anim') });
 
         require('YAHOO.util.Selector', function() {
             setTimeout(function() {
@@ -87,11 +92,14 @@
     <p>Package manager tests. Should print:</p>
     
     <ul>
+        <li>Enum: yes, Comp: yes, Hash: yes, Set: yes</li>
         <li>YAHOO not defined</li>
         <li>History: yes</li>
         <li>Animation: yes</li>
+        <li>YAHOO.Fake: 27</li>
         <li>All present</li>
-        <li>Using YAHOO.util.Selector: 5</li>
+        <li>Second block requiring Anim</li>
+        <li>Using YAHOO.util.Selector: 8</li>
     </ul>
     
 </body>
