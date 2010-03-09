@@ -23,7 +23,10 @@ JS.Package.DomLoader = {
         tag = null;
       }
     };
-    window.console && console.info('Loading ' + path);
+    
+    if (window.console && console.info)
+      console.info('Loading ' + path);
+    
     document.getElementsByTagName('head')[0].appendChild(tag);
   },
   
