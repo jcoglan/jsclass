@@ -24,7 +24,6 @@
   Before you can use the @require@ statement, you need the following loaded into the
   page:
   
-  * The @JS.Class@ core (@core.js@)
   * @JS.Package@, the dependency manager (@package.js@)
   * A list of dependencies
   
@@ -165,11 +164,10 @@
   
   h3. The JS.Class @loader.js@ file
   
-  The @JS.Class@ distribution comes with a file called @loader.js@. This contains the
-  core object system (@Module@, @Class@, @Singleton@ and @Interface@), the package system
-  and dependency information for all @JS.Class@ components. This lets you load the core
-  of the library and download the rest into your app on demand. You must host the library
-  on your servers, but it can figure out where it's being served from automatically to
+  The @JS.Class@ distribution comes with a file called @loader.js@. This contains the package
+  system and dependency information for all @JS.Class@ components. This lets you load a small
+  file initially and download the rest of JS.Class into your app on demand. You must host the
+  library on your servers, but it can figure out where it's being served from automatically to
   load other packages. (Note: keep all the JS.Class files in one directory, as they
   appear in the download, otherwise the loader will not be able to find them.) A simple
   example:
@@ -196,4 +194,9 @@
       require('JS.SortedSet', function() {
           // do something with SortedSet
       });</pre>
+  
+  Note that as of version 2.1.4, @loader.js@ does not contain the JS.Class core. If you need
+  @JS.Class@, @JS.Module@, @JS.Singleton@ or @JS.Interface@ you must specify these as
+  requirements using the @require()@ function or by putting them in your @JS.Packages@
+  configuration.
   

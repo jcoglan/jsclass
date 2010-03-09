@@ -1,3 +1,15 @@
+Version 2.1.4
+March 9 2010
+================================================================
+
+* Rewritten the package loader to use event listeners to trigger
+  loading of dependencies rather than polling for readiness.
+
+* package.js and loader.js no longer depend on or include the
+  JS.Class core; you must call `require()` to use JS.Class,
+  JS.Module, JS.Interface or JS.Singleton.
+
+
 Version 2.1.3
 October 10 2009
 ================================================================

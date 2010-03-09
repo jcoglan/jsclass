@@ -605,7 +605,7 @@ var StateMixin = new JS.Module({
     }   }   }
 });
 
-console.log('now');
+window.console && console.log('now');
 
 var LowerState = new JS.Class(TopState, {
     include: StateMixin,
@@ -639,7 +639,7 @@ var RailsModule = new JS.Module({
     }
 });
 
-window = this;
+ENV = this;
 JS.Ruby(Rails, function() { with(this) {
     
     include(JS.Observable);
@@ -676,8 +676,8 @@ JS.Ruby(Rails, function() { with(this) {
     }
     
     var r = make({name: 'Rails instance'});
-    window.console && console.log(instanceMethod('updateAttributes').toString());
-    window.console && console.log(r.itsName());
+    ENV.console && console.log(instanceMethod('updateAttributes').toString());
+    ENV.console && console.log(r.itsName());
 }});
 
 window.console && console.log(Rails.numericValue);
