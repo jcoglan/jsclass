@@ -18,6 +18,7 @@ JS.Packages(function() { with(this) {
     
     var test = 'JS.Test.Unit';
     module('test')          .provides('JS.Test',
+                                      'JS.Test.Context',
                                       test,
                                       test + '.Util.Observable',
                                       test + '.Assertions',

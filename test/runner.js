@@ -20,6 +20,7 @@ JS.Packages(function() { with(this) {
 
 require('JS.Test', function() {
     require('TestSpec',
+            'Test.ContextSpec',
             
     JS.Test.method('autorun'))
 })
