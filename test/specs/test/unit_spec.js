@@ -1,3 +1,5 @@
+Test = this.Test || {};
+
 TestSpecHelpers = new JS.Module({
   suite: function(tests) {
     return new JS.Class("TestedSuite", JS.Test.Unit.TestCase, tests).suite()
@@ -28,7 +30,7 @@ TestSpecHelpers = new JS.Module({
   }}
 })
 
-TestSpec = JS.Test.describe(JS.Test, function() { with(this) {
+Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
   
   include(TestSpecHelpers)
   

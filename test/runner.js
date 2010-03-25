@@ -15,11 +15,11 @@ load(JSCLASS_PATH + 'loader.js')
 JS.Packages(function() { with(this) {
     autoload(/^(.*)Spec$/, {from: 'test/specs', require: 'JS.$1'})
     
-    pkg('TestSpec').requires('JS.Set', 'JS.Observable', 'JS.Range')
+    pkg('Test.UnitSpec').requires('JS.Set', 'JS.Observable', 'JS.Range')
 }})
 
 require('JS.Test', function() {
-    require('TestSpec',
+    require('Test.UnitSpec',
             'Test.ContextSpec',
             
     JS.Test.method('autorun'))
