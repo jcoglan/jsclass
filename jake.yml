@@ -43,8 +43,10 @@ packages:
       - unit/auto_runner
       - context/context
       - context/life_cycle
+      - context/shared_behavior
       - context/test
       - context/suite
+      - helpers
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable

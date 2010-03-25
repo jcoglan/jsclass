@@ -1,6 +1,8 @@
 Test = this.Test || {}
 
 Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
+  include(JS.Test.Helpers)
+  
   def("test_can_write_tests_without_context", function() {
     this.assert( true )
   })
@@ -219,6 +221,86 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
           it("should set var", function() {
             this.assertEqual( 6, this.ivar )
           })
+        }})
+      }})
+    }})
+  }})
+  
+  describe("shared groups", function() { with(this) {
+    def("test_shared_aliases", function() { with(this) {
+      forEach($w("sharedBehavior shareAs shareBehaviorAs sharedExamplesFor"),
+      function(methodAlias) {
+        assertRespondTo( this.klass, methodAlias )
+      }, this)
+    }})
+    
+    def("test_use_aliases", function() { with(this) {
+      forEach($w("uses itShouldBehaveLike behavesLike usesExamplesFrom"),
+      function(methodAlias) {
+        assertRespondTo( this.klass, methodAlias )
+      }, this)
+    }})
+    
+    context("A shared group", function() { with(this) {
+      context("creates a module", function() { with(this) {
+        test("based on a string name", function() { with(this) {
+          this.klass.shared("things and fun", function() {
+          })
+          
+          assert( ThingsAndFun )
+          assertEqual( JS.Test.Context.SharedBehavior, ThingsAndFun.klass )
+        }})
+      }})
+      
+      context("should be locatable", function() { with(this) {
+        shared("hello madam", function() { with(this) {
+          def("fantastic!", function() {
+            print( "you know me!" )
+          })
+        }})
+        
+        it("by a string", function() { with(this) {
+          var self = this
+          assertNothingThrown(function() {
+            self.klass.use("hello madam")
+          })
+        }})
+      
+        shared("hi dog", function() { with(this) {
+          def("stupendous!", function() {
+            print( "hoo hah!" )
+          })
+        }})
+      
+        it("by direct reference", function() { with(this) {
+          var self = this
+          assertNothingThrown(function() {
+            self.klass.use(HiDog)
+          })
+        }})
+      }})
+      
+      context("should include its shared behavior", function() { with(this) {
+        shared("Porthos", function() { with(this) {
+          def("parry", function() {
+            return true
+          })
+        }})
+        
+        it("by a string", function() { with(this) {
+          this.klass.use("Porthos")
+          assert( parry() )
+        }})
+        
+        shared("Aramis", function() { with(this) {
+          def("lunge", function() {
+            return true
+          })
+        }})
+        
+        it("by direct reference", function() { with(this) {
+          this.klass.use(Aramis)
+          assert( lunge() )
         }})
       }})
     }})
