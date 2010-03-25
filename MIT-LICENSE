@@ -1,5 +1,5 @@
 JS.Class: Ruby-style JavaScript
-Copyright (c) 2007-2009 James Coglan
+Copyright (c) 2007-2010 James Coglan
 
 http://jsclass.jcoglan.com
 http://github.com/jcoglan/js.class
@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 Parts of this software are derived from the following open-source projects:
 
-    - The Prototype framework, (c) 2005-2009 Sam Stephenson
+    - The Prototype framework, (c) 2005-2010 Sam Stephenson
     - Alex Arnell's Inheritance library, (c) 2006, Alex Arnell
     - Base, (c) 2006-9, Dean Edwards
 
