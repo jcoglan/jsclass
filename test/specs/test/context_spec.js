@@ -278,6 +278,23 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
             self.klass.use(HiDog)
           })
         }})
+        
+        context("across nesting hierarchies", function() { with(this) {
+          before(function() { with(this) {
+            this.klass.context("hidden", function() { with(this) {
+              shared("useful bits", function() { with(this) {
+                def("helper", function() {})
+              }})
+            }})
+          }})
+          
+          it("by a string", function() { with(this) {
+            var self = this
+            assertNothingThrown(function() {
+              self.klass.use("useful bits")
+            })
+          }})
+        }})
       }})
       
       context("should include its shared behavior", function() { with(this) {
@@ -301,6 +318,35 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
         it("by direct reference", function() { with(this) {
           this.klass.use(Aramis)
           assert( lunge() )
+        }})
+        
+        context("across nesting hierarchies", function() { with(this) {
+          before(function() { with(this) {
+            this.klass.context("hidden", function() { with(this) {
+              shared("useful stuff", function() { with(this) {
+                def("helper", function() {
+                  return true
+                })
+              }})
+              shared("other things", function() { with(this) {
+                def("handy", function() {
+                  return true
+                })
+              }})
+            }})
+          }})
+          
+          it("by a string", function() { with(this) {
+            this.klass.use("useful stuff")
+            assert( helper() )
+          }})
+          
+          it("only for the using context", function() { with(this) {
+            this.klass.context("inner", function() { with(this) {
+              use("other things")
+            }})
+            assertEqual( "undefined", typeof handy )
+          }})
         }})
       }})
     }})

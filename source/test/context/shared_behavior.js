@@ -19,7 +19,7 @@ JS.Test.Context.extend({
     },
     
     included: function(arg) {
-      this._behavior.call();
+      JS.Ruby(arg, this._behavior);
     }
   }),
   
@@ -80,9 +80,13 @@ JS.Test.Unit.TestCase.extend({
     if (JS.isType(sharedName, JS.Test.Context.SharedBehavior) ||
         JS.isType(sharedName, JS.Module))
       this.include(sharedName);
+    
     else if (JS.isType(sharedName, 'string')) {
-      var name = JS.Test.Context.SharedBehavior.moduleName(sharedName);
-      this.include(JS.Test.Context.ENV[name]);
+      var name = JS.Test.Context.SharedBehavior.moduleName(sharedName),
+          beh  = JS.Test.Context.ENV[name];
+      
+      if (!beh) throw new Error('Could not find example group named "' + sharedName + '"');
+      this.include(beh);
     }
   }
 });
