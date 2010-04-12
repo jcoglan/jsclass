@@ -18,6 +18,10 @@ JS.Package.DSL = {
   
   load: function(path, fireCallbacks) {
     JS.Package.Loader.loadFile(path, fireCallbacks);
+  },
+  
+  autoload: function(pattern, options) {
+    JS.Package.autoload(pattern, options);
   }
 };
 

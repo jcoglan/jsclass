@@ -181,6 +181,7 @@ JS.Package = function(loader) {
   klass._autoIncrement = 1;
   klass._indexByPath = {};
   klass._indexByName = {};
+  klass._autoloaders = [];
   
   klass._index = function(pkg) {
     pkg.id = this._autoIncrement;
@@ -197,9 +198,44 @@ JS.Package = function(loader) {
     var cached = this.getFromCache(name);
     if (cached.pkg) return cached.pkg;
     
+    var autoloaded = this._manufacture(name);
+    if (autoloaded) return autoloaded;
+    
     var placeholder = new this();
     placeholder.addName(name);
     return placeholder;
+  };
+  
+  //================================================================
+  // Auotloading API, generates packages from naming patterns
+  
+  klass.autoload = function(pattern, options) {
+    this._autoloaders.push([pattern, options]);
+  };
+  
+  klass._manufacture = function(name) {
+    var autoloaders = this._autoloaders,
+        n = autoloaders.length,
+        i, autoloader, path;
+    
+    for (i = 0; i < n; i++) {
+      autoloader = autoloaders[i];
+      if (!autoloader[0].test(name)) continue;
+      
+      path = autoloader[1].from + '/' +
+             name.replace(/([a-z])([A-Z])/g, function(m,a,b) { return a + '_' + b })
+                 .replace(/\./g, '/')
+                 .toLowerCase() + '.js';
+      
+      pkg = new this(path);
+      pkg.addName(name);
+      
+      if (path = autoloader[1].require)
+        pkg.addDependency(name.replace(autoloader[0], path));
+      
+      return pkg;
+    }
+    return null;
   };
   
   //================================================================

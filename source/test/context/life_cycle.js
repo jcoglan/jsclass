@@ -26,7 +26,7 @@ JS.Test.Context.LifeCycle = new JS.Module({
     
     ClassMethods: new JS.Module({
       before: function(period, block) {
-        if (JS.isFn(period)) {
+        if (JS.isFn(period) || !block) {
           block  = period;
           period = 'each';
         }
@@ -35,7 +35,7 @@ JS.Test.Context.LifeCycle = new JS.Module({
       },
       
       after: function(period, block) {
-        if (JS.isFn(period)) {
+        if (JS.isFn(period) || !block) {
           block  = period;
           period = 'each';
         }
@@ -72,9 +72,12 @@ JS.Test.Context.LifeCycle = new JS.Module({
   },
   
   runCallbacks: function(callbackType, period) {
-    var callbacks = this.klass.gatherCallbacks(callbackType, period);
-    for (var i = 0, n = callbacks.length; i < n; i++)
-      callbacks[i].call(this);
+    var callbacks = this.klass.gatherCallbacks(callbackType, period),
+        callback;
+    for (var i = 0, n = callbacks.length; i < n; i++) {
+      callback = callbacks[i];
+      JS.isFn(callback) ? callback.call(this) : this[callback]();
+    }
   },
   
   runAllCallbacks: function(callbackType) {
