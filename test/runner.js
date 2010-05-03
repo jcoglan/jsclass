@@ -22,6 +22,7 @@ require('JS.Test', function() {
     require('Test.UnitSpec',
             'Test.ContextSpec',
             'SetSpec',
+            'RangeSpec',
             
     JS.Test.method('autorun'))
 })
