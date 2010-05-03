@@ -79,7 +79,7 @@ JS.Set = new JS.Class('Set', {
     block = JS.Enumerable.toFn(block);
     
     var classes = this.classify(block, context),
-        sets    = new this.klass;
+        sets    = new JS.HashSet;
     
     classes.forEachValue(sets.method('add'));
     return sets;
@@ -154,7 +154,7 @@ JS.Set = new JS.Class('Set', {
   },
   
   product: function(other) {
-    var pairs = new JS.Set;
+    var pairs = new JS.HashSet;
     this.forEach(function(item) {
       this.klass.forEach(other, function(partner) {
         pairs.add([item, partner]);
@@ -217,7 +217,7 @@ JS.Set = new JS.Class('Set', {
   },
   
   xor: function(other) {
-    var set = new JS.Set(other);
+    var set = new this.klass(other);
     this.forEach(function(item) {
       set[set.contains(item) ? 'remove' : 'add'](item);
     });

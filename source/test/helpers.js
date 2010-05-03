@@ -1,5 +1,9 @@
 JS.Test.extend({
   Helpers: new JS.Module({
+    $R: function(start, end) {
+      return new JS.Range(start, end);
+    },
+    
     $w: function(string) {
       return string.split(/\s+/);
     },
@@ -8,6 +12,10 @@ JS.Test.extend({
       for (var i = 0, n = list.length; i < n; i++) {
         block.call(context || null, list[i], i);
       }
+    },
+    
+    repeat: function(n, block, context) {
+      while (n--) block.call(context);
     }
   })
 });
