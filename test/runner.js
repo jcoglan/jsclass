@@ -23,6 +23,7 @@ require('JS.Test', function() {
             'Test.ContextSpec',
             'ComparableSpec',
             'HashSpec',
+            'ObservableSpec',
             'SetSpec',
             'RangeSpec',
             
