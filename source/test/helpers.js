@@ -14,6 +14,10 @@ JS.Test.extend({
       }
     },
     
+    map: function(list, block, context) {
+      return new JS.Enumerable.Collection(list).map(block, context)
+    },
+    
     repeat: function(n, block, context) {
       while (n--) block.call(context);
     }

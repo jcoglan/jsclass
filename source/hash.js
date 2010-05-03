@@ -151,12 +151,12 @@ JS.Hash = new JS.Class('Hash', {
     return hashes.sort().join('');
   },
   
-  fetch: function(key, defaultValue) {
+  fetch: function(key, defaultValue, context) {
     var pair = this.assoc(key);
     if (pair) return pair.value;
     
     if (defaultValue === undefined) throw new Error('key not found');
-    if (JS.isFn(defaultValue)) return defaultValue(key);
+    if (JS.isFn(defaultValue)) return defaultValue.call(context || null, key);
     return defaultValue;
   },
   
@@ -305,7 +305,7 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   toString: function() {
-    return '{' + this.map(function(pair) {
+    return 'Hash:{' + this.map(function(pair) {
       return pair.key.toString() + '=>' + pair.value.toString();
     }).join(',') + '}';
   },
