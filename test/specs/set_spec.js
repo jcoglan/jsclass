@@ -332,6 +332,24 @@ SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
     before(function() { with(this) {
       this.a = new JS.SortedSet([8,3,6,1])
       this.b = new JS.HashSet([2,9,7,4])
+      
+      this.TodoItem = new JS.Class({
+        include: JS.Comparable,
+        
+        initialize: function(position, task) {
+            this.position = position;
+            this.task = task || "";
+        },
+        
+        compareTo: function(other) {
+            if (this.position < other.position)
+                return -1;
+            else if (this.position > other.position)
+                return 1;
+            else
+                return 0;
+        }
+      })
     }})
     
     it("keeps its members sorted", function() { with(this) {
@@ -350,6 +368,17 @@ SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
       })
     }})
     
+    describe("containing homogenous values", function() { with(this) {
+      before(function() { with(this) {
+        this.set = new JS.SortedSet()
+        $R(1,20).forEach(function(position) { set.add(new TodoItem(position%4)) })
+      }})
+      
+      it("keeps the members sorted", function() { with(this) {
+        assertEqual( [0,0,0,0,0,1,1,1,1,1,2,2,2,2,2,3,3,3,3,3], set.map('position') )
+      }})
+    }})
+    
     describe("#union", function() { with(this) {
       it("returns a SortedSet", function() { with(this) {
         assertKindOf( JS.SortedSet, a.u(b) )
@@ -361,26 +390,6 @@ SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
     }})
     
     describe("containing objects", function() { with(this) {
-      before(function() { with(this) {
-        this.TodoItem = new JS.Class({
-          include: JS.Comparable,
-          
-          initialize: function(position, task) {
-              this.position = position;
-              this.task = task || "";
-          },
-          
-          compareTo: function(other) {
-              if (this.position < other.position)
-                  return -1;
-              else if (this.position > other.position)
-                  return 1;
-              else
-                  return 0;
-          }
-        })
-      }})
-    
       it("sorts the objects", function() { with(this) {
         var set = new JS.SortedSet()
         forEach([4,3,5,1,2], function(position) {
