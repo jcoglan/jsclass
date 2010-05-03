@@ -21,6 +21,7 @@ JS.Packages(function() { with(this) {
 require('JS.Test', function() {
     require('Test.UnitSpec',
             'Test.ContextSpec',
+            'ComparableSpec',
             'HashSpec',
             'SetSpec',
             'RangeSpec',
