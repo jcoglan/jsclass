@@ -18,10 +18,11 @@ JS.Packages(function() { with(this) {
     pkg('Test.UnitSpec').requires('JS.Set', 'JS.Observable', 'JS.Range')
 }})
 
-require('JS.Test', function() {
+require('JS.Test', 'JS.MethodChain', function() {
     require('Test.UnitSpec',
             'Test.ContextSpec',
             'ComparableSpec',
+            'EnumerableSpec',
             'HashSpec',
             'ObservableSpec',
             'SetSpec',

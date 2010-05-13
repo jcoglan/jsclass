@@ -14,6 +14,10 @@ JS.Test.extend({
       }
     },
     
+    its: function() {
+      return new JS.MethodChain();
+    },
+    
     map: function(list, block, context) {
       return new JS.Enumerable.Collection(list).map(block, context)
     },
