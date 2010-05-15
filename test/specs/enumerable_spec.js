@@ -22,6 +22,14 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
     return new List(arguments)
   })
   
+  def("assertEnumFor", function(object, method, args, actual) {
+    this.__wrapAssertion__(function() {
+      this.assertKindOf( JS.Enumerable.Enumerator, actual )
+      var enumerator = new JS.Enumerable.Enumerator(object, method, args)
+      this.assertEqual( enumerator, actual )
+    })
+  })
+  
   before(function() { with(this) {
     this.items = list(1,2,3,4,5,6)
     this.odd   = function(x) { return x % 2 === 1 }
@@ -150,6 +158,11 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       list(1,2,3,4,5).cycle(2, push)
       assertEqual( [1,2,3,4,5,1,2,3,4,5], result )
     }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      var collection = list(1,2,3)
+      assertEnumFor( collection, "cycle", [2], collection.cycle(2) )
+    }})
   }})
   
   describe("#drop", function() { with(this) {
@@ -185,6 +198,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       assertEqual( [[],[1],[],[2]], list([3],[4],[],[1],[],[2]).dropWhile("length") )
       assertEqual( $w("can stay"), list("longer", "words", "can", "stay").dropWhile(its().substring(3)) )
     }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "dropWhile", [], items.dropWhile() )
+    }})
   }})
   
   describe("#find", function() { with(this) {
@@ -195,6 +212,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
     
     it("returns null if no item matches", function() { with(this) {
       assertNull( items.find(gt10) )
+    }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "find", [], items.find() )
     }})
   }})
   
@@ -240,6 +261,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       items.forEachCons(3, push)
       assertEqual( [[1,2,3],[2,3,4],[3,4,5],[4,5,6]], result )
     }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "forEachCons", [5], items.forEachCons(5) )
+    }})
   }})
   
   describe("#forEachSlice", function() { with(this) {
@@ -257,6 +282,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       items.forEachSlice(3, push)
       assertEqual( [[1,2,3],[4,5,6]], result )
     }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "forEachSlice", [4], items.forEachSlice(4) )
+    }})
   }})
   
   describe("#forEachWithIndex", function() { with(this) {
@@ -269,6 +298,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       items.forEachWithIndex(push)
       assertEqual( [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]], result )
     }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "forEachWithIndex", [0], items.forEachWithIndex() )
+    }})
   }})
   
   describe("#forEachWithObject", function() { with(this) {
@@ -280,6 +313,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
     it("builds an object by iterating on the collection", function() { with(this) {
       list("some","simple","words").forEachWithObject(result, push)
       assertEqual( {some: 4, simple: 6, words: 5}, result )
+    }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "forEachWithObject", [result], items.forEachWithObject(result) )
     }})
   }})
   
@@ -319,6 +356,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       assertEqual( [1,4], hash.get(1) )
       assertEqual( [2,5], hash.get(2) )
       assertEqual( 3, hash.count() )
+    }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "groupBy", [], items.groupBy() )
     }})
   }})
   
@@ -374,6 +415,11 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
     it("accepts a blockish", function() { with(this) {
       assertEqual( [4,6,5], list("some","simple","words").map("length") )
       assertEqual( $w("4 a 18"), list(4,10,24).map(its().toString(16).toLowerCase()) )
+    }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "map", [], items.map() )
+      assertEqual( $w("10 21 32 43 54 65"), items.map().withIndex(function(x,i) { return String(x) + i }) )
     }})
   }})
   
@@ -477,6 +523,12 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       assertEqual( [2,4,6], items.reject(odd) )
       assertEqual( [4,5,6], items.reject(lt4) )
     }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "reject", [], items.reject() )
+      assertEqual( [5,9], list(7,2,8,5,9).reject().withIndex(function(x,i) { return i < 3 }) )
+      assertEqual( [5,9], list(7,2,8,5,9).forEachWithIndex().reject(function(x,i) { return i < 3 }) )
+    }})
   }})
   
   describe("#reverseForEach", function() { with(this) {
@@ -489,6 +541,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       items.reverseForEach(push)
       assertEqual( [6,5,4,3,2,1], result )
     }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "reverseForEach", [], items.reverseForEach() )
+    }})
   }})
   
   describe("#select", function() { with(this) {
@@ -499,6 +555,12 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
     it("returns all the items that match the block", function() { with(this) {
       assertEqual( [1,3,5], items.select(odd) )
       assertEqual( [1,2,3], items.select(lt4) )
+    }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "select", [], items.select() )
+      assertEqual( [7,2,8], list(7,2,8,5,9).select().withIndex(function(x,i) { return i < 3 }) )
+      assertEqual( [7,2,8], list(7,2,8,5,9).forEachWithIndex().select(function(x,i) { return i < 3 }) )
     }})
   }})
   
@@ -553,6 +615,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
     it("accepts a blockish", function() { with(this) {
       assertEqual( [[3],[4]], list([3],[4],[],[1],[],[2]).takeWhile("length") )
       assertEqual( $w("longer words"), list("longer", "words", "can", "stay").takeWhile(its().substring(3)) )
+    }})
+    
+    it("returns an enumerator if called with no block", function() { with(this) {
+      assertEnumFor( items, "takeWhile", [], items.takeWhile() )
     }})
   }})
   
@@ -673,6 +739,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       it("accepts a block context", function() { with(this) {
         assertEqual( 9, todos.maxBy(function(x) { return x[this.methodName] }, context).position )
       }})
+      
+      it("returns an enumerator if called with no block", function() { with(this) {
+        assertEnumFor( items, "maxBy", [], items.maxBy() )
+      }})
     }})
     
     describe("#min", function() { with(this) {
@@ -706,6 +776,10 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       it("accepts a block context", function() { with(this) {
         assertEqual( 2, todos.minBy(function(x) { return x[this.methodName] }, context).position )
       }})
+      
+      it("returns an enumerator if called with no block", function() { with(this) {
+        assertEnumFor( items, "minBy", [], items.minBy() )
+      }})
     }})
     
     describe("#sort", function() { with(this) {
@@ -730,6 +804,99 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       it("accepts a blockish", function() { with(this) {
         assertEqual( [2,3,5,7,9], map(todos.sortBy("position"), "position") )
       }})
+      
+      it("returns an enumerator if called with no block", function() { with(this) {
+        assertEnumFor( items, "sortBy", [], items.sortBy() )
+      }})
+    }})
+  }})
+  
+  describe(JS.Enumerable.Enumerator, function() { with(this) {
+    var Dictionary = new JS.Class(List, {
+        eachWord: function(block, context) {
+            if (!block) return this.enumFor("eachWord");
+            this.eachWordLongerThan(0, block, context);
+        },
+        eachWordLongerThan: function(n, block, context) {
+            if (!block) return this.enumFor("eachWordLongerThan", n);
+            this.forEach(function(word) {
+                if (word.length <= n) return;
+                var object = {};
+                object[word] = word.length;
+                block.call(context || null, object);
+            });
+        }
+    })
+    
+    before(function() { with(this) {
+      this.dictionary = new Dictionary($w("some words are longer than others"))
+      this.result = []
+      this.push = function(x) { result.push(x) }
+    }})
+    
+    describe("with no method name", function() { with(this) {
+      before(function() { with(this) {
+        this.iterator = new JS.Enumerable.Enumerator(dictionary)
+      }})
+      
+      it("is enumerable", function() { with(this) {
+        assertKindOf( JS.Enumerable, iterator )
+      }})
+      
+      it("uses the #forEach method to iterate over the collection", function() { with(this) {
+        iterator.forEach(push)
+        assertEqual( $w("some words are longer than others"), result )
+      }})
+    }})
+    
+    describe("with no modifier arguments", function() { with(this) {
+      before(function() { with(this) {
+        this.iterator = new JS.Enumerable.Enumerator(dictionary, "eachWord")
+      }})
+      
+      it("is enumerable", function() { with(this) {
+        assertKindOf( JS.Enumerable, iterator )
+      }})
+      
+      it("uses the named method to iterate over the collection", function() { with(this) {
+        iterator.forEach(push)
+        assertEqual( [{some:4}, {words:5}, {are:3}, {longer:6}, {than:4}, {others:6}], result )
+      }})
+    }})
+    
+    describe("with a modifier argument", function() { with(this) {
+      before(function() { with(this) {
+        this.iterator = new JS.Enumerable.Enumerator(dictionary, "eachWordLongerThan", [4])
+      }})
+      
+      it("is enumerable", function() { with(this) {
+        assertKindOf( JS.Enumerable, iterator )
+      }})
+      
+      it("uses the named method and argument to iterate over the collection", function() { with(this) {
+        iterator.forEach(push)
+        assertEqual( [{words:5}, {longer:6}, {others:6}], result )
+      }})
+    }})
+    
+    it("can be used to combine Enumerable iterators", function() { with(this) {
+      assertEqual( [[1,2,3],[2,3,4],[3,4,5],[4,5,6]],
+                   items.forEachCons(3).entries() )
+      
+      assertEqual( [[[1,2,3],0],[[2,3,4],1],[[3,4,5],2],[[4,5,6],3]],
+                   items.forEachCons(3).withIndex().
+                   map(function(x,i) { return [x,i] }) )
+      
+      assertEqual( [[4,5,6],[3,4,5],[2,3,4],[1,2,3]],
+                   items.forEachCons(3).reverse().entries() )
+      
+      assertEqual( [[6,5],[4,3],[2,1],[6,5],[4,3],[2,1],[6,5],[4,3],[2,1],[6,5],[4,3],[2,1]],
+                   items.reverseForEach().slice(2).cycle(4).entries() )
+      
+      assertEqual( [[[6,5],0],[[4,3],1],[[2,1],2],[[6,5],3],[[4,3],4],[[2,1],5],
+                    [[6,5],6],[[4,3],7],[[2,1],8],[[6,5],9],[[4,3],10],[[2,1],11]],
+                   items.reverseForEach().slice(2).cycle(4).withIndex().
+                   map(function(x,i) { return [x,i] }) )
     }})
   }})
 }})

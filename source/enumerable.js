@@ -513,6 +513,15 @@ JS.Enumerable.include({
         this._args   = (args || []).slice();
       },
       
+      // this is largely here to support testing
+      // since I don't want to make the ivars public
+      equals: function(enumerator) {
+        return JS.isType(enumerator, this.klass) &&
+               this._object === enumerator._object &&
+               this._method === enumerator._method &&
+               JS.Enumerable.areEqual(this._args, enumerator._args);
+      },
+      
       forEach: function(block, context) {
         if (!block) return this;
         var args = this._args.slice();
