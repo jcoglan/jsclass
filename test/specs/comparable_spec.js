@@ -1,23 +1,21 @@
 ComparableSpec = JS.Test.describe(JS.Comparable, function() { with(this) {
   include(JS.Test.Helpers)
   
-  before(function() { with(this) {
-    this.TodoItem = new JS.Class({
-        include: JS.Comparable,
-        initialize: function(position, task) {
-            this.position = position;
-            this.task = task || "";
-        },
-        compareTo: function(other) {
-            if (this.position < other.position)
-                return -1;
-            else if (this.position > other.position)
-                return 1;
-            else
-                return 0;
-        }
-    })
-  }})
+  var TodoItem = new JS.Class({
+      include: JS.Comparable,
+      initialize: function(position, task) {
+          this.position = position;
+          this.task = task || "";
+      },
+      compareTo: function(other) {
+          if (this.position < other.position)
+              return -1;
+          else if (this.position > other.position)
+              return 1;
+          else
+              return 0;
+      }
+  })
   
   describe("sorting", function() { with(this) {
     before(function() { with(this) {

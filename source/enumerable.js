@@ -219,7 +219,10 @@ JS.Enumerable = new JS.Module('Enumerable', {
     block = JS.Enumerable.toFn(block);
     var results = [];
     this.forEach(function(item) {
-      var match = JS.isFn(pattern.match) ? pattern.match(item) : pattern(item);
+      var match = JS.isFn(pattern.match) ? pattern.match(item)
+                : JS.isFn(pattern.test)  ? pattern.test(item)
+                : JS.isType(item, pattern);
+      
       if (!match) return;
       if (block) item = block.apply(context || null, arguments);
       results.push(item);

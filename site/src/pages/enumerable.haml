@@ -239,9 +239,9 @@
   h3. @grep(pattern, block, context)@
   
   Returns an @Array@ of all the members of the collection that match @pattern@ according to
-  the method @pattern.match()@. @pattern@ may be a @RegExp@, a @Module@ or @Class@, or a
-  function, in which case it is called with the item and @pattern(item)@ should return a
-  boolean value. If @block@ is given, each match is transformed by passing it to @block@.
+  the method @pattern.match()@. @pattern@ may be a @RegExp@, a @Module@, @Class@, @Range@,
+  or any other object with a @match()@ method that returns @true@ or @false@. If @block@ is
+  given, each match is transformed by passing it to @block@.
   
   <pre class="prettyprint">    var strings = new Collection('iguana', 'labrador', 'albatross');
       

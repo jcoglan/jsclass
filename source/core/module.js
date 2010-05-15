@@ -307,7 +307,7 @@ JS.extend(JS.Module.prototype, {
    * Returns `true` if the receiver is in the inheritance chain of `object`.
    **/
   match: function(object) {
-    return object.isA && object.isA(this);
+    return object && object.isA && object.isA(this);
   },
   
   /**
