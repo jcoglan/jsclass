@@ -1,4 +1,6 @@
 MethodChainSpec = JS.Test.describe(JS.MethodChain, function() { with(this) {
+  include(JS.Test.Helpers)
+  
   var Widget = new JS.Class({
       initialize: function(name) {
           this.name = name;
@@ -138,6 +140,13 @@ MethodChainSpec = JS.Test.describe(JS.MethodChain, function() { with(this) {
       it("applies a function with arguments to the receiver", function() { with(this) {
         assertEqual( "Nick and David", widget._(function(name) { return this.name + " and " + name }, "David") )
       }})
+    }})
+  }})
+  
+  describe("#toFunction", function() { with(this) {
+    it("returns a function that executes the chain against the argument", function() { with(this) {
+      var func = chain.sort().toFunction()
+      assertEqual( $w("ordered some words"), func($w("some ordered words")) )
     }})
   }})
 }})
