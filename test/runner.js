@@ -22,6 +22,7 @@ require('JS.Test', 'JS.MethodChain', function() {
     require('Test.UnitSpec',
             'Test.ContextSpec',
             'ComparableSpec',
+            'DecoratorSpec',
             'EnumerableSpec',
             'HashSpec',
             'MethodChainSpec',
