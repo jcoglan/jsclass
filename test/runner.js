@@ -24,6 +24,7 @@ require('JS.Test', 'JS.MethodChain', function() {
             'ComparableSpec',
             'DecoratorSpec',
             'EnumerableSpec',
+            'ForwardableSpec',
             'HashSpec',
             'MethodChainSpec',
             'ObservableSpec',
