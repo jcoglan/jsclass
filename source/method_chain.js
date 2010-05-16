@@ -6,12 +6,12 @@ JS.MethodChain = function(base) {
     queue.push({func: method, args: args});
   };
   
-  this.fire = function(base) {
-    return JS.MethodChain.fire(queue, base || baseObject);
+  this.__exec__ = function(base) {
+    return JS.MethodChain.exec(queue, base || baseObject);
   };
 };
 
-JS.MethodChain.fire = function(queue, object) {
+JS.MethodChain.exec = function(queue, object) {
   var method, property, i, n;
   loop: for (i = 0, n = queue.length; i < n; i++) {
     method = queue[i];
@@ -47,7 +47,7 @@ JS.MethodChain.prototype = {
   
   toFunction: function() {
     var chain = this;
-    return function(object) { return chain.fire(object); };
+    return function(object) { return chain.__exec__(object); };
   }
 };
 
@@ -94,14 +94,14 @@ JS.Module.methodAdded(function(name) {
 
 JS.Kernel.include({
   wait: function(time) {
-    var chain = new JS.MethodChain;
+    var chain = new JS.MethodChain(), self = this;
     
-    typeof time === 'number' &&
-      setTimeout(chain.fire.bind(chain, this), time * 1000);
+    if (typeof time === 'number')
+      setTimeout(function() { chain.__exec__(self) }, time * 1000);
     
-    this.forEach && typeof time === 'function' &&
-      this.forEach(function() {
-        setTimeout(chain.fire.bind(chain, arguments[0]), time.apply(this, arguments) * 1000);
+    if (this.forEach && typeof time === 'function')
+      this.forEach(function(item) {
+        setTimeout(function() { chain.__exec__(item) }, time.apply(this, arguments) * 1000);
       });
     
     return chain;

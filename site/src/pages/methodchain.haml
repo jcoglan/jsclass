@@ -9,17 +9,17 @@
       chain.map(function(s) { return s.toUpperCase() })
            .join(', ').replace(/[aeiou]/ig, '_');
       
-      chain.fire(['foo', 'bar'])    // -> "F__, B_R"</pre>
+      chain.__exec__(['foo', 'bar'])    // -> "F__, B_R"</pre>
   
   Here, we create a new @MethodChain@ object called @chain@. We then call three methods on it,
   @map()@, @join()@ and @replace()@. @chain@ remembers the names of these methods and the arguments
-  you used, then calls the stored chain on any object you pass to its @fire()@ method.
+  you used, then calls the stored chain on any object you pass to its @__exec__()@ method.
   
   If you call further methods on @chain@, they get added to the list:
   
   <pre class="prettyprint">    chain.split(/_+/);
       
-      chain.fire(['foo', 'bar'])    // -> ["F", ", B", "R"]</pre>
+      chain.__exec__(['foo', 'bar'])    // -> ["F", ", B", "R"]</pre>
   
   h3. How it works
   
@@ -29,7 +29,7 @@
   
   Any method you want to store in a chain has to exist in @MethodChain@'s list of method names
   in advance (my kingdom for a @method_missing@ feature in JavaScript!), or you will get an
-  error. @MethodChain@ comes with over 300 method names in place from the JavaScript core API
+  error. @MethodChain@ comes with over 400 method names in place from the JavaScript core API
   to get you started. If you find that a method is missing, you can add it like so:
   
   <pre class="prettyprint">    // Add all methods from a class or object
@@ -44,8 +44,8 @@
   
   * @_()@ - one underscore - more on this in a second
   * @____()@ - four underscores, used for storing method calls
-  * @fire()@ - executes the stored chain against its argument
-  * @toFunction()@ - returns a function that fires the chain when called
+  * @__exec__()@ - executes the stored chain against its argument
+  * @toFunction()@ - returns a function that executes the chain when called
   
   h3. Changing scope using @_()@
   
@@ -62,7 +62,7 @@
       chain._(document).getElementsByTagName('p')
            ._(function() { console.log(this) });</pre>
   
-  When we fire @chain@, the net effect is the same as:
+  When we execute @chain@, the net effect is the same as:
   
   <pre class="prettyprint">    console.log(document.getElementsByTagName('p'));</pre>
   
@@ -93,8 +93,9 @@
   
   h3. @toFunction()@
   
-  The @toFunction@ method returns a function that fires the chain against its argument.
-  For example, taking the first chain we created at the top of this page:
+  The @toFunction@ method returns a function that executes the chain against
+  its argument. For example, taking the first chain we created at the top of
+  this page:
   
   <pre class="prettyprint">    var func = chain.toFunction();
       func(['foo', 'bar'])    // -> "F__, B_R"</pre>
@@ -123,5 +124,6 @@
   
   h3. Further reading
   
-  For some background and further usage examples, refer to the "articles on @ChainCollector@":http://blog.jcoglan.com/category/chaincollector/
+  For some background and further usage examples, refer to the "articles on
+  @ChainCollector@":http://blog.jcoglan.com/category/chaincollector/
   on my blog. @ChainCollector@ is the name I originally gave the @MethodChain@ class.
