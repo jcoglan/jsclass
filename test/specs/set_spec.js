@@ -362,7 +362,6 @@ SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
         assertNotEqual( [], uniques )
         
         var sorted  = new JS.SortedSet(list).entries()
-        assertNotEqual( uniques, sorted )
         uniques.sort(function(a,b) { return a - b })
         assertEqual( uniques, sorted )
       })
