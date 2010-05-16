@@ -3,7 +3,7 @@ Test = this.Test || {}
 Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
   include(JS.Test.Helpers)
   
-  def("test_can_write_tests_without_context", function() {
+  define("test_can_write_tests_without_context", function() {
     this.assert( true )
   })
   
@@ -13,7 +13,7 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
         var klass = new JS.Class(JS.Test.Unit.TestCase)
         klass.include(JS.Test.Context)
         this.context = klass.context("When testing", function() { with(this) {
-                         def("test_this_thing", function() {
+                         define("test_this_thing", function() {
                            return true
                          })
                        }})
@@ -31,9 +31,9 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
     context("when nested", function() { with(this) {
       before("each", function() { with(this) {
         this.context = this.klass.context("and we're testing", function() { with(this) {
-          self.def("nested", function() {
+          self.define("nested", function() {
             return this.context("should be nested", function() { with(this) {
-              def("test_this_thing", function() {
+              define("test_this_thing", function() {
                 return true
               })
             }})
@@ -178,7 +178,7 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
       }})
     }})
     
-    def("a_method", function() {
+    define("a_method", function() {
       this.ivar = "a method ran"
     })
   }})
@@ -227,14 +227,14 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
   }})
   
   describe("shared groups", function() { with(this) {
-    def("test_shared_aliases", function() { with(this) {
+    define("test_shared_aliases", function() { with(this) {
       forEach($w("sharedBehavior shareAs shareBehaviorAs sharedExamplesFor"),
       function(methodAlias) {
         assertRespondTo( this.klass, methodAlias )
       }, this)
     }})
     
-    def("test_use_aliases", function() { with(this) {
+    define("test_use_aliases", function() { with(this) {
       forEach($w("uses itShouldBehaveLike behavesLike usesExamplesFrom"),
       function(methodAlias) {
         assertRespondTo( this.klass, methodAlias )
@@ -254,7 +254,7 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
       
       context("should be locatable", function() { with(this) {
         shared("hello madam", function() { with(this) {
-          def("fantastic!", function() {
+          define("fantastic!", function() {
             print( "you know me!" )
           })
         }})
@@ -267,7 +267,7 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
         }})
       
         shared("hi dog", function() { with(this) {
-          def("stupendous!", function() {
+          define("stupendous!", function() {
             print( "hoo hah!" )
           })
         }})
@@ -283,7 +283,7 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
           before(function() { with(this) {
             this.klass.context("hidden", function() { with(this) {
               shared("useful bits", function() { with(this) {
-                def("helper", function() {})
+                define("helper", function() {})
               }})
             }})
           }})
@@ -299,7 +299,7 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
       
       context("should include its shared behavior", function() { with(this) {
         shared("Porthos", function() { with(this) {
-          def("parry", function() {
+          define("parry", function() {
             return true
           })
         }})
@@ -310,7 +310,7 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
         }})
         
         shared("Aramis", function() { with(this) {
-          def("lunge", function() {
+          define("lunge", function() {
             return true
           })
         }})
@@ -324,12 +324,12 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
           before(function() { with(this) {
             this.klass.context("hidden", function() { with(this) {
               shared("useful stuff", function() { with(this) {
-                def("helper", function() {
+                define("helper", function() {
                   return true
                 })
               }})
               shared("other things", function() { with(this) {
-                def("handy", function() {
+                define("handy", function() {
                   return true
                 })
               }})

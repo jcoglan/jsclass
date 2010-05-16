@@ -14,7 +14,7 @@ ForwardableSpec = JS.Test.describe(JS.Forwardable, function() { with(this) {
       }
   });
   
-  def("forwardableClass", function() {
+  define("forwardableClass", function() {
     return new JS.Class({extend: JS.Forwardable,
       initialize: function() {
         this.subject = new Subject()

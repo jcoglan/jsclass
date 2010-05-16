@@ -18,11 +18,11 @@ EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
       }
   })
   
-  def("list", function() {
+  define("list", function() {
     return new List(arguments)
   })
   
-  def("assertEnumFor", function(object, method, args, actual) {
+  define("assertEnumFor", function(object, method, args, actual) {
     this.__wrapAssertion__(function() {
       this.assertKindOf( JS.Enumerable.Enumerator, actual )
       var enumerator = new JS.Enumerable.Enumerator(object, method, args)

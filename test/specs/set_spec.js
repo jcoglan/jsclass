@@ -1,7 +1,7 @@
 SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
   include(JS.Test.Helpers)
   
-  def("assertSetEqual", function(expected, actual) {
+  define("assertSetEqual", function(expected, actual) {
     this.__wrapAssertion__(function() {
       this.assertKindOf( JS.Set, actual )
       if (expected.entries) expected = expected.entries()

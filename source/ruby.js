@@ -21,17 +21,17 @@ JS.extend(JS.Ruby, {
   alias: function(object, builder) {
     return function(newName, oldName) {
       var old = object[oldName];
-      if (old !== undefined) this.def(newName, old);
+      if (old !== undefined) this.define(newName, old);
       if (builder) JS.Ruby.extendDSL(builder, object);
     };
   },
   
   ClassBuilder: function(klass) {
-    this.def    = klass.method('define');
+    this.define = klass.method('define');
     this.alias  = JS.Ruby.alias(klass.prototype);
     
     this.self = {
-      def: JS.bind(function(name, method) {
+      define: JS.bind(function(name, method) {
         var def = {}; def[name] = method;
         klass.extend(def);
         JS.Ruby.extendDSL(this, klass);

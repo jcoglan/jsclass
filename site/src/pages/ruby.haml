@@ -85,13 +85,13 @@
           extend(JS.Forwardable);
           defineDelegator('list', 'push', 'add');
           
-          def('initialize', function() {
+          define('initialize', function() {
               this.list = [];
           });
           
           var old_add = instanceMethod('add');
           
-          def('add', function(value) {
+          define('add', function(value) {
               return old_add.call(this, 2 * value);
           });
       }});
@@ -105,7 +105,7 @@
   @JS.Ruby@ has a minimal feature set designed to provide a broadly useful Ruby-ish experience.
   It supports the following keywords and class methods:
   
-  * @def@
+  * @define@
   * @alias@
   * @include@ and @extend@
   * @instanceMethod@
@@ -120,14 +120,14 @@
           // code here
       }});</pre>
   
-  h3. @def@ and @alias@
+  h3. @define@ and @alias@
   
-  These are fairly straightforward: @def@ defines a new instance method, and @alias@ ands
+  These are fairly straightforward: @define@ defines a new instance method, and @alias@ adds
   a new alias for an instance method. The following code adds two methods, @get@ and @fetch@,
   that both do the same thing:
   
   <pre class="prettyprint">    JS.Ruby(RubyClass, function() { with(this) {
-          def('get', function(index) {
+          define('get', function(index) {
               return this.list[index];
           });
           alias('fetch', 'get');
@@ -163,12 +163,12 @@
   h3. @class << self@
   
   @JS.Ruby@ supports something analogous to @class << self ... end@ for defining class methods.
-  In JavaScript, the syntax is @with (self) { ... }@, and you may use @def@ and @alias@ within
+  In JavaScript, the syntax is @with (self) { ... }@, and you may use @define@ and @alias@ within
   such a block for creating and aliasing class methods.
   
   <pre class="prettyprint">    JS.Ruby(RubyClass, function() { with(this) {
           with (self) {
-              def('create', function() {
+              define('create', function() {
                   return new this();
               });
               alias('make', 'create');
