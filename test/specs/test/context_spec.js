@@ -53,114 +53,126 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
   }})
   
   describe("lifecycle hooks", function() { with(this) {
-    before(function() { with(this) {
-      this.inherited_before_each_var = this.inherited_before_each_var || 0
-      this.inherited_before_each_var += 1
-    }})
+    var hook_register
     
     before(function() { with(this) {
-      this.inherited_before_each_var = this.inherited_before_each_var || 0
-      this.inherited_before_each_var_2 = this.inherited_before_each_var_2 || 0
-      this.inherited_before_each_var += 2
-      this.inherited_before_each_var_2 += 1
+      hook_register.push("inherited_before_each")
+      this.inherited_before_each_var = true
     }})
     
     after(function() { with(this) {
-      this.inherited_after_each_var = this.inherited_after_each_var || 0
-      this.inherited_after_each_var += 1
+      hook_register.push("inherited_after_each")
     }})
     
     before("all", function() { with(this) {
-      this.inherited_before_all_var = this.inherited_before_all_var || 0
-      this.inherited_before_all_var += 1
+      hook_register = ["inherited_before_all"]
+      this.inherited_before_all_var = true
     }})
     
     after("all", function() { with(this) {
-      this.inherited_after_all_var = this.inherited_after_all_var || 0
-      this.inherited_after_all_var += 1
+      hook_register.push("inherited_after_all")
     }})
     
     var sample_test = context("lifecycle", function() { with(this) {
       before(function() { with(this) {
-        this.inherited_before_each_var = inherited_before_each_var || 0
-        this.inherited_before_each_var  += 4
+        hook_register.push("before_each")
+        this.before_each_var = true
       }})
       
       after(function() { with(this) {
-        this.after_each_var   = this.after_each_var || 0
-        this.after_each_var  += 1
+        hook_register.push("after_each")
       }})
       
       before("all", function() { with(this) {
-        this.before_all_var   = this.before_all_var || 0
-        this.before_all_var  += 1
+        hook_register.push("before_all")
+        this.before_all_var = true
       }})
       
       after("all", function() { with(this) {
-        this.after_all_var   = this.after_all_var || 0
-        this.after_all_var  += 1
+        hook_register.push("after_all")
       }})
       
       after("a_method")
       
       test("foo", function() {})
+      
+      test("bar", function() {})
     }})
     
     before(function() { with(this) {
-      this.superclass_before_each_var   = this.superclass_before_each_var || 0
-      this.superclass_before_each_var  += 1
+      hook_register.push("superclass_before_each")
     }})
     
     after(function() { with(this) {
-      this.superclass_after_each_var   = this.superclass_after_each_var || 0
-      this.superclass_after_each_var  += 1
+      hook_register.push("superclass_after_each")
     }})
     
     before("all", function() { with(this) {
-      this.superclass_before_all_var   = this.superclass_before_all_var || 0
-      this.superclass_before_all_var  += 1
+      hook_register.push("superclass_before_all")
     }})
     
     after("all", function() { with(this) {
-      this.superclass_after_all_var   = this.superclass_after_all_var || 0
-      this.superclass_after_all_var  += 1
+      hook_register.push("superclass_after_all")
     }})
     
     context("With before/after :each blocks", function() { with(this) {
       before(function() { with(this) {
         this.result = new JS.Test.Unit.TestResult()
-        this.test = new sample_test("test: Test.Context lifecycle hooks lifecycle foo")
-        this.test.run(this.result, function() {  })
-      }})
-
-      it("it runs superclass before callbacks in ofrder", function() { with(this) {
-        assertEqual( 1, test.superclass_before_each_var )
+        this.suite  = sample_test.suite()
+        suite.run(this.result, function() {})
+        this.hooks  = new JS.Enumerable.Collection(hook_register)
       }})
       
-      it("it runs inherited before callbacks in order", function() { with(this) {
-        assertEqual( 7, test.inherited_before_each_var )
+      it("applies state from before :all blocks to each test", function() { with(this) {
+        suite.forEach(function(test) {
+          assert( test.inherited_before_all_var )
+          assert( test.before_all_var )
+        })
       }})
       
-      it("it runs before callbacks in order", function() { with(this) {
-        assertEqual( 1, test.inherited_before_each_var_2 )
+      it("applies state from before :each blocks to each test", function() { with(this) {
+        suite.forEach(function(test) {
+          assert( test.inherited_before_each_var )
+          assert( test.before_each_var )
+        })
       }})
       
-      it("it runs superclass after callbacks", function() { with(this) {
-        assertEqual( 1, test.superclass_after_each_var )
+      it("runs :all blocks once per suite", function() { with(this) {
+        assertEqual( 1, hooks.count("inherited_before_all") )
+        assertEqual( 1, hooks.count("inherited_after_all") )
+        assertEqual( 1, hooks.count("superclass_before_all") )
+        assertEqual( 1, hooks.count("superclass_after_all") )
+        assertEqual( 1, hooks.count("before_all") )
+        assertEqual( 1, hooks.count("after_all") )
       }})
       
-      it("it runs inherited after callbacks", function() { with(this) {
-        assertEqual( 1, test.inherited_after_each_var )
+      it("runs :each blocks once per test", function() { with(this) {
+        assertEqual( 2, hooks.count("inherited_before_each") )
+        assertEqual( 2, hooks.count("inherited_after_each") )
+        assertEqual( 2, hooks.count("superclass_before_each") )
+        assertEqual( 2, hooks.count("superclass_after_each") )
+        assertEqual( 2, hooks.count("before_each") )
+        assertEqual( 2, hooks.count("after_each") )
       }})
       
-      it("it runs after callbacks", function() { with(this) {
-        assertEqual( 1, test.after_each_var )
+      it("runs after callbacks specified with method names, instead of blocks", function() { with(this) {
+        assertEqual( 2, hooks.count("a method ran") )
       }})
       
-      it("it runs after callbacks specified with method names, instead of blocks", function() { with(this) {
-        assertEqual( "a method ran", test.ivar )
+      it("runs before_all, then before_each, then after_each, then after_all", function() { with(this) {
+        assertEqual( ["inherited_before_all",   "superclass_before_all",  "before_all",
+                      "inherited_before_each",  "superclass_before_each", "before_each",
+                      "inherited_after_each",   "superclass_after_each",  "after_each", "a method ran",
+                      "inherited_before_each",  "superclass_before_each", "before_each",
+                      "inherited_after_each",   "superclass_after_each",  "after_each", "a method ran",
+                      "inherited_after_all",    "superclass_after_all",   "after_all"],
+                     hook_register )
       }})
     }})
+    
+    define("a_method", function() {
+      hook_register.push("a method ran")
+    })
     
     context("With the before option", function() { with(this) {
       setup(function() { with(this) {
@@ -177,49 +189,45 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
         assertEqual( "override success!", jvar )
       }})
     }})
-    
-    define("a_method", function() {
-      this.ivar = "a method ran"
-    })
   }})
   
   describe("nested lifecycle hooks", function() { with(this) {
     before("all", function() {
-      this.ivar = 0
+      this.ivar = [0]
     })
     
     before(function() {
-      this.ivar += 1
+      this.ivar.push(1)
     })
     context("A new context", function() { with(this) {
       before(function() {
-        this.ivar += 1
+        this.ivar.push(2)
       })
       
       before("all", function() {
-        this.ivar = 0
+        this.ivar.push(3)
       })
       
       context("A nested context", function() { with(this) {
         before(function() {
-          this.ivar += 1
+          this.ivar.push(4)
         })
         
         before("all", function() {
-          this.ivar += 1
+          this.ivar.push(5)
         })
         
         context("A second, nested context", function() { with(this) {
           before(function() {
-            this.ivar += 1
+            this.ivar.push(6)
           })
           
           before("all", function() {
-            this.ivar += 1
+            this.ivar.push(7)
           })
           
-          it("should set var", function() {
-            this.assertEqual( 6, this.ivar )
+          it("should set ivar", function() {
+            this.assertEqual( [0,3,5,7,1,2,4,6], this.ivar )
           })
         }})
       }})

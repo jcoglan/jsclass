@@ -21,10 +21,10 @@ JS.Test.Unit.TestSuite.include({
     var first = this._tests[0], ivarsFromCallback = null;
     if (first && first.runAllCallbacks) ivarsFromCallback = first.runAllCallbacks('before');
     
-    for (var i = 0, n = this._tests.length; i < n; i++) {
-      if (ivarsFromCallback) this._tests[i].setValuesFromCallbacks(ivarsFromCallback);
-      this._tests[i].run(result, block, context);
-    }
+    this.forEach(function(test) {
+      if (ivarsFromCallback) test.setValuesFromCallbacks(ivarsFromCallback);
+      test.run(result, block, context);
+    });
     
     if (ivarsFromCallback) first.runAllCallbacks('after');
     block.call(context || null, this.klass.FINISHED, this._name);

@@ -1,5 +1,6 @@
 /** section: test
  * class JS.Test.Unit.TestSuite
+ * includes JS.Enumerable
  * 
  * A collection of tests which can be `JS.Test.Unit.TestSuite#run`.
  * 
@@ -11,6 +12,8 @@
  **/
 JS.Test.Unit.extend({
   TestSuite: new JS.Class({
+    include: JS.Enumerable,
+    
     extend: {
       STARTED:  'Test.Unit.TestSuite.STARTED',
       FINISHED: 'Test.Unit.TestSuite.FINISHED'
@@ -27,6 +30,17 @@ JS.Test.Unit.extend({
     },
     
     /**
+     * JS.Test.Unit.TestSuite#forEach(block, context) -> undefined
+     * 
+     * Iterates over the tests and suites contained in
+     * this `TestSuite`.
+     **/
+    forEach: function(block, context) {
+      for (var i = 0, n = this._tests.length; i < n; i++)
+        block.call(context || null, this._tests[i]);
+    },
+    
+    /**
      * JS.Test.Unit.TestSuite#run(result, block, context) -> undefined
      * 
      * Runs the tests and/or suites contained in this
@@ -34,9 +48,7 @@ JS.Test.Unit.extend({
      **/
     run: function(result, block, context) {
       block.call(context || null, this.klass.STARTED, this._name);
-      for (var i = 0, n = this._tests.length; i < n; i++) {
-        this._tests[i].run(result, block, context);
-      }
+      this.forEach(function(test) { test.run(result, block, context) });
       block.call(context || null, this.klass.FINISHED, this._name);
     },
     
