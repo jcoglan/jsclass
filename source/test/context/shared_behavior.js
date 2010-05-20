@@ -95,7 +95,7 @@ JS.Test.Unit.TestCase.extend({
   var alias = function(method, aliases) {
     var extension = {};
     for (var i = 0, n = aliases.length; i < n; i++)
-      extension[aliases[i]] = JS.Test.Unit.TestCase.method(method);
+      extension[aliases[i]] = JS.Test.Unit.TestCase[method];
     JS.Test.Unit.TestCase.extend(extension);
   };
   
