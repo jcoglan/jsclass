@@ -262,29 +262,19 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
       
       context("should be locatable", function() { with(this) {
         shared("hello madam", function() { with(this) {
-          define("fantastic!", function() {
-            print( "you know me!" )
-          })
+          define("fantastic!", function() { print( "you know me!" ) })
         }})
         
         it("by a string", function() { with(this) {
-          var self = this
-          assertNothingThrown(function() {
-            self.klass.use("hello madam")
-          })
+          assertNothingThrown(function() { this.klass.use("hello madam") }, this)
         }})
       
         shared("hi dog", function() { with(this) {
-          define("stupendous!", function() {
-            print( "hoo hah!" )
-          })
+          define("stupendous!", function() { print( "hoo hah!" ) })
         }})
       
         it("by direct reference", function() { with(this) {
-          var self = this
-          assertNothingThrown(function() {
-            self.klass.use(HiDog)
-          })
+          assertNothingThrown(function() { this.klass.use(HiDog) }, this)
         }})
         
         context("across nesting hierarchies", function() { with(this) {
@@ -297,19 +287,14 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
           }})
           
           it("by a string", function() { with(this) {
-            var self = this
-            assertNothingThrown(function() {
-              self.klass.use("useful bits")
-            })
+            assertNothingThrown(function() { this.klass.use("useful bits") }, this)
           }})
         }})
       }})
       
       context("should include its shared behavior", function() { with(this) {
         shared("Porthos", function() { with(this) {
-          define("parry", function() {
-            return true
-          })
+          define("parry", function() { return true })
         }})
         
         it("by a string", function() { with(this) {
@@ -318,9 +303,7 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
         }})
         
         shared("Aramis", function() { with(this) {
-          define("lunge", function() {
-            return true
-          })
+          define("lunge", function() { return true })
         }})
         
         it("by direct reference", function() { with(this) {
@@ -332,14 +315,10 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
           before(function() { with(this) {
             this.klass.context("hidden", function() { with(this) {
               shared("useful stuff", function() { with(this) {
-                define("helper", function() {
-                  return true
-                })
+                define("helper", function() { return true })
               }})
               shared("other things", function() { with(this) {
-                define("handy", function() {
-                  return true
-                })
+                define("handy", function() { return true })
               }})
             }})
           }})
