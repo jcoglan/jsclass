@@ -28,6 +28,7 @@ require('JS.Test', 'JS.MethodChain', function() {
             'HashSpec',
             'MethodChainSpec',
             'ObservableSpec',
+            'ProxySpec',
             'SetSpec',
             'RangeSpec',
             
