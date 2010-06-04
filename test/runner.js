@@ -1,4 +1,4 @@
-if (!this.load) load = function(path) {
+if (this.ActiveXObject) load = function(path) {
   var fso = new ActiveXObject('Scripting.FileSystemObject'), file, runner;
   try {
     file   = fso.OpenTextFile(path);
@@ -10,7 +10,11 @@ if (!this.load) load = function(path) {
 };
 
 JSCLASS_PATH = 'build/min/'
-load(JSCLASS_PATH + 'loader.js')
+
+if (typeof require === 'function')
+  require('../' + JSCLASS_PATH + 'loader')
+else
+  load(JSCLASS_PATH + 'loader.js')
 
 JS.Packages(function() { with(this) {
     autoload(/^(.*)Spec$/, {from: 'test/specs', require: 'JS.$1'})
@@ -18,20 +22,20 @@ JS.Packages(function() { with(this) {
     pkg('Test.UnitSpec').requires('JS.Set', 'JS.Observable', 'JS.Range')
 }})
 
-require('JS.Test', 'JS.MethodChain', function() {
-    require('Test.UnitSpec',
-            'Test.ContextSpec',
-            'ComparableSpec',
-            'ConstantScopeSpec',
-            'DecoratorSpec',
-            'EnumerableSpec',
-            'ForwardableSpec',
-            'HashSpec',
-            'MethodChainSpec',
-            'ObservableSpec',
-            'ProxySpec',
-            'SetSpec',
-            'RangeSpec',
+JS.require('JS.Test', 'JS.MethodChain', function() {
+    JS.require('Test.UnitSpec',
+               'Test.ContextSpec',
+               'ComparableSpec',
+               'ConstantScopeSpec',
+               'DecoratorSpec',
+               'EnumerableSpec',
+               'ForwardableSpec',
+               'HashSpec',
+               'MethodChainSpec',
+               'ObservableSpec',
+               'ProxySpec',
+               'SetSpec',
+               'RangeSpec',
             
     JS.Test.method('autorun'))
 })

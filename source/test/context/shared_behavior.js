@@ -23,7 +23,7 @@ JS.Test.Context.extend({
     }
   }),
   
-  ENV: this
+  ENV: (function() { return this })()
 });
 
 JS.Test.Unit.TestCase.extend({

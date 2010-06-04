@@ -97,16 +97,19 @@ JS.Test.Unit.UI.extend({
           this._output('', level || JS.Test.Unit.UI.NORMAL);
         },
         
-        _output: function(something, level) {
+        _output: function(string, level) {
           if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
           this._lineBuffer = [];
-          this._print(something);
+          this._print(string);
         },
         
-        _outputSingle: function(something, level) {
+        _outputSingle: function(string, level) {
           if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
+          
+          if (typeof require === 'function') return require('sys').print(string);
+          
           var esc = (this._lineBuffer.length === 0) ? '' : this._escape('F') + this._escape('K');
-          this._lineBuffer.push(something);
+          this._lineBuffer.push(string);
           this._print(esc + this._lineBuffer.join(''));
         },
         
@@ -115,6 +118,7 @@ JS.Test.Unit.UI.extend({
         },
         
         _print: function(string) {
+          if (typeof require === 'function') return require('sys').puts(string);
           if (typeof WScript !== 'undefined') return WScript.Echo(string);
           if (typeof print === 'function') return print(string);
         },
