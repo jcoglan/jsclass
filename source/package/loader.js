@@ -33,6 +33,33 @@ JS.Package.DomLoader = {
   _K: function() {}
 };
 
+JS.Package.CommonJSLoader = {
+  usable: function() {
+    return typeof require === 'function' &&
+           typeof exports === 'object';
+  },
+  
+  setup: function() {
+    var self = this;
+    require = (function(oridRequire) {
+      return function() {
+        self._currentPath = arguments[0] + '.js';
+        return oridRequire.apply(JS.Package._env, arguments);
+      };
+    })(require);
+  },
+  
+  __FILE__: function() {
+    return this._currentPath;
+  },
+  
+  loadFile: function(path, fireCallbacks) {
+    path = require('path').join(process.cwd(), path.replace(/\.[^\.]+$/g, ''));
+    require(path);
+    fireCallbacks();
+  }
+};
+
 JS.Package.ServerLoader = {
   usable: function() {
     return typeof JS.Package.getObject('load') === 'function' &&
@@ -59,9 +86,35 @@ JS.Package.ServerLoader = {
   }
 };
 
+JS.Package.WshLoader = {
+  usable: function() {
+    return !!JS.Package.getObject('ActiveXObject') &&
+           !!JS.Package.getObject('WScript');
+  },
+  
+  __FILE__: function() {
+    return this._currentPath;
+  },
+  
+  loadFile: function(path, fireCallbacks) {
+    this._currentPath = path;
+    var fso = new ActiveXObject('Scripting.FileSystemObject'), file, runner;
+    try {
+      file   = fso.OpenTextFile(path);
+      runner = function() { eval(file.ReadAll()) };
+      runner();
+      fireCallbacks();
+    } finally {
+      try { if (file) file.Close() } catch (e) {}
+    }
+  }
+};
+
 (function() {
   var candidates = [  JS.Package.DomLoader,
-                      JS.Package.ServerLoader ],
+                      JS.Package.CommonJSLoader,
+                      JS.Package.ServerLoader,
+                      JS.Package.WshLoader ],
       
       n = candidates.length,
       i, candidate;

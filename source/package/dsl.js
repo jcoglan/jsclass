@@ -18,6 +18,10 @@ JS.Package.DSL = {
   
   load: function(path, fireCallbacks) {
     JS.Package.Loader.loadFile(path, fireCallbacks);
+  },
+  
+  autoload: function(pattern, options) {
+    JS.Package.autoload(pattern, options);
   }
 };
 
@@ -68,6 +72,4 @@ JS.require = function() {
   
   JS.Package.when({complete: requirements}, arguments[i], arguments[i+1]);
 };
-
-require = JS.require;
 
