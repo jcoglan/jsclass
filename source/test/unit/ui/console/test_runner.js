@@ -106,7 +106,7 @@ JS.Test.Unit.UI.extend({
         _outputSingle: function(string, level) {
           if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
           
-          if (typeof require === 'function') return require('sys').print(string);
+          if (typeof process === 'object') return require('sys').print(string);
           
           var esc = (this._lineBuffer.length === 0) ? '' : this._escape('F') + this._escape('K');
           this._lineBuffer.push(string);
@@ -118,7 +118,7 @@ JS.Test.Unit.UI.extend({
         },
         
         _print: function(string) {
-          if (typeof require === 'function') return require('sys').puts(string);
+          if (typeof process === 'object') return require('sys').puts(string);
           if (typeof WScript !== 'undefined') return WScript.Echo(string);
           if (typeof print === 'function') return print(string);
         },
