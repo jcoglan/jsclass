@@ -73,5 +73,3 @@ JS.require = function() {
   JS.Package.when({complete: requirements}, arguments[i], arguments[i+1]);
 };
 
-require = JS.require;
-

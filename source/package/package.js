@@ -1,4 +1,4 @@
-this.JS = this.JS || {};
+JS = (typeof JS === 'undefined') ? {} : JS;
 
 JS.Package = function(loader) {
   var Set = JS.Package.OrderedSet;

@@ -33,6 +33,37 @@ JS.Package.DomLoader = {
   _K: function() {}
 };
 
+JS.Package.CommonJSLoader = {
+  usable: function() {
+    return typeof require === 'function' &&
+           typeof exports === 'object';
+  },
+  
+  setup: function() {
+    var self = this;
+    require = (function(oridRequire) {
+      return function() {
+        self._currentPath = arguments[0] + '.js';
+        return oridRequire.apply(JS.Package._env, arguments);
+      };
+    })(require);
+  },
+  
+  __FILE__: function() {
+    return this._currentPath;
+  },
+  
+  loadFile: function(path, fireCallbacks) {
+    var node   = (typeof process === 'object'),
+        cwd    = node ? process.cwd() : require('file').cwd(),
+        module = path.replace(/\.[^\.]+$/g, ''),
+        file   = node ? require('path') : require('file');
+    
+    require(file.join(cwd, module));
+    fireCallbacks();
+  }
+};
+
 JS.Package.ServerLoader = {
   usable: function() {
     return typeof JS.Package.getObject('load') === 'function' &&
@@ -85,6 +116,7 @@ JS.Package.WshLoader = {
 
 (function() {
   var candidates = [  JS.Package.DomLoader,
+                      JS.Package.CommonJSLoader,
                       JS.Package.ServerLoader,
                       JS.Package.WshLoader ],
       
