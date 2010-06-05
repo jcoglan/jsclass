@@ -1,3 +1,17 @@
+Version 2.1.5
+June 5 2010
+================================================================
+
+* Adds support for Node, Narwhal and Windows Script Host to the
+  JS.Package loading system.
+
+* Adds an `autoload` macro to the package system for quickly
+  configuring modules using filename conventions.
+
+* Renames `require()` to `JS.require()` so as not to conflict
+  with CommonJS module API.
+
+
 Version 2.1.4
 March 9 2010
 ================================================================
