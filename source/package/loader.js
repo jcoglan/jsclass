@@ -54,8 +54,12 @@ JS.Package.CommonJSLoader = {
   },
   
   loadFile: function(path, fireCallbacks) {
-    path = require('path').join(process.cwd(), path.replace(/\.[^\.]+$/g, ''));
-    require(path);
+    var node   = (typeof process === 'object'),
+        cwd    = node ? process.cwd() : require('file').cwd(),
+        module = path.replace(/\.[^\.]+$/g, ''),
+        file   = node ? require('path') : require('file');
+    
+    require(file.join(cwd, module));
     fireCallbacks();
   }
 };
