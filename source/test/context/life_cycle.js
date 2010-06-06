@@ -57,27 +57,30 @@ JS.Test.Context.LifeCycle = new JS.Module({
     })
   },
   
-  setup: function(block) {
-    this.callSuper();
-    
-    if (this.klass.before_should_callbacks[this._methodName])
-      this.klass.before_should_callbacks[this._methodName].call(this);
-    
-    this.runCallbacks('before', 'each');
+  setup: function(resume) {
+    var self = this;
+    this.callSuper(function() {
+      if (self.klass.before_should_callbacks[self._methodName])
+        self.klass.before_should_callbacks[self._methodName].call(self);
+      
+      self.runCallbacks('before', 'each', resume);
+    });
   },
   
-  teardown: function() {
-    this.callSuper();
-    this.runCallbacks('after', 'each');
+  teardown: function(resume) {
+    var self = this;
+    this.callSuper(function() {
+      self.runCallbacks('after', 'each', resume);
+    });
   },
   
-  runCallbacks: function(callbackType, period) {
-    var callbacks = this.klass.gatherCallbacks(callbackType, period),
-        callback;
-    for (var i = 0, n = callbacks.length; i < n; i++) {
-      callback = callbacks[i];
-      JS.isFn(callback) ? callback.call(this) : this[callback]();
-    }
+  runCallbacks: function(callbackType, period, continuation) {
+    var callbacks = this.klass.gatherCallbacks(callbackType, period);
+    
+    JS.Test.Unit.TestSuite.forEach(callbacks, function(callback, resume) {
+      this.exec(callback, resume, function() {});
+      
+    }, continuation, this);
   },
   
   runAllCallbacks: function(callbackType) {

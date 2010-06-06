@@ -103,8 +103,10 @@ JS.Test.Unit.extend({
     },
     
     exec: function(methodName, onSuccess, onError) {
+      if (!methodName) return onSuccess.call(this);
+      
       var method = JS.isFn(methodName) ? methodName : this[methodName],
-          arity  = method.length,
+          arity  = (method.arity === undefined) ? method.length : method.arity,
           self   = this;
       
       if (arity === 0)
@@ -131,20 +133,20 @@ JS.Test.Unit.extend({
     },
     
     /**
-     * JS.Test.Unit.TestCase#setup() -> undefined
+     * JS.Test.Unit.TestCase#setup(resume) -> undefined
      * 
      * Called before every test method runs. Can be used
      * to set up fixture information.
      **/
-    setup: function() {},
+    setup: function(resume) { resume() },
     
     /**
-     * JS.Test.Unit.TestCase#teardown() -> undefined
+     * JS.Test.Unit.TestCase#teardown(resume) -> undefined
      * 
      * Called after every test method runs. Can be used to tear
      * down fixture information.
      **/
-    teardown: function() {},
+    teardown: function(resume) { resume() },
     
     defaultTest: function() {
       return this.flunk('No tests were specified');

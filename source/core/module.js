@@ -458,6 +458,7 @@ JS.extend(JS.Module.prototype, {
     // Wrap and copy methods to the target
     var make = function(key) {
       var made = target.make(key, self.__fns__[key]);
+      if (made) made.arity = self.__fns__[key].length;
       if (resolved[key] !== made) resolved[key] = made;
     };
     for (key in self.__fns__) make(key);

@@ -16,7 +16,34 @@ JS.Test.Unit.extend({
     
     extend: {
       STARTED:  'Test.Unit.TestSuite.STARTED',
-      FINISHED: 'Test.Unit.TestSuite.FINISHED'
+      FINISHED: 'Test.Unit.TestSuite.FINISHED',
+      
+      forEach: function(tests, block, continuation, context) {
+        var looping = false,
+            n       = tests.length,
+            i       = -1,
+            calls   = 0;
+        
+        var ping = function() {
+          calls += 1;
+          loop();
+        };
+        
+        var loop = function() {
+          if (looping) return;
+          looping = true;
+          while (calls > 0) iterate();
+          looping = false;
+        };
+        
+        var iterate = function() {
+          i += 1; calls -= 1;
+          if (i === n) return continuation && continuation.call(context || null);
+          block.call(context || null, tests[i], ping);
+        };
+        
+        ping();
+      }
     },
     
     /**
@@ -36,31 +63,7 @@ JS.Test.Unit.extend({
      * this `TestSuite`.
      **/
     forEach: function(block, continuation, context) {
-      var tests   = this._tests,
-          looping = false,
-          n       = tests.length,
-          i       = -1,
-          calls   = 0;
-      
-      var ping = function() {
-        calls += 1;
-        loop();
-      };
-      
-      var loop = function() {
-        if (looping) return;
-        looping = true;
-        while (calls > 0) iterate();
-        looping = false;
-      };
-      
-      var iterate = function() {
-        i += 1; calls -= 1;
-        if (i === n) return continuation && continuation.call(context || null);
-        block.call(context || null, tests[i], ping);
-      };
-      
-      ping();
+      this.klass.forEach(this._tests, block, continuation, context);
     },
     
     /**

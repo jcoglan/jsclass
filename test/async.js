@@ -34,6 +34,34 @@ JS.require("JS.Test", "JS.MethodChain", function() {
           })
         }})
       })
+      
+      this.describe("with an async before block", function() {
+        this.before(function(resume) {
+          var self = this
+          setTimeout(function() {
+            self.value = 2
+            resume()
+          }, 1000);
+        })
+        
+        this.it("waits for the before block to resume", function() {
+          this.assertEqual( 2, this.value )
+        })
+        
+        this.describe("with another nested block", function() {
+          this.before(function(resume) {
+            var self = this
+            setTimeout(function() {
+              self.value *= 4
+              resume()
+            }, 500)
+          })
+          
+          this.it("runs both before blocks sequentially", function() {
+            this.assertEqual( 80, this.value )
+          })
+        })
+      })
     })
     
     JS.Test.autorun()
