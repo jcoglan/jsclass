@@ -34,6 +34,11 @@ JS.DOM.Builder = new JS.Class('DOM.Builder', {
     }
     if (this._parentNode) this._parentNode.appendChild(element);
     return element;
+  },
+  
+  concat: function(text) {
+    if (!this._parentNode) return;
+    this._parentNode.appendChild(document.createTextNode(text));
   }
 });
 

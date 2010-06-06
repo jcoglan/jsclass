@@ -66,6 +66,7 @@ JS.Test.Unit.UI.extend({
         
         _addFault: function(fault) {
           this._faults.push(fault);
+          this._display.addReport(fault.longDisplay());
         },
         
         _started: function(result) {
@@ -107,18 +108,23 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
         div.h1('Test results');
         div.table({'class': 'summary'}, function(table) {
           table.thead(function(thead) {
-            thead.th({scope: 'col'}, 'Tests');
-            thead.th({scope: 'col'}, 'Assertions');
-            thead.th({scope: 'col'}, 'Failures');
-            thead.th({scope: 'col'}, 'Errors');
+            thead.tr(function(tr) {
+              tr.th({scope: 'col'}, 'Tests');
+              tr.th({scope: 'col'}, 'Assertions');
+              tr.th({scope: 'col'}, 'Failures');
+              tr.th({scope: 'col'}, 'Errors');
+            });
           });
           table.tbody(function(tbody) {
-            self._tests      = tbody.td();
-            self._assertions = tbody.td();
-            self._failures   = tbody.td();
-            self._errors     = tbody.td();
+            tbody.tr(function(tr) {
+              self._tests      = tr.td();
+              self._assertions = tr.td();
+              self._failures   = tr.td();
+              self._errors     = tr.td();
+            });
           });
         });
+        self._reports = div.ol({'class': 'reports'});
       });
     },
     
@@ -136,6 +142,19 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
     
     setErrorCount: function(n) {
       this._errors.innerHTML = String(n);
+    },
+    
+    addReport: function(string) {
+      var item = JS.DOM.li(function(li) {
+        li.p(function(p) {
+          var parts = string.split(/[\r\n]+/);
+          for (var i = 0, n = parts.length; i < n; i++) {
+            if (i > 0) p.br();
+            p.concat(parts[i]);
+          }
+        });
+      });
+      this._reports.appendChild(item);
     }
   })
 });
