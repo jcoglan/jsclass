@@ -76,16 +76,53 @@ JS.Test.Unit.extend({
       callback.call(context || null, this.klass.STARTED, this.name());
       this._result = result;
       
-      this._runWithExceptionHandlers(function() {
-        this.setup();
-        this[this._methodName]();
-      }, this._processError, function() {
-        this._runWithExceptionHandlers(this.teardown, this._processError);
-      });
+      var processError = function(doNext) {
+        return function(e) {
+          if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
+            this.addFailure(e.message);
+          else
+            this.addError(e);
+          
+          if (doNext) doNext.call(this);
+        };
+      };
       
-      result.addRun();
-      callback.call(context || null, this.klass.FINISHED, this.name());
-      continuation();
+      var complete = function() {
+        result.addRun();
+        callback.call(context || null, this.klass.FINISHED, this.name());
+        continuation();
+      };
+      
+      var teardown = function() {
+        this.exec('teardown', complete, processError(complete));
+      };
+      
+      this.exec('setup', function() {
+        this.exec(this._methodName, teardown, processError(teardown));
+      }, processError(teardown));
+    },
+    
+    exec: function(methodName, onSuccess, onError) {
+      var method = this[methodName],
+          arity  = method.length,
+          self   = this;
+      
+      if (arity === 0) {
+        this._runWithExceptionHandlers(function() {
+          method.call(this);
+          onSuccess.call(this);
+        }, onError);
+        
+      } else if (arity === 1) {
+        this._runWithExceptionHandlers(function() {
+          method.call(this, function(asyncBlock) {
+            self._runWithExceptionHandlers(function() {
+              asyncBlock.call(this);
+              onSuccess.call(this);
+            }, onError);
+          })
+        }, onError);
+      }
     },
     
     _runWithExceptionHandlers: function(_try, _catch, _finally) {
@@ -96,13 +133,6 @@ JS.Test.Unit.extend({
       } finally {
         if (_finally) _finally.call(this);
       }
-    },
-    
-    _processError: function(e) {
-      if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
-        this.addFailure(e.message);
-      else
-        this.addError(e);
     },
     
     /**

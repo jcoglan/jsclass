@@ -28,10 +28,7 @@ JS.Test.Context.Test = new JS.Module({
         this.before_should_callbacks[testName] = opts.before;
     }
     
-    this.define(testName, function() {
-      if (!block) this.flunk('No implementation provided for ' + name);
-      block.call(this);
-    });
+    this.define(testName, block);
   },
   
   beforeTest: function(name, block) {

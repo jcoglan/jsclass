@@ -31,14 +31,22 @@ JS.Test.Unit.UI.extend({
      * Runs the suite the `TestRunnerMediator` was created with.
      **/
     runSuite: function(continuation, context) {
-      continuation = (function(K) {
-        return function() { if (K) K.apply(context || null, arguments) };
-      })(continuation);
-      
       var beginTime = new Date().getTime();
       this.notifyListeners(this.klass.RESET, this._suite.size());
       var result = this.createResult();
       this.notifyListeners(this.klass.STARTED, result);
+      
+      var reportResult = JS.bind(function() {
+        result.removeListener(JS.Test.Unit.TestResult.FAULT, faultListener);
+        result.removeListener(JS.Test.Unit.TestResult.CHANGED, resultListener);
+        
+        var endTime     = new Date().getTime(),
+            elapsedTime = (endTime - beginTime) / 1000;
+        
+        this.notifyListeners(this.klass.FINISHED, elapsedTime);
+        
+        if (continuation) continuation.call(context || null, result);
+      }, this);
       
       var resultListener = result.addListener(JS.Test.Unit.TestResult.CHANGED, function(updatedResult) {
         this.notifyListeners(JS.Test.Unit.TestResult.CHANGED, updatedResult);
@@ -48,17 +56,9 @@ JS.Test.Unit.UI.extend({
         this.notifyListeners(JS.Test.Unit.TestResult.FAULT, fault);
       }, this);
       
-      this._suite.run(result, continuation, function(channel, value) {
+      this._suite.run(result, reportResult, function(channel, value) {
         this.notifyListeners(channel, value);
       }, this);
-      
-      result.removeListener(JS.Test.Unit.TestResult.FAULT, faultListener);
-      result.removeListener(JS.Test.Unit.TestResult.CHANGED, resultListener);
-      
-      var endTime     = new Date().getTime(),
-          elapsedTime = (endTime - beginTime) / 1000;
-      this.notifyListeners(this.klass.FINISHED, elapsedTime);
-      return result;
     },
     
     /**
