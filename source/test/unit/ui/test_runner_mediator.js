@@ -26,11 +26,15 @@ JS.Test.Unit.UI.extend({
     },
     
     /**
-     * JS.Test.Unit.UI.TestRunnerMediator#runSuite() -> JS.Test.Unit.TestResult
+     * JS.Test.Unit.UI.TestRunnerMediator#runSuite(continuation, context) -> JS.Test.Unit.TestResult
      * 
      * Runs the suite the `TestRunnerMediator` was created with.
      **/
-    runSuite: function() {
+    runSuite: function(continuation, context) {
+      continuation = (function(K) {
+        return function() { if (K) K.apply(context || null, arguments) };
+      })(continuation);
+      
       var beginTime = new Date().getTime();
       this.notifyListeners(this.klass.RESET, this._suite.size());
       var result = this.createResult();
@@ -44,7 +48,7 @@ JS.Test.Unit.UI.extend({
         this.notifyListeners(JS.Test.Unit.TestResult.FAULT, fault);
       }, this);
       
-      this._suite.run(result, function(channel, value) {
+      this._suite.run(result, continuation, function(channel, value) {
         this.notifyListeners(channel, value);
       }, this);
       

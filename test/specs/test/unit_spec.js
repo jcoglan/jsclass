@@ -7,7 +7,7 @@ TestSpecHelpers = new JS.Module({
   
   runTests: function(tests) {
     if (tests) this.testcase = this.suite(tests)
-    this.testcase.run(this.result, function() {})
+    this.testcase.run(this.result, function() {}, function() {})
   },
   
   assertTestResult: function(runs, assertions, failures, errors) { with(this) {

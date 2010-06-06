@@ -66,14 +66,14 @@ JS.Test.Unit.extend({
     },
     
     /**
-     * JS.Test.Unit.TestCase#run(result) -> undefined
+     * JS.Test.Unit.TestCase#run(result, continuation, callback, context) -> undefined
      * 
      * Runs the individual test method represented by this
      * instance of the fixture, collecting statistics, failures
      * and errors in `result`.
      **/
-    run: function(result, block, context) {
-      block.call(context || null, this.klass.STARTED, this.name());
+    run: function(result, continuation, callback, context) {
+      callback.call(context || null, this.klass.STARTED, this.name());
       this._result = result;
       try {
         this.setup();
@@ -94,7 +94,8 @@ JS.Test.Unit.extend({
         }
       }
       result.addRun();
-      block.call(context || null, this.klass.FINISHED, this.name());
+      callback.call(context || null, this.klass.FINISHED, this.name());
+      continuation();
     },
     
     /**

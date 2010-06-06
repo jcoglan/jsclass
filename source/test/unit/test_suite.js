@@ -30,26 +30,53 @@ JS.Test.Unit.extend({
     },
     
     /**
-     * JS.Test.Unit.TestSuite#forEach(block, context) -> undefined
+     * JS.Test.Unit.TestSuite#forEach(block, continuation, context) -> undefined
      * 
      * Iterates over the tests and suites contained in
      * this `TestSuite`.
      **/
-    forEach: function(block, context) {
-      for (var i = 0, n = this._tests.length; i < n; i++)
-        block.call(context || null, this._tests[i]);
+    forEach: function(block, continuation, context) {
+      var tests = this._tests,
+          n     = tests.length,
+          i     = -1,
+          sync  = false,
+          calls = 1;
+      
+      var safeIterate = function() {
+        if (sync) calls += 1;
+        else iterate();
+      };
+      
+      var iterate = function() {
+        i += 1; calls -= 1;
+        
+        if (i === n) return continuation && continuation.call(context || null);
+        
+        sync = true;
+        block.call(context || null, tests[i], safeIterate);
+        sync = false;
+      };
+      
+      while (calls > 0) iterate();
     },
     
     /**
-     * JS.Test.Unit.TestSuite#run(result, block, context) -> undefined
+     * JS.Test.Unit.TestSuite#run(result, continuation, callback, context) -> undefined
      * 
      * Runs the tests and/or suites contained in this
      * `TestSuite`.
      **/
-    run: function(result, block, context) {
-      block.call(context || null, this.klass.STARTED, this._name);
-      this.forEach(function(test) { test.run(result, block, context) });
-      block.call(context || null, this.klass.FINISHED, this._name);
+    run: function(result, continuation, callback, context) {
+      callback.call(context || null, this.klass.STARTED, this._name);
+      
+      this.forEach(function(test, resume) {
+        test.run(result, resume, callback, context)
+        
+      }, function() {
+        callback.call(context || null, this.klass.FINISHED, this._name);
+        continuation();
+        
+      }, this);
     },
     
     /**

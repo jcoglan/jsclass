@@ -15,19 +15,22 @@ JS.Test.Unit.TestCase.extend({
 });
 
 JS.Test.Unit.TestSuite.include({
-  run: function(result, block, context) {
-    block.call(context || null, this.klass.STARTED, this._name);
+  run: function(result, continuation, callback, context) {
+    callback.call(context || null, this.klass.STARTED, this._name);
     
     var first = this._tests[0], ivarsFromCallback = null;
     if (first && first.runAllCallbacks) ivarsFromCallback = first.runAllCallbacks('before');
     
-    this.forEach(function(test) {
+    this.forEach(function(test, resume) {
       if (ivarsFromCallback) test.setValuesFromCallbacks(ivarsFromCallback);
-      test.run(result, block, context);
-    });
-    
-    if (ivarsFromCallback) first.runAllCallbacks('after');
-    block.call(context || null, this.klass.FINISHED, this._name);
+      test.run(result, resume, callback, context);
+      
+    }, function() {
+      if (ivarsFromCallback) first.runAllCallbacks('after');
+      callback.call(context || null, this.klass.FINISHED, this._name);
+      continuation();
+      
+    }, this);
   }
 });
 

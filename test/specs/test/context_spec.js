@@ -119,21 +119,23 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
       before(function() { with(this) {
         this.result = new JS.Test.Unit.TestResult()
         this.suite  = sample_test.suite()
-        suite.run(this.result, function() {})
+        suite.run(this.result, function() {}, function() {})
         this.hooks  = new JS.Enumerable.Collection(hook_register)
       }})
       
       it("applies state from before :all blocks to each test", function() { with(this) {
-        suite.forEach(function(test) {
+        suite.forEach(function(test, resume) {
           assert( test.inherited_before_all_var )
           assert( test.before_all_var )
+          resume()
         })
       }})
       
       it("applies state from before :each blocks to each test", function() { with(this) {
-        suite.forEach(function(test) {
+        suite.forEach(function(test, resume) {
           assert( test.inherited_before_each_var )
           assert( test.before_each_var )
+          resume()
         })
       }})
       
