@@ -1,0 +1,43 @@
+.test-result-container {
+  font:         normal 15px FreeSans, Helvatica, Arial, sans-serif;
+  background:   #fff;
+  color:        #444;
+  border:       2px solid #444;
+  position:     absolute;
+  right:        30px;
+  top:          30px;
+}
+
+.test-result-container h1 {
+  font-size:    150%;
+  padding:      4px 8px;
+  margin:       0;
+  background:   #444;
+  color:        #fff;
+}
+
+.test-result-container table {
+  border-collapse: collapse;
+  margin:       0;
+  padding:      0;
+}
+
+.test-result-container table th, .test-result-container table td {
+  border-left:  1px solid #ccc;
+  border-right: 1px solid #ccc;
+  font-weight:  bold;
+  padding:      0 8px;
+  text-align:   right;
+  width:        110px;
+}
+
+.test-result-container table th {
+  border-top:   1px solid #ccc;
+  padding-top:  6px;
+}
+
+.test-result-container table td {
+  font-size:    300%;
+  color:        #999;
+}
+

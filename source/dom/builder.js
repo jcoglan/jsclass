@@ -29,7 +29,7 @@ JS.DOM.Builder = new JS.Class('DOM.Builder', {
         element.appendChild(document.createTextNode(child));
       } else {
         for (attribute in child)
-          element.setAttribute(attribute, child[attribute]);
+          element[attribute] = child[attribute];
       }
     }
     if (this._parentNode) this._parentNode.appendChild(element);

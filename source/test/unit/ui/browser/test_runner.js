@@ -104,9 +104,9 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
     
     _constructDOM: function() {
       var self = this;
-      self._container = JS.DOM.div({'class': 'test-result-container'}, function(div) {
+      self._container = JS.DOM.div({className: 'test-result-container'}, function(div) {
         div.h1('Test results');
-        div.table({'class': 'summary'}, function(table) {
+        div.table({className: 'summary'}, function(table) {
           table.thead(function(thead) {
             thead.tr(function(tr) {
               tr.th({scope: 'col'}, 'Tests');
@@ -124,7 +124,7 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
             });
           });
         });
-        self._reports = div.ol({'class': 'reports'});
+        self._reports = div.ol({className: 'reports'});
       });
     },
     
