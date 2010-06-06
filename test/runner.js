@@ -1,5 +1,7 @@
+if (typeof CWD === 'undefined') CWD = '.'
+
 JS.Packages(function() { with(this) {
-    autoload(/^(.*)Spec$/, {from: 'test/specs', require: 'JS.$1'})
+    autoload(/^(.*)Spec$/, {from: CWD + '/test/specs', require: 'JS.$1'})
     
     pkg('Test.UnitSpec').requires('JS.Set', 'JS.Observable', 'JS.Range')
 }})
