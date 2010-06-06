@@ -31,7 +31,7 @@ TestSpecHelpers = new JS.Module({
 })
 
 Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
-  
+  include(JS.Test.Helpers)
   include(TestSpecHelpers)
   
   before("each", function() {
@@ -684,12 +684,19 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
   }})
   
   describe("#assertThrow", function() { with(this) {
+    before(function() { with(this) {
+      var isOpera = (typeof MemoryError !== "undefined")
+      forEach($w("TypeError RangeError ReferenceError SyntaxError"), function(type) {
+        this["__" + type] = isOpera ? "MemoryError" : type
+      }, this)
+    }})
+    
     describe("with one exception type", function() { with(this) {
       it("passes when the block throws the referenced exception type", function(resume) { with(this) {
         runTests({
           testAssertThrow: function() { with(this) {
             assertThrow(TypeError,  function() { throw new TypeError() })
-            assertThrow(TypeError,  function() { throw TypeError })
+            assertThrow(Function,   function() { throw TypeError })
             assertThrow(String,     function() { throw "a string" })
           }}
         }, function() { resume(function() {
@@ -707,7 +714,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError]> exception expected but none was thrown." )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<["+__TypeError+"]> exception expected but none was thrown." )
           assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but none was thrown." )
         })})
       }})
@@ -725,9 +732,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           }}
         }, function() { resume(function() {
           assertTestResult( 3, 3, 3, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError]> exception expected but was\nRangeError: this is the wrong type." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but was\nTypeError." )
-          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[TypeError]> exception expected but was\n\"string error\"." )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<["+__TypeError+"]> exception expected but was\nRangeError: this is the wrong type." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but was\n"+__TypeError+"." )
+          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<["+__TypeError+"]> exception expected but was\n\"string error\"." )
         })})
       }})
     }})
@@ -737,7 +744,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         runTests({
           testAssertThrow: function() { with(this) {
             assertThrow(TypeError, RangeError, function() { throw new RangeError() })
-            assertThrow(ReferenceError, SyntaxError, function() { throw SyntaxError })
+            assertThrow(ReferenceError, Function, function() { throw SyntaxError })
             assertThrow(SyntaxError, String, function() { throw "a string" })
           }}
         }, function() { resume(function() {
@@ -758,9 +765,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           }}
         }, function() { resume(function() {
           assertTestResult( 3, 3, 3, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError,RangeError]> exception expected but none was thrown." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[ReferenceError,SyntaxError]> exception expected but none was thrown." )
-          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[SyntaxError,String]> exception expected but none was thrown." )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<["+__TypeError+","+__RangeError+"]> exception expected but none was thrown." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<["+__ReferenceError+","+__SyntaxError+"]> exception expected but none was thrown." )
+          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<["+__SyntaxError+",String]> exception expected but none was thrown." )
         })})
       }})
       
@@ -777,9 +784,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           }}
         }, function() { resume(function() {
           assertTestResult( 3, 3, 3, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError,RangeError]> exception expected but was\n\"a string\"." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[ReferenceError,SyntaxError]> exception expected but was\nTypeError." )
-          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[SyntaxError,String]> exception expected but was\nTypeError: a type error." )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<["+__TypeError+","+__RangeError+"]> exception expected but was\n\"a string\"." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<["+__ReferenceError+","+__SyntaxError+"]> exception expected but was\n"+__TypeError+"." )
+          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<["+__SyntaxError+",String]> exception expected but was\nTypeError: a type error." )
         })})
       }})
     }})
