@@ -75,27 +75,34 @@ JS.Test.Unit.extend({
     run: function(result, continuation, callback, context) {
       callback.call(context || null, this.klass.STARTED, this.name());
       this._result = result;
-      try {
+      
+      this._runWithExceptionHandlers(function() {
         this.setup();
         this[this._methodName]();
-      } catch (e) {
-        if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
-          this.addFailure(e.message);
-        else
-          this.addError(e);
-      } finally {
-        try {
-          this.teardown();
-        } catch (e) {
-          if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
-            this.addFailure(e.message);
-          else
-            this.addError(e);
-        }
-      }
+      }, this._processError, function() {
+        this._runWithExceptionHandlers(this.teardown, this._processError);
+      });
+      
       result.addRun();
       callback.call(context || null, this.klass.FINISHED, this.name());
       continuation();
+    },
+    
+    _runWithExceptionHandlers: function(_try, _catch, _finally) {
+      try {
+        _try.call(this);
+      } catch (e) {
+        if (_catch) _catch.call(this, e);
+      } finally {
+        if (_finally) _finally.call(this);
+      }
+    },
+    
+    _processError: function(e) {
+      if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
+        this.addFailure(e.message);
+      else
+        this.addError(e);
     },
     
     /**
