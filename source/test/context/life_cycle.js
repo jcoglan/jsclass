@@ -83,14 +83,18 @@ JS.Test.Context.LifeCycle = new JS.Module({
     }, continuation, this);
   },
   
-  runAllCallbacks: function(callbackType) {
+  runAllCallbacks: function(callbackType, continuation, context) {
     var previousIvars = this.instanceVariables();
-    this.runCallbacks(callbackType, 'all');
-    return this.instanceVariables().inject({}, function(hash, ivar) {
-      if (previousIvars.member(ivar)) return hash;
-      hash[ivar] = this[ivar];
-      return hash;
-    }, this);
+    this.runCallbacks(callbackType, 'all', function() {
+      
+      var ivars = this.instanceVariables().inject({}, function(hash, ivar) {
+        if (previousIvars.member(ivar)) return hash;
+        hash[ivar] = this[ivar];
+        return hash;
+      }, this);
+      
+      if (continuation) continuation.call(context || null, ivars);
+    });
   },
   
   setValuesFromCallbacks: function(values) {
