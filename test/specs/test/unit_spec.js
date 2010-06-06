@@ -696,11 +696,10 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         runTests({
           testAssertThrow: function() { with(this) {
             assertThrow(TypeError,  function() { throw new TypeError() })
-            assertThrow(Function,   function() { throw TypeError })
             assertThrow(String,     function() { throw "a string" })
           }}
         }, function() { resume(function() {
-          assertTestResult( 1, 3, 0, 0 )
+          assertTestResult( 1, 2, 0, 0 )
         })})
       }})
       
@@ -744,11 +743,10 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         runTests({
           testAssertThrow: function() { with(this) {
             assertThrow(TypeError, RangeError, function() { throw new RangeError() })
-            assertThrow(ReferenceError, Function, function() { throw SyntaxError })
             assertThrow(SyntaxError, String, function() { throw "a string" })
           }}
         }, function() { resume(function() {
-          assertTestResult( 1, 3, 0, 0 )
+          assertTestResult( 1, 2, 0, 0 )
         })})
       }})
       
