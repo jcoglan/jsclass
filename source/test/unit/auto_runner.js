@@ -8,7 +8,7 @@ JS.Test.Unit.extend({
        * JS.Test.Unit.AutoRunner.run() -> JS.Test.Unit.TestResult
        **/
       run: function(outputLevel) {
-        var runner = this.RUNNERS.console,
+        var runner = this.getRunner(),
             names  = [],
             suites = [];
         
@@ -25,8 +25,15 @@ JS.Test.Unit.extend({
         return runner.run(suite, this.OUTPUT_LEVELS[outputLevel || 'normal']);
       },
       
+      getRunner: function() {
+        return (typeof window !== 'undefined')
+              ? this.RUNNERS.browser
+              : this.RUNNERS.console;
+      },
+      
       RUNNERS: {
-        console:  JS.Test.Unit.UI.Console.TestRunner
+        console:  JS.Test.Unit.UI.Console.TestRunner,
+        browser:  JS.Test.Unit.UI.Browser.TestRunner
       },
       
       OUTPUT_LEVELS: {

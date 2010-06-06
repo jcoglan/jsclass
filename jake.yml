@@ -2,10 +2,13 @@
 source_directory:   source
 build_directory:    build
 layout:             apart
+
 packer:
   shrink_vars:      true
   private:          true
+
 packages:
+  
   core:
     directory: core
     files:
@@ -16,16 +19,19 @@ packages:
       - kernel
       - interface
       - singleton
+  
   package:
     directory: package
     files:
       - package
       - loader
       - dsl
+  
   loader:
     extends: package
     files:
       - config
+  
   test:
     directory: test
     files:
@@ -40,6 +46,7 @@ packages:
       - unit/ui/test_runner_utilities
       - unit/ui/test_runner_mediator
       - unit/ui/console/test_runner
+      - unit/ui/browser/test_runner
       - unit/auto_runner
       - context/context
       - context/life_cycle
@@ -47,6 +54,13 @@ packages:
       - context/test
       - context/suite
       - helpers
+  
+  dom:
+    directory: dom
+    files:
+      - dom
+      - builder
+  
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable
@@ -63,10 +77,12 @@ packages:
   set:              set
   stack_trace:      stack_trace
   ruby:             ruby
+
 bundles:
   stdlib:
     - method_chain
     - test
+    - dom
     - package
     - comparable
     - enumerable

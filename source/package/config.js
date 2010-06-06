@@ -21,22 +21,19 @@ JS.Packages(function() { with(this) {
                                       'JS.Test.Context',
                                       'JS.Test.Helpers',
                                       test,
-                                      test + '.Util.Observable',
                                       test + '.Assertions',
-                                      test + '.Error',
-                                      test + '.Failure',
                                       test + '.TestCase',
                                       test + '.TestSuite',
-                                      test + '.TestResult',
-                                      test + '.UI',
-                                      test + '.UI.TestRunnerUtilities',
-                                      test + '.UI.TestRunnerMediator',
-                                      test + '.UI.Console',
-                                      test + '.UI.Console.TestRunner')
+                                      test + '.TestResult')
                             .requires('JS.Module',
                                       'JS.Class',
+                                      'JS.DOM',
                                       'JS.Enumerable',
                                       'JS.Ruby');
+    
+    module('dom')           .provides('JS.DOM',
+                                      'JS.DOM.Builder')
+                            .requires('JS.Class');
     
     module('comparable')    .provides('JS.Comparable')
                             .requires('JS.Module');
