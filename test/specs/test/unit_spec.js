@@ -5,9 +5,9 @@ TestSpecHelpers = new JS.Module({
     return new JS.Class("TestedSuite", JS.Test.Unit.TestCase, tests).suite()
   },
   
-  runTests: function(tests) {
+  runTests: function(tests, resume) {
     if (tests) this.testcase = this.suite(tests)
-    this.testcase.run(this.result, function() {}, function() {})
+    this.testcase.run(this.result, resume || function() {}, function() {})
   },
   
   assertTestResult: function(runs, assertions, failures, errors) { with(this) {
@@ -41,8 +41,8 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
   })
   
   describe("empty TestCase", function() { with(this) {
-    before("each", function() {
-      this.runTests({})
+    before("each", function(resume) {
+      this.runTests({}, resume)
     })
     
     it("passes with no assertions, failures or errors", function() { with(this) {
@@ -51,60 +51,65 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
   }})
   
   describe("#assertBlock", function() { with(this) {
-    it("passes when the block returns true", function() { with(this) {
+    it("passes when the block returns true", function(resume) { with(this) {
       runTests({
         testAssertBlock: function() { with(this) {
           assertBlock("some message", function() { return true })
         }}
-      })
-      assertTestResult( 1, 1, 0, 0 )
+      }, function() { resume(function() {
+        assertTestResult( 1, 1, 0, 0 )
+      })})
     }})
     
-    it("fails with the given message when the block returns false", function() { with(this) {
+    it("fails with the given message when the block returns false", function(resume) { with(this) {
       runTests({
         testAssertBlock: function() { with(this) {
           assertBlock("some message", function() { return false })
         }}
-      })
-      assertTestResult( 1, 1, 1, 0 )
-      assertMessage( "Failure:\ntestAssertBlock(TestedSuite):\nsome message." )
+      }, function() { resume(function() {
+        assertTestResult( 1, 1, 1, 0 )
+        assertMessage( "Failure:\ntestAssertBlock(TestedSuite):\nsome message." )
+      })})
     }})
     
-    it("fails with a default message when the block returns false", function() { with(this) {
+    it("fails with a default message when the block returns false", function(resume) { with(this) {
       runTests({
         testAssertBlock: function() { with(this) {
           assertBlock(function() { return false })
         }}
-      })
-      assertTestResult( 1, 1, 1, 0 )
-      assertMessage( "Failure:\ntestAssertBlock(TestedSuite):\nassertBlock failed." )
+      }, function() { resume(function() {
+        assertTestResult( 1, 1, 1, 0 )
+        assertMessage( "Failure:\ntestAssertBlock(TestedSuite):\nassertBlock failed." )
+      })})
     }})
   }})
   
   describe("#flunk", function() { with(this) {
-    it("fails with the given message", function() { with(this) {
+    it("fails with the given message", function(resume) { with(this) {
       runTests({
         testFlunk: function() { with(this) {
           flunk("some message")
         }}
-      })
-      assertTestResult( 1, 1, 1, 0 )
-      assertMessage( "Failure:\ntestFlunk(TestedSuite):\nsome message." )
+      }, function() { resume(function() {
+        assertTestResult( 1, 1, 1, 0 )
+        assertMessage( "Failure:\ntestFlunk(TestedSuite):\nsome message." )
+      })})
     }})
     
-    it("fails with a default message", function() { with(this) {
+    it("fails with a default message", function(resume) { with(this) {
       runTests({
         testFlunk: function() { with(this) {
           flunk()
         }}
-      })
-      assertTestResult( 1, 1, 1, 0 )
-      assertMessage( "Failure:\ntestFlunk(TestedSuite):\nFlunked." )
+      }, function() { resume(function() {
+        assertTestResult( 1, 1, 1, 0 )
+        assertMessage( "Failure:\ntestFlunk(TestedSuite):\nFlunked." )
+      })})
     }})
   }})
   
   describe("#assert", function() { with(this) {
-    it("passes when passed truthy values", function() { with(this) {
+    it("passes when passed truthy values", function(resume) { with(this) {
       runTests({
         testAssert: function() { with(this) {
           assert( true )
@@ -114,23 +119,25 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           assert( [] )
           assert( function() {} )
         }}
-      })
-      assertTestResult( 1, 6, 0, 0 )
+      }, function() { resume(function() {
+        assertTestResult( 1, 6, 0, 0 )
+      })})
     }})
     
-    it("fails when passed false", function() { with(this) {
+    it("fails when passed false", function(resume) { with(this) {
       runTests({
         testAssert: function() { with(this) {
           assert( false, "It's not true" )
         }}
-      })
-      assertTestResult( 1, 1, 1, 0 )
-      assertMessage( "Failure:\ntestAssert(TestedSuite):\nIt's not true.\n<false> is not true." )
+      }, function() { resume(function() {
+        assertTestResult( 1, 1, 1, 0 )
+        assertMessage( "Failure:\ntestAssert(TestedSuite):\nIt's not true.\n<false> is not true." )
+      })})
     }})
   }})
   
   describe("#assertEqual", function() { with(this) {
-    it("passes when given equal values", function() { with(this) {
+    it("passes when given equal values", function(resume) { with(this) {
       runTests({
         testAssertEqual: function() { with(this) {
           assertEqual( true, true )
@@ -159,12 +166,13 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           assertNotEqual( new JS.Set([3,2]), new JS.Set([2,1]) )
           assertNotEqual( function() {}, function() {} )
         }}
-      })
-      assertTestResult( 1, 24, 0, 0 )
+      }, function() { resume(function() {
+        assertTestResult( 1, 24, 0, 0 )
+      })})
     }})
     
     describe("with booleans", function() { with(this) {
-      it("fails when given different values", function() { with(this) {
+      it("fails when given different values", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( true, false )
@@ -173,15 +181,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test2: function() { with(this) {
             assertEqual( false, null, "false and null are not equal" )
           }}
-        })
-        assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<true> expected but was\n<false>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\nfalse and null are not equal.\n<false> expected but was\n<null>." )
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<true> expected but was\n<false>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\nfalse and null are not equal.\n<false> expected but was\n<null>." )
+        })})
       }})
     }})
     
     describe("with numbers", function() { with(this) {
-      it("fails when given unequal numbers", function() { with(this) {
+      it("fails when given unequal numbers", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( 3, 4 )
@@ -190,15 +199,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test2: function() { with(this) {
             assertNotEqual( 4, 4, "four is the same as itself" )
           }}
-        })
-        assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<3> expected but was\n<4>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\nfour is the same as itself.\n<4> expected not to be equal to\n<4>." )
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<3> expected but was\n<4>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\nfour is the same as itself.\n<4> expected not to be equal to\n<4>." )
+        })})
       }})
     }})
     
     describe("with strings", function() { with(this) {
-      it("fails when given unequal strings", function() { with(this) {
+      it("fails when given unequal strings", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( "foo", "bar" )
@@ -207,15 +217,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test2: function() { with(this) {
             assertNotEqual( "foo", "foo" )
           }}
-        })
-        assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"foo\"> expected but was\n<\"bar\">." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"foo\"> expected not to be equal to\n<\"foo\">." )
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"foo\"> expected but was\n<\"bar\">." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"foo\"> expected not to be equal to\n<\"foo\">." )
+        })})
       }})
     }})
     
     describe("with arrays", function() { with(this) {
-      it("fails when given unequal arrays", function() { with(this) {
+      it("fails when given unequal arrays", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( [1,2], [2,1] )
@@ -224,15 +235,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test2: function() { with(this) {
             assertNotEqual( [9], [9] )
           }}
-        })
-        assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[1,2]> expected but was\n<[2,1]>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[9]> expected not to be equal to\n<[9]>." )
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[1,2]> expected but was\n<[2,1]>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[9]> expected not to be equal to\n<[9]>." )
+        })})
       }})
     }})
     
     describe("with objects", function() { with(this) {
-      it("fails when given unequal objects", function() { with(this) {
+      it("fails when given unequal objects", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( {foo: 2}, {foo: 2, bar: 3} )
@@ -241,14 +253,15 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test2: function() { with(this) {
             assertNotEqual( {foo: [3,4]}, {foo: [3,4]} )
           }}
-        })
-        assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<{\"foo\":2}> expected but was\n<{\"bar\":3,\"foo\":2}>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<{\"foo\":[3,4]}> expected not to be equal to\n<{\"foo\":[3,4]}>." )
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<{\"foo\":2}> expected but was\n<{\"bar\":3,\"foo\":2}>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<{\"foo\":[3,4]}> expected not to be equal to\n<{\"foo\":[3,4]}>." )
+        })})
       }})
       
       describe("with custom equality methods", function() { with(this) {
-        it("fails when given unequal objects", function() { with(this) {
+        it("fails when given unequal objects", function(resume) { with(this) {
           runTests({
             test1: function() { with(this) {
               assertEqual( new JS.Set([1,2]), new JS.Set([3,2]) )
@@ -257,18 +270,19 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
             test2: function() { with(this) {
               assertNotEqual( new JS.Set([2,1]), new JS.Set([1,2]) )
             }}
-          })
-          assertTestResult( 2, 2, 2, 0 )
-          
-          // TODO stub Set#toString
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set:{1,2}> expected but was\n<Set:{3,2}>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set:{2,1}> expected not to be equal to\n<Set:{1,2}>." )
+          }, function() { resume(function() {
+            assertTestResult( 2, 2, 2, 0 )
+            
+            // TODO stub Set#toString
+            assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set:{1,2}> expected but was\n<Set:{3,2}>." )
+            assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set:{2,1}> expected not to be equal to\n<Set:{1,2}>." )
+          })})
         }})
       }})
     }})
     
     describe("with functions", function() { with(this) {
-      it("always fails when passed non-identical functions", function() { with(this) {
+      it("always fails when passed non-identical functions", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( function() {}, function() {} )
@@ -277,26 +291,28 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test2: function() { with(this) {
             assertNotEqual( JS.Set, JS.Set )
           }}
-        })
-        assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<#function> expected but was\n<#function>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected not to be equal to\n<Set>." )
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<#function> expected but was\n<#function>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected not to be equal to\n<Set>." )
+        })})
       }})
     }})
   }})
   
   describe("#assertNull", function() { with(this) {
-    it("passes when given null", function() { with(this) {
+    it("passes when given null", function(resume) { with(this) {
       runTests({
         testAssertNull: function() { with(this) {
           assertNull( null )
           assertNotNull( false )
         }}
-      })
-      assertTestResult( 1, 2, 0, 0 )
+      }, function() { resume(function() {
+        assertTestResult( 1, 2, 0, 0 )
+      })})
     }})
     
-    it("fails when not given null", function() { with(this) {
+    it("fails when not given null", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertNull( false )
@@ -305,16 +321,17 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         test2: function() { with(this) {
           assertNotNull( null, "it's null" )
         }}
-      })
-      assertTestResult( 2, 2, 2, 0 )
-      assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<null> expected but was\n<false>." )
-      assertMessage( 2, "Failure:\ntest2(TestedSuite):\nit's null.\n<null> expected not to be null." )
+      }, function() { resume(function() {
+        assertTestResult( 2, 2, 2, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<null> expected but was\n<false>." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\nit's null.\n<null> expected not to be null." )
+      })})
     }})
   }})
   
   describe("#assertKindOf", function() { with(this) {
     describe("with string types", function() { with(this) {
-      it("passes when the object is of the named type", function() { with(this) {
+      it("passes when the object is of the named type", function(resume) { with(this) {
         runTests({
           testAssertKindOf: function() { with(this) {
             assertKindOf( "string", "foo" )
@@ -326,11 +343,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
             assertKindOf( "object", [] )
             assertKindOf( "function", function() {} )
           }}
-        })
-        assertTestResult( 1, 8, 0, 0 )
+        }, function() { resume(function() {
+          assertTestResult( 1, 8, 0, 0 )
+        })})
       }})
       
-      it("fails when the object is not of the named type", function() { with(this) {
+      it("fails when the object is not of the named type", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) { assertKindOf( "string",    67 )        }},
           test2: function() { with(this) { assertKindOf( "number",    "four" )    }},
@@ -338,19 +356,20 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test4: function() { with(this) { assertKindOf( "undefined", null )      }},
           test5: function() { with(this) { assertKindOf( "object",    "string" )  }},
           test6: function() { with(this) { assertKindOf( "array",     [] )        }}
-        })
-        assertTestResult( 6, 6, 6, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<67> expected to be an instance of\n<\"string\"> but was\n<\"number\">." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"four\"> expected to be an instance of\n<\"number\"> but was\n<\"string\">." )
-        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<undefined> expected to be an instance of\n<\"boolean\"> but was\n<\"undefined\">." )
-        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<null> expected to be an instance of\n<\"undefined\"> but was\n<\"object\">." )
-        assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<\"string\"> expected to be an instance of\n<\"object\"> but was\n<\"string\">." )
-        assertMessage( 6, "Failure:\ntest6(TestedSuite):\n<[]> expected to be an instance of\n<\"array\"> but was\n<\"object\">." )
+        }, function() { resume(function() {
+          assertTestResult( 6, 6, 6, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<67> expected to be an instance of\n<\"string\"> but was\n<\"number\">." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"four\"> expected to be an instance of\n<\"number\"> but was\n<\"string\">." )
+          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<undefined> expected to be an instance of\n<\"boolean\"> but was\n<\"undefined\">." )
+          assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<null> expected to be an instance of\n<\"undefined\"> but was\n<\"object\">." )
+          assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<\"string\"> expected to be an instance of\n<\"object\"> but was\n<\"string\">." )
+          assertMessage( 6, "Failure:\ntest6(TestedSuite):\n<[]> expected to be an instance of\n<\"array\"> but was\n<\"object\">." )
+        })})
       }})
     }})
     
     describe("with functional types", function() { with(this) {
-      it("passes when the object is of the referenced type", function() { with(this) {
+      it("passes when the object is of the referenced type", function(resume) { with(this) {
         runTests({
           testAssertKindOf: function() { with(this) {
             assertKindOf( Object, {} )
@@ -362,29 +381,31 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
             assertKindOf( Number, 9 )
             assertKindOf( Boolean, false )
           }}
-        })
-        assertTestResult( 1, 8, 0, 0 )
+        }, function() { resume(function() {
+          assertTestResult( 1, 8, 0, 0 )
+        })})
       }})
       
-      it("fails when the object is not of the referenced type", function() { with(this) {
+      it("fails when the object is not of the referenced type", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) { assertKindOf( Object,    "foo" )     }},
           test2: function() { with(this) { assertKindOf( Array,     {} )        }},
           test3: function() { with(this) { assertKindOf( Function,  [] )        }},
           test4: function() { with(this) { assertKindOf( String,    true )      }},
           test5: function() { with(this) { assertKindOf( Array,     undefined ) }}
-        })
-        assertTestResult( 5, 5, 5, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"foo\"> expected to be an instance of\n<Object> but was\n<String>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<{}> expected to be an instance of\n<Array> but was\n<Object>." )
-        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[]> expected to be an instance of\n<Function> but was\n<Array>." )
-        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<true> expected to be an instance of\n<String> but was\n<Boolean>." )
-        assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<undefined> expected to be an instance of\n<Array> but was\n<\"undefined\">." )
+        }, function() { resume(function() {
+          assertTestResult( 5, 5, 5, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"foo\"> expected to be an instance of\n<Object> but was\n<String>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<{}> expected to be an instance of\n<Array> but was\n<Object>." )
+          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[]> expected to be an instance of\n<Function> but was\n<Array>." )
+          assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<true> expected to be an instance of\n<String> but was\n<Boolean>." )
+          assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<undefined> expected to be an instance of\n<Array> but was\n<\"undefined\">." )
+        })})
       }})
     }})
     
     describe("with modular types", function() { with(this) {
-      it("passes when the object's inheritance chain includes the given module", function() { with(this) {
+      it("passes when the object's inheritance chain includes the given module", function(resume) { with(this) {
         runTests({
           testAssertKindOf: function() { with(this) {
             var set = new JS.HashSet([1,2])
@@ -401,11 +422,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
             set.extend(JS.Observable)
             assertKindOf( JS.Observable,  set )
           }}
-        })
-        assertTestResult( 1, 8, 0, 0 )
+        }, function() { resume(function() {
+          assertTestResult( 1, 8, 0, 0 )
+        })})
       }})
       
-      it("fails when the object's inheritance chain does not include the given module", function() { with(this) {
+      it("fails when the object's inheritance chain does not include the given module", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) { assertKindOf( Array,         JS.Set ) }},
           test2: function() { with(this) { assertKindOf( JS.Enumerable, JS.Set ) }},
@@ -413,31 +435,33 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test4: function() { with(this) { assertKindOf( JS.Module,     new JS.Set([1,2]) ) }},
           test5: function() { with(this) { assertKindOf( JS.Class,      new JS.Set([1,2]) ) }},
           test6: function() { with(this) { assertKindOf( JS.Observable, new JS.Set([1,2]) ) }}
-        })
-        assertTestResult( 6, 6, 6, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set> expected to be an instance of\n<Array> but was\n<Class>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected to be an instance of\n<Enumerable> but was\n<Class>." )
-        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<Set> expected to be an instance of\n<Observable> but was\n<Class>." )
-        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Module> but was\n<Set>." )
-        assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Class> but was\n<Set>." )
-        assertMessage( 6, "Failure:\ntest6(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Observable> but was\n<Set>." )
+        }, function() { resume(function() {
+          assertTestResult( 6, 6, 6, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set> expected to be an instance of\n<Array> but was\n<Class>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected to be an instance of\n<Enumerable> but was\n<Class>." )
+          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<Set> expected to be an instance of\n<Observable> but was\n<Class>." )
+          assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Module> but was\n<Set>." )
+          assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Class> but was\n<Set>." )
+          assertMessage( 6, "Failure:\ntest6(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Observable> but was\n<Set>." )
+        })})
       }})
     }})
   }})
   
   describe("#assertRespondTo", function() { with(this) {
-    it("passes when the object responds to the named message", function() { with(this) {
+    it("passes when the object responds to the named message", function(resume) { with(this) {
       runTests({
         testAssertRespondTo: function() { with(this) {
           assertRespondTo( Object, "prototype" )
           assertRespondTo( [], "length" )
           assertRespondTo( "foo", "toUpperCase" )
         }}
-      })
-      assertTestResult( 1, 3, 0, 0 )
+      }, function() { resume(function() {
+        assertTestResult( 1, 3, 0, 0 )
+      })})
     }})
     
-    it("fails when the object does not respond to the named message", function() { with(this) {
+    it("fails when the object does not respond to the named message", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertRespondTo( Object, "foo" )
@@ -454,28 +478,30 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         test4: function() { with(this) {
           assertRespondTo( JS.Class, "nomethod" )
         }}
-      })
-      assertTestResult( 4, 4, 4, 0 )
-      assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Object>\nof type <Function>\nexpected to respond to <\"foo\">." )
-      assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"foo\">\nof type <String>\nexpected to respond to <\"downcase\">." )
-      assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<undefined>\nof type <\"undefined\">\nexpected to respond to <\"downcase\">." )
-      assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Class>\nof type <Class>\nexpected to respond to <\"nomethod\">." )
+      }, function() { resume(function() {
+        assertTestResult( 4, 4, 4, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Object>\nof type <Function>\nexpected to respond to <\"foo\">." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"foo\">\nof type <String>\nexpected to respond to <\"downcase\">." )
+        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<undefined>\nof type <\"undefined\">\nexpected to respond to <\"downcase\">." )
+        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Class>\nof type <Class>\nexpected to respond to <\"nomethod\">." )
+      })})
     }})
   }})
   
   describe("#assertMatch", function() { with(this) {
     describe("with regular expressions", function() { with(this) {
-      it("passes if the string matches the pattern", function() { with(this) {
+      it("passes if the string matches the pattern", function(resume) { with(this) {
         runTests({
           testAssertMatch: function() { with(this) {
             assertMatch( /Foo/i, "food" )
             assertNoMatch( /Foo/, "food" )
           }}
-        })
-        assertTestResult( 1, 2, 0, 0 )
+        }, function() { resume(function() {
+          assertTestResult( 1, 2, 0, 0 )
+        })})
       }})
       
-      it("fails if the string does not match the pattern", function() { with(this) {
+      it("fails if the string does not match the pattern", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertMatch( /Foo/, "food" )
@@ -484,25 +510,27 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test2: function() { with(this) {
             assertNoMatch( /Foo/i, "food" )
           }}
-        })
-        assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"food\"> expected to match\n</Foo/>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"food\"> expected not to match\n</Foo/i>." )
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"food\"> expected to match\n</Foo/>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"food\"> expected not to match\n</Foo/i>." )
+        })})
       }})
     }})
     
     describe("with modules", function() { with(this) {
-      it("passes if the object is of the given type", function() { with(this) {
+      it("passes if the object is of the given type", function(resume) { with(this) {
         runTests({
           testAssertMatch: function() { with(this) {
             assertMatch( JS.Module, JS.Enumerable )
             assertNoMatch( JS.Class, new JS.Set([1,2]) )
           }}
-        })
-        assertTestResult( 1, 2, 0, 0 )
+        }, function() { resume(function() {
+          assertTestResult( 1, 2, 0, 0 )
+        })})
       }})
       
-      it("fails if the object is not of the given type", function() { with(this) {
+      it("fails if the object is not of the given type", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertMatch( JS.Class, new JS.Set([1,2]) )
@@ -511,25 +539,27 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test2: function() { with(this) {
             assertNoMatch( JS.Module, JS.Enumerable )
           }}
-        })
-        assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set:{1,2}> expected to match\n<Class>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Enumerable> expected not to match\n<Module>." )
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set:{1,2}> expected to match\n<Class>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Enumerable> expected not to match\n<Module>." )
+        })})
       }})
     }})
     
     describe("with ranges", function() { with(this) {
-      it("passes if the object is in the given range", function() { with(this) {
+      it("passes if the object is in the given range", function(resume) { with(this) {
         runTests({
           testAssertMatch: function() { with(this) {
             assertMatch( new JS.Range(1,10), 10 )
             assertNoMatch( new JS.Range(1,10,true), 10 )
           }}
-        })
-        assertTestResult( 1, 2, 0, 0 )
+        }, function() { resume(function() {
+          assertTestResult( 1, 2, 0, 0 )
+        })})
       }})
       
-      it("fails if the object is not in the given range", function() { with(this) {
+      it("fails if the object is not in the given range", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertMatch( new JS.Range(1,10,true), 10 )
@@ -538,16 +568,17 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test2: function() { with(this) {
             assertNoMatch( new JS.Range(1,10), 10 )
           }}
-        })
-        assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<10> expected to match\n<1...10>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<10> expected not to match\n<1..10>." )
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<10> expected to match\n<1...10>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<10> expected not to match\n<1..10>." )
+        })})
       }})
     }})
   }})
   
   describe("#assertSame", function() { with(this) {
-    it("passes when the objects are identical", function() { with(this) {
+    it("passes when the objects are identical", function(resume) { with(this) {
       runTests({
         testAssertSame: function() { with(this) {
           var obj = {}, arr = [], fn = function() {}, set = new JS.Set([1,2])
@@ -562,11 +593,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           assertNotSame( fn,  function() {}  )
           assertNotSame( set, new JS.Set([1,2]) )
         }}
-      })
-      assertTestResult( 1, 8, 0, 0 )
+      }, function() { resume(function() {
+        assertTestResult( 1, 8, 0, 0 )
+      })})
     }})
     
-    it("fails when the objects are not identical", function() { with(this) {
+    it("fails when the objects are not identical", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertSame( {}, {} )
@@ -580,28 +612,30 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         test4: function() { with(this) {
           assertSame( new JS.Set([2,1]), new JS.Set([2,1]) )
         }}
-      })
-      assertTestResult( 4, 4, 4, 0 )
-      assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<{}> expected to be the same as\n<{}>." )
-      assertMessage( 2, "Failure:\ntest2(TestedSuite):\ncustom message.\n<[]> expected to be the same as\n<[]>." )
-      assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<Object> expected not to be the same as\n<Object>." )
-      assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Set:{2,1}> expected to be the same as\n<Set:{2,1}>." )
+      }, function() { resume(function() {
+        assertTestResult( 4, 4, 4, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<{}> expected to be the same as\n<{}>." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\ncustom message.\n<[]> expected to be the same as\n<[]>." )
+        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<Object> expected not to be the same as\n<Object>." )
+        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Set:{2,1}> expected to be the same as\n<Set:{2,1}>." )
+      })})
     }})
   }})
   
   describe("#assertInDelta", function() { with(this) {
-    it("passes when the value is within delta of the expected result", function() { with(this) {
+    it("passes when the value is within delta of the expected result", function(resume) { with(this) {
       runTests({
         testAssertInDelta: function() { with(this) {
           assertInDelta(5, 4, 1)
           assertInDelta(5, 2, 3)
           assertInDelta(-3, 4, 7)
         }}
-      })
-      assertTestResult( 1, 3, 0, 0 )
+      }, function() { resume(function() {
+        assertTestResult( 1, 3, 0, 0 )
+      })})
     }})
     
-    it("fails when the value differs from the expected result by more than delta", function() { with(this) {
+    it("fails when the value differs from the expected result by more than delta", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertInDelta(5, 3.9, 1, "out by 0.1")
@@ -612,26 +646,28 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         test3: function() { with(this) {
           assertInDelta(-3, 5, 7)
         }}
-      })
-      assertTestResult( 3, 3, 3, 0 )
-      assertMessage( 1, "Failure:\ntest1(TestedSuite):\nout by 0.1.\n<5> and\n<3.9> expected to be within\n<1> of each other." )
-      assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<5> and\n<1> expected to be within\n<3> of each other." )
-      assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<-3> and\n<5> expected to be within\n<7> of each other." )
+      }, function() { resume(function() {
+        assertTestResult( 3, 3, 3, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\nout by 0.1.\n<5> and\n<3.9> expected to be within\n<1> of each other." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<5> and\n<1> expected to be within\n<3> of each other." )
+        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<-3> and\n<5> expected to be within\n<7> of each other." )
+      })})
     }})
   }})
   
   describe("#assertSend", function() { with(this) {
-    it("passes when the constructed method call returns true", function() { with(this) {
+    it("passes when the constructed method call returns true", function(resume) { with(this) {
       runTests({
         testAssertSend: function() { with(this) {
           assertSend( [JS.Set, 'includes', JS.Enumerable] )
           assertSend( [JS.Set, 'isA', JS.Class] )
         }}
-      })
-      assertTestResult( 1, 2, 0, 0 )
+      }, function() { resume(function() {
+        assertTestResult( 1, 2, 0, 0 )
+      })})
     }})
     
-    it("fails when the constructed method call returns false", function() { with(this) {
+    it("fails when the constructed method call returns false", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertSend( [JS.Set, 'isA', JS.Enumerable], "classes are not enumerable" )
@@ -639,27 +675,29 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         test2: function() { with(this) {
           assertSend( [JS.Set, 'includes', JS.Class] )
         }}
-      })
-      assertTestResult( 2, 2, 2, 0 )
-      assertMessage( 1, "Failure:\ntest1(TestedSuite):\nclasses are not enumerable.\n<Set> expected to respond to\n<isA([Enumerable])> with a true value." )
-      assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected to respond to\n<includes([Class])> with a true value." )
+      }, function() { resume(function() {
+        assertTestResult( 2, 2, 2, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\nclasses are not enumerable.\n<Set> expected to respond to\n<isA([Enumerable])> with a true value." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected to respond to\n<includes([Class])> with a true value." )
+      })})
     }})
   }})
   
   describe("#assertThrow", function() { with(this) {
     describe("with one exception type", function() { with(this) {
-      it("passes when the block throws the referenced exception type", function() { with(this) {
+      it("passes when the block throws the referenced exception type", function(resume) { with(this) {
         runTests({
           testAssertThrow: function() { with(this) {
             assertThrow(TypeError,  function() { throw new TypeError() })
             assertThrow(TypeError,  function() { throw TypeError })
             assertThrow(String,     function() { throw "a string" })
           }}
-        })
-        assertTestResult( 1, 3, 0, 0 )
+        }, function() { resume(function() {
+          assertTestResult( 1, 3, 0, 0 )
+        })})
       }})
       
-      it("fails when the block does not throw any exceptions", function() { with(this) {
+      it("fails when the block does not throw any exceptions", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertThrow(TypeError,  function() {  })
@@ -667,13 +705,14 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test2: function() { with(this) {
             assertThrow(String,     function() {  })
           }}
-        })
-        assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError]> exception expected but none was thrown." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but none was thrown." )
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError]> exception expected but none was thrown." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but none was thrown." )
+        })})
       }})
       
-      it("fails when the block throws the wrong type of exception", function() { with(this) {
+      it("fails when the block throws the wrong type of exception", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertThrow(TypeError,  function() { throw new RangeError("this is the wrong type") })
@@ -684,27 +723,29 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test3: function() { with(this) {
             assertThrow(TypeError,  function() { throw "string error" })
           }}
-        })
-        assertTestResult( 3, 3, 3, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError]> exception expected but was\nRangeError: this is the wrong type." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but was\nTypeError." )
-        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[TypeError]> exception expected but was\n\"string error\"." )
+        }, function() { resume(function() {
+          assertTestResult( 3, 3, 3, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError]> exception expected but was\nRangeError: this is the wrong type." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but was\nTypeError." )
+          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[TypeError]> exception expected but was\n\"string error\"." )
+        })})
       }})
     }})
     
     describe("with several exception types", function() { with(this) {
-      it("passes when the block throws one of the referenced exception types", function() { with(this) {
+      it("passes when the block throws one of the referenced exception types", function(resume) { with(this) {
         runTests({
           testAssertThrow: function() { with(this) {
             assertThrow(TypeError, RangeError, function() { throw new RangeError() })
             assertThrow(ReferenceError, SyntaxError, function() { throw SyntaxError })
             assertThrow(SyntaxError, String, function() { throw "a string" })
           }}
-        })
-        assertTestResult( 1, 3, 0, 0 )
+        }, function() { resume(function() {
+          assertTestResult( 1, 3, 0, 0 )
+        })})
       }})
       
-      it("fails when the block does not throw an exception", function() { with(this) {
+      it("fails when the block does not throw an exception", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertThrow(TypeError, RangeError, function() {  })
@@ -715,14 +756,15 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test3: function() { with(this) {
             assertThrow(SyntaxError, String, function() {  })
           }}
-        })
-        assertTestResult( 3, 3, 3, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError,RangeError]> exception expected but none was thrown." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[ReferenceError,SyntaxError]> exception expected but none was thrown." )
-        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[SyntaxError,String]> exception expected but none was thrown." )
+        }, function() { resume(function() {
+          assertTestResult( 3, 3, 3, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError,RangeError]> exception expected but none was thrown." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[ReferenceError,SyntaxError]> exception expected but none was thrown." )
+          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[SyntaxError,String]> exception expected but none was thrown." )
+        })})
       }})
       
-      it("fails when the block throws the wrong type of exception", function() { with(this) {
+      it("fails when the block throws the wrong type of exception", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertThrow(TypeError, RangeError, function() { throw "a string" })
@@ -733,33 +775,36 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           test3: function() { with(this) {
             assertThrow(SyntaxError, String, function() { throw new TypeError("a type error") })
           }}
-        })
-        assertTestResult( 3, 3, 3, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError,RangeError]> exception expected but was\n\"a string\"." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[ReferenceError,SyntaxError]> exception expected but was\nTypeError." )
-        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[SyntaxError,String]> exception expected but was\nTypeError: a type error." )
+        }, function() { resume(function() {
+          assertTestResult( 3, 3, 3, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[TypeError,RangeError]> exception expected but was\n\"a string\"." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[ReferenceError,SyntaxError]> exception expected but was\nTypeError." )
+          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[SyntaxError,String]> exception expected but was\nTypeError: a type error." )
+        })})
       }})
     }})
   }})
   
   describe("#assertNothingThrown", function() { with(this) {
-    it("passes when the block throws no exceptions", function() { with(this) {
+    it("passes when the block throws no exceptions", function(resume) { with(this) {
       runTests({
         testAssertNothingThrown: function() { with(this) {
           assertNothingThrown(function() {})
         }}
-      })
-      assertTestResult( 1, 1, 0, 0 )
+      }, function() { resume(function() {
+        assertTestResult( 1, 1, 0, 0 )
+      })})
     }})
     
-    it("fails and reports the exception when the block throws an exception", function() { with(this) {
+    it("fails and reports the exception when the block throws an exception", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertNothingThrown("but there was an error", function() { throw new TypeError("the wrong type") })
         }}
-      })
-      assertTestResult( 1, 1, 1, 0 )
-      assertMessage( 1, "Failure:\ntest1(TestedSuite):\nbut there was an error.\nException thrown:\nTypeError: the wrong type." )
+      }, function() { resume(function() {
+        assertTestResult( 1, 1, 1, 0 )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\nbut there was an error.\nException thrown:\nTypeError: the wrong type." )
+      })})
     }})
   }})
   

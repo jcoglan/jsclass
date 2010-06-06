@@ -116,11 +116,13 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
     }})
     
     context("With before/after :each blocks", function() { with(this) {
-      before(function() { with(this) {
+      before(function(resume) { with(this) {
         this.result = new JS.Test.Unit.TestResult()
         this.suite  = sample_test.suite()
-        suite.run(this.result, function() {}, function() {})
-        this.hooks  = new JS.Enumerable.Collection(hook_register)
+        suite.run(this.result, function() {
+          this.hooks = new JS.Enumerable.Collection(hook_register)
+          resume()
+        }, function() {}, this)
       }})
       
       it("applies state from before :all blocks to each test", function() { with(this) {
