@@ -103,26 +103,21 @@ JS.Test.Unit.extend({
     },
     
     exec: function(methodName, onSuccess, onError) {
-      var method = this[methodName],
+      var method = JS.isFn(methodName) ? methodName : this[methodName],
           arity  = method.length,
           self   = this;
       
-      if (arity === 0) {
-        this._runWithExceptionHandlers(function() {
+      if (arity === 0)
+        return this._runWithExceptionHandlers(function() {
           method.call(this);
           onSuccess.call(this);
         }, onError);
-        
-      } else if (arity === 1) {
-        this._runWithExceptionHandlers(function() {
-          method.call(this, function(asyncBlock) {
-            self._runWithExceptionHandlers(function() {
-              asyncBlock.call(this);
-              onSuccess.call(this);
-            }, onError);
-          })
-        }, onError);
-      }
+      
+      this._runWithExceptionHandlers(function() {
+        method.call(this, function(asyncBlock) {
+          self.exec(asyncBlock, onSuccess, onError);
+        })
+      }, onError);
     },
     
     _runWithExceptionHandlers: function(_try, _catch, _finally) {
