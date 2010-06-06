@@ -36,28 +36,31 @@ JS.Test.Unit.extend({
      * this `TestSuite`.
      **/
     forEach: function(block, continuation, context) {
-      var tests = this._tests,
-          n     = tests.length,
-          i     = -1,
-          sync  = false,
-          calls = 1;
+      var tests   = this._tests,
+          looping = false,
+          n       = tests.length,
+          i       = -1,
+          calls   = 0;
       
-      var safeIterate = function() {
-        if (sync) calls += 1;
-        else iterate();
+      var ping = function() {
+        calls += 1;
+        loop();
+      };
+      
+      var loop = function() {
+        if (looping) return;
+        looping = true;
+        while (calls > 0) iterate();
+        looping = false;
       };
       
       var iterate = function() {
         i += 1; calls -= 1;
-        
         if (i === n) return continuation && continuation.call(context || null);
-        
-        sync = true;
-        block.call(context || null, tests[i], safeIterate);
-        sync = false;
+        block.call(context || null, tests[i], ping);
       };
       
-      while (calls > 0) iterate();
+      ping();
     },
     
     /**
