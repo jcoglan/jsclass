@@ -8,18 +8,19 @@ JS.Packages(function() { with(this) {
 
 JS.require('JS.Test', 'JS.MethodChain', function() {
     JS.require('Test.UnitSpec',
-               'Test.ContextSpec',
-               'ComparableSpec',
-               'ConstantScopeSpec',
-               'DecoratorSpec',
-               'EnumerableSpec',
-               'ForwardableSpec',
-               'HashSpec',
-               'MethodChainSpec',
-               'ObservableSpec',
-               'ProxySpec',
-               'SetSpec',
-               'RangeSpec',
+            'Test.ContextSpec',
+            'ComparableSpec',
+            'ConstantScopeSpec',
+            'DecoratorSpec',
+            'EnumerableSpec',
+            'ForwardableSpec',
+            'HashSpec',
+            'MethodChainSpec',
+            'ObservableSpec',
+            'ProxySpec',
+            'RangeSpec',
+            'SetSpec',
+            'StateSpec',
             
     JS.Test.method('autorun'))
 })
