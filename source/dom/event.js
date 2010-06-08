@@ -11,7 +11,7 @@ JS.DOM.Event = {
     
     if (element.addEventListener)
       element.addEventListener(eventName, wrapped, false);
-    else
+    else if (element.attachEvent)
       element.attachEvent('on' + eventName, wrapped);
     
     this._registry.push({
@@ -36,7 +36,7 @@ JS.DOM.Event = {
       
       if (register._element.removeEventListener)
         register._element.removeEventListener(register._type, register._handler, false);
-      else
+      else if (register._element.detachEvent)
         register._element.detachEvent('on' + register._type, register._handler);
       
       this._registry.splice(i,1);
