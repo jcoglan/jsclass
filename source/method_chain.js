@@ -31,6 +31,10 @@ JS.MethodChain.exec = function(queue, object) {
   return object;
 };
 
+JS.MethodChain.toString = function() {
+  return 'MethodChain';
+};
+
 JS.MethodChain.prototype = {
   _: function() {
     var base = arguments[0],

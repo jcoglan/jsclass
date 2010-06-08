@@ -25,14 +25,14 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
           
           this._li = new JS.DOM.Builder(container).li({className: this._type + ' passed closed'},
           function(li) {
-            if (name) self._toggle = li.p(name);
             li.ul({className: 'stats'}, function(ul) {
               for (var key in fields)
                 ul.li(function(li) {
+                  li.span({className: 'letter'}, fields[key] + ': ');
                   self[key] = li.span({className: 'number'}, '0');
-                  li.span({className: 'letter'}, ' ' + fields[key]);
                 });
             });
+            if (name) self._toggle = li.p({className: self._type + '-name'}, name);
             self._ul = li.ul({className: 'children'});
           });
           
@@ -47,14 +47,16 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
         },
         
         addTest: function(name) {
-          this._children[name] = new this.klass('test', this, name);
-          this.ping('_tests');
+          var test = this._children[name] = new this.klass('test', this, name);
+          test.ping('_tests');
         },
         
         addFault: function(message) {
-          var item = JS.DOM.li(function(li) {
+          var item = JS.DOM.li({className: 'fault'}, function(li) {
             li.p(function(p) {
               var parts = message.split(/[\r\n]+/);
+              parts.splice(1,1);
+              
               for (var i = 0, n = parts.length; i < n; i++) {
                 if (i > 0) p.br();
                 p.concat(parts[i]);
@@ -75,7 +77,7 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
         fail: function() {
           if (!this._li) return;
           JS.DOM.removeClass(this._li, 'passed');
-          JS.DOM.addClass(this._li, 'failed');
+          JS.DOM.addClass(this._toggle, 'failed');
           if (this._parent.fail) this._parent.fail();
         }
       })
@@ -89,7 +91,6 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
     _constructDOM: function() {
       var self = this;
       self._container = JS.DOM.div({className: 'test-result-container'}, function(div) {
-        div.h1('Test results');
         div.table({className: 'summary'}, function(table) {
           table.thead(function(thead) {
             thead.tr(function(tr) {
