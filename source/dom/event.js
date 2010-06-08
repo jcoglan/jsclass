@@ -4,7 +4,7 @@ JS.DOM.Event = {
   on: function(element, eventName, callback, scope) {
     if (element !== JS.DOM.ENV &&
         element.nodeType !== JS.DOM.ELEMENT_NODE &&
-        element.nodeType !== DOCUMENT_NODE)
+        element.nodeType !== JS.DOM.DOCUMENT_NODE)
       return;
     
     var wrapped = function() { callback.call(scope, element) };
