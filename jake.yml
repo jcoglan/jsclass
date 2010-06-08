@@ -47,6 +47,7 @@ packages:
       - unit/ui/test_runner_mediator
       - unit/ui/console/test_runner
       - unit/ui/browser/test_runner
+      - unit/ui/browser/display
       - unit/auto_runner
       - context/context
       - context/life_cycle
@@ -60,6 +61,7 @@ packages:
     files:
       - dom
       - builder
+      - event
   
   comparable:       comparable
   constant_scope:   constant_scope

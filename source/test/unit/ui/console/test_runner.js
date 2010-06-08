@@ -83,11 +83,11 @@ JS.Test.Unit.UI.extend({
           this._output(this._result, JS.Test.Unit.UI.PROGRESS_ONLY);
         },
         
-        _testStarted: function(name) {
-          this._outputSingle(name + ': ', JS.Test.Unit.UI.VERBOSE);
+        _testStarted: function(testCase) {
+          this._outputSingle(testCase.name() + ': ', JS.Test.Unit.UI.VERBOSE);
         },
         
-        _testFinished: function(name) {
+        _testFinished: function(testCase) {
           if (!this._alreadyOutputted) this._outputSingle('.', JS.Test.Unit.UI.PROGRESS_ONLY);
           this._nl(JS.Test.Unit.UI.VERBOSE);
           this._alreadyOutputted = false;

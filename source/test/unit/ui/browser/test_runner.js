@@ -77,84 +77,14 @@ JS.Test.Unit.UI.extend({
           
         },
         
-        _testStarted: function(name) {
-          
+        _testStarted: function(testCase) {
+          this._display.addTestCase(testCase);
         },
         
-        _testFinished: function(name) {
+        _testFinished: function(testCase) {
           
         }
       })
-    }
-  })
-});
-
-JS.Test.Unit.UI.Browser.TestRunner.extend({
-  Display: new JS.Class({
-    extend: {
-      getInstance: function() {
-        return this._instance = this._instance || new this();
-      }
-    },
-    
-    initialize: function() {
-      this._constructDOM();
-      document.body.insertBefore(this._container, document.body.firstChild);
-    },
-    
-    _constructDOM: function() {
-      var self = this;
-      self._container = JS.DOM.div({className: 'test-result-container'}, function(div) {
-        div.h1('Test results');
-        div.table({className: 'summary'}, function(table) {
-          table.thead(function(thead) {
-            thead.tr(function(tr) {
-              tr.th({scope: 'col'}, 'Tests');
-              tr.th({scope: 'col'}, 'Assertions');
-              tr.th({scope: 'col'}, 'Failures');
-              tr.th({scope: 'col'}, 'Errors');
-            });
-          });
-          table.tbody(function(tbody) {
-            tbody.tr(function(tr) {
-              self._tests      = tr.td();
-              self._assertions = tr.td();
-              self._failures   = tr.td();
-              self._errors     = tr.td();
-            });
-          });
-        });
-        self._reports = div.ol({className: 'reports'});
-      });
-    },
-    
-    setTestCount: function(n) {
-      this._tests.innerHTML = String(n);
-    },
-    
-    setAssertionCount: function(n) {
-      this._assertions.innerHTML = String(n);
-    },
-    
-    setFailureCount: function(n) {
-      this._failures.innerHTML = String(n);
-    },
-    
-    setErrorCount: function(n) {
-      this._errors.innerHTML = String(n);
-    },
-    
-    addReport: function(string) {
-      var item = JS.DOM.li(function(li) {
-        li.p(function(p) {
-          var parts = string.split(/[\r\n]+/);
-          for (var i = 0, n = parts.length; i < n; i++) {
-            if (i > 0) p.br();
-            p.concat(parts[i]);
-          }
-        });
-      });
-      this._reports.appendChild(item);
     }
   })
 });

@@ -73,7 +73,7 @@ JS.Test.Unit.extend({
      * and errors in `result`.
      **/
     run: function(result, continuation, callback, context) {
-      callback.call(context || null, this.klass.STARTED, this.name());
+      callback.call(context || null, this.klass.STARTED, this);
       this._result = result;
       
       var processError = function(doNext) {
@@ -89,7 +89,7 @@ JS.Test.Unit.extend({
       
       var complete = function() {
         result.addRun();
-        callback.call(context || null, this.klass.FINISHED, this.name());
+        callback.call(context || null, this.klass.FINISHED, this);
         continuation();
       };
       

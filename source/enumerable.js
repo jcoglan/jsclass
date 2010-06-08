@@ -57,10 +57,11 @@ JS.Enumerable = new JS.Module('Enumerable', {
     Collection: new JS.Class({
       initialize: function(array) {
         this.length = 0;
-        var push = Array.prototype.push;
-        JS.Enumerable.forEach.call(array, function(item) {
-          push.call(this, item);
-        }, this);
+        JS.Enumerable.forEach.call(array, this.push, this);
+      },
+      
+      push: function(item) {
+        Array.prototype.push.call(this, item);
       }
     })
   },

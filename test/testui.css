@@ -43,6 +43,10 @@
   color:        #999;
 }
 
+.test-result-container .specs .closed ul {
+  display:      none;
+}
+
 .test-result-container .reports {
   border-top:   2px solid #999;
   margin:       0;
