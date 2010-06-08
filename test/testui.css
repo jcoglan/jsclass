@@ -47,27 +47,3 @@
   display:      none;
 }
 
-.test-result-container .reports {
-  border-top:   2px solid #999;
-  margin:       0;
-  padding:      0;
-  list-style-position: outside;
-  height:       300px;
-  overflow-x:   hidden;
-  overflow-y:   scroll;
-}
-
-.test-result-container .reports li {
-  font-weight:  bold;
-  font-size:    120%;
-  margin:       8px 0 0 36px;
-}
-
-.test-result-container .reports li p {
-  font-size:    75%;
-  font-weight:  normal;
-  margin:       0 0 0 -36px;
-  padding:      0 16px 16px 36px;
-  border-bottom: 1px solid #ccc;
-}
-

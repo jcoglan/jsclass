@@ -6,8 +6,9 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
       },
       
       Context: new JS.Class({
-        initialize: function(parent, name) {
-          this._parent = parent;
+        initialize: function(type, parent, name) {
+          this._parent   = parent;
+          this._type     = type;
           this._children = [];
           
           if (name === undefined) {
@@ -15,10 +16,24 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
             return;
           }
           
-          var self     = this;
-          this._li = new JS.DOM.Builder(this._parent).li({className: 'closed'}, function(li) {
-            if (name) self._toggle = li.span(name);
-            self._ul = li.ul();
+          this._constructDOM(name);
+        },
+        
+        _constructDOM: function(name) {
+          var self = this, container = this._parent._ul || this._parent,
+              fields = {_tests: 'T', _failures: 'F'};
+          
+          this._li = new JS.DOM.Builder(container).li({className: this._type + ' passed closed'},
+          function(li) {
+            if (name) self._toggle = li.p(name);
+            li.ul({className: 'stats'}, function(ul) {
+              for (var key in fields)
+                ul.li(function(li) {
+                  self[key] = li.span({className: 'number'}, '0');
+                  li.span({className: 'letter'}, ' ' + fields[key]);
+                });
+            });
+            self._ul = li.ul({className: 'children'});
           });
           
           JS.DOM.Event.on(this._toggle, 'click', function() {
@@ -28,11 +43,40 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
         
         child: function(name) {
           return this._children[name] = this._children[name] ||
-                                        new this.klass(this._ul, name);
+                                        new this.klass('spec', this, name);
         },
         
         addTest: function(name) {
-          this._ul.appendChild(JS.DOM.li(function(li) { li.span(name) }));
+          this._children[name] = new this.klass('test', this, name);
+          this.ping('_tests');
+        },
+        
+        addFault: function(message) {
+          var item = JS.DOM.li(function(li) {
+            li.p(function(p) {
+              var parts = message.split(/[\r\n]+/);
+              for (var i = 0, n = parts.length; i < n; i++) {
+                if (i > 0) p.br();
+                p.concat(parts[i]);
+              }
+            });
+          });
+          this._ul.appendChild(item);
+          this.ping('_failures');
+          this.fail();
+        },
+        
+        ping: function(field) {
+          if (!this[field]) return;
+          this[field].innerHTML = parseInt(this[field].innerHTML) + 1;
+          if (this._parent.ping) this._parent.ping(field);
+        },
+        
+        fail: function() {
+          if (!this._li) return;
+          JS.DOM.removeClass(this._li, 'passed');
+          JS.DOM.addClass(this._li, 'failed');
+          if (this._parent.fail) this._parent.fail();
         }
       })
     },
@@ -64,8 +108,7 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
             });
           });
         });
-        self._context = new self.klass.Context(div.ul({className: 'specs'}));
-        self._reports = div.ul({className: 'reports'});
+        self._context = new self.klass.Context('spec', div.ul({className: 'specs'}));
       });
     },
     
@@ -85,20 +128,27 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
       this._errors.innerHTML = String(n);
     },
     
-    addReport: function(string) {
-      var item = JS.DOM.li(function(li) {
-        li.p(function(p) {
-          var parts = string.split(/[\r\n]+/);
-          for (var i = 0, n = parts.length; i < n; i++) {
-            if (i > 0) p.br();
-            p.concat(parts[i]);
-          }
-        });
-      });
-      this._reports.appendChild(item);
+    addTestCase: function(testCase) {
+      var data    = this._testData(testCase),
+          name    = data.name,
+          context = data.context;
+      
+      context.addTest(name);
     },
     
-    addTestCase: function(testCase) {
+    finishTestCase: function(testCase) {
+    
+    },
+    
+    addFault: function(testCase, fault) {
+      var data    = this._testData(testCase),
+          name    = data.name,
+          context = data.context;
+      
+      context.child(name).addFault(fault.longDisplay());
+    },
+    
+    _testData: function(testCase) {
       var name    = testCase.name(),
           klass   = testCase.klass,
           context = klass.getContextName ? klass.getContextName() : klass.displayName,
@@ -114,11 +164,10 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
         klass = klass.superclass;
       }
       
-      var context = parents.reverseForEach().inject(this._context, function(context, klass) {
+      context = parents.reverseForEach().inject(this._context, function(context, klass) {
         return context.child(klass._contextName || klass.displayName);
       });
-      
-      context.addTest(name);
+      return {name: name, context: context};
     }
   })
 });

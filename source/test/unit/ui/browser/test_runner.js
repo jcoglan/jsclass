@@ -17,12 +17,11 @@ JS.Test.Unit.UI.extend({
          **/
         initialize: function(suite, outputLevel) {
           this._suite = JS.isFn(suite.suite) ? suite.suite() : suite;
-          this._faults = [];
           this._getDisplay();
         },
         
         _getDisplay: function() {
-          this._display = this.klass.Display.getInstance();
+          return this._display = this._display || this.klass.Display.getInstance();
         },
         
         /**
@@ -58,15 +57,14 @@ JS.Test.Unit.UI.extend({
         },
         
         _onChange: function() {
-          this._display.setTestCount(this._result.runCount());
-          this._display.setAssertionCount(this._result.assertionCount());
-          this._display.setFailureCount(this._result.failureCount());
-          this._display.setErrorCount(this._result.errorCount());
+          this._getDisplay().setTestCount(this._result.runCount());
+          this._getDisplay().setAssertionCount(this._result.assertionCount());
+          this._getDisplay().setFailureCount(this._result.failureCount());
+          this._getDisplay().setErrorCount(this._result.errorCount());
         },
         
         _addFault: function(fault) {
-          this._faults.push(fault);
-          this._display.addReport(fault.longDisplay());
+          this._getDisplay().addFault(this._currentTest, fault);
         },
         
         _started: function(result) {
@@ -78,11 +76,12 @@ JS.Test.Unit.UI.extend({
         },
         
         _testStarted: function(testCase) {
-          this._display.addTestCase(testCase);
+          this._currentTest = testCase;
+          this._getDisplay().addTestCase(testCase);
         },
         
         _testFinished: function(testCase) {
-          
+          this._getDisplay().finishTestCase(testCase);
         }
       })
     }
