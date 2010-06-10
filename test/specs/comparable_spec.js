@@ -1,7 +1,7 @@
-ComparableSpec = JS.Test.describe(JS.Comparable, function() { with(this) {
+ComparableSpec = JS.Test.describe(JS.Comparable, function() {
   include(JS.Test.Helpers)
   
-  var TodoItem = new JS.Class({
+  define("TodoItem", new JS.Class({
       include: JS.Comparable,
       initialize: function(position, task) {
           this.position = position;
@@ -15,87 +15,87 @@ ComparableSpec = JS.Test.describe(JS.Comparable, function() { with(this) {
           else
               return 0;
       }
-  })
+  }))
   
-  describe("sorting", function() { with(this) {
-    before(function() { with(this) {
+  describe("sorting", function() {
+    before(function() {
       this.todos = map([8,2,7,5,3,7,6], function(id) { return new TodoItem(id) })
-    }})
+    })
     
-    it("uses the #compareTo method to sort", function() { with(this) {
+    it("uses the #compareTo method to sort", function() {
       todos.sort(TodoItem.compare)
       assertEqual( [2,3,5,6,7,7,8], map(todos, 'position') )
-    }})
-  }})
+    })
+  })
   
-  describe("#lt", function() { with(this) {
-    it("returns true if A < B", function() { with(this) {
+  describe("#lt", function() {
+    it("returns true if A < B", function() {
       assert( new TodoItem(1).lt(new TodoItem(2)) )
-    }})
+    })
     
-    it("returns false if A = B", function() { with(this) {
+    it("returns false if A = B", function() {
       assert( !new TodoItem(2).lt(new TodoItem(2)) )
-    }})
+    })
     
-    it("returns false if A > B", function() { with(this) {
+    it("returns false if A > B", function() {
       assert( !new TodoItem(3).lt(new TodoItem(2)) )
-    }})
-  }})
+    })
+  })
   
-  describe("#lte", function() { with(this) {
-    it("returns true if A < B", function() { with(this) {
+  describe("#lte", function() {
+    it("returns true if A < B", function() {
       assert( new TodoItem(1).lte(new TodoItem(2)) )
-    }})
+    })
     
-    it("returns true if A = B", function() { with(this) {
+    it("returns true if A = B", function() {
       assert( new TodoItem(2).lte(new TodoItem(2)) )
-    }})
+    })
     
-    it("returns false if A > B", function() { with(this) {
+    it("returns false if A > B", function() {
       assert( !new TodoItem(3).lte(new TodoItem(2)) )
-    }})
-  }})
+    })
+  })
   
-  describe("#eq", function() { with(this) {
-    it("returns false if A < B", function() { with(this) {
+  describe("#eq", function() {
+    it("returns false if A < B", function() {
       assert( !new TodoItem(1).eq(new TodoItem(2)) )
-    }})
+    })
     
-    it("returns true if A = B", function() { with(this) {
+    it("returns true if A = B", function() {
       assert( new TodoItem(2).eq(new TodoItem(2)) )
-    }})
+    })
     
-    it("returns false if A > B", function() { with(this) {
+    it("returns false if A > B", function() {
       assert( !new TodoItem(3).eq(new TodoItem(2)) )
-    }})
-  }})
+    })
+  })
   
-  describe("#gt", function() { with(this) {
-    it("returns false if A < B", function() { with(this) {
+  describe("#gt", function() {
+    it("returns false if A < B", function() {
       assert( !new TodoItem(1).gt(new TodoItem(2)) )
-    }})
+    })
     
-    it("returns false if A = B", function() { with(this) {
+    it("returns false if A = B", function() {
       assert( !new TodoItem(2).gt(new TodoItem(2)) )
-    }})
+    })
     
-    it("returns true if A > B", function() { with(this) {
+    it("returns true if A > B", function() {
       assert( new TodoItem(3).gt(new TodoItem(2)) )
-    }})
-  }})
+    })
+  })
   
-  describe("#gte", function() { with(this) {
-    it("returns false if A < B", function() { with(this) {
+  describe("#gte", function() {
+    it("returns false if A < B", function() {
       assert( !new TodoItem(1).gte(new TodoItem(2)) )
-    }})
+    })
     
-    it("returns true if A = B", function() { with(this) {
+    it("returns true if A = B", function() {
       assert( new TodoItem(2).gte(new TodoItem(2)) )
-    }})
+    })
     
-    it("returns true if A > B", function() { with(this) {
+    it("returns true if A > B", function() {
       assert( new TodoItem(3).gte(new TodoItem(2)) )
-    }})
-  }})
-}})
+    })
+  })
+})
 

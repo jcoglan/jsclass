@@ -28,7 +28,7 @@ JS.Test.Context.Test = new JS.Module({
         this.before_should_callbacks[testName] = opts.before;
     }
     
-    this.define(testName, block);
+    this.define(testName, JS.Ruby.selfless(block));
   },
   
   beforeTest: function(name, block) {

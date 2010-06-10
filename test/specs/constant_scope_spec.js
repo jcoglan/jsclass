@@ -1,4 +1,4 @@
-ConstantScopeSpec = JS.Test.describe(JS.ConstantScope, function() { with(this) {
+ConstantScopeSpec = JS.Test.describe(JS.ConstantScope, function() {
   include(JS.Test.Helpers)
   
   define("createClass", function(methods) {
@@ -6,59 +6,59 @@ ConstantScopeSpec = JS.Test.describe(JS.ConstantScope, function() { with(this) {
     return new JS.Class(methods)
   })
   
-  sharedBehavior("a class with lexical constant scoping", function() { with(this) {
-    it("attaches the constant as a singleton property", function() { with(this) {
+  sharedBehavior("a class with lexical constant scoping", function() {
+    it("attaches the constant as a singleton property", function() {
       assertEqual( "THE CONST", module.CONST )
-    }})
+    })
     
-    it("attaches the constant as an instance property", function() { with(this) {
+    it("attaches the constant as an instance property", function() {
       assertEqual( "THE CONST", module.prototype.CONST )
-    }})
+    })
     
-    describe("with a singleton method", function() { with(this) {
-      before(function() { with(this) {
+    describe("with a singleton method", function() {
+      before(function() {
         module.extend({
           singletonMethod: function() { return this.CONST }
         })
-      }})
+      })
       
-      it("gives the method access to the constant within its scope", function() { with(this) {
+      it("gives the method access to the constant within its scope", function() {
         assertEqual( "THE CONST", module.singletonMethod() )
-      }})
-    }})
+      })
+    })
     
-    describe("with an instance method", function() { with(this) {
-      before(function() { with(this) {
+    describe("with an instance method", function() {
+      before(function() {
         module.include({
           instanceMethod: function() { return this.CONST }
         })
-      }})
+      })
       
-      it("gives the method access to the constant within its scope", function() { with(this) {
+      it("gives the method access to the constant within its scope", function() {
         var instance = new module()
         assertEqual( "THE CONST", instance.instanceMethod() )
-      }})
-    }})
-  }})
+      })
+    })
+  })
   
-  describe("with a constant in the module body", function() { with(this) {
-    before(function() { with(this) {
+  describe("with a constant in the module body", function() {
+    before(function() {
       this.module = createClass({ CONST: "THE CONST" })
-    }})
+    })
     
     behavesLike("a class with lexical constant scoping")
-  }})
+  })
   
-  describe("with a constant in an extend block", function() { with(this) {
-    before(function() { with(this) {
+  describe("with a constant in an extend block", function() {
+    before(function() {
       this.module = createClass({extend: { CONST: "THE CONST" }})
-    }})
+    })
     
     behavesLike("a class with lexical constant scoping")
-  }})
+  })
   
-  describe("with nested classes", function() { with(this) {
-    before(function() { with(this) {
+  describe("with nested classes", function() {
+    before(function() {
       this.Outer = new JS.Class('Outer', {
         include: JS.ConstantScope,
         CONST:   45,
@@ -73,23 +73,23 @@ ConstantScopeSpec = JS.Test.describe(JS.ConstantScope, function() { with(this) {
           }
         })
       })
-    }})
+    })
     
-    it("mixes ConstantScope into the nested classes", function() { with(this) {
+    it("mixes ConstantScope into the nested classes", function() {
       assertKindOf( JS.Class, Outer.Inner.Klass )
-    }})
+    })
     
-    it("makes constants from an outer scope visible in a nested one", function() { with(this) {
+    it("makes constants from an outer scope visible in a nested one", function() {
       assertEqual( 45, Outer.CONST )
       assertEqual( 45, Outer.Inner.CONST )
       assertEqual( 45, Outer.Inner.retrieve() )
       
       var item = new Outer.Inner.Klass()
       assertEqual( 45, item.find() )
-    }})
+    })
     
-    describe("with similarly named classes in outer and inner scopes", function() { with(this) {
-      before(function() { with(this) {
+    describe("with similarly named classes in outer and inner scopes", function() {
+      before(function() {
         forEach([Outer.Inner, Outer], function(module) {
           module.include({
             Item: new JS.Class({ NAME: module.displayName }),
@@ -99,25 +99,25 @@ ConstantScopeSpec = JS.Test.describe(JS.ConstantScope, function() { with(this) {
             }
           })
         })
-      }})
+      })
       
-      it("keeps the two classes different", function() { with(this) {
+      it("keeps the two classes different", function() {
         assertNotSame( Outer.Item, Outer.Inner.Item )
         assertEqual( 'Outer', Outer.Item.NAME )
         assertEqual( 'Inner', Outer.Inner.Item.NAME )
         
         assertKindOf( JS.Class, Outer.Item )
         assertKindOf( JS.Class, Outer.Inner.Item )
-      }})
+      })
       
-      it("locates the outer class in the outer scope", function() { with(this) {
+      it("locates the outer class in the outer scope", function() {
         assertEqual( Outer.Item, Outer.getItem() )
-      }})
+      })
       
-      it("locates the inner class in the inner scope", function() { with(this) {
+      it("locates the inner class in the inner scope", function() {
         assertEqual( Outer.Inner.Item, Outer.Inner.getItem() )
-      }})
-    }})
-  }})
-}})
+      })
+    })
+  })
+})
 

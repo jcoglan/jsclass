@@ -62,6 +62,12 @@ JS.Enumerable = new JS.Module('Enumerable', {
       
       push: function(item) {
         Array.prototype.push.call(this, item);
+      },
+      
+      clear: function() {
+        var i = this.length;
+        while (i--) delete this[i];
+        this.length = 0;
       }
     })
   },

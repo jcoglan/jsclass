@@ -1,4 +1,4 @@
-ForwardableSpec = JS.Test.describe(JS.Forwardable, function() { with(this) {
+ForwardableSpec = JS.Test.describe(JS.Forwardable, function() {
   var Subject = new JS.Class({
       initialize: function() {
           this.name = "something";
@@ -22,49 +22,49 @@ ForwardableSpec = JS.Test.describe(JS.Forwardable, function() { with(this) {
     })
   })
   
-  before(function() { with(this) {
+  before(function() {
     this.forwarderClass = forwardableClass()
     this.forwarder = new forwarderClass()
-  }})
+  })
   
-  describe("#defineDelegator", function() { with(this) {
-    it("defines a forwarding method", function() { with(this) {
+  describe("#defineDelegator", function() {
+    it("defines a forwarding method", function() {
       forwarderClass.defineDelegator("subject", "getName")
       assertRespondTo( forwarder, "getName" )
       assertEqual( "something", forwarder.getName() )
-    }})
+    })
     
-    it("passes arguments through when forwarding calls", function() { with(this) {
+    it("passes arguments through when forwarding calls", function() {
       forwarderClass.defineDelegator("subject", "multiply")
       assertEqual( 20, forwarder.multiply(4,5) )
-    }})
+    })
     
-    it("uses the named property as the forwarding target", function() { with(this) {
+    it("uses the named property as the forwarding target", function() {
       forwarder.target = {getName: function() { return "target name" }}
       forwarderClass.defineDelegator("target", "getName")
       assertEqual( "target name", forwarder.getName() )
-    }})
+    })
     
-    it("defines a forwarding method under a different name", function() { with(this) {
+    it("defines a forwarding method under a different name", function() {
       forwarderClass.defineDelegator("subject", "getName", "subjectName")
       assertRespondTo( forwarder, "subjectName" )
       assertEqual( "something", forwarder.subjectName() )
-    }})
+    })
     
-    it("defines forwarding methods for mutators", function() { with(this) {
+    it("defines forwarding methods for mutators", function() {
       forwarderClass.defineDelegator("subject", "getName")
       forwarderClass.defineDelegator("subject", "setName")
       forwarder.setName("nothing")
       assertEqual( "nothing", forwarder.getName() )
-    }})
-  }})
+    })
+  })
   
-  describe("#defineDelegators", function() { with(this) {
-    it("defines multiple forwarding methods", function() { with(this) {
+  describe("#defineDelegators", function() {
+    it("defines multiple forwarding methods", function() {
       forwarderClass.defineDelegators("subject", "getName", "setName")
       forwarder.setName("nothing")
       assertEqual( "nothing", forwarder.getName() )
-    }})
-  }})
-}})
+    })
+  })
+})
 

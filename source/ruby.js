@@ -1,8 +1,27 @@
 JS.Ruby = function(klass, define) {
-  define.call(new JS.Ruby.ClassBuilder(klass));
+  JS.Ruby.selfless(define).call(new JS.Ruby.ClassBuilder(klass));
 };
 
 JS.extend(JS.Ruby, {
+  selfless: function(block) {
+    if (!JS.isFn(block)) return block;
+    
+    var source = block.toString(),
+        args   = source.match(/^[^\(]*\(([^\(]*)\)/)[1].split(/\s*,\s*/),
+        body   = source.match(/^[^\{]*{((.*\n*)*)}/m)[1];
+    
+    body = 'with(this) { ' + body + ' }';
+    
+    if (args.length === 3)
+      return new Function(args[0], args[1], args[2], body);
+    else if (args.length === 2)
+      return new Function(args[0], args[1], body);
+    else if (args.length === 1)
+      return new Function(args[0], body);
+    else if (args.length === 0)
+      return new Function(body);
+  },
+  
   extendDSL: function(builder, source) {
     for (var method in source) {
       if (builder[method] || !JS.isFn(source[method])) continue;
@@ -11,6 +30,8 @@ JS.extend(JS.Ruby, {
   },
   
   addMethod: function(builder, source, method) {
+    if (source[method].klass) return builder[method] = source[method];
+    
     builder[method] = function() {
       var result = source[method].apply(source, arguments);
       JS.Ruby.extendDSL(builder, source);

@@ -1,6 +1,6 @@
-ProxySpec = JS.Test.describe(JS.Proxy, function() { with(this) {
-  describe(JS.Proxy.Virtual, function() { with(this) {
-    before(function() { with(this) {
+ProxySpec = JS.Test.describe(JS.Proxy, function() {
+  describe(JS.Proxy.Virtual, function() {
+    before(function() {
       this.instances = 0
       
       this.Subject = new JS.Class({
@@ -21,62 +21,62 @@ ProxySpec = JS.Test.describe(JS.Proxy, function() { with(this) {
       
       this.Proxy = new JS.Proxy.Virtual(Subject)
       this.proxyInstance = new Proxy("jcoglan", 26)
-    }})
+    })
     
-    it("creates classes", function() { with(this) {
+    it("creates classes", function() {
       assertKindOf( JS.Class, Proxy )
-    }})
+    })
     
-    it("does not instantiate the wrapped class immediately", function() { with(this) {
+    it("does not instantiate the wrapped class immediately", function() {
       assertEqual( 0, instances )
-    }})
+    })
     
-    it("instantiates the wrapped class when a method is called", function() { with(this) {
+    it("instantiates the wrapped class when a method is called", function() {
       proxyInstance.getName()
       assertEqual( 1, instances )
-    }})
+    })
     
-    it("instantiates the wrapped class once per proxy instance", function() { with(this) {
+    it("instantiates the wrapped class once per proxy instance", function() {
       proxyInstance.getName()
       proxyInstance.getName()
       assertEqual( 1, instances )
       new Proxy("bart", 10).getName()
       assertEqual( 2, instances )
-    }})
+    })
     
-    it("passes constructor arguments down to the subject", function() { with(this) {
+    it("passes constructor arguments down to the subject", function() {
       assertEqual( "jcoglan", proxyInstance.getName() )
       assertEqual( 26, proxyInstance.getAge() )
-    }})
+    })
     
-    it("passes method arguments down to the subject", function() { with(this) {
+    it("passes method arguments down to the subject", function() {
       proxyInstance.setName("some", "words")
       assertEqual( "some words", proxyInstance.getName() )
-    }})
+    })
     
-    describe("a singleton method", function() { with(this) {
-      before(function() { with(this) {
+    describe("a singleton method", function() {
+      before(function() {
         proxyInstance.extend({
           newMethod: function() { return this.name.toUpperCase() }
         })
-      }})
+      })
       
-      it("can access the subject's instance variables", function() { with(this) {
+      it("can access the subject's instance variables", function() {
         assertEqual( "JCOGLAN", proxyInstance.newMethod() )
-      }})
-    }})
+      })
+    })
     
-    describe("a singleton method that calls super", function() { with(this) {
-      before(function() { with(this) {
+    describe("a singleton method that calls super", function() {
+      before(function() {
         proxyInstance.extend({
           getAge: function() { return this.callSuper() * 2 }
         })
-      }})
+      })
       
-      it("calls the subject's implementation of the method", function() { with(this) {
+      it("calls the subject's implementation of the method", function() {
         assertEqual( 52, proxyInstance.getAge() )
-      }})
-    }})
-  }})
-}})
+      })
+    })
+  })
+})
 
