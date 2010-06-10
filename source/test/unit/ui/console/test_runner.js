@@ -9,7 +9,8 @@ JS.Test.Unit.UI.extend({
       TestRunner: new JS.Class({
         extend: [JS.Test.Unit.UI.TestRunnerUtilities, {
           
-          ANSI_CSI: String.fromCharCode(0x1B) + '['
+          ANSI_CSI: String.fromCharCode(0x1B) + '[',
+          MAX_BUFFER_LENGTH: 72
         }],
         
         /**
@@ -107,6 +108,9 @@ JS.Test.Unit.UI.extend({
           if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
           
           if (typeof process === 'object') return require('sys').print(string);
+          
+          if (this._lineBuffer.length >= this.klass.MAX_BUFFER_LENGTH)
+            return this._output(this._lineBuffer.join(''), level);
           
           var esc = (this._lineBuffer.length === 0) ? '' : this._escape('F') + this._escape('K');
           this._lineBuffer.push(string);
