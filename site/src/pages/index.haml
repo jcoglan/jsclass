@@ -1,37 +1,39 @@
 :textile
-  @JS.Class@ is a library designed to facilitate object-oriented development in JavaScript. It
-  implements Ruby's core object, module and class system and some of its metaprogramming facilities,
-  giving you a powerful base to build well-structured OO programs.
+  <p class="front-matter">
+    @JS.Class@ is a set of tools designed to make it easy to build robust object-oriented
+    programs in JavaScript. It's based on Ruby, and gives you access to Ruby's object,
+    "module":/modules.html and "class":/classes.html systems, some of its
+    "reflection":/reflection.html and "metaprogramming":/hooks.html facilities,
+    and a few of the packages from its standard library. It also provides a powerful
+    "package manager":/packages.html to help load your applications as efficiently as possible.
+  </p>
   
-  <pre class="prettyprint">    var Event = new JS.Class({
-          include: JS.Observable,
-          
-          fire: function(data) {
-              this.notifyObservers('fire', data);
-          }
-      });</pre>
+  <p class="front-matter">
+    It supports all the major web browsers and a growing number of server-side platforms,
+    including Rhino, Node.js and Narwhal. Wherever you're using JavaScript, @JS.Class@
+    makes building large programs a snap.
+  </p>
   
   h3. Features
   
-  @JS.Class@ is designed to make JavaScript behave like Ruby in terms of its OOP structures.
-  To this end, it provides the following features:
+  @JS.Class@ provides many of Ruby's powerful features, including:
   
-  * Classes and modules with Ruby-compatible inheritance
-  * Subclassing and mixins
+  * Ruby-like object system with classes, mixins, and singleton methods
   * Late-binding arguments-optional @super@ calls to parent classes and mixins
-  * Singleton methods and eigenclasses
   * @included@, @extended@ and @inherited@ hooks
   * Method binding
-  * Ports of various standard Ruby modules, including @Enumerable@, @Hash@, @Set@, @Observable@,
-    @Comparable@, @Forwardable@
+  * Reflection APIs for the object system
+  * Conventions for object equality, comparison, iteration and hashing
+  * Versions of various standard Ruby modules and data structures
   
-  Its inheritance system supports late-bound @super()@ calls to parent classes and modules,
-  including calls from singleton methods. It has been designed to mimick Ruby as closely as
-  possible, so if you know Ruby you should feel right at home.
+  Its object system has been designed to exactly mimick the behaviour of Ruby, giving
+  you a great deal of power when structuring large programs. It also provides a set
+  of well-integrated data structures, all of which implement the powerful
+  "@Enumerable@":/enumerable.html API. If you like Ruby, you'll feel right at home.
   
   h3. Download version 2.1
   
-  Version 2.1 builds on the 2.0 core and libraries and adds several new core features and
+  Version 2.1 builds on the 2.0 core and adds several new core features and
   packages. A quick tour of the new features:
   
   * New libraries: "@ConstantScope@":/constantscope.html, "@Hash@":/hash.html and
@@ -52,7 +54,7 @@
   * Classes can be named to generate @displayName@ on methods for
     "use with the WebKit debugger":/debugging.html.
   
-  <a href="/assets/JS.Class.2-1-4.zip" onclick="trackDownload('2.1.4')">Download JS.Class 2.1.4</a>
+  <a href="/assets/JS.Class.2-1-5.zip" onclick="trackDownload('2.1.5')">Download JS.Class 2.1.5</a>
   
   Most code based on version 1.x will be compatible with this release, but there a few "issues
   to be aware of":/upgrade.html. If you have code you cannot update to 2.x at present, 1.6 is

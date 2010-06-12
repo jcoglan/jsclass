@@ -1,23 +1,42 @@
 :textile
   h3. @JS.Packages@
   
-  @JS.Class@, as of version 2.0, comes with a package system that lets you load scripts
-  on demand with support for dependency management. Its lets you name objects and the URLs
-  for the files that contain them, so your application code only has to deal with knowing
-  which objects it needs, not where to find those objects. Where possible, @JS.Package@
-  will download scripts in parallel to improve load speed, and it makes sure interdependent
-  scripts are loaded in the correct order. When used in a web browser, it uses script tag
-  injection rather than @XMLHttpRequest@, so it works cross-domain. It has also been tested
-  as a dependency manager on SpiderMonkey, Rhino and V8.
+  @JS.Class@ comes with a package manager that makes it really easy to load libraries
+  into your application on demand. You can tell it which file each module in your
+  application lives in, and what other modules it depends on, and it takes care of
+  resolving dependencies and loading your code for you. This means your application
+  code only needs to specify which objects it needs, rather than which scripts to
+  download in order to run.
   
   For example, say I want to do something with "YUI's CSS selector":http://developer.yahoo.com/yui/selector/.
   I just need to @require@ it, and supply a function to run once all the requisite code
   has loaded:
   
-  <pre class="prettyprint">    require('YAHOO.util.Selector', function() {
+  <pre class="prettyprint">    JS.require('YAHOO.util.Selector', function() {
           var myDivs = YAHOO.util.Selector.query('div.mine');
           // .. more code (elided)
       });</pre>
+  
+  The package system only loads what is needed to get the objects you want, and
+  it makes sure that each file is only downloaded once. Where possible, files are
+  downloaded in parallel to improve performance, but it makes sure interdependent
+  scripts run in the right order.
+  
+  As well as making it easy to improve the load time of your web applications,
+  @JS.Packages@ works great as a dependency manager for server-side JavaScript
+  projects. It currently supports the following platforms.
+  
+  * "Google Chrome":http://www.google.com/chrome
+  * "Mozilla Firefox":http://www.getfirefox.com/
+  * "Safari":http://www.apple.com/safari/
+  * "Opera":http://www.opera.com/
+  * "Internet Explorer":http://www.microsoft.com/windows/internet-explorer/default.aspx
+  * "Mozilla Rhino":http://www.mozilla.org/rhino/
+  * "Node.js":http://nodejs.org/
+  * "Narwhal":http://narwhaljs.org/
+  * "Mozilla SpiderMonkey":http://www.mozilla.org/js/spidermonkey/
+  * "V8 shell":http://code.google.com/p/v8/
+  * "Windows Script Host":http://msdn.microsoft.com/en-us/library/9bbdkx3k(VS.85).aspx
   
   h3. Setting up
   
@@ -108,6 +127,47 @@
   downloading of packages, since if the load order does not matter the packages can
   be downloaded in parallel.
   
+  h3. Short-hand setup using @autoload@
+  
+  As your application grows you may find that your package configuration becomes
+  repetitive. For example, you may have a set of test scripts that mirror the
+  set of classes in your application:
+  
+  <pre class="prettyprint">    JS.Packages(function() { with(this) {
+          
+          file('tests/widget_spec.js')        .provides('WidgetSpec')
+                                              .requires('MyApp.Widget');
+          
+          file('tests/blog_post_spec.js')     .provides('BlogPostSpec')
+                                              .requires('MyApp.BlogPost');
+          
+          file('tests/users/profile_spec.js') .provides('Users.ProfileSpec')
+                                              .requires('MyApp.Users.Profile');
+      });</pre>
+  
+  If you run into this situation you can use the @autoload()@ function to set
+  up packages for objects whose name matches a certain pattern. For example
+  you could compress the above configuration like this:
+  
+  <pre class="prettyprint">    JS.Packages(function() { with(this) {
+          autoload(/^(.*)Spec$/, {from: 'tests', require: 'MyApp.$1'});
+      });</pre>
+  
+  @autoload()@ expects three parameters. The first is a regex that is used to match
+  package names. The @from@ option is a directory path where packages with that
+  name pattern live, for example this rule would make the package loader look
+  in @tests/users/profile_spec.js@ to find the @Users.ProfileSpec@ module. The
+  @require@ option lets you specify an object the package depends on, using match
+  results from the regex. The above rule would mean that @Users.ProfileSpec@ has
+  a dependency on @MyApp.Users.Profile@.
+  
+  If you @require()@ a package that doesn't have an explicit configuration, the
+  autoloader will try to figure out where to load it from by matching its name
+  against the set of patterns it knows about. A naming convention is adopted for
+  converting object names to paths: dots convert to path separators, and camelcase
+  names are converted to underscored style. Thus @Users.ProfileSpec@ becomes
+  @users/profile_spec.js@.
+  
   h3. Custom loader functions
   
   Some libraries, such as the "Google Ajax APIs":http://code.google.com/apis/ajax/,
@@ -178,12 +238,12 @@
       
       <!-- Elsewhere in your app -->
       <script type="text/javascript">
-          require('JS.SortedSet', function() {
+          JS.require('JS.SortedSet', function() {
               // ...
           });
       </script></pre>
   
-  You can also use this file on server-side platforms such as SpiderMonkey, Rhino or V8
+  You can also use this file on server-side platforms (see the list of supported platforms above)
   but you must tell the library the path where it is stored as this information cannot be
   determined automatically on these platforms. You do this using the @JSCLASS_PATH@ variable,
   for example:
@@ -191,12 +251,12 @@
   <pre class="prettyprint">    JSCLASS_PATH = 'path/to/js.class/';
       load(JSCLASS_PATH + 'loader.js');
       
-      require('JS.SortedSet', function() {
+      JS.require('JS.SortedSet', function() {
           // do something with SortedSet
       });</pre>
   
   Note that as of version 2.1.4, @loader.js@ does not contain the JS.Class core. If you need
   @JS.Class@, @JS.Module@, @JS.Singleton@ or @JS.Interface@ you must specify these as
-  requirements using the @require()@ function or by putting them in your @JS.Packages@
-  configuration.
+  requirements using the @JS.require()@ function or by adding them as dependencies in your
+  @JS.Packages@ configuration.
   

@@ -4,7 +4,7 @@
 !red          = #d11f1f
 !dark_red     = #961919
 !blue         = #76a0d0
-!font_size    = 13px
+!font_size    = 14px
 !line_height  = 1.5
 
 !column_width = 170px
@@ -17,7 +17,7 @@ body
   :padding          = 0 0 0 0
   :font
     :size           = !font_size
-    :family         Arial, Helvetica, sans-serif
+    :family         FreeSans, Helvetica, Arial, sans-serif
   :line-height      = !line_height
 
 .sub
@@ -63,6 +63,11 @@ body
       :display      block
       :padding      4px 8px
 
+.front-matter
+  :font-size        120%
+  :color            #666
+  :margin           1.5em
+
 #footer
   :border-top       = 2px solid !dark_grey
   :background       = !dark_red
@@ -99,7 +104,7 @@ body
     :color          = !red
     :font
       :size         = !font_size
-      :family       Trebuchet MS, Verdana, sans-serif
+      :family       FreeSans, Helvetica, Arial, Trebuchet MS, Verdana, sans-serif
     :margin         1.5em 0
   
   ul, li
@@ -127,12 +132,12 @@ h3
   :color            = !red
   :font
     :size           = 2 * !font_size
-    :family         Trebuchet MS, Verdana, sans-serif
+    :family         FreeSans, Helvetica, Arial, Trebuchet MS, Verdana, sans-serif
     :weight         normal
   :margin           0.5em 0
 
 p, ul, pre
-  :margin           = !line_height * !font_size 0
+  :margin           = 1.5em 0
 
 a
   :color            = !blue
