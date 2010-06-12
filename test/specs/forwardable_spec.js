@@ -1,5 +1,5 @@
 ForwardableSpec = JS.Test.describe(JS.Forwardable, function() {
-  var Subject = new JS.Class({
+  define("Subject", new JS.Class({
       initialize: function() {
           this.name = "something";
       },
@@ -12,15 +12,15 @@ ForwardableSpec = JS.Test.describe(JS.Forwardable, function() {
       multiply: function(a,b) {
           return a*b;
       }
-  });
+  }))
   
-  define("forwardableClass", function() {
+  define("forwardableClass", function() { with(this) {
     return new JS.Class({extend: JS.Forwardable,
       initialize: function() {
         this.subject = new Subject()
       }
     })
-  })
+  }})
   
   before(function() {
     this.forwarderClass = forwardableClass()
