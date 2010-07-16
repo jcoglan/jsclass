@@ -76,17 +76,6 @@ JS.Test.Unit.extend({
       callback.call(context || null, this.klass.STARTED, this);
       this._result = result;
       
-      var processError = function(doNext) {
-        return function(e) {
-          if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
-            this.addFailure(e.message);
-          else
-            this.addError(e);
-          
-          if (doNext) doNext.call(this);
-        };
-      };
-      
       var complete = function() {
         result.addRun();
         callback.call(context || null, this.klass.FINISHED, this);
@@ -94,12 +83,12 @@ JS.Test.Unit.extend({
       };
       
       var teardown = function() {
-        this.exec('teardown', complete, processError(complete));
+        this.exec('teardown', complete, this.processError(complete));
       };
       
       this.exec('setup', function() {
-        this.exec(this._methodName, teardown, processError(teardown));
-      }, processError(teardown));
+        this.exec(this._methodName, teardown, this.processError(teardown));
+      }, this.processError(teardown));
     },
     
     exec: function(methodName, onSuccess, onError) {
@@ -120,6 +109,17 @@ JS.Test.Unit.extend({
           self.exec(asyncBlock, onSuccess, onError);
         })
       }, onError);
+    },
+    
+    processError: function(doNext) {
+      return function(e) {
+        if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
+          this.addFailure(e.message);
+        else
+          this.addError(e);
+        
+        if (doNext) doNext.call(this);
+      };
     },
     
     _runWithExceptionHandlers: function(_try, _catch, _finally) {

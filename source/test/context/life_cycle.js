@@ -78,7 +78,7 @@ JS.Test.Context.LifeCycle = new JS.Module({
     var callbacks = this.klass.gatherCallbacks(callbackType, period);
     
     JS.Test.Unit.TestSuite.forEach(callbacks, function(callback, resume) {
-      this.exec(callback, resume, function() {});
+      this.exec(callback, resume, this.processError(resume));
       
     }, continuation, this);
   },
