@@ -13,6 +13,9 @@ JS.Package = function(loader) {
 };
 
 (function(klass) {
+  klass.displayName = 'Package';
+  klass.toString = function() { return klass.displayName };
+  
   //================================================================
   // Ordered list of unique elements, for storing dependencies
   
@@ -37,7 +40,7 @@ JS.Package = function(loader) {
   //================================================================
   // Environment settings
   
-  klass._env = this;
+  klass.ENV = this;
   
   if ((this.document || {}).getElementsByTagName) {
     var script = document.getElementsByTagName('script')[0];
@@ -206,6 +209,12 @@ JS.Package = function(loader) {
     return placeholder;
   };
   
+  klass.remove = function(name) {
+    var pkg = this.getByName(name);
+    delete this._indexByName[name];
+    delete this._indexByPath[pkg._loader];
+  };
+  
   //================================================================
   // Auotloading API, generates packages from naming patterns
   
@@ -249,7 +258,7 @@ JS.Package = function(loader) {
     var cached = this.getFromCache(name);
     if (cached.obj !== undefined) return cached.obj;
     
-    var object = this._env,
+    var object = this.ENV,
         parts  = name.split('.'), part;
     
     while (part = parts.shift()) object = object && object[part];

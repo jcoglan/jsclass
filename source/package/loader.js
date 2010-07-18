@@ -41,10 +41,10 @@ JS.Package.CommonJSLoader = {
   
   setup: function() {
     var self = this;
-    require = (function(oridRequire) {
+    require = (function(origRequire) {
       return function() {
         self._currentPath = arguments[0] + '.js';
-        return oridRequire.apply(JS.Package._env, arguments);
+        return origRequire.apply(JS.Package.ENV, arguments);
       };
     })(require);
   },
@@ -75,7 +75,7 @@ JS.Package.ServerLoader = {
     load = (function(origLoad) {
       return function() {
         self._currentPath = arguments[0];
-        return origLoad.apply(JS.Package._env, arguments);
+        return origLoad.apply(JS.Package.ENV, arguments);
       };
     })(load);
   },
