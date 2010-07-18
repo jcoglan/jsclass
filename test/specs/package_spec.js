@@ -131,5 +131,15 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
       })
     })
   })
+  
+  describe("when the required object already exists", function() {
+    it("runs the block immediately without loading anything", function() {
+      var done = false
+      assertKindOf( Object, JS.Test )
+      JS.require("JS.Test", function() { done = true })
+      assert( done )
+      assertEqual( [], _loaded )
+    })
+  })
 })
 
