@@ -47,6 +47,12 @@ JS.Package = function(loader) {
     klass._isIE = (script.readyState !== undefined);
   }
   
+  klass.onerror = function(e) { throw e };
+  
+  klass._throw = function(message) {
+    klass.onerror(new Error(message));
+  };
+  
   
   //================================================================
   // Configuration methods, called by the DSL
@@ -107,7 +113,7 @@ JS.Package = function(loader) {
       object = klass.getObject(name);
       if (object !== undefined) continue;
       if (withExceptions)
-        throw new Error('Expected package at ' + this._loader + ' to define ' + name);
+        return klass._throw('Expected package at ' + this._loader + ' to define ' + name);
       else
         return this._isLoaded = false;
     }
@@ -117,13 +123,12 @@ JS.Package = function(loader) {
   instance.load = function() {
     if (!this.fire('request')) return;
     
-    var allDeps    = this._deps.list.concat(this._uses.list),
-        startEvent = 'load',  // could potentially use 'download' event in
-        listener   = {};      // browsers that guarantee execution order
+    var allDeps = this._deps.list.concat(this._uses.list),
+        i = allDeps.length;
     
-    listener[startEvent] = this._deps.list;
+    klass.when({load: allDeps});
     
-    klass.when(listener, function() {
+    klass.when({complete: this._deps.list}, function() {
       klass.when({complete: allDeps, load: [this]}, function() {
         this.fire('complete');
       }, this);
@@ -140,7 +145,7 @@ JS.Package = function(loader) {
       }
       
       if (this._loader === undefined)
-        throw new Error('No load path found for ' + this._names.list[0]);
+        return klass._throw('No load path found for ' + this._names.list[0]);
       
       typeof this._loader === 'function'
             ? this._loader(fireOnLoad)
