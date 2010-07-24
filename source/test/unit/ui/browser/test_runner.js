@@ -72,7 +72,7 @@ JS.Test.Unit.UI.extend({
         },
         
         _finished: function(elapsedTime) {
-          
+          this._getDisplay().printSummary(elapsedTime);
         },
         
         _testStarted: function(testCase) {

@@ -91,7 +91,7 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
     _constructDOM: function() {
       var self = this;
       self._container = JS.DOM.div({className: 'test-result-container'}, function(div) {
-        div.table({className: 'summary'}, function(table) {
+        div.table({className: 'report'}, function(table) {
           table.thead(function(thead) {
             thead.tr(function(tr) {
               tr.th({scope: 'col'}, 'Tests');
@@ -110,6 +110,7 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
           });
         });
         self._context = new self.klass.Context('spec', div.ul({className: 'specs'}));
+        self._summary = div.p({className: 'summary'});
       });
     },
     
@@ -147,6 +148,10 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
           context = data.context;
       
       context.child(name).addFault(fault.longDisplay());
+    },
+    
+    printSummary: function(elapsedTime) {
+      this._summary.innerHTML = 'Finished in ' + elapsedTime + ' seconds.';
     },
     
     _testData: function(testCase) {

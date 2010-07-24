@@ -18,13 +18,13 @@
   list-style:   circle outside;
 }
 
-.test-result-container .summary {
+.test-result-container .report {
   border-collapse: collapse;
   margin:       0;
   padding:      0;
 }
 
-.test-result-container .summary th, .test-result-container .summary td {
+.test-result-container .report th, .test-result-container .report td {
   border-left:  1px solid #ccc;
   border-right: 1px solid #ccc;
   font-weight:  bold;
@@ -33,13 +33,13 @@
   width:        110px;
 }
 
-.test-result-container .summary th {
+.test-result-container .report th {
   border-top:   1px solid #ccc;
   background:   #eee;
   padding:      4px 8px;
 }
 
-.test-result-container .summary td {
+.test-result-container .report td {
   font-size:    300%;
   color:        #999;
 }
@@ -117,5 +117,12 @@
 
 .test-result-container .passed .number {
   color:        #6c3;
+}
+
+.test-result-container .summary {
+  border-top:   1px solid #999;
+  color:        #666;
+  padding:      4px 8px;
+  margin:       0;
 }
 
