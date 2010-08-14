@@ -1,67 +1,178 @@
-ModuleSpec = JS.Test.describe("Module", function() { with(this) {
+ModuleSpec = JS.Test.describe(JS.Module, function() {
+  sharedBehavior("module", function() {
+    before(function() {
+      this.modA = new JS.Module('A')
+      this.modB = new JS.Module('B')
+      this.modC = new JS.Module('C')
+      this.modD = new JS.Module('D')
+    })
     
-    it("inherits from Kernel", function() { with(this) {
-        assertEqual( [JS.Kernel, JS.Module], JS.Module.ancestors() );
-    }})
-    
-    describe("instance", function() { with(this) {
-        before("all", function() {
-            this.module = new JS.Module("NameOfTheModule", {
-                firstMethod: function() {},
-                secondMethod: function() {}
-            });
+    describe("#displayName", function() {
+      before(function() {
+        this.module = new subjectClass("NameOfModule", {
+          methodOne: function() {},
+          methodTwo: function() {}
+        })
+      })
+      
+      it("returns the name of the module", function() {
+        assertEqual( "NameOfModule", module.displayName )
+      })
+      
+      it("returns the name of each method", function() {
+        assertEqual( "NameOfModule#methodOne", module.__mod__.__fns__.methodOne.displayName )
+        assertEqual( "NameOfModule#methodTwo", module.__mod__.__fns__.methodTwo.displayName )
+      })
+      
+      describe("for nested modules", function() {
+        before(function() {
+          this.module = new subjectClass("Outer", {
+            extend: {
+              InnerPublic: new subjectClass({ aMethod: function() {} })
+            },
+            
+            InnerPrivate: new subjectClass({
+              aMethod: function() {},
+              
+              extend: {
+                DeepInner: new subjectClass({
+                  aMethod: function() {},
+                  
+                  Klass: new subjectClass({ aMethod: function() {} }),
+                  
+                  extend: {
+                    Foo: new subjectClass({ aMethod: function() {} })
+                  }
+                })
+              }
+            })
+          })
         })
         
-        it("is a Module", function() { with(this) {
-            assert( JS.isType(module, JS.Module) );
-            assert( module instanceof JS.Module );
-            assert( module.isA(JS.Module) );
-        }})
+        it("returns the name of an inner public module", function() {
+          assertEqual( "Outer.InnerPublic", module.InnerPublic.displayName )
+          
+          assertEqual( "Outer.InnerPublic#aMethod",
+                       module.InnerPublic.__mod__.__fns__.
+                       aMethod.displayName )
+        })
         
-        it("has the correct display name", function() { with(this) {
-            assertEqual( "NameOfTheModule", module.displayName );
-        }})
+        it("returns the name of an inner private module", function() {
+          assertEqual( "Outer#InnerPrivate",
+                       module.__mod__.__fns__.
+                       InnerPrivate.displayName )
+          
+          assertEqual( "Outer#InnerPrivate#aMethod",
+                       module.__mod__.__fns__.
+                       InnerPrivate.__mod__.__fns__.
+                       aMethod.displayName )
+        })
         
-        it("gives display names to its methods", function() { with(this) {
-            assertEqual( "NameOfTheModule#firstMethod",
-                         module.instanceMethod("firstMethod").displayName );
-            
-            assertEqual( "NameOfTheModule#secondMethod",
-                         module.instanceMethod("secondMethod").displayName );
-        }})
+        it("returns the name of a deeply nested module", function() {
+          assertEqual( "Outer#InnerPrivate.DeepInner",
+                       module.__mod__.__fns__.
+                       InnerPrivate.DeepInner.displayName )
+          
+          assertEqual( "Outer#InnerPrivate.DeepInner#aMethod",
+                       module.__mod__.__fns__.
+                       InnerPrivate.DeepInner.__mod__.__fns__.
+                       aMethod.displayName )
+          
+          assertEqual( "Outer#InnerPrivate.DeepInner.Foo",
+                       module.__mod__.__fns__.
+                       InnerPrivate.DeepInner.
+                       Foo.displayName )
+          
+          assertEqual( "Outer#InnerPrivate.DeepInner.Foo#aMethod",
+                       module.__mod__.__fns__.
+                       InnerPrivate.DeepInner.
+                       Foo.__mod__.__fns__.
+                       aMethod.displayName )
+          
+          assertEqual( "Outer#InnerPrivate.DeepInner#Klass",
+                       module.__mod__.__fns__.
+                       InnerPrivate.DeepInner.__mod__.__fns__.
+                       Klass.displayName )
+          
+          assertEqual( "Outer#InnerPrivate.DeepInner#Klass#aMethod",
+                       module.__mod__.__fns__.
+                       InnerPrivate.DeepInner.__mod__.__fns__.
+                       Klass.__mod__.__fns__.
+                       aMethod.displayName )
+        })
+      })
+    })
+  })
+  
+  before(function() {
+    this.subjectClass = JS.Module
+  })
+  
+  behavesLike("module")
+  
+  describe("#ancestors", function() {
+    before(function() {
+      this.module = new JS.Module()
+    })
+    
+    describe("with no included modules", function() {
+      it("returns the receiver", function() {
+        assertEqual( [module], module.ancestors() )
+      })
+    })
+    
+    describe("with an included module", function() {
+      before(function() {
+        module.include(modA)
+      })
+      
+      it("returns the included module and the receiver", function() {
+        assertEqual( [modA, module], module.ancestors() )
+      })
+    })
+    
+    describe("with two included modules", function() {
+      before(function() {
+        module.include(modC)
+        module.include(modD)
+      })
+      
+      it("sorts the modules by inclusion order", function() {
+        assertEqual( [modC, modD, module], module.ancestors() )
+      })
+    })
+    
+    describe("with a tree of included modules", function() {
+      before(function() {
+        // Having includes in this order tests the double inclusion problem
+        // http://eigenclass.org/hiki/The+double+inclusion+problem
+        module.include(modB)
+        modB.include(modA)
+      })
+      
+      it("returns the flattened tree", function() {
+        assertEqual( [modA, modB, module], module.ancestors() )
+      })
+      
+      // Diamond problem: http://en.wikipedia.org/wiki/Diamond_problem
+      // 
+      //       A
+      //      / \
+      //     B   C
+      //      \ /
+      //       D
+      //
+      describe("with a repeated reference in the tree", function() {
+        before(function() {
+          modC.include(modA)
+          module.include(modC)
+        })
         
-        it("has only itself as an ancestor", function() { with(this) {
-            assertEqual( [module], module.ancestors() );
-        }})
-        
-        it("provides reflection on its instance methods", function() { with(this) {
-            assertEqual( ["firstMethod", "secondMethod"], module.instanceMethods().sort() );
-            assertKindOf( Function, module.instanceMethod("firstMethod") );
-            assertKindOf( Function, module.instanceMethod("secondMethod") );
-        }})
-        
-        describe("with one included module", function() { with(this) {
-            before("all", function() {
-                this.ancestor = new JS.Module({ foo: function() {} });
-                this.module.include(this.ancestor);
-            })
-            
-            it("lists the included module in its ancestry", function() { with(this) {
-                assertEqual( [ancestor, module], module.ancestors() );
-            }})
-            
-            describe("#instanceMethods", function() { with(this) {
-                it("lists the included module's instance methods by default", function() { with(this) {
-                    assertEqual( ["firstMethod", "foo", "secondMethod"],
-                                 module.instanceMethods().sort() );
-                }})
-                
-                it("excludes the included module's instance methods when passed false", function() { with(this) {
-                    assertEqual( ["firstMethod", "secondMethod"],
-                                 module.instanceMethods(false).sort() );
-                }})
-            }})
-        }})
-    }})
-}})
+        it("places the repeated module at its earliest possible position", function() {
+          assertEqual( [modA, modB, modC, module], module.ancestors() )
+        })
+      })
+    })
+  })
+})
 

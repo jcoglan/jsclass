@@ -124,7 +124,8 @@ JS.Kernel = JS.extend(new JS.Module('Kernel', {
    * just includes the object's type and hashcode.
    **/
   toString: function(className) {
-    return '#<' + (className || this.klass.toString()) + ':' + this.hash() + '>';
+    className = className || this.klass.displayName || this.klass.toString();
+    return '#<' + className + ':' + this.hash() + '>';
   }
 }),
 
