@@ -196,11 +196,44 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
         })
       })
     })
+    
+    describe("#instanceMethods", function() {
+      before(function() {
+        this.module = new subjectClass()
+      })
+      
+      describe("with no methods", function() {
+        it("returns a list of inherited methods", function() {
+          assertEqual( instanceMethods, module.instanceMethods() )
+        })
+        
+        it("returns an empty list when called with false", function() {
+          assertEqual( [], module.instanceMethods(false) )
+        })
+      })
+      
+      describe("with some methods", function() {
+        before(function() {
+          this.module.define("aMethod", function() {})
+          this.module.define("bMethod", function() {})
+        })
+        
+        it("returns the inherited methods and the module's own methods", function() {
+          assertEqual( instanceMethods.concat("aMethod", "bMethod").sort(),
+                       module.instanceMethods().sort() )
+        })
+        
+        it("returns only the module's own methods when called with false", function() {
+          assertEqual( ["aMethod", "bMethod"], module.instanceMethods(false) )
+        })
+      })
+    })
   })
   
   before(function() {
-    this.subjectClass = JS.Module
-    this.ancestors    = []
+    this.subjectClass    = JS.Module
+    this.ancestors       = []
+    this.instanceMethods = []
   })
   
   behavesLike("module")
