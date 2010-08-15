@@ -1,7 +1,8 @@
 ClassSpec = JS.Test.describe(JS.Class, function() {
   before(function() {
-    this.subjectClass = JS.Class
-    this.ancestors    = [JS.Kernel]
+    this.subjectClass    = JS.Class
+    this.ancestors       = [JS.Kernel]
+    this.instanceMethods = JS.Kernel.instanceMethods()
   })
   
   behavesLike("module")
@@ -132,11 +133,47 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
           include: [modB, modC, modD],
           aMethod: function() { return this.callSuper() + ", E" }
         })
+        
+        this.object = new classE()
       })
       
       it("uses the object's ancestry to route each super() call", function() {
-        var object = new classE()
         assertEqual( "A, B, C, D, E", object.aMethod() )
+      })
+      
+      // http://blog.jcoglan.com/2007/11/14/wheres-my-inheritance/
+      describe("when a method in the chain is defined", function() {
+        before(function() {
+          modC.define("aMethod", function() { return "override" })
+        })
+        
+        it("uses the new method when calling super()", function() {
+          assertEqual( "override, D, E", object.aMethod() )
+        })
+      })
+      
+      describe("when a method calls super() twice", function() {
+        before(function() {
+          modC.define("aMethod", function() {
+            return this.callSuper() + ", " + this.callSuper() + ", C"
+          })
+        })
+        
+        it("calls the correct series of methods", function() {
+          assertEqual( "A, B, A, B, C, D, E", object.aMethod() )
+        })
+      })
+      
+      describe("when a singleton method calls super()", function() {
+        before(function() {
+          object.extend({
+            aMethod: function() { return this.callSuper() + ", S" }
+          })
+        })
+        
+        it("routes the call to the object's class's implementation", function() {
+          assertEqual( "A, B, C, D, E, S", object.aMethod() )
+        })
       })
     })
   })
