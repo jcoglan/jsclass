@@ -65,6 +65,66 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
     })
   })
   
+  describe("as a superclass", function() {
+    before(function() {
+      this.classA = new JS.Class({
+        extend: {
+          sMethod: function() { return "bar" }
+        },
+        aMethod: function() { return "foo" }
+      })
+      this.classB = new JS.Class(classA)
+    })
+    
+    it("adds the superclass' method to the subclass", function() {
+      var object = new classB()
+      assertEqual( "foo", object.aMethod() )
+    })
+    
+    it("adds the superclass as an ancestor to the subclass", function() {
+      assertEqual( [JS.Kernel, classA, classB], classB.ancestors() )
+    })
+    
+    it("adds the superclass' singleton methods to the subclass", function() {
+      assertEqual( "bar", classB.sMethod() )
+    })
+    
+    it("adds the superclass as an ancestor to the subclass' eigenclass", function() {
+      assertEqual( [JS.Kernel, JS.Module, JS.Class, classA.__eigen__(), classB.__eigen__()],
+                   classB.__eigen__().ancestors() )
+    })
+  })
+  
+  describe("as a mixin", function() {
+    before(function() {
+      this.classA = new JS.Class({
+        extend: {
+          sMethod: function() { return "bar" }
+        },
+        aMethod: function() { return "foo" }
+      })
+      this.classB = new JS.Class({ include: classA })
+    })
+    
+    it("adds the mixed-in class' method to the includer", function() {
+      var object = new classB()
+      assertEqual( "foo", object.aMethod() )
+    })
+    
+    it("adds the mixed-in class as an ancestor to the includer", function() {
+      assertEqual( [JS.Kernel, classA, classB], classB.ancestors() )
+    })
+    
+    it("does not add the mixed-in class' singleton methods to the includer", function() {
+      assertEqual( undefined, classB.sMethod )
+    })
+    
+    it("does not add the mixed-in class as an ancestor to the includer's eigenclass", function() {
+      assertEqual( [JS.Kernel, JS.Module, JS.Class, classB.__eigen__()],
+                   classB.__eigen__().ancestors() )
+    })
+  })
+  
   describe("#callSuper", function() {
     before(function() {
       this.Parent = new JS.Class({
