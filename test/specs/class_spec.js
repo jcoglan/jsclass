@@ -176,6 +176,37 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
         })
       })
     })
+    
+    // http://www.ajaxpath.com/javascript-inheritance
+    describe("methods referenced by super methods", function() {
+      before(function() {
+        this.BaseClass = new JS.Class({
+          getName: function() { return "BaseClass(" + this.getId() + ")" },
+          getId: function() { return 1 }
+        })
+
+        this.SubClass = new JS.Class(BaseClass, {
+          getName: function() {
+            return "SubClass(" + this.getId() + ") extends " + this.callSuper()
+          },
+          getId: function() { return 2 }
+        })
+
+        this.TopClass = new JS.Class(SubClass, {
+          getName: function() {
+            return "TopClass(" + this.getId() + ") extends " + this.callSuper()
+          },
+          getId: function() {
+            return this.callSuper()
+          }
+        })
+      })
+      
+      it("refer to the implementation in the receiver object", function() {
+        var top = new TopClass()
+        assertEqual( "TopClass(2) extends SubClass(2) extends BaseClass(2)", top.getName() )
+      })
+    })
   })
 })
 
