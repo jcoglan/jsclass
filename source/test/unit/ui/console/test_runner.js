@@ -110,7 +110,7 @@ JS.Test.Unit.UI.extend({
           if (typeof process === 'object') return require('sys').print(string);
           
           if (this._lineBuffer.length >= this.klass.MAX_BUFFER_LENGTH)
-            return this._output(this._lineBuffer.join(''), level);
+            return this._lineBuffer = [];
           
           var esc = (this._lineBuffer.length === 0) ? '' : this._escape('F') + this._escape('K');
           this._lineBuffer.push(string);
