@@ -12,6 +12,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'Test.ContextSpec',
                 'ModuleSpec',
                 'ClassSpec',
+                'KernelSpec',
                 'ComparableSpec',
                 'ConstantScopeSpec',
                 'DecoratorSpec',

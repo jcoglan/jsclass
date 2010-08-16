@@ -268,5 +268,51 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
       })
     })
   })
+  
+  describe("#__eigen__", function() {
+    before(function() {
+      this.Parent = new JS.Class()
+    })
+    
+    it("returns a module that inherits from Class", function() {
+      assertEqual( [JS.Kernel, JS.Module, JS.Class, Parent.__eigen__()],
+                   Parent.__eigen__().ancestors() )
+    })
+    
+    describe("with a superclass", function() {
+      before(function() {
+        this.Child = new JS.Class(Parent)
+      })
+      
+      it("returns a module that inherits from the superclass' eigenclass", function() {
+        assertEqual( [JS.Kernel, JS.Module, JS.Class, Parent.__eigen__(), Child.__eigen__()],
+                     Child.__eigen__().ancestors() )
+      })
+    })
+  })
+  
+  describe("#extend", function() {
+    before(function() {
+      this.Parent = new JS.Class()
+      this.Child  = new JS.Class(Parent)
+    })
+    
+    it("adds the methods to the class and its subclass", function() {
+      Parent.extend({ aClassMethod: function() { return "hello" } })
+      assertEqual( "hello", Child.aClassMethod() )
+    })
+    
+    describe("with two levels of inheritance", function() {
+      before(function() {
+        this.Grandkid = new JS.Class(Child)
+      })
+      
+      it("adds the methods to all descendants", function() {
+        Parent.extend({ aClassMethod: function() { return "hello" } })
+        assertEqual( "hello", Child.aClassMethod() )
+        assertEqual( "hello", Grandkid.aClassMethod() )
+      })
+    })
+  })
 })
 
