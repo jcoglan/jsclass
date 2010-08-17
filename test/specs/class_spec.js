@@ -314,5 +314,41 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
       })
     })
   })
+  
+  describe("#inherited", function() {
+    before(function() {
+      this.parent = new JS.Class()
+      parent.extend({
+        inherited: function(base) {
+          this.subs = this.subs || []
+          this.subs.push(base)
+        }
+      })
+    })
+    
+    describe("when the class is inherited", function() {
+      before(function() {
+        this.child = new JS.Class(parent)
+      })
+      
+      it("is called with the new subclass", function() {
+        assertEqual( [child], parent.subs )
+      })
+      
+      describe("and the subclass is inherited", function() {
+        before(function() {
+          this.grandchild = new JS.Class(child)
+        })
+        
+        it("is called on the subclass with the grandchild", function() {
+          assertEqual( [grandchild], child.subs )
+        })
+        
+        it("is not called on the parent class again", function() {
+          assertEqual( [child], parent.subs )
+        })
+      })
+    })
+  })
 })
 
