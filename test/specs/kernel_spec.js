@@ -181,7 +181,7 @@ KernelSpec = JS.Test.describe(JS.Kernel, function() {
       assert( object.isA(C) )
     })
     
-    it("returns true if the module is mixed into the object's class", function() {
+    it("returns true iff the module is mixed into the object's class", function() {
       Child.include(C)
       assert( object.isA(C) )
     })
@@ -223,7 +223,7 @@ KernelSpec = JS.Test.describe(JS.Kernel, function() {
   
   describe("#methods", function() {
     describe("for an object with no added methods", function() {
-      it("returns the methods from Kernel", function() {
+      it("returns the methods from Kernel and the object's class", function() {
         assertEqual( ["upcase"].concat(JS.Kernel.instanceMethods()).sort(),
                      object.methods().sort() )
       })
@@ -237,7 +237,7 @@ KernelSpec = JS.Test.describe(JS.Kernel, function() {
         })
       })
       
-      it("returns the methods from Kernel", function() {
+      it("returns the methods from the object's class and the methods from the object", function() {
         assertEqual( $w("upcase method1 method2").concat(JS.Kernel.instanceMethods()).sort(),
                      object.methods().sort() )
       })
@@ -249,7 +249,7 @@ KernelSpec = JS.Test.describe(JS.Kernel, function() {
       assertSame( object, object.tap(function() {}) )
     })
     
-    it("yieldeds the object to the block", function() {
+    it("yields the object to the block", function() {
       var yielded = null
       object.tap(function(o) { yielded = o })
       assertSame( object, yielded )
