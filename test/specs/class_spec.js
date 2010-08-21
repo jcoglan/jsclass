@@ -125,6 +125,43 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
     })
   })
   
+  describe("inheriting from a 'native' class", function() {
+    before(function() {
+      this.Native = function() {}
+      Native.prototype.getMyName = function() { return "Native" }
+      
+      this.Child = new JS.Class(Native, {
+        getMyName: function() { return "Inherited from " + this.callSuper() }
+      })
+      
+      this.nativeObject = new Native()
+      this.childObject  = new Child()
+    })
+    
+    it("makes Native the superclass of Child", function() {
+      assertEqual( Native, Child.superclass )
+    })
+    
+    it("makes Child objects instances of Native", function() {
+      assert( childObject.isA(Native) )
+      assert( childObject.isA(Object) )
+    })
+    
+    it("binds #callSuper to the Native class' methods", function() {
+      assertEqual( "Inherited from Native", childObject.getMyName() )
+    })
+    
+    describe("when the Native class gains a method", function() {
+      before(function() {
+        Native.prototype.speak = function() { return "um" }
+      })
+    
+      it("is added to the inheriting object", function() {
+        assertEqual( "um", childObject.speak() )
+      })
+    })
+  })
+  
   describe("#callSuper", function() {
     before(function() {
       this.Parent = new JS.Class({
@@ -311,6 +348,28 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
         Parent.extend({ aClassMethod: function() { return "hello" } })
         assertEqual( "hello", Child.aClassMethod() )
         assertEqual( "hello", Grandkid.aClassMethod() )
+      })
+      
+      describe("when one subclass has defined the method using #extend", function() {
+        before(function() {
+          Grandkid.extend({ aClassMethod: function() { return "hi" } })
+        })
+        
+        it("does not clobber the subclass' own method", function() {
+          Parent.extend({ aClassMethod: function() { return "hello" } })
+          assertEqual( "hi", Grandkid.aClassMethod() )
+        })
+      })
+      
+      describe("when one subclass has defined the method without using #extend", function() {
+        before(function() {
+          Grandkid.aClassMethod = function() { return "hi" }
+        })
+        
+        it("clobbers the subclass' own method", function() {
+          Parent.extend({ aClassMethod: function() { return "hello" } })
+          assertEqual( "hello", Grandkid.aClassMethod() )
+        })
       })
     })
   })
