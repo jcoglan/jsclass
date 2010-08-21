@@ -189,7 +189,12 @@ KernelSpec = JS.Test.describe(JS.Kernel, function() {
   
   describe("#method", function() {
     before(function() {
+      this.mixin = new JS.Module({
+        mixinMethod: function() { return this._name.toUpperCase() }
+      })
+      
       Class.include({
+        include: mixin,
         initialize: function(name) { this._name = name },
         getName: function() { return this._name }
       })
@@ -218,6 +223,63 @@ KernelSpec = JS.Test.describe(JS.Kernel, function() {
     
     it("returns a different function for each method", function() {
       assertNotEqual( tate.method("equals"), tate.method("getName") )
+    })
+    
+    describe("when the implementation changes in the object", function() {
+      before(function() {
+        this.getName = tate.method("getName")
+        tate.extend({
+          getName: function() { return "new singleton method" }
+        })
+      })
+      
+      it("still uses the old implementation for existing bound methods", function() {
+        assertEqual( "Tate", getName() )
+      })
+      
+      it("returns a new function using the new implementation", function() {
+        var newMethod = tate.method("getName")
+        assertNotEqual( getName, newMethod )
+        assertEqual( "new singleton method", newMethod() )
+      })
+    })
+    
+    describe("when the implementation changes in the class", function() {
+      before(function() {
+        this.getName = tate.method("getName")
+        Class.include({
+          getName: function() { return "new method" }
+        })
+      })
+      
+      it("still uses the old implementation for existing bound methods", function() {
+        assertEqual( "Tate", getName() )
+      })
+      
+      it("returns a new function using the new implementation", function() {
+        var newMethod = tate.method("getName")
+        assertNotEqual( getName, newMethod )
+        assertEqual( "new method", newMethod() )
+      })
+    })
+    
+    describe("when the implementation changes in a mixin", function() {
+      before(function() {
+        this.mixinMethod = tate.method("mixinMethod")
+        this.mixin.include({
+          mixinMethod: function() { return "new mixin method" }
+        })
+      })
+      
+      it("still uses the old implementation for existing bound methods", function() {
+        assertEqual( "TATE", mixinMethod() )
+      })
+      
+      it("returns a new function using the new implementation", function() {
+        var newMethod = tate.method("mixinMethod")
+        assertNotEqual( mixinMethod, newMethod )
+        assertEqual( "new mixin method", newMethod() )
+      })
     })
   })
   
