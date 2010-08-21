@@ -454,5 +454,15 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
       })
     })
   })
+  
+  describe("#instanceMethod", function() {
+    before(function() {
+      this.module = new JS.Class({ bar: function() {} })
+    })
+    
+    it("returns the named instance method", function() {
+      assertSame( module.prototype.bar, module.instanceMethod("bar") )
+    })
+  })
 })
 

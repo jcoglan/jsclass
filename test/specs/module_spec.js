@@ -479,5 +479,15 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
       })
     })
   })
+  
+  describe("#instanceMethod", function() {
+    before(function() {
+      this.module = new JS.Module({ bar: function() {} })
+    })
+    
+    it("returns the named instance method", function() {
+      assertSame( module.__fns__.bar, module.instanceMethod("bar") )
+    })
+  })
 })
 
