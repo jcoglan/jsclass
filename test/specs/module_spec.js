@@ -399,7 +399,7 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
   describe("#included", function() {
     before(function() {
       this.includers = []
-      this.module = new subjectClass()
+      this.module = new subjectClass({ theMethod: function() { return "an instance method" } })
       this.module.extend({
         included: function(base) { includers.push(base) }
       })
@@ -458,6 +458,24 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
       
       it("is not called", function() {
         assertEqual( [], includers )
+      })
+    })
+    
+    describe("when the hook causes the host to extend itself with the same module", function() {
+      before(function() {
+        module.extend({
+          included: function(base) { base.extend(this) }
+        })
+        this.hostClass = new JS.Class()
+        hostClass.include(module)
+      })
+      
+      it("adds the module's methods as instance methods to the host", function() {
+        assertEqual( "an instance method", (new hostClass()).theMethod() )
+      })
+      
+      it("adds the module's methods as singleton methods to the host", function() {
+        assertEqual( "an instance method", hostClass.theMethod() )
       })
     })
   })
