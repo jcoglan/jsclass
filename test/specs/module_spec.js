@@ -312,6 +312,90 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
     })
   })
   
+  describe("#include", function() {
+    before(function() {
+      this.module = new JS.Module()
+      this.mixin  = new JS.Module({ foo: function() { return "foo" } })
+      
+      this.plainOldObject = { theMethod: function() { return "the method" } }
+      
+      this.Class = new JS.Class({ include: module })
+      this.object = new Class()
+    })
+    
+    describe("taking a module", function() {
+      it("makes the mixin an ancestor of the receiver", function() {
+        assertEqual( [module], module.ancestors() )
+        module.include(mixin)
+        assertEqual( [mixin, module], module.ancestors() )
+      })
+      
+      it("makes the mixin an ancestor of downstream classes", function() {
+        assertEqual( [JS.Kernel, module, Class], Class.ancestors() )
+        module.include(mixin)
+        assertEqual( [JS.Kernel, mixin, module, Class], Class.ancestors() )
+      })
+      
+      it("adds the mixin's instance methods indirectly to the receiver", function() {
+        assertEqual( [], module.instanceMethods() )
+        module.include(mixin)
+        assertEqual( ["foo"], module.instanceMethods() )
+        assertEqual( [], module.instanceMethods(false) )
+      })
+      
+      it("adds the mixin's instance methods indirectly to downstream classes", function() {
+        assertEqual( JS.Kernel.instanceMethods(), Class.instanceMethods() )
+        module.include(mixin)
+        assertEqual( ["foo"].concat(JS.Kernel.instanceMethods()).sort(),
+                     Class.instanceMethods().sort() )
+      })
+      
+      it("adds the method to objects that inherit from the receiver", function() {
+        assertEqual( undefined, object.foo )
+        module.include(mixin)
+        assertEqual( "foo", object.foo() )
+      })
+      
+      describe("when the mixin defines methods also defined in the receiver", function() {
+        before(function() {
+          module.define("foo", function() { return "module foo" })
+        })
+        
+        it("does not clobber the method on downstream objects", function() {
+          module.include(mixin)
+          assertEqual( "module foo", object.foo() )
+        })
+      })
+    })
+    
+    describe("taking a plain old object", function() {
+      it("does not change the receiver's ancestors", function() {
+        module.include(plainOldObject)
+        assertEqual( [module], module.ancestors() )
+        assertEqual( [JS.Kernel, module, Class], Class.ancestors() )
+      })
+      
+      it("adds the object's methods directly to the receiver", function() {
+        module.include(plainOldObject)
+        assertEqual( ["theMethod"], module.instanceMethods() )
+        assertEqual( ["theMethod"], module.instanceMethods(false) )
+      })
+      
+      it("adds the object's methods indirectly to downstream classes", function() {
+        module.include(plainOldObject)
+        assertEqual( [], Class.instanceMethods(false) )
+        assertEqual( ["theMethod"].concat(JS.Kernel.instanceMethods()).sort(),
+                     Class.instanceMethods().sort() )
+      })
+      
+      it("adds the method to objects that inherit from the receiver", function() {
+        assertEqual( undefined, object.theMethod )
+        module.include(plainOldObject)
+        assertEqual( "the method", object.theMethod() )
+      })
+    })
+  })
+  
   describe("#included", function() {
     before(function() {
       this.includers = []

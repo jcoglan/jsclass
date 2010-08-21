@@ -315,6 +315,110 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
     })
   })
   
+  describe("#include", function() {
+    before(function() {
+      this.Parent   = new JS.Class()
+      this.Child    = new JS.Class(Parent)
+      this.Grandkid = new JS.Class(Child)
+      
+      this.parent   = new Parent()
+      this.child    = new Child()
+      this.grandkid = new Grandkid()
+      
+      this.mixin  = new JS.Module({ foo: function() { return "foo" } })
+      this.plainOldObject = { theMethod: function() { return "the method" } }
+    })
+    
+    describe("taking a module", function() {
+      it("makes the mixin an ancestor of the receiver", function() {
+        assertEqual( [JS.Kernel, Parent], Parent.ancestors() )
+        Parent.include(mixin)
+        assertEqual( [JS.Kernel, mixin, Parent], Parent.ancestors() )
+      })
+      
+      it("makes the mixin an ancestor of downstream classes", function() {
+        Parent.include(mixin)
+        assertEqual( [JS.Kernel, mixin, Parent, Child], Child.ancestors() )
+        assertEqual( [JS.Kernel, mixin, Parent, Child, Grandkid], Grandkid.ancestors() )
+      })
+      
+      it("adds the mixin's instance methods indirectly to the receiver", function() {
+        assertEqual( JS.Kernel.instanceMethods(), Parent.instanceMethods() )
+        Parent.include(mixin)
+        assertEqual( [], Parent.instanceMethods(false) )
+        assertEqual( ["foo"].concat(JS.Kernel.instanceMethods()).sort(),
+                     Parent.instanceMethods().sort() )
+      })
+      
+      it("adds the mixin's instance methods indirectly to downstream classes", function() {
+        Parent.include(mixin)
+        
+        assertEqual( [], Child.instanceMethods(false) )
+        assertEqual( ["foo"].concat(JS.Kernel.instanceMethods()).sort(),
+                     Child.instanceMethods().sort() )
+        
+        assertEqual( [], Grandkid.instanceMethods(false) )
+        assertEqual( ["foo"].concat(JS.Kernel.instanceMethods()).sort(),
+                     Grandkid.instanceMethods().sort() )
+      })
+      
+      it("adds the method to instances of downstream classes", function() {
+        assertEqual( undefined, parent.foo )
+        assertEqual( undefined, child.foo )
+        assertEqual( undefined, grandkid.foo )
+        
+        Parent.include(mixin)
+        
+        assertEqual( "foo", parent.foo() )
+        assertEqual( "foo", child.foo() )
+        assertEqual( "foo", grandkid.foo() )
+      })
+      
+      describe("when the mixin defines methods also defined in a subclass", function() {
+        before(function() {
+          Child.include({ foo: function() { return "child foo" } })
+        })
+        
+        it("adds the mixin method to the receiver but not the subclass", function() {
+          Parent.include(mixin)
+          assertEqual( "foo", parent.foo() )
+          assertEqual( "child foo", child.foo() )
+          assertEqual( "child foo", grandkid.foo() )
+        })
+      })
+    })
+    
+    describe("taking a plain old object", function() {
+      it("does not change the receiver's ancestors", function() {
+        Parent.include(plainOldObject)
+        assertEqual( [JS.Kernel, Parent], Parent.ancestors() )
+        assertEqual( [JS.Kernel, Parent, Child], Child.ancestors() )
+      })
+      
+      it("adds the objects's instance methods directly to the receiver", function() {
+        Parent.include(plainOldObject)
+        assertEqual( ["theMethod"], Parent.instanceMethods(false) )
+        assertEqual( ["theMethod"].concat(JS.Kernel.instanceMethods()).sort(),
+                     Parent.instanceMethods().sort() )
+      })
+      
+      it("adds the objects's instance methods indirectly to downstream classes", function() {
+        Parent.include(plainOldObject)
+        
+        assertEqual( [], Child.instanceMethods(false) )
+        assertEqual( ["theMethod"].concat(JS.Kernel.instanceMethods()).sort(),
+                     Child.instanceMethods().sort() )
+      })
+      
+      it("adds the method to objects that inherit from the receiver", function() {
+        Parent.include(plainOldObject)
+        assertEqual( "the method", parent.theMethod() )
+        assertEqual( "the method", child.theMethod() )
+        assertEqual( "the method", grandkid.theMethod() )
+      })
+    })
+  })
+  
   describe("#inherited", function() {
     before(function() {
       this.parent = new JS.Class()
