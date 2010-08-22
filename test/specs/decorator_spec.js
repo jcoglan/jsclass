@@ -71,5 +71,15 @@ DecoratorSpec = JS.Test.describe(JS.Decorator, function() {
   it("allows decorators to be composed", function() {
     assertEqual( 269, withBoth.getPrice() )
   })
+  
+  it("allows decorators to wrap any object", function() {
+    var subject = {
+      getPrice: function() { return 50 },
+      getSizes: function() { return ['S', 'M', 'L', 'XL'] }
+    }
+    var decorated = new PedalsDecorator(subject)
+    assertEqual( 74, decorated.getPrice() )
+    assertEqual( decorated.getSizes(), subject.getSizes() )
+  })
 })
 
