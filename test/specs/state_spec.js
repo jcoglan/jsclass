@@ -94,7 +94,7 @@ StateSpec = JS.Test.describe(JS.State, function() {
         }
       })
     })
-
+    
     describe("with no initial state", function() {
       before(function() {
         this.subject = new Stateful()
@@ -156,6 +156,48 @@ StateSpec = JS.Test.describe(JS.State, function() {
           assertEqual( "something", subject.name )
           assertEqual( subject, subject.isCalled("mike") )
         })
+      })
+    })
+    
+    describe("subclass", function() {
+      before(function() {
+        this.StatefulChild = new JS.Class(Stateful, {
+          states: {
+            BOB: {
+              setName: function() {
+                this.callSuper()
+                this.name += " (inherited)"
+              }
+            },
+            EXTRA: {
+              setName: function() { this.name = "extra" }
+            }
+          }
+        })
+        this.subject = new StatefulChild()
+      })
+      
+      it("inherits states and their behaviour from the superclass", function() {
+        subject.setState("MIKE")
+        assert( subject.inState("MIKE") )
+        subject.setName("something")
+        assertEqual( "mike", subject.name )
+        assertEqual( true, subject.isCalled("mike") )
+      })
+      
+      it("adds new states that do not exist in the superclass", function() {
+        subject.setState("EXTRA")
+        assert( subject.inState("EXTRA") )
+        subject.setName("anything")
+        assertEqual( "extra", subject.name )
+        assertEqual( subject, subject.isCalled("extra") )
+      })
+      
+      it("creates states that call super() to the same state/method in the parent class", function() {
+        subject.setState("BOB")
+        assert( subject.inState("BOB") )
+        subject.setName("the name")
+        assertEqual( "the name (inherited)", subject.name )
       })
     })
   })

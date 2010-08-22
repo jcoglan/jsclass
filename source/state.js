@@ -53,7 +53,9 @@ JS.State = new JS.Module('State', {
         mixins = this.findStates(superstates, state);
         
         i = mixins.length;
-        while (i--) klass.include(mixins[i].klass);
+        while (i--) {
+          if (mixins[i]) klass.include(mixins[i].klass);
+        }
         
         methods = {};
         for (name in stubs) { if (!klass.prototype[name]) methods[name] = stubs[name]; }
