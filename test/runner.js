@@ -15,6 +15,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'KernelSpec',
                 'SingletonSpec',
                 'InterfaceSpec',
+                'CommandSpec',
                 'ComparableSpec',
                 'ConstantScopeSpec',
                 'DecoratorSpec',
