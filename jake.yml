@@ -80,25 +80,3 @@ packages:
   stack_trace:      stack_trace
   ruby:             ruby
 
-bundles:
-  stdlib:
-    - method_chain
-    - test
-    - dom
-    - package
-    - comparable
-    - enumerable
-    - linked_list
-    - hash
-    - range
-    - set
-    - observable
-    - forwardable
-    - constant_scope
-    - decorator
-    - proxy
-    - command
-    - state
-    - stack_trace
-    - ruby
-

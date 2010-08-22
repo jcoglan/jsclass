@@ -16,7 +16,6 @@ The distribution contains the following files:
 * `core.js` - contains `Class`, `Module`, `Kernel`, `Singleton` and `Interface`
 * `loader.js` - the `Package` system and dependency data for the core object
   system and the standard library.
-* `stdlib.js` - the whole standard library in one file
 
 The remaining files should be self-explanatory; each contains a single piece of the
 standard library; see [the website](http://jsclass.jcoglan.com) for documentation.
