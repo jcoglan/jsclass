@@ -403,16 +403,6 @@ SetSpec = JS.Test.describe(JS.Set, function() {
       })
     })
     
-    describe("#union", function() {
-      it("returns a SortedSet", function() {
-        assertKindOf( JS.SortedSet, a.u(b) )
-      })
-      
-      it("returns the members in order", function() {
-        assertEqual( [1,2,3,4,6,7,8,9], a.u(b).entries() )
-      })
-    })
-    
     describe("containing objects", function() {
       it("sorts the objects", function() {
         var set = new JS.SortedSet()
