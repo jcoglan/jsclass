@@ -252,9 +252,10 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
   
   add: function(item) {
     var point = this._indexOf(item, true);
-    if (point === null) return;
+    if (point === null) return false;
     this._members.splice(point, 0, item);
     this.length = this.size = this._members.length;
+    return true;
   },
   
   _indexOf: function(item, insertionPoint) {

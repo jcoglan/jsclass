@@ -16,6 +16,21 @@ SetSpec = JS.Test.describe(JS.Set, function() {
       this.b = new Set([3,5,6,9,2,8])
     })
     
+    describe("#add", function() {
+      it("returns true if the given item is not in the set", function() {
+        assert( a.add(5) )
+      })
+      
+      it("returns false if the given item is already in the set", function() {
+        assert( !b.add(5) )
+      })
+      
+      it("adds the item to the set", function() {
+        a.add(5)
+        assertSetEqual( [1,2,4,5,7,8], a )
+      })
+    })
+    
     describe("#complement", function() {
       it("returns a set of the same type as the receiver", function() {
         assertEqual( Set, a.complement(b).klass )
