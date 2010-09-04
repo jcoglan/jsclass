@@ -280,17 +280,17 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
       declare("Enumerable", 100)
       declare("Comparable", 100)
       declare("Hash", 300, ["Enumerable", "Comparable"])
-      declare("Set", 200, ["Enumerable"], ["Hash"])
+      declare("TreeSet", 200, ["Enumerable"], ["Hash"])
       
       assertEqual( "undefined", typeof Enumerable )
       assertEqual( "undefined", typeof Comparable )
       assertEqual( "undefined", typeof Hash )
-      assertEqual( "undefined", typeof Set )
+      assertEqual( "undefined", typeof TreeSet )
     })
     
     it("loads all the objects, parallelizing where possible", function(resume) {
       var done = false
-      JS.require("Set", function() { done = true })
+      JS.require("TreeSet", function() { done = true })
       
       setTimeout(function() {
         resume(function(resume) {                                     // 50ms
@@ -301,28 +301,28 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
           
           setTimeout(function() {
             resume(function(resume) {                                 // 150ms
-              assertEqual( ["Enumerable", "Comparable", "Set", "Hash"], _loaded )
+              assertEqual( ["Enumerable", "Comparable", "TreeSet", "Hash"], _loaded )
               assertKindOf( Object, Enumerable )
               assertKindOf( Object, Comparable )
-              assertEqual( "undefined", typeof Set )
+              assertEqual( "undefined", typeof TreeSet )
               assertEqual( "undefined", typeof Hash )
               assert( !done )
               
               setTimeout(function() {
                 resume(function(resume) {                             // 350ms
-                  assertEqual( ["Enumerable", "Comparable", "Set", "Hash"], _loaded )
+                  assertEqual( ["Enumerable", "Comparable", "TreeSet", "Hash"], _loaded )
                   assertKindOf( Object, Enumerable )
                   assertKindOf( Object, Comparable )
-                  assertKindOf( Object, Set )
+                  assertKindOf( Object, TreeSet )
                   assertEqual( "undefined", typeof Hash )
                   assert( !done )
                   
                   setTimeout(function() {
                     resume(function() {                               // 450ms
-                      assertEqual( ["Enumerable", "Comparable", "Set", "Hash"], _loaded )
+                      assertEqual( ["Enumerable", "Comparable", "TreeSet", "Hash"], _loaded )
                       assertKindOf( Object, Enumerable )
                       assertKindOf( Object, Comparable )
-                      assertKindOf( Object, Set )
+                      assertKindOf( Object, TreeSet )
                       assertKindOf( Object, Hash )
                       assert( done )
                     })
