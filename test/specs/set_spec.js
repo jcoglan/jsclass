@@ -31,6 +31,28 @@ SetSpec = JS.Test.describe(JS.Set, function() {
       })
     })
     
+    describe("#classify", function() {
+      before(function() {
+        this.set = new Set([1,9,2,8,3,7,4,6,5])
+        this.classification = set.classify(function(x) { return x % 3 })
+      })
+      
+      it("returns a Hash of Sets", function() {
+        assertKindOf( JS.Hash, classification )
+        assert( classification.all(function(pair) { return pair.value.isA(JS.Set) }) )
+      })
+      
+      it("returns Sets of the same type as the receiver", function() {
+        assertEqual( Set, classification.get(0).klass )
+      })
+      
+      it("classifies members by their return value for the block", function() {
+        assertSetEqual( [3,6,9], classification.get(0) )
+        assertSetEqual( [1,4,7], classification.get(1) )
+        assertSetEqual( [2,5,8], classification.get(2) )
+      })
+    })
+    
     describe("#complement", function() {
       it("returns a set of the same type as the receiver", function() {
         assertEqual( Set, a.complement(b).klass )
@@ -55,7 +77,7 @@ SetSpec = JS.Test.describe(JS.Set, function() {
     
     describe("#divide", function() {
       before(function() {
-        this.set = new JS.HashSet([1,9,2,8,3,7,4,6,5])
+        this.set = new Set([1,9,2,8,3,7,4,6,5])
         this.division = set.divide(function(x) { return x % 3 })
       })
       
@@ -162,45 +184,150 @@ SetSpec = JS.Test.describe(JS.Set, function() {
         assertSetEqual( a.xor(b), b.xor(a) )
       })
     })
+    
+    describe("comparators", function() {
+      before(function() {
+        this.alice = new Set([4,2,5])
+        this.bob   = new Set([6,4,5,2,3])
+        this.cecil = new Set([5,2,4])
+      })
+      
+      describe("#isSubset", function() {
+        it("returns true if first is a proper subset of the second", function() {
+          assert( alice.isSubset(bob) )
+        })
+        it("returns true if first is an improper subset of the second", function() {
+          assert( alice.isSubset(cecil) )
+        })
+        it("returns false if first is a proper superset of the second", function() {
+          assert( !bob.isSubset(alice) )
+        })
+      })
+      
+      describe("#isProperSubset", function() {
+        it("returns true if first is a proper subset of the second", function() {
+          assert( alice.isProperSubset(bob) )
+        })
+        it("returns false if first is an improper subset of the second", function() {
+          assert( !alice.isProperSubset(cecil) )
+        })
+        it("returns false if first is a proper superset of the second", function() {
+          assert( !bob.isProperSubset(alice) )
+        })
+      })
+      
+      describe("#isSuperset", function() {
+        it("returns true if first is a proper superset of the second", function() {
+          assert( bob.isSuperset(alice) )
+        })
+        it("returns true if first is an improper superset of the second", function() {
+          assert( alice.isSuperset(cecil) )
+        })
+        it("returns false if first is a proper subset of the second", function() {
+          assert( !alice.isSuperset(bob) )
+        })
+      })
+      
+      describe("#isProperSuperset", function() {
+        it("returns true if first is a proper superset of the second", function() {
+          assert( bob.isProperSuperset(alice) )
+        })
+        it("returns false if first is an improper superset of the second", function() {
+          assert( !alice.isProperSuperset(cecil) )
+        })
+        it("returns false if first is a proper subset of the second", function() {
+          assert( !alice.isProperSuperset(bob) )
+        })
+      })
+    })
+  })
+  
+  sharedBehavior("unordered set", function() {
+    describe("#flatten", function() {
+      before(function() {
+        this.list     = [9,3,7,8,4]
+        this.sorted   = new JS.SortedSet(['fred', 'baz'])
+        this.nested   = new JS.HashSet([5, sorted])
+        this.hashset  = new JS.HashSet([45,'twelve'])
+        
+        this.set      = new Set([4, 'foo', nested, 12, hashset])
+        this.withList = new Set([4,13,list])
+      })
+      
+      it("flattens nested sets", function() {
+        set.flatten()
+        assertSetEqual( [4,'foo',5,'fred','baz',12,45,'twelve'], set )
+      })
+      
+      it("leaves arrays intact", function() {
+        withList.flatten()
+        assertSetEqual( [4,13,list], withList )
+      })
+    })
+    
+    describe("containing objects", function() {
+      before(function() {
+        this.set = new Set()
+      })
+      
+      it("rejects equal objects", function() {
+        set.add( new JS.HashSet )
+        set.add( new JS.Set )
+        assertSetEqual( [new JS.Set], set )
+      })
+      
+      it("accepts non-equal objects", function() {
+        set.add( new JS.HashSet )
+        set.add( new JS.Set([12]) )
+        assertEqual( 2, set.entries().length )
+        assert( set.contains(new JS.HashSet) )
+        assert( set.contains(new JS.Set([12])) )
+      })
+      
+      describe("#remove", function() {
+        before(function() {
+          set.add( new JS.HashSet )
+          set.add( new JS.Set([12]) )
+        })
+        
+        it("removes objects that equal the argument", function() {
+          set.remove( new JS.Set )
+          assertEqual( 1, set.size )
+          assert( set.contains(new JS.Set([12])) )
+        })
+        
+        it("does not remove objects that do not equal the argument", function() {
+          set.remove( new JS.Set([6]) )
+          assertEqual( 2, set.size )
+        })
+      })
+      
+      it("handles native JavaScript types", function() {
+        set.add([1,2,3])
+        set.add([4,5,6])
+        set.add([1,2,3])
+        assertEqual( 2, set.entries().length )
+        assert( set.contains([4,5,6]) )
+        assert( set.contains([1,2,3]) )
+      })
+    })
   })
   
   describe("Set", function() {
     before(function() { this.Set = JS.Set })
     behavesLike("set")
+    behavesLike("unordered set")
   })
   
   describe("HashSet", function() {
     before(function() { this.Set = JS.HashSet })
     behavesLike("set")
+    behavesLike("unordered set")
   })
   
   describe("SortedSet", function() {
     before(function() { this.Set = JS.SortedSet })
     behavesLike("set")
-  })
-  
-  describe("#classify", function() {
-    before(function() {
-      this.set = new JS.HashSet([1,9,2,8,3,7,4,6,5])
-      this.classification = set.classify(function(x) { return x % 3 })
-    })
-    
-    it("returns a Hash of Sets", function() {
-      assertKindOf( JS.Hash, classification )
-      assert( classification.all(function(pair) { return pair.value.isA(JS.Set) }) )
-    })
-    
-    it("returns Sets of the same type as the receiver", function() {
-      assertEqual( JS.HashSet, classification.get(0).klass )
-      var sorted = new JS.SortedSet([1,2]).classify(function() { return 1 })
-      assertEqual( JS.SortedSet, sorted.get(1).klass )
-    })
-    
-    it("classifies members by their return value for the block", function() {
-      assertSetEqual( [3,6,9], classification.get(0) )
-      assertSetEqual( [1,4,7], classification.get(1) )
-      assertSetEqual( [2,5,8], classification.get(2) )
-    })
   })
   
   describe("#equals", function() {
@@ -223,131 +350,6 @@ SetSpec = JS.Test.describe(JS.Set, function() {
       assertNotEqual( set,     bigger  )
       assertNotEqual( hashset, smaller )
       assertNotEqual( sorted,  diff    )
-    })
-  })
-  
-  describe("containing objects", function() {
-    before(function() {
-      this.set = new JS.HashSet()
-    })
-    
-    it("rejects equal objects", function() {
-      set.add( new JS.HashSet )
-      set.add( new JS.Set )
-      assertSetEqual( [new JS.Set], set )
-    })
-    
-    it("accepts non-equal objects", function() {
-      set.add( new JS.HashSet )
-      set.add( new JS.Set([12]) )
-      assertEqual( 2, set.entries().length )
-      assert( set.contains(new JS.HashSet) )
-      assert( set.contains(new JS.Set([12])) )
-    })
-    
-    describe("#remove", function() {
-      before(function() {
-        set.add( new JS.HashSet )
-        set.add( new JS.Set([12]) )
-      })
-      
-      it("removes objects that equal the argument", function() {
-        set.remove( new JS.Set )
-        assertEqual( 1, set.size )
-        assert( set.contains(new JS.Set([12])) )
-      })
-      
-      it("does not remove objects that do not equal the argument", function() {
-        set.remove( new JS.Set([6]) )
-        assertEqual( 2, set.size )
-      })
-    })
-    
-    it("handles native JavaScript types", function() {
-      set.add([1,2,3])
-      set.add([4,5,6])
-      set.add([1,2,3])
-      assertEqual( 2, set.entries().length )
-      assert( set.contains([4,5,6]) )
-      assert( set.contains([1,2,3]) )
-    })
-  })
-  
-  describe("#flatten", function() {
-    before(function() {
-      this.list     = [9,3,7,8,4]
-      this.sorted   = new JS.SortedSet(['fred', 'baz'])
-      this.nested   = new JS.HashSet([5, sorted])
-      this.hashset  = new JS.HashSet([45,'twelve'])
-      
-      this.set      = new JS.HashSet([4, 'foo', nested, 12, hashset])
-      this.withList = new JS.Set([4,13,list])
-    })
-    
-    it("flattens nested sets", function() {
-      set.flatten()
-      assertSetEqual( [4,'foo',5,'fred','baz',12,45,'twelve'], set )
-    })
-    
-    it("leaves arrays intact", function() {
-      withList.flatten()
-      assertSetEqual( [4,13,list], withList )
-    })
-  })
-  
-  describe("comparators", function() {
-    before(function() {
-      this.alice = new JS.HashSet([4,2,5])
-      this.bob   = new JS.Set([6,4,5,2,3])
-      this.cecil = new JS.SortedSet([5,2,4])
-    })
-    
-    describe("#isSubset", function() {
-      it("returns true if first is a proper subset of the second", function() {
-        assert( alice.isSubset(bob) )
-      })
-      it("returns true if first is an improper subset of the second", function() {
-        assert( alice.isSubset(cecil) )
-      })
-      it("returns false if first is a proper superset of the second", function() {
-        assert( !bob.isSubset(alice) )
-      })
-    })
-    
-    describe("#isProperSubset", function() {
-      it("returns true if first is a proper subset of the second", function() {
-        assert( alice.isProperSubset(bob) )
-      })
-      it("returns false if first is an improper subset of the second", function() {
-        assert( !alice.isProperSubset(cecil) )
-      })
-      it("returns false if first is a proper superset of the second", function() {
-        assert( !bob.isProperSubset(alice) )
-      })
-    })
-    
-    describe("#isSuperset", function() {
-      it("returns true if first is a proper superset of the second", function() {
-        assert( bob.isSuperset(alice) )
-      })
-      it("returns true if first is an improper superset of the second", function() {
-        assert( alice.isSuperset(cecil) )
-      })
-      it("returns false if first is a proper subset of the second", function() {
-        assert( !alice.isSuperset(bob) )
-      })
-    })
-    
-    describe("#isProperSuperset", function() {
-      it("returns true if first is a proper superset of the second", function() {
-        assert( bob.isProperSuperset(alice) )
-      })
-      it("returns false if first is an improper superset of the second", function() {
-        assert( !alice.isProperSuperset(cecil) )
-      })
-      it("returns false if first is a proper subset of the second", function() {
-        assert( !alice.isProperSuperset(bob) )
-      })
     })
   })
   
