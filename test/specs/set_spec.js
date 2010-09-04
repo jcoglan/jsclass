@@ -10,126 +10,158 @@ SetSpec = JS.Test.describe(JS.Set, function() {
     })
   })
   
-  before(function() {
-    this.a = new JS.HashSet([8,2,7,4,8,1])
-    this.b = new JS.Set([3,5,6,9,2,8])
-  })
-  
-  describe("#size", function() {
-    it("counts the number of non-duplicate entries", function() {
-      assertEqual( 5, a.size )
-      assertEqual( 6, b.size )
-    })
-  })
-  
-  describe("#remove", function() {
-    it("removes the specified member", function() {
-      a.remove(2)
-      assertSetEqual( [8,7,4,1], a )
-    })
-  })
-  
-  describe("#removeIf", function() {
-    it("removes members for which the block returns true", function() {
-      a.removeIf(function(x) { return x % 2 === 0 })
-      assertSetEqual( [7,1], a )
-    })
-  })
-  
-  describe("#subtract", function() {
-    it("removes members from the first if they appear in the second", function() {
-      a.subtract(b)
-      assertSetEqual( [7,4,1], a )
-    })
-  })
-  
-  describe("#union", function() {
-    it("returns a set of the same type as the receiver", function() {
-      assertEqual( JS.HashSet, a.u(b).klass )
-      assertEqual( JS.Set, b.u(a).klass )
-    })
-    
-    it("returns a set containing all the members from both sets", function() {
-      assertSetEqual( [8,2,7,4,1,3,5,6,9], a.u(b) )
-    })
-    
-    it("is symmetric", function() {
-      assertSetEqual( a.u(b), b.u(a) )
-    })
-  })
-  
-  describe("#intersection", function() {
-    it("returns a set of the same type as the receiver", function() {
-      assertEqual( JS.HashSet, a.n(b).klass )
-      assertEqual( JS.Set, b.n(a).klass )
-    })
-    
-    it("returns a set containing only members that appear in both sets", function() {
-      assertSetEqual( [8,2], a.n(b) )
-    })
-    
-    it("is symmetric", function() {
-      assertSetEqual( a.n(b), b.n(a) )
-    })
-  })
-  
-  describe("#product", function() {
+  sharedBehavior("set", function() {
     before(function() {
-      this.k = new JS.SortedSet([1,2,3,4])
-      this.l = new JS.SortedSet([5,6,7,8])
+      this.a = new Set([8,2,7,4,8,1])
+      this.b = new Set([3,5,6,9,2,8])
     })
     
-    it("returns a HashSet", function() {
-      assertEqual( JS.HashSet, a.x(b).klass )
-      assertEqual( JS.HashSet, b.x(a).klass )
-      assertEqual( JS.HashSet, k.x(l).klass )
+    describe("#complement", function() {
+      it("returns a set of the same type as the receiver", function() {
+        assertEqual( Set, a.complement(b).klass )
+      })
+      
+      it("returns a set of members from the second that are not in the first", function() {
+        assertSetEqual( [3,5,6,9], a.complement(b) )
+        assertSetEqual( [7,4,1], b.complement(a) )
+      })
     })
     
-    it("returns a set containing all possible pairs of members", function() {
-      assertEqual( [[1,5],[1,6],[1,7],[1,8],
-                    [2,5],[2,6],[2,7],[2,8],
-                    [3,5],[3,6],[3,7],[3,8],
-                    [4,5],[4,6],[4,7],[4,8]], k.x(l).entries() )
+    describe("#difference", function() {
+      it("returns a set of the same type as the receiver", function() {
+        assertEqual( Set, a.difference(b).klass )
+      })
+      
+      it("returns a set of members from the first that are not in the second", function() {
+        assertSetEqual( [7,4,1], a.difference(b) )
+        assertSetEqual( [3,5,6,9], b.difference(a) )
+      })
+    })
+    
+    describe("#divide", function() {
+      before(function() {
+        this.set = new JS.HashSet([1,9,2,8,3,7,4,6,5])
+        this.division = set.divide(function(x) { return x % 3 })
+      })
+      
+      it("returns a HashSet of sets of the same type as the receiver", function() {
+        var diva = a.divide(function(x) { return x % 3 })
+        assertEqual( JS.HashSet, diva.klass )
+        assert( diva.all(function(s) { return s.klass === Set }) )
+      })
+      
+      it("returns a set of subsets grouped by the block's return value", function() {
+        assertEqual( 3, division.size )
+        assert( division.contains(new JS.Set([9,3,6])) )
+        assert( division.contains(new JS.Set([1,4,7])) )
+        assert( division.contains(new JS.Set([2,5,8])) )
+      })
+    })
+    
+    describe("#intersection", function() {
+      it("returns a set of the same type as the receiver", function() {
+        assertEqual( Set, a.n(b).klass )
+      })
+      
+      it("returns a set containing only members that appear in both sets", function() {
+        assertSetEqual( [8,2], a.n(b) )
+      })
+      
+      it("is symmetric", function() {
+        assertSetEqual( a.n(b), b.n(a) )
+      })
+    })
+    
+    describe("#product", function() {
+      before(function() {
+        this.k = new JS.SortedSet([1,2,3,4])
+        this.l = new JS.SortedSet([5,6,7,8])
+      })
+      
+      it("returns a HashSet", function() {
+        assertEqual( JS.HashSet, a.x(b).klass )
+        assertEqual( JS.HashSet, b.x(a).klass )
+        assertEqual( JS.HashSet, k.x(l).klass )
+      })
+      
+      it("returns a set containing all possible pairs of members", function() {
+        assertEqual( [[1,5],[1,6],[1,7],[1,8],
+                      [2,5],[2,6],[2,7],[2,8],
+                      [3,5],[3,6],[3,7],[3,8],
+                      [4,5],[4,6],[4,7],[4,8]], k.x(l).entries() )
+      })
+    })
+    
+    describe("#remove", function() {
+      it("removes the specified member", function() {
+        a.remove(2)
+        assertSetEqual( [8,7,4,1], a )
+      })
+    })
+    
+    describe("#removeIf", function() {
+      it("removes members for which the block returns true", function() {
+        a.removeIf(function(x) { return x % 2 === 0 })
+        assertSetEqual( [7,1], a )
+      })
+    })
+    
+    describe("#size", function() {
+      it("counts the number of non-duplicate entries", function() {
+        assertEqual( 5, a.size )
+        assertEqual( 6, b.size )
+      })
+    })
+    
+    describe("#subtract", function() {
+      it("removes members from the first if they appear in the second", function() {
+        a.subtract(b)
+        assertSetEqual( [7,4,1], a )
+      })
+    })
+    
+    describe("#union", function() {
+      it("returns a set of the same type as the receiver", function() {
+        assertEqual( Set, a.u(b).klass )
+      })
+      
+      it("returns a set containing all the members from both sets", function() {
+        assertSetEqual( [8,2,7,4,1,3,5,6,9], a.u(b) )
+      })
+      
+      it("is symmetric", function() {
+        assertSetEqual( a.u(b), b.u(a) )
+      })
+    })
+    
+    describe("#xor", function() {
+      it("returns a set of the same type as the receiver", function() {
+        assertEqual( Set, a.xor(b).klass )
+      })
+      
+      it("returns a set of members that only appear in one set", function() {
+        assertSetEqual( [7,4,1,3,5,6,9], a.xor(b) )
+      })
+      
+      it("is symmetric", function() {
+        assertSetEqual( a.xor(b), b.xor(a) )
+      })
     })
   })
   
-  describe("#difference", function() {
-    it("returns a set of the same type as the receiver", function() {
-      assertEqual( JS.HashSet, a.difference(b).klass )
-      assertEqual( JS.Set, b.difference(a).klass )
-    })
-    
-    it("returns a set of members from the first that are not in the second", function() {
-      assertSetEqual( [7,4,1], a.difference(b) )
-      assertSetEqual( [3,5,6,9], b.difference(a) )
-    })
+  describe("Set", function() {
+    before(function() { this.Set = JS.Set })
+    behavesLike("set")
   })
   
-  describe("#complement", function() {
-    it("returns a set of the same type as the receiver", function() {
-      assertEqual( JS.HashSet, a.complement(b).klass )
-      assertEqual( JS.Set, b.complement(a).klass )
-    })
-    
-    it("returns a set of members from the second that are not in the first", function() {
-      assertSetEqual( [3,5,6,9], a.complement(b) )
-      assertSetEqual( [7,4,1], b.complement(a) )
-    })
+  describe("HashSet", function() {
+    before(function() { this.Set = JS.HashSet })
+    behavesLike("set")
   })
   
-  describe("#xor", function() {
-    it("returns a set of the same type as the receiver", function() {
-      assertEqual( JS.HashSet, a.xor(b).klass )
-      assertEqual( JS.Set, b.xor(a).klass )
-    })
-    
-    it("returns a set of members that only appear in one set", function() {
-      assertSetEqual( [7,4,1,3,5,6,9], a.xor(b) )
-    })
-    
-    it("is symmetric", function() {
-      assertSetEqual( a.xor(b), b.xor(a) )
-    })
+  describe("SortedSet", function() {
+    before(function() { this.Set = JS.SortedSet })
+    behavesLike("set")
   })
   
   describe("#classify", function() {
@@ -153,30 +185,6 @@ SetSpec = JS.Test.describe(JS.Set, function() {
       assertSetEqual( [3,6,9], classification.get(0) )
       assertSetEqual( [1,4,7], classification.get(1) )
       assertSetEqual( [2,5,8], classification.get(2) )
-    })
-  })
-  
-  describe("#divide", function() {
-    before(function() {
-      this.set = new JS.HashSet([1,9,2,8,3,7,4,6,5])
-      this.division = set.divide(function(x) { return x % 3 })
-    })
-    
-    it("returns a HashSet of sets of the same type as the receiver", function() {
-      var diva = a.divide(function(x) { return x % 3 })
-      assertEqual( JS.HashSet, diva.klass )
-      assert( diva.all(function(s) { return s.klass === JS.HashSet }) )
-      
-      var divb = b.divide(function(x) { return x % 3 })
-      assertEqual( JS.HashSet, divb.klass )
-      assert( divb.all(function(s) { return s.klass === JS.Set }) )
-    })
-    
-    it("returns a set of subsets grouped by the block's return value", function() {
-      assertEqual( 3, division.size )
-      assert( division.contains(new JS.Set([9,3,6])) )
-      assert( division.contains(new JS.Set([1,4,7])) )
-      assert( division.contains(new JS.Set([2,5,8])) )
     })
   })
   
@@ -328,7 +336,7 @@ SetSpec = JS.Test.describe(JS.Set, function() {
     })
   })
   
-  describe("SortedSet", function() {
+  describe("sorted sets", function() {
     before(function() {
       this.a = new JS.SortedSet([8,3,6,1])
       this.b = new JS.HashSet([2,9,7,4])
