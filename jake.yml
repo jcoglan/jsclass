@@ -13,12 +13,9 @@ packages:
     directory: core
     files:
       - utils
+      - method
       - module
       - class
-      - bootstrap
-      - kernel
-      - interface
-      - singleton
   
   package:
     directory: package
