@@ -1,5 +1,3 @@
-var puts = require('sys').puts;
-
 (function() {
   this.JS = this.JS || {};
 })();

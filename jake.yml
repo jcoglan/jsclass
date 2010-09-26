@@ -18,6 +18,8 @@ packages:
       - kernel
       - class
       - bootstrap
+      - interface
+      - singleton
   
   package:
     directory: package
