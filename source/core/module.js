@@ -25,20 +25,31 @@ JS.extend(JS.Module.prototype, {
   
   include: function(module) {
     if (!module) return;
-    var field;
+    var field, value, mixins, i;
     
-    if (module instanceof JS.Module || module instanceof Function) {
+    if (module.__fns__ && module.__inc__) {
       this.__inc__.push(module);
       if (module.__dep__) module.__dep__.push(this);
       this.acceptModule(module);
     }
     else {
+      if (typeof module.extend !== 'function') {
+        mixins = [].concat(module.extend);
+        i = mixins.length;
+        while (i--) this.extend(mixins[i]);
+      }
       for (field in module) {
         if (!module.hasOwnProperty(field)) continue;
-        this.define(field, module[field]);
+        value = module[field];
+        if (this.shouldIgnore(field, value)) continue;
+        this.define(field, value);
       }
     }
     return this;
+  },
+  
+  shouldIgnore: function(field, value) {
+    return (field === 'extend') && typeof value !== 'function';
   },
   
   acceptMethod: function(method) {

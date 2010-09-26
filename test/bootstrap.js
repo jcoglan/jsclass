@@ -69,4 +69,11 @@ assert.equal('ohai', Foo.talk());
 assert.equal('ohai', JS.Module.talk());
 assert.equal('ohai', JS.Class.talk());
 
+Klass = new JS.Class({
+  extend: {
+    foo: function() { return 'foo' }
+  }
+});
+assert.equal('foo', Klass.foo());
+
 sys.puts('Done.');
