@@ -63,4 +63,10 @@ assert.equal(undefined, object.foo);
 Foo.define('foo', function() { return 'hi' })
 assert.equal('hi', object.foo());
 
+JS.Module.define('talk', function() { return 'ohai' });
+assert.equal('ohai', Klass.talk());
+assert.equal('ohai', Foo.talk());
+assert.equal('ohai', JS.Module.talk());
+assert.equal('ohai', JS.Class.talk());
+
 sys.puts('Done.');
