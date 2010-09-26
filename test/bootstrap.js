@@ -48,4 +48,19 @@ Klass.extend({
 assert.equal('hi', Klass.classMethod());
 assert.equal('hi', Sub.classMethod());
 
+Foo = new JS.Module({ foo: function() { return 'hi' } });
+Klass = new JS.Class();
+object = new Klass();
+assert.equal(undefined, object.foo);
+Klass.include(Foo);
+assert.equal('hi', object.foo());
+
+Foo = new JS.Module();
+Klass = new JS.Class();
+object = new Klass();
+Klass.include(Foo);
+assert.equal(undefined, object.foo);
+Foo.define('foo', function() { return 'hi' })
+assert.equal('hi', object.foo());
+
 sys.puts('Done.');
