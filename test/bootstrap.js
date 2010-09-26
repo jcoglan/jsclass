@@ -23,10 +23,23 @@ var Klass = new JS.Class('Klass', {
   initialize: function(name, age) {
     this.name = name;
     this.age  = age;
+  },
+  sayHello: function() {
+    return 'Hello, ' + this.name;
   }
 });
 var object = new Klass('jcoglan', 26);
 assert.equal('jcoglan', object.name);
 assert.equal(26, object.age);
+assert.equal('Hello, jcoglan', object.sayHello());
+
+var Sub = new JS.Class(Klass, {
+  sayBye: function() {
+    return 'Bye, ' + this.name;
+  }
+});
+var object = new Sub('jcoglan', 26);
+assert.equal('Hello, jcoglan', object.sayHello());
+assert.equal('Bye, jcoglan', object.sayBye());
 
 sys.puts('Done.');
