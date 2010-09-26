@@ -2,7 +2,7 @@
 // of a new core until it's powerful enough to run all
 // the JS.Test specs.
 
-require('../build/min/core');
+require('../build/src/core');
 var assert = require('assert'),
     sys    = require('sys');
 
@@ -41,5 +41,11 @@ var Sub = new JS.Class(Klass, {
 var object = new Sub('jcoglan', 26);
 assert.equal('Hello, jcoglan', object.sayHello());
 assert.equal('Bye, jcoglan', object.sayBye());
+
+Klass.extend({
+  classMethod: function() { return 'hi' }
+});
+assert.equal('hi', Klass.classMethod());
+assert.equal('hi', Sub.classMethod());
 
 sys.puts('Done.');

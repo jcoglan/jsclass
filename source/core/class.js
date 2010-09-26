@@ -11,10 +11,21 @@ JS.extend(JS.Class.prototype, {
       methods = parent;
       parent  = Object;
     }
-    var klass = JS.makeClass(parent);
-    this.__mod__ = new JS.Module(methods, {_target: klass.prototype});
+    JS.Module.prototype.initialize.call(this, name);
     
-    return JS.extend(klass, this);
+    var klass = JS.makeClass(parent);
+    JS.extend(klass, this);
+    
+    JS.Kernel.instanceMethod('__eigen__').call(klass);
+    klass.__meta__.include(parent.__meta__);
+    
+    klass.__tgt__ = klass.prototype;
+    
+    klass.include(JS.Kernel)
+         .include(parent)
+         .include(methods);
+    
+    return klass;
   }
 });
 

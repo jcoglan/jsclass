@@ -4,11 +4,12 @@ var puts = require('sys').puts;
   this.JS = this.JS || {};
 })();
 
-JS.extend = function(destination, source) {
+JS.extend = function(destination, source, overwrite) {
   if (!destination || !source) return destination;
   for (var field in source) {
-    if (destination[field] !== source[field])
-      destination[field] = source[field];
+    if (destination[field] === source[field]) continue;
+    if (overwrite === false && destination.hasOwnProperty(field)) continue;
+    destination[field] = source[field];
   }
   return destination;
 };
@@ -26,6 +27,10 @@ JS.makeClass = function(parent) {
          : this;
   };
   constructor.prototype = JS.makeBridge(parent || Object);
+  
+  constructor.prototype.constructor =
+  constructor.prototype.klass = constructor;
+  
   return constructor;
 };
 

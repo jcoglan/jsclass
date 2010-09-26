@@ -15,7 +15,9 @@ packages:
       - utils
       - method
       - module
+      - kernel
       - class
+      - bootstrap
   
   package:
     directory: package

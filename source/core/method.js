@@ -5,6 +5,10 @@ JS.extend(JS.Method.prototype, {
     this.module   = module;
     this.name     = name;
     this.callable = callable;
+  },
+  
+  call: function() {
+    return this.callable.call.apply(this.callable, arguments);
   }
 });
 
