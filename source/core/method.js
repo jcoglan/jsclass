@@ -36,6 +36,9 @@ JS.extend(JS.Method.prototype, {
 });
 
 JS.Method.create = function(module, name, callable) {
+  if (callable && callable.__inc__ && callable.__fns__)
+    return callable;
+  
   return (callable instanceof this)
        ? callable
        : new this(module, name, callable);
