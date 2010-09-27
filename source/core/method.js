@@ -50,7 +50,7 @@ JS.Method._keywords = [
       return function() {
         var currentSuper = this.callSuper,
             parameters   = [].slice.apply(arguments),
-            functions    = this.__eigen__().lookup(method.name),
+            functions    = host.lookup(method.name),
             stackIndex   = functions.length;
         
         this.callSuper = function() {
