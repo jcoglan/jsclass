@@ -23,6 +23,14 @@ JS.isFn = function(object) {
   return typeof object === 'function';
 };
 
+JS.isType = function(object, type) {
+  return (typeof type === 'string')
+       ? (typeof object === type)
+       : (  object !== null &&
+            object !== undefined &&
+            (object instanceof type));
+};
+
 JS.makeBridge = function(parent) {
   var bridge = function() {};
   bridge.prototype = parent.prototype;

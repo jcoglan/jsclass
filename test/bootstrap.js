@@ -78,11 +78,19 @@ assert.equal('ohai', Foo.talk());
 assert.equal('ohai', JS.Module.talk());
 assert.equal('ohai', JS.Class.talk());
 
-Klass = new JS.Class({
+Klass = new JS.Class('Klass', {
   extend: {
     foo: function() { return 'foo' }
   }
 });
 assert.equal('foo', Klass.foo());
+ 
+Namespace = new JS.Module('Namespace', {
+  extend: {
+    User: new JS.Class()
+  }
+});
+Namespace.User.include({ foo: function() { return 'foo' } });
+assert.equal('foo', new Namespace.User().foo());
 
 sys.puts('Done.');

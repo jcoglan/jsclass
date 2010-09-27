@@ -44,6 +44,11 @@ JS.Method.create = function(module, name, callable) {
        : new this(module, name, callable);
 };
 
+JS.Method.compile = function(method, host) {
+  if (method instanceof this) return method.compile(host);
+  else return method;
+};
+
 JS.Method._keywords = [
   { name: 'callSuper',
     transform: function(callable, method, host) {

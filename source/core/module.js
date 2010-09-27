@@ -67,8 +67,7 @@ JS.extend(JS.Module.prototype, {
   },
   
   acceptMethod: function(name, method) {
-    if (!method.name) return;
-    if (this.__tgt__) this.__tgt__[name] = method.compile(this);
+    if (this.__tgt__) this.__tgt__[name] = JS.Method.compile(method, this);
     var i = this.__dep__.length;
     while (i--) this.__dep__[i].acceptMethod(name, method);
   },
