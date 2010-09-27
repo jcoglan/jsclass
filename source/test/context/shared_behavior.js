@@ -19,7 +19,7 @@ JS.Test.Context.extend({
     },
     
     included: function(arg) {
-      JS.Ruby(arg, this._behavior);
+      this._behavior.call(arg);
     }
   }),
   
