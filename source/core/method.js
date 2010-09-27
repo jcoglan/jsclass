@@ -12,3 +12,9 @@ JS.extend(JS.Method.prototype, {
   }
 });
 
+JS.Method.create = function(module, name, callable) {
+  return (callable instanceof this)
+       ? callable
+       : new this(module, name, callable);
+};
+

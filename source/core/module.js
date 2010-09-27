@@ -18,9 +18,9 @@ JS.extend(JS.Module.prototype, {
   },
   
   define: function(name, callable) {
-    var method = new JS.Method(this, name, callable);
+    var method = JS.Method.create(this, name, callable);
     this.__fns__[name] = method;
-    this.acceptMethod(method);
+    this.acceptMethod(name, method);
   },
   
   include: function(module) {
@@ -61,15 +61,23 @@ JS.extend(JS.Module.prototype, {
            typeof value !== 'function';
   },
   
-  acceptMethod: function(method) {
-    if (this.__tgt__) this.__tgt__[method.name] = method.callable;
+  acceptMethod: function(name, method) {
+    if (!method.name) return;
+    if (this.__tgt__) this.__tgt__[name] = method.callable;
     var i = this.__dep__.length;
-    while (i--) this.__dep__[i].acceptMethod(method);
+    while (i--) this.__dep__[i].acceptMethod(name, method);
   },
   
   acceptModule: function(module) {
-    for (var field in module.__fns__)
-      this.acceptMethod(module.__fns__[field]);
+    var fns = module.__fns__,
+        inc = module.__inc__,
+        field, i, n;
+    
+    for (i = 0, n = inc.length; i < n; i++)
+      this.acceptModule(inc[i]);
+    
+    for (field in fns)
+      this.acceptMethod(field, fns[field]);
   },
   
   instanceMethod: function(name) {

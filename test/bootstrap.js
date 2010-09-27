@@ -48,6 +48,12 @@ Klass.extend({
 assert.equal('hi', Klass.classMethod());
 assert.equal('hi', Sub.classMethod());
 
+Top = new JS.Class();
+Top.extend(new JS.Module({ foo: function() { return 'foo' } }));
+assert.equal('foo', Top.foo());
+Bottom = new JS.Class(Top);
+assert.equal('foo', Bottom.foo());
+
 Foo = new JS.Module({ foo: function() { return 'hi' } });
 Klass = new JS.Class();
 object = new Klass();
