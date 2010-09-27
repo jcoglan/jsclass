@@ -79,5 +79,4 @@ packages:
   range:            range
   set:              set
   stack_trace:      stack_trace
-  ruby:             ruby
 

@@ -28,8 +28,7 @@ JS.Packages(function() { with(this) {
                             .requires('JS.Module',
                                       'JS.Class',
                                       'JS.DOM',
-                                      'JS.Enumerable',
-                                      'JS.Ruby');
+                                      'JS.Enumerable');
     
     module('dom')           .provides('JS.DOM',
                                       'JS.DOM.Builder')
@@ -91,9 +90,6 @@ JS.Packages(function() { with(this) {
                                       'JS.Proxy.Virtual')
                             .requires('JS.Module',
                                       'JS.Class');
-    
-    module('ruby')          .provides('JS.Ruby')
-                            .requires('JS.Class');
     
     module('stack_trace')   .provides('JS.StackTrace')
                             .requires('JS.Module',
