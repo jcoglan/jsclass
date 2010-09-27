@@ -9,12 +9,17 @@ JS.extend(JS.Module.prototype, {
     }
     options = options || {};
     
+    this.__nom__ = '';
     this.__inc__ = [];
     this.__dep__ = [];
     this.__fns__ = {};
     this.__tgt__ = options._target;
     
     this.include(methods);
+  },
+  
+  setName: function(name) {
+    this.__nom__ = this.displayName = name;
   },
   
   define: function(name, callable) {

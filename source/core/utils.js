@@ -30,15 +30,20 @@ JS.makeBridge = function(parent) {
 };
 
 JS.makeClass = function(parent) {
+  parent = parent || Object;
+  
   var constructor = function() {
     return this.initialize
          ? this.initialize.apply(this, arguments) || this
          : this;
   };
-  constructor.prototype = JS.makeBridge(parent || Object);
+  constructor.prototype = JS.makeBridge(parent);
   
   constructor.prototype.constructor =
   constructor.prototype.klass = constructor;
+  
+  constructor.superclass = parent;
+  if (parent.subclasses) parent.subclasses.push(constructor);
   
   return constructor;
 };
