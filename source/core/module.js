@@ -31,6 +31,9 @@ JS.extend(JS.Module.prototype, {
       this.__inc__.push(module);
       if (module.__dep__) module.__dep__.push(this);
       this.acceptModule(module);
+      
+      if (typeof module.included === 'function')
+        module.included(this);
     }
     else {
       if (typeof module.extend !== 'function') {
