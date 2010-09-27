@@ -18,6 +18,11 @@ JS.extend = function(destination, source, overwrite) {
   return destination;
 };
 
+// TODO inline this method and remove it
+JS.isFn = function(object) {
+  return typeof object === 'function';
+};
+
 JS.makeBridge = function(parent) {
   var bridge = function() {};
   bridge.prototype = parent.prototype;
