@@ -2,6 +2,12 @@
   this.JS = this.JS || {};
 })();
 
+JS.bind = function(method, object) {
+  return function() {
+    return method.apply(object, arguments);
+  };
+};
+
 JS.extend = function(destination, source, overwrite) {
   if (!destination || !source) return destination;
   for (var field in source) {
