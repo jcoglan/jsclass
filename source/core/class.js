@@ -25,6 +25,9 @@ JS.extend(JS.Class.prototype, {
          .include(parent)
          .include(methods);
     
+    if (typeof parent.inherited === 'function')
+      parent.inherited(klass);
+    
     return klass;
   }
 });
