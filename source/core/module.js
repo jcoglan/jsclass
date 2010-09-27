@@ -38,6 +38,11 @@ JS.extend(JS.Module.prototype, {
         i = mixins.length;
         while (i--) this.extend(mixins[i]);
       }
+      if (typeof module.include !== 'function') {
+        mixins = [].concat(module.include);
+        i = mixins.length;
+        while (i--) this.include(mixins[i]);
+      }
       for (field in module) {
         if (!module.hasOwnProperty(field)) continue;
         value = module[field];
@@ -49,7 +54,8 @@ JS.extend(JS.Module.prototype, {
   },
   
   shouldIgnore: function(field, value) {
-    return (field === 'extend') && typeof value !== 'function';
+    return (field === 'extend' || field === 'include') &&
+           typeof value !== 'function';
   },
   
   acceptMethod: function(method) {
