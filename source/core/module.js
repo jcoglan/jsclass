@@ -68,7 +68,7 @@ JS.extend(JS.Module.prototype, {
   
   acceptMethod: function(name, method) {
     if (!method.name) return;
-    if (this.__tgt__) this.__tgt__[name] = method.callable;
+    if (this.__tgt__) this.__tgt__[name] = method.compile(this);
     var i = this.__dep__.length;
     while (i--) this.__dep__[i].acceptMethod(name, method);
   },
@@ -87,6 +87,22 @@ JS.extend(JS.Module.prototype, {
   
   instanceMethod: function(name) {
     return this.__fns__[name];
+  },
+  
+  lookup: function(name, methods) {
+    var methods = methods || [],
+        inc     = this.__inc__,
+        fns     = this.__fns__,
+        method  = fns[name],
+        i, n;
+    
+    for (i = 0, n = inc.length; i < n; i++)
+      inc[i].lookup(name, methods);
+    
+    if (method instanceof JS.Method)
+      methods.push(method);
+    
+    return methods;
   }
 });
 

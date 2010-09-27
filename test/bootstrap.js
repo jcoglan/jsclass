@@ -36,10 +36,13 @@ assert.equal('Hello, jcoglan', object.sayHello());
 var Sub = new JS.Class(Klass, {
   sayBye: function() {
     return 'Bye, ' + this.name;
+  },
+  sayHello: function() {
+    return this.callSuper().toUpperCase();
   }
 });
 var object = new Sub('jcoglan', 26);
-assert.equal('Hello, jcoglan', object.sayHello());
+assert.equal('HELLO, JCOGLAN', object.sayHello());
 assert.equal('Bye, jcoglan', object.sayBye());
 
 Klass.extend({
