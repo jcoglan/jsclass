@@ -67,9 +67,15 @@ JS.extend(JS.Module.prototype, {
   },
   
   acceptMethod: function(name, method) {
+    if (this.__fns__.hasOwnProperty(name) &&
+        this.__fns__[name] !== method)
+      return;
+    
     if (this.__tgt__) this.__tgt__[name] = JS.Method.compile(method, this);
+    
     var i = this.__dep__.length;
-    while (i--) this.__dep__[i].acceptMethod(name, method);
+    while (i--)
+      this.__dep__[i].acceptMethod(name, method);
   },
   
   acceptModule: function(module) {

@@ -64,6 +64,13 @@ assert.equal(undefined, object.foo);
 Klass.include(Foo);
 assert.equal('hi', object.foo());
 
+Mixin = new JS.Module({ foo: function() { return 'mixin' } });
+Main = new JS.Class({ foo: function() { return 'main' } });
+object = new Main();
+assert.equal('main', object.foo());
+Main.include(Mixin);
+assert.equal('main', object.foo());
+
 Foo = new JS.Module();
 Klass = new JS.Class();
 object = new Klass();
