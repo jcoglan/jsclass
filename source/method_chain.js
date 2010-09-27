@@ -92,9 +92,9 @@ JS.MethodChain.addMethods = function(object) {
 
 it = its = function() { return new JS.MethodChain; };
 
-JS.Module.methodAdded(function(name) {
-  JS.MethodChain.addMethod(name);
-});
+//JS.Module.methodAdded(function(name) {
+//  JS.MethodChain.addMethod(name);
+//});
 
 JS.Kernel.include({
   wait: function(time) {
@@ -123,13 +123,13 @@ JS.Kernel.include({
   }
 }, true);
 
-(function() {
-  var queue = JS.Module.__chainq__,
-      n     = queue.length;
-  
-  while (n--) JS.MethodChain.addMethods(queue[n]);
-  JS.Module.__chainq__ = null;
-})();
+//(function() {
+//  var queue = JS.Module.__chainq__,
+//      n     = queue.length;
+//  
+//  while (n--) JS.MethodChain.addMethods(queue[n]);
+//  JS.Module.__chainq__ = null;
+//})();
 
 JS.MethodChain.addMethods([
   "abs", "accept", "accessKey", "acos", "addEventListener", "align", "alt",
