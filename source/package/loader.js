@@ -22,7 +22,7 @@ JS.Package.DomLoader = {
     }
 
     if ( loader ) {
-      alert(path)
+
       loader.loadSubScript(path);
       fireCallbacks();
     
