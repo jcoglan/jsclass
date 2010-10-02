@@ -36,7 +36,8 @@ JS.Package.DomLoader = {
       
       tag.onload = tag.onreadystatechange = function() {
         var state = tag.readyState, status = tag.status;
-        if ( !state || state === 'loaded' || state === 'complete' || (state === 4 && status === 200) ) {
+        if ( !state || state === 'loaded' || state === 'complete' ||
+             (state === 4 && status === 200) ) {
           fireCallbacks();
           tag.onload = tag.onreadystatechange = self._K;
           tag = null;
