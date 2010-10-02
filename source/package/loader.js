@@ -20,9 +20,9 @@ JS.Package.DomLoader = {
       loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
                          .getService(Components.interfaces.mozIJSSubScriptLoader);
     }
-
+    
     if ( loader ) {
-
+    
       loader.loadSubScript(path);
       fireCallbacks();
     
