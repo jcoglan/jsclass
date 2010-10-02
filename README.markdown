@@ -27,15 +27,15 @@ Development
 To hack on JS.Class you'll need to be able to build it and run the tests. You
 need Ruby and Jake to do this:
 
-  gem install jake
-  cd path/to/js.class
-  jake
+    gem install jake
+    cd path/to/js.class
+    jake
 
 This will build the project and create files in the `build` directory. To run the
 tests, run the `test/console.js` script using any JavaScript interpreter, for
 example:
 
-  node test/console.js
+    node test/console.js
 
 Some interpreters will skip the tests that use asynchronous APIs, but the tests
 should work using these JavaScript implementations:
