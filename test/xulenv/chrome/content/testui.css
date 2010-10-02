@@ -1,0 +1,133 @@
+body {
+  overflow:     auto;
+}
+
+.test-result-container {
+  font:         normal 15px FreeSans, Helvatica, Arial, sans-serif;
+  background:   #fff;
+  color:        #444;
+  border:       2px solid #444;
+  position:     absolute;
+  right:        30px;
+  top:          30px;
+  width:        509px;
+  margin:       auto;
+  overflow:     hidden;
+}
+
+.test-result-container p,
+.test-result-container ul,
+.test-result-container li {
+  margin:       0;
+  padding:      0;
+  list-style:   circle outside;
+}
+
+.test-result-container .report {
+  border-collapse: collapse;
+  margin:       0;
+  padding:      0;
+}
+
+.test-result-container .report th, .test-result-container .report td {
+  border-left:  1px solid #ccc;
+  border-right: 1px solid #ccc;
+  font-weight:  bold;
+  padding:      0 8px;
+  text-align:   right;
+  width:        110px;
+}
+
+.test-result-container .report th {
+  border-top:   1px solid #ccc;
+  background:   #eee;
+  padding:      4px 8px;
+}
+
+.test-result-container .report td {
+  font-size:    300%;
+  color:        #999;
+}
+
+.test-result-container .specs {
+  border-top:   1px solid #999;
+  list-style:   none;
+}
+
+.test-result-container .specs .spec,
+.test-result-container .specs .test {
+  position:     relative;
+}
+
+.test-result-container .specs .spec-name,
+.test-result-container .specs .test-name {
+  cursor:       pointer;
+}
+
+.test-result-container .spec-name {
+  border-top:   1px solid #ddd;
+  font-weight:  bold;
+  cursor:       pointer;
+}
+
+.test-result-container .specs ul {
+  margin-left:  32px;
+}
+
+.test-result-container .specs p {
+  padding:      4px 12px;
+}
+
+.test-result-container .specs .fault {
+  font-size:    75%;
+}
+
+.test-result-container .specs .failed {
+  color:        #e40;
+}
+
+.test-result-container .specs .closed ul.children {
+  display:      none;
+}
+
+.test-result-container .test .stats {
+  display:      none;
+}
+
+.test-result-container .stats {
+  float:        right;
+  list-style:   none;
+  top:          0;
+  right:        0;
+}
+
+.test-result-container .stats li {
+  list-style:   none;
+  display:      block;
+  float:        left;
+  border-left:  1px solid #eee;
+  padding:      4px 8px;
+  width:        47px;
+}
+
+.test-result-container .stats .number {
+  font-weight:  bold;
+  color:        #666;
+}
+
+.test-result-container .stats .letter {
+  color:        #999;
+  font-size:    80%;
+}
+
+.test-result-container .passed .number {
+  color:        #6c3;
+}
+
+.test-result-container .summary {
+  border-top:   1px solid #999;
+  color:        #666;
+  padding:      4px 8px;
+  margin:       0;
+}
+

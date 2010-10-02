@@ -1,3 +1,5 @@
+try {
+
 if (typeof CWD === 'undefined') CWD = '.'
 
 JS.Packages(function() { with(this) {
@@ -33,3 +35,8 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
     JS.Test.method('autorun'))
 })
 
+} catch(e) {
+  var info = 'ERROR while starting the test environment:\n' + e;
+  if (window.console && console.info) console.info(info);
+  else alert(info)
+}

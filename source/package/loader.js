@@ -12,44 +12,58 @@ JS.Package.DomLoader = {
     if (window.console && console.info)
       console.info('Loading ' + path);
     
-    var loader = false;
-    if ( Components &&
-         Components.classes &&
-         Components.classes["@mozilla.org/moz/jssubscript-loader;1"] &&
-         Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService ) {
-      loader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
-                         .getService(Components.interfaces.mozIJSSubScriptLoader);
-    }
+    var self = this,
+    tag = document.createElement('script');
     
-    if ( loader ) {
+    tag.type = 'text/javascript';
+    tag.src = path;
     
-      loader.loadSubScript(path);
-      fireCallbacks();
+    tag.onload = tag.onreadystatechange = function() {
+      var state = tag.readyState, status = tag.status;
+      if ( !state || state === 'loaded' || state === 'complete' ||
+           (state === 4 && status === 200) ) {
+        fireCallbacks();
+        tag.onload = tag.onreadystatechange = self._K;
+        tag = null;
+      }
+    };
     
-    } else {
-    
-      var self = this,
-      tag = document.createElement('script');
-      
-      tag.type = 'text/javascript';
-      tag.src = path;
-      
-      tag.onload = tag.onreadystatechange = function() {
-        var state = tag.readyState, status = tag.status;
-        if ( !state || state === 'loaded' || state === 'complete' ||
-             (state === 4 && status === 200) ) {
-          fireCallbacks();
-          tag.onload = tag.onreadystatechange = self._K;
-          tag = null;
-        }
-      };
-      
-      document.getElementsByTagName('head')[0].appendChild(tag);
-    }
+    document.getElementsByTagName('head')[0].appendChild(tag);
   },
   
   _K: function() {}
 };
+
+JS.Package.MozIJSSubScriptLoader = {
+  usable: function() {
+    try {
+      if ( Components &&
+           Components.classes &&
+           Components.classes["@mozilla.org/moz/jssubscript-loader;1"] &&
+           Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService ) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch(e) {
+      return false;
+    }
+  },
+
+  setup: function() {
+    this.mozLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+                            .getService(Components.interfaces.mozIJSSubScriptLoader);
+  },
+
+  loadFile: function(path, fireCallbacks) {
+    if (window.console && console.info)
+      console.info('Loading ' + path);
+    
+    this.mozLoader.loadSubScript(path);
+    fireCallbacks();
+  }
+};
+
 
 JS.Package.CommonJSLoader = {
   usable: function() {
@@ -133,7 +147,8 @@ JS.Package.WshLoader = {
 };
 
 (function() {
-  var candidates = [  JS.Package.DomLoader,
+  var candidates = [  JS.Package.MozIJSSubScriptLoader,
+                      JS.Package.DomLoader,
                       JS.Package.CommonJSLoader,
                       JS.Package.ServerLoader,
                       JS.Package.WshLoader ],
