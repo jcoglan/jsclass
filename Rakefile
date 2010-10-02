@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'httparty'
 require 'nokogiri'
 require 'set'
