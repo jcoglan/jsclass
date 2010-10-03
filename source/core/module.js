@@ -94,6 +94,15 @@ JS.extend(JS.Module.prototype, {
     return this.__fns__[name];
   },
   
+  instanceMethods: function(recursive) {
+    var methods = [],
+        fns     = this.__fns__,
+        field;
+    
+    for (field in fns) methods.push(field);
+    return methods;
+  },
+  
   lookup: function(name, methods) {
     var methods = methods || [],
         inc     = this.__inc__,

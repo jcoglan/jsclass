@@ -18,7 +18,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'CommandSpec',
                 'ComparableSpec',
                 'ConstantScopeSpec',
-                'DecoratorSpec',
+//                'DecoratorSpec',
                 'EnumerableSpec',
                 'ForwardableSpec',
                 'HashSpec',
@@ -26,7 +26,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'ObservableSpec',
                 'PackageSpec',
                 'ProxySpec',
-                'RangeSpec',
+//                'RangeSpec',
                 'SetSpec',
                 'StateSpec',
             

@@ -2,6 +2,12 @@
   this.JS = this.JS || {};
 })();
 
+JS.array = function(enumerable) {
+  var array = [], i = enumerable.length;
+  while (i--) array[i] = enumerable[i];
+  return array;
+};
+
 JS.bind = function(method, object) {
   return function() {
     return method.apply(object, arguments);
