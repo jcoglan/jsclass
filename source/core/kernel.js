@@ -6,7 +6,7 @@ JS.Kernel = new JS.Module('Kernel', {
   },
   
   extend: function(module) {
-    this.__eigen__().include(module);
+    this.__eigen__().include(module, {_extended: this});
     return this;
   },
   

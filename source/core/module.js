@@ -28,17 +28,25 @@ JS.extend(JS.Module.prototype, {
     this.acceptMethod(name, method);
   },
   
-  include: function(module) {
+  include: function(module, options) {
     if (!module) return;
-    var field, value, mixins, i;
+    
+    var options = options || {},
+        extended, field, value, mixins, i;
     
     if (module.__fns__ && module.__inc__) {
       this.__inc__.push(module);
       if (module.__dep__) module.__dep__.push(this);
       this.acceptModule(module);
       
-      if (typeof module.included === 'function')
-        module.included(this);
+      if (extended = options._extended) {
+        if (typeof module.extended === 'function')
+          module.extended(extended);
+      }
+      else {
+        if (typeof module.included === 'function')
+          module.included(this);
+      }
     }
     else {
       if (typeof module.extend !== 'function') {
