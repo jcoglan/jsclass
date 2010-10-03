@@ -68,6 +68,8 @@ JS.makeClass = function(parent) {
   constructor.prototype.klass = constructor;
   
   constructor.superclass = parent;
+  
+  constructor.subclasses = [];
   if (parent.subclasses) parent.subclasses.push(constructor);
   
   return constructor;

@@ -1,14 +1,19 @@
 JS.Kernel = new JS.Module('Kernel', {
   __eigen__: function() {
     if (this.__meta__) return this.__meta__;
-    this.__meta__ = new JS.Module(this, {_target: this});
-    this.__meta__.setName(this.toString() + '.');
+    var name = this.toString() + '.';
+    this.__meta__ = new JS.Module(name, this, {_target: this});
     return this.__meta__.include(this.klass);
   },
   
   extend: function(module) {
     this.__eigen__().include(module, {_extended: this});
     return this;
+  },
+  
+  isA: function(module) {
+    return this.klass === module ||
+           this.__eigen__().includes(module);
   },
   
   method: function(name) {

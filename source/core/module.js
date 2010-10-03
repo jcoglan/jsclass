@@ -50,7 +50,7 @@ JS.extend(JS.Module.prototype, {
     if (!module) return;
     
     var options = options || {},
-        extended, field, value, mixins, i;
+        extended, field, value, mixins, i, n;
     
     if (module.__fns__ && module.__inc__) {
       this.__inc__.push(module);
@@ -67,15 +67,15 @@ JS.extend(JS.Module.prototype, {
       }
     }
     else {
-      if (typeof module.extend !== 'function') {
+      if (typeof module.extend === 'object') {
         mixins = [].concat(module.extend);
-        i = mixins.length;
-        while (i--) this.extend(mixins[i]);
+        for (i = 0, n = mixins.length; i < n; i++)
+          this.extend(mixins[i]);
       }
-      if (typeof module.include !== 'function') {
+      if (typeof module.include === 'object') {
         mixins = [].concat(module.include);
-        i = mixins.length;
-        while (i--) this.include(mixins[i]);
+        for (i = 0, n = mixins.length; i < n; i++)
+          this.include(mixins[i]);
       }
       for (field in module) {
         if (!module.hasOwnProperty(field)) continue;
@@ -128,19 +128,6 @@ JS.extend(JS.Module.prototype, {
     return list;
   },
   
-  instanceMethod: function(name) {
-    return this.__fns__[name];
-  },
-  
-  instanceMethods: function(recursive) {
-    var methods = [],
-        fns     = this.__fns__,
-        field;
-    
-    for (field in fns) methods.push(field);
-    return methods;
-  },
-  
   lookup: function(name) {
     var ancestors = this.ancestors(),
         methods   = [],
@@ -148,8 +135,40 @@ JS.extend(JS.Module.prototype, {
     
     for (var i = 0, n = ancestors.length; i < n; i++) {
       fns = ancestors[i].__fns__;
-      if (fns.hasOwnProperty(name) && (fns[name] instanceof JS.Method))
+      if (fns.hasOwnProperty(name) && fns[name] instanceof JS.Method)
         methods.push(fns[name]);
+    }
+    return methods;
+  },
+  
+  includes: function(module) {
+    if (module === this) return true;
+    var inc = this.__inc__,
+        i   = inc.length;
+    while (i--) {
+      if (inc[i].includes(module))
+        return true;
+    }
+    return false;
+  },
+  
+  instanceMethod: function(name) {
+    return this.__fns__[name];
+  },
+  
+  instanceMethods: function(recursive, list) {
+    var methods = list || [],
+        fns     = this.__fns__,
+        field;
+    
+    for (field in fns) {
+      if (JS.indexOf(methods, field) < 0)
+        methods.push(field);
+    }
+    
+    if (recursive !== false) {
+      var ancestors = this.ancestors(), i = ancestors.length;
+      while (i--) ancestors[i].instanceMethods(false, methods);
     }
     return methods;
   },

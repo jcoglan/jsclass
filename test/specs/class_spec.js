@@ -520,7 +520,7 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
     })
     
     it("returns the named instance method", function() {
-      assertSame( module.prototype.bar, module.instanceMethod("bar") )
+      assertSame( module.prototype.bar, module.instanceMethod("bar").callable )
     })
   })
 })
