@@ -24,6 +24,15 @@ JS.extend = function(destination, source, overwrite) {
   return destination;
 };
 
+JS.indexOf = function(list, item) {
+  if (list.indexOf) return list.indexOf(item);
+  var i = list.length;
+  while (i--) {
+    if (list[i] === item) return i;
+  }
+  return -1;
+};
+
 // TODO inline this method and remove it
 JS.isFn = function(object) {
   return typeof object === 'function';

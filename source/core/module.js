@@ -98,6 +98,18 @@ JS.extend(JS.Module.prototype, {
       this.acceptMethod(field, fns[field]);
   },
   
+  ancestors: function(list) {
+    list = list || [];
+    
+    for (var i = 0, n = this.__inc__.length; i < n; i++)
+      this.__inc__[i].ancestors(list);
+    
+    if (JS.indexOf(list, this) < 0)
+      list.push(this);
+    
+    return list;
+  },
+  
   instanceMethod: function(name) {
     return this.__fns__[name];
   },
@@ -111,19 +123,16 @@ JS.extend(JS.Module.prototype, {
     return methods;
   },
   
-  lookup: function(name, methods) {
-    var methods = methods || [],
-        inc     = this.__inc__,
-        fns     = this.__fns__,
-        method  = fns[name],
-        i, n;
+  lookup: function(name) {
+    var ancestors = this.ancestors(),
+        methods   = [],
+        fns;
     
-    for (i = 0, n = inc.length; i < n; i++)
-      inc[i].lookup(name, methods);
-    
-    if (method instanceof JS.Method)
-      methods.push(method);
-    
+    for (var i = 0, n = ancestors.length; i < n; i++) {
+      fns = ancestors[i].__fns__;
+      if (fns.hasOwnProperty(name) && (fns[name] instanceof JS.Method))
+        methods.push(fns[name]);
+    }
     return methods;
   }
 });
