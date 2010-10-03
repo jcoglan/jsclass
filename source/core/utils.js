@@ -2,6 +2,8 @@
   this.JS = this.JS || {};
 })();
 
+JS.END_WITHOUT_DOT = /([^\.])$/;
+
 JS.array = function(enumerable) {
   var array = [], i = enumerable.length;
   while (i--) array[i] = enumerable[i];

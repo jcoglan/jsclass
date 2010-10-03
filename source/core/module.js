@@ -9,22 +9,40 @@ JS.extend(JS.Module.prototype, {
     }
     options = options || {};
     
-    this.__nom__ = '';
     this.__inc__ = [];
     this.__dep__ = [];
     this.__fns__ = {};
     this.__tgt__ = options._target;
     
+    this.setName(name);
     this.include(methods);
   },
   
   setName: function(name) {
-    this.__nom__ = this.displayName = name;
+    this.__nom__ = this.displayName = name || '';
+    
+    for (var field in this.__fns__)
+      this.__name__(field);
+    
+    if (name && this.__meta__)
+      this.__meta__.setName(name + '.');
+  },
+  
+  __name__: function(name) {
+    if (!this.__nom__) return;
+    
+    var object = this.__fns__[name];
+    if (!object) return;
+    
+    name = this.__nom__.replace(JS.END_WITHOUT_DOT, '$1#') + name;
+    if (JS.isFn(object.setName)) return object.setName(name);
+    if (JS.isFn(object)) object.displayName = name;
   },
   
   define: function(name, callable) {
     var method = JS.Method.create(this, name, callable);
     this.__fns__[name] = method;
+    this.__name__(name);
     this.acceptMethod(name, method);
   },
   
@@ -134,6 +152,10 @@ JS.extend(JS.Module.prototype, {
         methods.push(fns[name]);
     }
     return methods;
+  },
+  
+  toString: function() {
+    return this.displayName;
   }
 });
 

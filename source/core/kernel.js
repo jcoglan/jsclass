@@ -2,6 +2,7 @@ JS.Kernel = new JS.Module('Kernel', {
   __eigen__: function() {
     if (this.__meta__) return this.__meta__;
     this.__meta__ = new JS.Module(this, {_target: this});
+    this.__meta__.setName(this.toString() + '.');
     return this.__meta__.include(this.klass);
   },
   

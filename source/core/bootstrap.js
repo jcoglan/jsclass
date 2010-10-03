@@ -21,6 +21,8 @@
     JS.Kernel.instanceMethod('__eigen__').call(klass);
     JS.extend(klass, JS.Class.prototype);
     
+    klass.setName(name);
+    
     if (parent) {
       klass.__inc__.push(parent);
       parent.__dep__.push(klass);

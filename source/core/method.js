@@ -15,6 +15,10 @@ JS.extend(JS.Method.prototype, {
     while (i--) this._words[matches[i]] = true;
   },
   
+  setName: function(name) {
+    this.callable.displayName = name;
+  },
+  
   call: function() {
     return this.callable.call.apply(this.callable, arguments);
   },

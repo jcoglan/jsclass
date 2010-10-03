@@ -114,8 +114,8 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
       })
       
       it("returns the name of each method", function() {
-        assertEqual( "NameOfModule#methodOne", module.__mod__.__fns__.methodOne.displayName )
-        assertEqual( "NameOfModule#methodTwo", module.__mod__.__fns__.methodTwo.displayName )
+        assertEqual( "NameOfModule#methodOne", module.__fns__.methodOne.callable.displayName )
+        assertEqual( "NameOfModule#methodTwo", module.__fns__.methodTwo.callable.displayName )
       })
       
       describe("for nested modules", function() {
@@ -147,52 +147,52 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
           assertEqual( "Outer.InnerPublic", module.InnerPublic.displayName )
           
           assertEqual( "Outer.InnerPublic#aMethod",
-                       module.InnerPublic.__mod__.__fns__.
-                       aMethod.displayName )
+                       module.InnerPublic.__fns__.
+                       aMethod.callable.displayName )
         })
         
         it("returns the name of an inner private module", function() {
           assertEqual( "Outer#InnerPrivate",
-                       module.__mod__.__fns__.
+                       module.__fns__.
                        InnerPrivate.displayName )
           
           assertEqual( "Outer#InnerPrivate#aMethod",
-                       module.__mod__.__fns__.
-                       InnerPrivate.__mod__.__fns__.
-                       aMethod.displayName )
+                       module.__fns__.
+                       InnerPrivate.__fns__.
+                       aMethod.callable.displayName )
         })
         
         it("returns the name of a deeply nested module", function() {
           assertEqual( "Outer#InnerPrivate.DeepInner",
-                       module.__mod__.__fns__.
+                       module.__fns__.
                        InnerPrivate.DeepInner.displayName )
           
           assertEqual( "Outer#InnerPrivate.DeepInner#aMethod",
-                       module.__mod__.__fns__.
-                       InnerPrivate.DeepInner.__mod__.__fns__.
-                       aMethod.displayName )
+                       module.__fns__.
+                       InnerPrivate.DeepInner.__fns__.
+                       aMethod.callable.displayName )
           
           assertEqual( "Outer#InnerPrivate.DeepInner.Foo",
-                       module.__mod__.__fns__.
+                       module.__fns__.
                        InnerPrivate.DeepInner.
                        Foo.displayName )
           
           assertEqual( "Outer#InnerPrivate.DeepInner.Foo#aMethod",
-                       module.__mod__.__fns__.
+                       module.__fns__.
                        InnerPrivate.DeepInner.
-                       Foo.__mod__.__fns__.
-                       aMethod.displayName )
+                       Foo.__fns__.
+                       aMethod.callable.displayName )
           
           assertEqual( "Outer#InnerPrivate.DeepInner#Klass",
-                       module.__mod__.__fns__.
-                       InnerPrivate.DeepInner.__mod__.__fns__.
+                       module.__fns__.
+                       InnerPrivate.DeepInner.__fns__.
                        Klass.displayName )
           
           assertEqual( "Outer#InnerPrivate.DeepInner#Klass#aMethod",
-                       module.__mod__.__fns__.
-                       InnerPrivate.DeepInner.__mod__.__fns__.
-                       Klass.__mod__.__fns__.
-                       aMethod.displayName )
+                       module.__fns__.
+                       InnerPrivate.DeepInner.__fns__.
+                       Klass.__fns__.
+                       aMethod.callable.displayName )
         })
       })
     })
