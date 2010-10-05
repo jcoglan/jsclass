@@ -16,8 +16,10 @@ JS.extend(JS.Class.prototype, {
     var klass = JS.makeClass(parent);
     JS.extend(klass, this);
     
-    JS.Kernel.instanceMethod('__eigen__').call(klass);
-    klass.__meta__.include(parent.__meta__);
+    klass.prototype.constructor =
+    klass.prototype.klass = klass;
+    
+    klass.__eigen__().include(parent.__meta__);
     
     klass.__tgt__ = klass.prototype;
     

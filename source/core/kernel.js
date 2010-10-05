@@ -2,7 +2,7 @@ JS.Kernel = new JS.Module('Kernel', {
   __eigen__: function() {
     if (this.__meta__) return this.__meta__;
     var name = this.toString() + '.';
-    this.__meta__ = new JS.Module(name, this, {_target: this});
+    this.__meta__ = new JS.Module(name, null, {_target: this});
     return this.__meta__.include(this.klass);
   },
   
@@ -27,6 +27,10 @@ JS.Kernel = new JS.Module('Kernel', {
     var bound = JS.bind(field, this);
     cache[name] = {_value: field, _bound: bound};
     return bound;
-   }
+  },
+  
+  methods: function() {
+    return this.__eigen__().instanceMethods();
+  }
 });
 

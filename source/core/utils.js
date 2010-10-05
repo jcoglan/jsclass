@@ -41,11 +41,10 @@ JS.isFn = function(object) {
 };
 
 JS.isType = function(object, type) {
-  return (typeof type === 'string')
-       ? (typeof object === type)
-       : (  object !== null &&
-            object !== undefined &&
-            (object instanceof type));
+  if (typeof type === 'string') return typeof object === type;
+  if (object === null || object === undefined) return false;
+  if (object && object.isA) return object.isA(type);
+  return object instanceof type;
 };
 
 JS.makeBridge = function(parent) {
@@ -63,9 +62,6 @@ JS.makeClass = function(parent) {
          : this;
   };
   constructor.prototype = JS.makeBridge(parent);
-  
-  constructor.prototype.constructor =
-  constructor.prototype.klass = constructor;
   
   constructor.superclass = parent;
   

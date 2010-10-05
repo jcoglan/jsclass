@@ -47,7 +47,7 @@ JS.extend(JS.Module.prototype, {
   },
   
   include: function(module, options) {
-    if (!module) return;
+    if (!module) return this;
     
     var options = options || {},
         extended, field, value, mixins, i, n;

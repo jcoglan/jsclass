@@ -1,39 +1,40 @@
 (function() {
-  var methodsFromPrototype = function(module, prototype) {
-    var methods = {};
-    for (var field in prototype) {
+  var methodsFromPrototype = function(klass) {
+    var methods = {},
+        proto   = klass.prototype;
+    
+    for (var field in proto) {
       if (!proto.hasOwnProperty(field)) continue;
-      methods[field] = JS.Method.create(module, field, prototype[field]);
+      methods[field] = JS.Method.create(klass, field, proto[field]);
     }
     return methods;
   };
   
-  var bootstrap = function(name, parentName) {
+  var classify = function(name, parentName) {
     var klass  = JS[name],
-        parent = JS[parentName],
-        proto  = klass.prototype;
+        parent = JS[parentName];
     
     klass.__inc__ = [];
     klass.__dep__ = [];
-    klass.__fns__ = methodsFromPrototype(proto);
-    klass.__tgt__ = proto;
+    klass.__fns__ = methodsFromPrototype(klass);
+    klass.__tgt__ = klass.prototype;
     
-    JS.Kernel.instanceMethod('__eigen__').call(klass);
+    klass.prototype.constructor =
+    klass.prototype.klass = klass;
+    
     JS.extend(klass, JS.Class.prototype);
-    
+    klass.include(parent || JS.Kernel);
     klass.setName(name);
     
-    if (parent) {
-      klass.__inc__.push(parent);
-      parent.__dep__.push(klass);
-    }
-    else {
-      klass.include(JS.Kernel);
-    }
+    klass.constructor = klass.klass = JS.Class;
   };
   
-  bootstrap('Method');
-  bootstrap('Module');
-  bootstrap('Class', 'Module');
+  classify('Module');
+  classify('Class', 'Module');
+  
+  var eigen = JS.Kernel.instanceMethod('__eigen__');
+  
+  eigen.call(JS.Module);
+  eigen.call(JS.Class).include(JS.Module.__meta__);
 })();
 

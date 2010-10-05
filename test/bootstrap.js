@@ -91,6 +91,9 @@ Klass = new JS.Class('Klass', {
   }
 });
 assert.equal('foo', Klass.foo());
+
+Sub = new JS.Class(Klass);
+assert.equal('foo', Sub.foo());
  
 Namespace = new JS.Module('Namespace', {
   extend: {
