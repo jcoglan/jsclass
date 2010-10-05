@@ -173,6 +173,10 @@ JS.extend(JS.Module.prototype, {
     return methods;
   },
   
+  match: function(object) {
+    return object.isA && object.isA(this);
+  },
+  
   toString: function() {
     return this.displayName;
   }

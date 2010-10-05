@@ -41,10 +41,16 @@ JS.isFn = function(object) {
 };
 
 JS.isType = function(object, type) {
-  if (typeof type === 'string') return typeof object === type;
-  if (object === null || object === undefined) return false;
-  if (object && object.isA) return object.isA(type);
-  return object instanceof type;
+  if (typeof type === 'string')
+    return typeof object === type;
+  
+  if (object === null || object === undefined)
+    return false;
+  
+  if (typeof type === 'function')
+    return (object instanceof type) || object.constructor === type;
+  
+  return object.isA && object.isA(type);
 };
 
 JS.makeBridge = function(parent) {
