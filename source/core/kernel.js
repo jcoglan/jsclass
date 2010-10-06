@@ -12,7 +12,7 @@ JS.Kernel = new JS.Module('Kernel', {
   },
   
   isA: function(module) {
-    return this.klass === module ||
+    return (typeof module === 'function' && this instanceof module) ||
            this.__eigen__().includes(module);
   },
   
