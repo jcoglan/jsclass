@@ -47,10 +47,9 @@ JS.isType = function(object, type) {
   if (object === null || object === undefined)
     return false;
   
-  if (typeof type === 'function')
-    return (object instanceof type) || object.constructor === type;
-  
-  return object.isA && object.isA(type);
+  return (typeof type === 'function' && object instanceof type) ||
+         (object.isA && object.isA(type)) ||
+         object.constructor === type;
 };
 
 JS.makeBridge = function(parent) {
