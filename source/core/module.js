@@ -50,6 +50,8 @@ JS.extend(JS.Module.prototype, {
     if (!module) return this;
     
     var options = options || {},
+        extend  = module.extend,
+        include = module.include,
         extended, field, value, mixins, i, n;
     
     if (module.__fns__ && module.__inc__) {
@@ -67,13 +69,13 @@ JS.extend(JS.Module.prototype, {
       }
     }
     else {
-      if (typeof module.extend === 'object') {
-        mixins = [].concat(module.extend);
+      if (this.shouldIgnore('extend', extend)) {
+        mixins = [].concat(extend);
         for (i = 0, n = mixins.length; i < n; i++)
           this.extend(mixins[i]);
       }
-      if (typeof module.include === 'object') {
-        mixins = [].concat(module.include);
+      if (this.shouldIgnore('include', include)) {
+        mixins = [].concat(include);
         for (i = 0, n = mixins.length; i < n; i++)
           this.include(mixins[i]);
       }
@@ -89,7 +91,8 @@ JS.extend(JS.Module.prototype, {
   
   shouldIgnore: function(field, value) {
     return (field === 'extend' || field === 'include') &&
-           typeof value !== 'function';
+           (typeof value !== 'function' ||
+             (value.__fns__ && value.__inc__));
   },
   
   acceptMethod: function(name, method) {
