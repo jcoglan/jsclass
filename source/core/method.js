@@ -16,7 +16,8 @@ JS.extend(JS.Method.prototype, {
   },
   
   setName: function(name) {
-    this.callable.displayName = name;
+    this.callable.displayName =
+    this.displayName = name;
   },
   
   call: function() {

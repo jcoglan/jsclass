@@ -19,7 +19,7 @@ JS.extend(JS.Module.prototype, {
   },
   
   setName: function(name) {
-    this.__nom__ = this.displayName = name || '';
+    this.displayName = name || '';
     
     for (var field in this.__fns__)
       this.__name__(field);
@@ -29,12 +29,12 @@ JS.extend(JS.Module.prototype, {
   },
   
   __name__: function(name) {
-    if (!this.__nom__) return;
+    if (!this.displayName) return;
     
     var object = this.__fns__[name];
     if (!object) return;
     
-    name = this.__nom__.replace(JS.END_WITHOUT_DOT, '$1#') + name;
+    name = this.displayName.replace(JS.END_WITHOUT_DOT, '$1#') + name;
     if (JS.isFn(object.setName)) return object.setName(name);
     if (JS.isFn(object)) object.displayName = name;
   },
