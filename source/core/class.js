@@ -23,8 +23,12 @@ JS.extend(JS.Class.prototype, {
     
     klass.__tgt__ = klass.prototype;
     
+    var parentModule = (parent === Object)
+                     ? {}
+                     : (parent.__fns__ ? parent : new JS.Module(parent.prototype));
+    
     klass.include(JS.Kernel)
-         .include(parent)
+         .include(parentModule)
          .include(methods);
     
     if (typeof parent.inherited === 'function')
