@@ -20,7 +20,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
 //                'ConstantScopeSpec',
                 'DecoratorSpec',
 //                'EnumerableSpec',
-//                'ForwardableSpec',
+                'ForwardableSpec',
                 'HashSpec',
 //                'MethodChainSpec',
                 'ObservableSpec',
