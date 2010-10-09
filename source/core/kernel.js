@@ -6,9 +6,17 @@ JS.Kernel = new JS.Module('Kernel', {
     return this.__meta__.include(this.klass);
   },
   
+  equals: function(other) {
+    return this === other;
+  },
+  
   extend: function(module) {
     this.__eigen__().include(module, {_extended: this});
     return this;
+  },
+  
+  hash: function() {
+    return JS.Kernel.hashFor(this);
   },
   
   isA: function(module) {
@@ -31,6 +39,26 @@ JS.Kernel = new JS.Module('Kernel', {
   
   methods: function() {
     return this.__eigen__().instanceMethods();
+  },
+  
+  tap: function(block, context) {
+    block.call(context || null, this);
+    return this;
+  },
+  
+  toString: function() {
+    return '#<' + this.klass.toString() + ':' + this.hash() + '>';
   }
 });
+
+(function() {
+  var id = 1;
+  
+  JS.Kernel.hashFor = function(object) {
+    if (object.__hash__ !== undefined) return object.__hash__;
+    object.__hash__ = (new Date().getTime() + id).toString(16);
+    id += 1;
+    return object.__hash__;
+  };
+})();
 

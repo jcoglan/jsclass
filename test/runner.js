@@ -12,7 +12,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'Test.ContextSpec',
                 'ModuleSpec',
                 'ClassSpec',
-//                'KernelSpec',
+                'KernelSpec',
                 'SingletonSpec',
                 'InterfaceSpec',
                 'CommandSpec',
