@@ -19,7 +19,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'ComparableSpec',
 //                'ConstantScopeSpec',
                 'DecoratorSpec',
-//                'EnumerableSpec',
+                'EnumerableSpec',
                 'ForwardableSpec',
                 'HashSpec',
 //                'MethodChainSpec',

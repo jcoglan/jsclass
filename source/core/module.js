@@ -177,7 +177,7 @@ JS.extend(JS.Module.prototype, {
   },
   
   match: function(object) {
-    return object.isA && object.isA(this);
+    return object && object.isA && object.isA(this);
   },
   
   toString: function() {
