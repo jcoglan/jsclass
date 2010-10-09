@@ -31,6 +31,8 @@ JS.MethodChain.exec = function(queue, object) {
   return object;
 };
 
+JS.MethodChain.displayName = 'MethodChain';
+
 JS.MethodChain.toString = function() {
   return 'MethodChain';
 };
@@ -70,18 +72,18 @@ JS.MethodChain.addMethod = function(name) {
   func.displayName = 'MethodChain#' + name;
 };
 
-JS.MethodChain.displayName = 'MethodChain';
-
 JS.MethodChain.addMethods = function(object) {
   var methods = [], property, i;
   
-  for (property in object)
-    Number(property) !== property && methods.push(property);
+  for (property in object) {
+    if (Number(property) !== property) methods.push(property);
+  }
   
   if (object instanceof Array) {
     i = object.length;
-    while (i--)
-      typeof object[i] === 'string' && methods.push(object[i]);
+    while (i--) {
+      if (typeof object[i] === 'string') methods.push(object[i]);
+    }
   }
   i = methods.length;
   while (i--) this.addMethod(methods[i]);
@@ -90,11 +92,11 @@ JS.MethodChain.addMethods = function(object) {
   object.prototype && this.addMethods(object.prototype);
 };
 
-it = its = function() { return new JS.MethodChain; };
+it = its = function() { return new JS.MethodChain() };
 
-//JS.Module.methodAdded(function(name) {
-//  JS.MethodChain.addMethod(name);
-//});
+JS.Method.added(function(method) {
+  JS.MethodChain.addMethod(method.name);
+});
 
 JS.Kernel.include({
   wait: function(time) {
@@ -121,15 +123,15 @@ JS.Kernel.include({
             (typeof base === 'function' && base.apply(this, args)) ||
             this;
   }
-}, true);
+});
 
-//(function() {
-//  var queue = JS.Module.__chainq__,
-//      n     = queue.length;
-//  
-//  while (n--) JS.MethodChain.addMethods(queue[n]);
-//  JS.Module.__chainq__ = null;
-//})();
+(function() {
+  var queue = JS.Module.__queue__,
+      n     = queue.length;
+  
+  while (n--) JS.MethodChain.addMethods(queue[n]);
+  delete JS.Module.__queue__;
+})();
 
 JS.MethodChain.addMethods([
   "abs", "accept", "accessKey", "acos", "addEventListener", "align", "alt",

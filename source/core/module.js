@@ -1,4 +1,5 @@
 JS.Module = JS.makeClass();
+JS.Module.__queue__ = [];
 
 JS.extend(JS.Module.prototype, {
   initialize: function(name, methods, options) {
@@ -16,6 +17,9 @@ JS.extend(JS.Module.prototype, {
     
     this.setName(name);
     this.include(methods);
+    
+    if (JS.Module.__queue__)
+      JS.Module.__queue__.push(this);
   },
   
   setName: function(name) {

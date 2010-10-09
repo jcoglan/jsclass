@@ -29,11 +29,13 @@
     klass.constructor = klass.klass = JS.Class;
   };
   
+  classify('Method');
   classify('Module');
   classify('Class', 'Module');
   
   var eigen = JS.Kernel.instanceMethod('__eigen__');
   
+  eigen.call(JS.Method);
   eigen.call(JS.Module);
   eigen.call(JS.Class).include(JS.Module.__meta__);
 })();

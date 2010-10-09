@@ -44,14 +44,34 @@ JS.Method.create = function(module, name, callable) {
   if (callable && callable.__inc__ && callable.__fns__)
     return callable;
   
-  return (callable instanceof this)
+  var method = (callable instanceof this)
        ? callable
        : new this(module, name, callable);
+  
+  this.notify(method);
+  return method;
 };
 
 JS.Method.compile = function(method, host) {
   if (method instanceof this) return method.compile(host);
   else return method;
+};
+
+JS.Method.__listeners__ = [];
+  
+JS.Method.added = function(block, context) {
+  this.__listeners__.push([block, context]);
+};
+  
+JS.Method.notify = function(method) {
+  var listeners = this.__listeners__,
+      i = listeners.length,
+      listener;
+  
+  while (i--) {
+    listener = listeners[i];
+    listener[0].call(listener[1], method);
+  }
 };
 
 JS.Method._keywords = [

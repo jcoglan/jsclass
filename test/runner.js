@@ -22,7 +22,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'EnumerableSpec',
                 'ForwardableSpec',
                 'HashSpec',
-//                'MethodChainSpec',
+                'MethodChainSpec',
                 'ObservableSpec',
                 'PackageSpec',
                 'ProxySpec',
