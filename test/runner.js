@@ -27,7 +27,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'PackageSpec',
                 'ProxySpec',
                 'RangeSpec',
-//                'SetSpec',
+                'SetSpec',
 //                'StateSpec',
             
     JS.Test.method('autorun'))
