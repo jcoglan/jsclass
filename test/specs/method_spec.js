@@ -5,6 +5,13 @@ MethodSpec = JS.Test.describe(JS.Method, function() {
     this.theMethod = theModule.instanceMethod("im_a_method")
   })
   
+  it("should be bootstrapped properly", function() {
+    assertKindOf( JS.Class,  JS.Method )
+    assertKindOf( JS.Module, JS.Method )
+    assertKindOf( JS.Kernel, JS.Method )
+    assertEqual( "Method", JS.Method.displayName )
+  })
+  
   describe("#module", function() {
     it("refers to the module hosting the method", function() {
       assertEqual( theModule, theMethod.module )
