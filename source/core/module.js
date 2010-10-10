@@ -160,7 +160,7 @@ JS.extend(JS.Module.prototype, {
   },
   
   instanceMethod: function(name) {
-    return this.__fns__[name];
+    return this.lookup(name).pop();
   },
   
   instanceMethods: function(recursive, list) {

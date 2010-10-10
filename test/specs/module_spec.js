@@ -197,6 +197,31 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
       })
     })
     
+    describe("#instanceMethod", function() {
+      before(function() {
+        this.module = new subjectClass({ aMethod: function() {} })
+      })
+      
+      it("returns a Method", function() {
+        assertKindOf( JS.Method, module.instanceMethod("aMethod") )
+      })
+      
+      it("returns a the named method from the module", function() {
+        assertEqual( "aMethod", module.instanceMethod("aMethod").name )
+      })
+      
+      describe("with inherited methods", function() {
+        before(function() {
+          this.includer = new subjectClass({ include: module })
+        })
+        
+        it("returns the named method from its inheritance chain", function() {
+          assertSame( includer.instanceMethod("aMethod"),
+                      module.instanceMethod("aMethod") )
+        })
+      })
+    })
+    
     describe("#instanceMethods", function() {
       before(function() {
         this.module = new subjectClass()
