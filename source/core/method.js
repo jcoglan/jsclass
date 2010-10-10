@@ -9,6 +9,8 @@ JS.extend(JS.Method.prototype, {
     this._words = {};
     if (typeof callable !== 'function') return;
     
+    this.arity  = callable.length;
+    
     var matches = callable.toString().match(/\b[a-z\_\$][a-z0-9\_\$]*\b/ig),
         i       = matches.length;
     
@@ -18,6 +20,10 @@ JS.extend(JS.Method.prototype, {
   setName: function(name) {
     this.callable.displayName =
     this.displayName = name;
+  },
+  
+  contains: function(word) {
+    return this._words.hasOwnProperty(word);
   },
   
   call: function() {

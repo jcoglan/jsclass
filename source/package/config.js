@@ -12,6 +12,7 @@ JS.Packages(function() { with(this) {
     
     module('core')          .provides('JS.Module',
                                       'JS.Class',
+                                      'JS.Method',
                                       'JS.Kernel',
                                       'JS.Singleton',
                                       'JS.Interface');
