@@ -94,18 +94,21 @@ JS.Test.Unit.extend({
     exec: function(methodName, onSuccess, onError) {
       if (!methodName) return onSuccess.call(this);
       
-      var method = JS.isFn(methodName) ? methodName : this[methodName],
-          arity  = (method.arity === undefined) ? method.length : method.arity,
-          self   = this;
+      var arity = JS.isFn(methodName)
+                ? methodName.length
+                : this.__eigen__().instanceMethod(methodName).arity,
+          
+          callable = JS.isFn(methodName) ? methodName : this[methodName],
+          self     = this;
       
       if (arity === 0)
         return this._runWithExceptionHandlers(function() {
-          method.call(this);
+          callable.call(this);
           onSuccess.call(this);
         }, onError);
       
       this._runWithExceptionHandlers(function() {
-        method.call(this, function(asyncBlock) {
+        callable.call(this, function(asyncBlock) {
           self.exec(asyncBlock, onSuccess, onError);
         })
       }, onError);
