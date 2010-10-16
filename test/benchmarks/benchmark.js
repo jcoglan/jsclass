@@ -3,11 +3,26 @@ Benchmark = {
   
   measure: function(name, runs, functions) {
     var times = {setup: [], test: []};
-    this.collectTimes(runs, functions.test, times.test);
-    print(this.format(times.test));
+    
+    this.collectTimes(runs, times.setup, function() {
+      var context = {};
+      if (functions.setup) functions.setup.call(context);
+    });
+    
+    this.collectTimes(runs, times.test, function() {
+      var context = {};
+      if (functions.setup) functions.setup.call(context);
+      functions.test.call(context);
+    });
+    
+    var setup = this.average(times.setup),
+        test  = this.average(times.test),
+        total = this.difference(test, setup);
+    
+    print(this.format(total));
   },
   
-  collectTimes: function(runs, block, results) {
+  collectTimes: function(runs, results, block) {
     var n = this.N, start, end, i;
     while (n--) {
       i = runs;
@@ -18,12 +33,21 @@ Benchmark = {
     }
   },
   
-  format: function(timings) {
-    var mean    = this.mean(timings),
-        stddev  = this.stddev(timings),
-        error   = 100 * stddev / mean;
-    
-    return Math.round(mean) + ' +/- ' + Math.round(error) + '%';
+  average: function(list) {
+    return { value: this.mean(list), error: this.stddev(list) };
+  },
+  
+  difference: function(a, b) {
+    return {
+      value: a.value - b.value,
+      error: Math.sqrt(Math.pow(a.error, 2) + Math.pow(b.error, 2))
+    };
+  },
+  
+  format: function(average) {
+    var error = (average.value === 0) ? 0 : 100 * average.error / average.value;
+    return Math.round(average.value) +
+           ' +/- ' + Math.round(error) + '%';
   },
   
   mean: function(list, mapper) {
