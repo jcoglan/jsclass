@@ -10,7 +10,7 @@ JS.extend(JS.Module.prototype, {
     }
     options = options || {};
     
-    this.__inc__ = [];
+    this.__inc__ = new JS.List();
     this.__dep__ = [];
     this.__fns__ = {};
     this.__tgt__ = options._target;
@@ -56,12 +56,13 @@ JS.extend(JS.Module.prototype, {
     var options = options || {},
         extend  = module.extend,
         include = module.include,
-        extended, field, value, mixins, i, n;
+        inclusion, extended, field, value, mixins, i, n;
     
     if (module.__fns__ && module.__inc__) {
-      this.__inc__.push(module);
-      if (module.__dep__) module.__dep__.push(this);
-      this.acceptModule(module);
+      inclusion = new JS.Inclusion(this, module);
+      this.__inc__.push(inclusion);
+      if (module.__dep__) module.__dep__.push(inclusion);
+      this.acceptModule(module, inclusion);
       
       if (extended = options._extended) {
         if (typeof module.extended === 'function')
@@ -99,35 +100,43 @@ JS.extend(JS.Module.prototype, {
              (value.__fns__ && value.__inc__));
   },
   
-  acceptMethod: function(name, method) {
+  acceptMethod: function(name, method, inclusion) {
     if (this.__fns__.hasOwnProperty(name) &&
         this.__fns__[name] !== method)
       return;
     
     if (this.__tgt__) this.__tgt__[name] = JS.Method.compile(method, this);
+    if (inclusion) inclusion.acceptMethod(name, method);
     
     var i = this.__dep__.length;
     while (i--)
       this.__dep__[i].acceptMethod(name, method);
   },
   
-  acceptModule: function(module) {
-    var fns = module.__fns__,
-        inc = module.__inc__,
+  acceptModule: function(module, inclusion) {
+    var fns  = module.__fns__,
+        inc  = module.__inc__,
+        node = inc.head,
         field, i, n;
     
-    for (i = 0, n = inc.length; i < n; i++)
-      this.acceptModule(inc[i]);
+    while (node) {
+      this.acceptModule(node.mixin, inclusion);
+      node = node.next;
+    }
     
     for (field in fns)
-      this.acceptMethod(field, fns[field]);
+      this.acceptMethod(field, fns[field], inclusion);
   },
   
   ancestors: function(list) {
-    list = list || [];
+    var list = list || [],
+        inc  = this.__inc__,
+        node = inc.head;
     
-    for (var i = 0, n = this.__inc__.length; i < n; i++)
-      this.__inc__[i].ancestors(list);
+    while (node) {
+      node.mixin.ancestors(list);
+      node = node.next;
+    }
     
     if (JS.indexOf(list, this) < 0)
       list.push(this);
@@ -150,11 +159,14 @@ JS.extend(JS.Module.prototype, {
   
   includes: function(module) {
     if (module === this) return true;
-    var inc = this.__inc__,
-        i   = inc.length;
-    while (i--) {
-      if (inc[i].includes(module))
+    
+    var inc  = this.__inc__,
+        node = inc.head;
+    
+    while (node) {
+      if (node.mixin.includes(module))
         return true;
+      node = node.next;
     }
     return false;
   },

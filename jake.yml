@@ -13,6 +13,8 @@ packages:
     directory: core
     files:
       - utils
+      - list
+      - inclusion
       - method
       - module
       - kernel
