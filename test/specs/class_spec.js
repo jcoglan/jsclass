@@ -523,5 +523,56 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
       assertSame( module.prototype.bar, module.instanceMethod("bar").callable )
     })
   })
+  
+  describe("method precedence", function() {
+    before(function() {
+      this.Class  = new JS.Class({ aMethod: function() { return "Class" } })
+      this.Module = new JS.Module({ someCall: function() { return "Module" } })
+      this.object = new Class()
+    })
+    
+    describe("a method in a class", function() {
+      it("takes precedence over included modules", function() {
+        var module = new JS.Module({ aMethod: function() { return "module" } })
+        Class.include(module)
+        assertEqual( "Class", object.aMethod() )
+      })
+    })
+    
+    describe("a method in a module", function() {
+      it("gets through if the including class does not define it", function() {
+        Class.include(Module)
+        assertEqual( "Module", object.someCall() )
+      })
+      
+      it("takes precedence over earlier mixins", function() {
+        var early = new JS.Module({ someCall: function() { return "early" } })
+        Class.include(early)
+        Class.include(Module)
+        assertEqual( "Module", object.someCall() )
+      })
+      
+      it("is overriden by later mixins", function() {
+        var late = new JS.Module({ someCall: function() { return "late" } })
+        Class.include(Module)
+        Class.include(late)
+        assertEqual( "late", object.someCall() )
+        
+        Module.define("someCall", function() { return "Module" })
+        assertEqual( "late", object.someCall() )
+      })
+      
+      it("is overridden by methods inherited by later mixins", function() {
+        var parent = new JS.Module({ someCall: function() { return "parent" } })
+        var late   = new JS.Module({ include: parent })
+        Class.include(Module)
+        Class.include(late)
+        assertEqual( "parent", object.someCall() )
+        
+        Module.define("someCall", function() { return "Module" })
+        assertEqual( "parent", object.someCall() )
+      })
+    })
+  })
 })
 
