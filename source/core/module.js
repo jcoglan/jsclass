@@ -105,7 +105,10 @@ JS.extend(JS.Module.prototype, {
         this.__fns__[name] !== method)
       return;
     
-    if (this.__tgt__) this.__tgt__[name] = JS.Method.compile(method, this);
+    var compiled = JS.Method.compile(method, this);
+    if (this.__tgt__ && this.__tgt__[name] !== compiled)
+      this.__tgt__[name] = compiled;
+    
     if (inclusion) inclusion.acceptMethod(name, method);
     
     var i = this.__dep__.length;
