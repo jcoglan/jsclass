@@ -169,6 +169,14 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
       })
     })
     
+    it("can be bound using Kernel#method()", function() {
+      var Child = new JS.Class(Parent, {
+        aMethod: function() { return this.method("callSuper") }
+      })
+      var method = new Child().aMethod()
+      assertEqual( "foo, bar", method("foo", "bar") )
+    })
+    
     describe("calling the superclass with implicit args", function() {
       before(function() {
         this.Child = new JS.Class(Parent, {

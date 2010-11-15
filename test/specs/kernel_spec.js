@@ -3,7 +3,8 @@ KernelSpec = JS.Test.describe(JS.Kernel, function() {
   
   before(function() {
     this.Class  = new JS.Class("TheClass", {
-      upcase: function() { return this._name.toUpperCase() }
+      upcase:   function() { return this._name.toUpperCase() },
+      downcase: function() { return this._name.toLowerCase() }
     })
     this.object = new Class()
     this.second = new Class()
@@ -57,6 +58,11 @@ KernelSpec = JS.Test.describe(JS.Kernel, function() {
       
       it("does not affect the object's ancestry", function() {
         assertEqual( [JS.Kernel, Class, object.__eigen__()], object.__eigen__().ancestors() )
+      })
+      
+      it("does not add methods that the object inherits from its class", function() {
+        assertEqual( object.klass.prototype.downcase, object.downcase )
+        assert( !object.hasOwnProperty("downcase") )
       })
       
       it("adds methods than run in the context of the object", function() {
@@ -286,7 +292,7 @@ KernelSpec = JS.Test.describe(JS.Kernel, function() {
   describe("#methods", function() {
     describe("for an object with no added methods", function() {
       it("returns the methods from Kernel and the object's class", function() {
-        assertEqual( ["upcase"].concat(JS.Kernel.instanceMethods()).sort(),
+        assertEqual( ["downcase", "upcase"].concat(JS.Kernel.instanceMethods()).sort(),
                      object.methods().sort() )
       })
     })
@@ -300,7 +306,7 @@ KernelSpec = JS.Test.describe(JS.Kernel, function() {
       })
       
       it("returns the methods from the object's class and the methods from the object", function() {
-        assertEqual( $w("upcase method1 method2").concat(JS.Kernel.instanceMethods()).sort(),
+        assertEqual( $w("downcase upcase method1 method2").concat(JS.Kernel.instanceMethods()).sort(),
                      object.methods().sort() )
       })
     })
