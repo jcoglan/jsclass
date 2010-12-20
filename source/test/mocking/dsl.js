@@ -49,34 +49,69 @@ JS.Test.extend({
         },
         
         given: function() {
-          var matcher = new JS.Test.Mocking.Parameters(this, arguments);
+          var matcher = new JS.Test.Mocking.Parameters(arguments);
           this._argMatchers.push(matcher);
+          return this;
+        },
+        
+        raises: function(exception) {
+          var matchers = this._argMatchers;
+          matchers[matchers.length - 1]._exception = exception;
           return this;
         },
         
         returns: function(returnValue) {
           var matchers = this._argMatchers;
           matchers[matchers.length - 1]._returnValue = returnValue;
+          return this;
+        },
+        
+        yields: function() {
+          var matchers = this._argMatchers;
+          matchers[matchers.length - 1]._yieldArgs = arguments;
+          return this;
         },
         
         _dispatch: function(args) {
-          var matchers = this._argMatchers, matcher;
+          var matchers = this._argMatchers,
+              matcher, result;
+          
           for (var i = 0, n = matchers.length; i < n; i++) {
             matcher = matchers[i];
-            if (matcher.match(args)) return matcher._returnValue;
+            result  = matcher.match(args);
+            
+            if (!result) continue;
+            
+            if (result === true)  return matcher._returnValue;
+            if (result.callback)  return result.callback.apply(result.context, matcher._yieldArgs);
+            if (result.exception) throw result.exception;
           }
         }
       }),
       
       Parameters: new JS.Class({
-        initialize: function(stub, params) {
-          this._stub   = stub;
-          this._params = params;
+        initialize: function(params) {
+          this._params = JS.array(params);
         },
         
         match: function(args) {
-          if (args.length === 0 && this._params.length === 0) return true;
-          return JS.Enumerable.areEqual(this._params, args);
+          var argsCopy = JS.array(args), callback, context;
+          
+          if (this._yieldArgs) {
+            if (JS.isFn(argsCopy[argsCopy.length - 2])) {
+              context  = argsCopy.pop();
+              callback = argsCopy.pop();
+            } else if (JS.isFn(argsCopy[argsCopy.length - 1])) {
+              context  = null;
+              callback = argsCopy.pop();
+            }
+          }
+          
+          if (!JS.Enumerable.areEqual(this._params, argsCopy)) return false;
+          
+          if (this._exception) return {exception: this._exception};
+          if (this._yieldArgs) return {callback: callback, context: context};
+          return true;
         }
       }),
       
