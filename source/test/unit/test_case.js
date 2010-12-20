@@ -78,6 +78,7 @@ JS.Test.Unit.extend({
       
       var complete = function() {
         result.addRun();
+        JS.Test.Unit.mocking.removeStubs();
         callback.call(context || null, this.klass.FINISHED, this);
         continuation();
       };
