@@ -54,6 +54,7 @@ packages:
       - context/shared_behavior
       - context/test
       - context/suite
+      - mocking/dsl
       - helpers
   
   dom:

@@ -10,6 +10,7 @@ JS.Packages(function() { with(this) {
 JS.require('JS.Test', 'JS.MethodChain', function() {
     JS.require( 'Test.UnitSpec',
                 'Test.ContextSpec',
+                'Test.MockingSpec',
                 'ModuleSpec',
                 'ClassSpec',
                 'KernelSpec',
