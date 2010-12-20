@@ -115,15 +115,86 @@ JS.Test.extend({
         }
       }),
       
+      ArrayIncluding: new JS.Class({
+        initialize: function(elements) {
+          this._elements = elements;
+        },
+        
+        equals: function(array) {
+          if (!JS.isType(array, Array)) return false;
+          var i = this._elements.length;
+          while (i--) {
+            if (JS.indexOf(array, this._elements[i]) === -1)
+              return false;
+          }
+          return true;
+        }
+      }),
+      
+      ObjectIncluding: new JS.Class({
+        initialize: function(elements) {
+          this._elements = elements;
+        },
+        
+        equals: function(object) {
+          if (!JS.isType(object, Object)) return false;
+          for (var key in this._elements) {
+            if (!JS.Enumerable.areEqual(this._elements[key], object[key]))
+              return false;
+          }
+          return true;
+        }
+      }),
+      
+      InstanceOf: new JS.Class({
+        initialize: function(type) {
+          this._type = type;
+        },
+        
+        equals: function(object) {
+          return JS.isType(object, this._type);
+        }
+      }),
+      
+      Matcher: new JS.Class({
+        initialize: function(type) {
+          this._type = type;
+        },
+        
+        equals: function(object) {
+          return JS.match(this._type, object);
+        }
+      }),
+      
       DSL: new JS.Module({
         stub: function(object, methodName) {
           var stub = JS.Test.Mocking.findStub(object, methodName);
           stub.apply();
           return stub;
+        },
+        
+        a: function(type) {
+          return new JS.Test.Mocking.InstanceOf(type);
+        },
+        
+        match: function(type) {
+          return new JS.Test.Mocking.Matcher(type);
+        },
+        
+        arrayIncluding: function() {
+          return new JS.Test.Mocking.ArrayIncluding(arguments);
+        },
+        
+        objectIncluding: function(elements) {
+          return new JS.Test.Mocking.ObjectIncluding(elements);
         }
       })
     }
   })
+});
+
+JS.Test.Mocking.DSL.include({
+  an: JS.Test.Mocking.DSL.instanceMethod('a')
 });
 
 JS.Test.Unit.TestCase.include(JS.Test.Mocking.DSL);

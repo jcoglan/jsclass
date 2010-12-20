@@ -170,6 +170,18 @@ JS.extend(JS, {
   },
   
   /**
+   * JS.match(category, object) -> Boolean
+   * - category (Object): anything implementing #match or #test
+   * - object (Object): the object to test
+   * 
+   * Performs a 'case equality' match.
+   **/
+  match: function(category, object) {
+    if (object === undefined) return false;
+    return JS.isFn(category.test) ? category.test(object) : category.match(object);
+  },
+  
+  /**
    * JS.ignore(key, object) -> Boolean
    * - key (String): name of field being added to an object
    * - object (Object): value of the given field
