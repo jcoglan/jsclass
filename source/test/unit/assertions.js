@@ -160,6 +160,7 @@ JS.Test.Unit.extend({
       this.__wrapAssertion__(function() {
         var fullMessage = this.buildMessage(message, "<?> expected to match\n<?>.", string, pattern);
         this.assertBlock(fullMessage, function() {
+          if (string === undefined) return false;
           return JS.isFn(pattern.test) ? pattern.test(string) : pattern.match(string);
         });
       });

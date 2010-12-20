@@ -516,6 +516,17 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"food\"> expected not to match\n</Foo/i>." )
         })})
       })
+      
+      it("fails if the string is undefined", function(resume) {
+        runTests({
+          test1: function() { with(this) {
+            assertMatch( /[a-z]+/, undefined )
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<undefined> expected to match\n</[a-z]+/>." )
+        })})
+      })
     })
     
     describe("with modules", function() {
