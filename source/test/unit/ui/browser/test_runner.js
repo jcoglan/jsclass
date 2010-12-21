@@ -50,6 +50,20 @@ JS.Test.Unit.UI.extend({
           this._mediator.addListener(JS.Test.Unit.UI.TestRunnerMediator.FINISHED, this.method('_finished'));
           this._mediator.addListener(JS.Test.Unit.TestCase.STARTED, this.method('_testStarted'));
           this._mediator.addListener(JS.Test.Unit.TestCase.FINISHED, this.method('_testFinished'));
+          
+          if (!window.TestSwarm) return;
+          
+          TestSwarm.serialize = function() { return 'HTML' };
+          this._mediator.addListener(JS.Test.Unit.TestCase.FINISHED, TestSwarm.heartbeat);
+          
+          this._mediator.addListener(JS.Test.Unit.UI.TestRunnerMediator.FINISHED,
+          function() {
+            TestSwarm.submit({
+              fail:   this._result.failureCount(),
+              error:  this._result.errorCount(),
+              total:  this._result.runCount()
+            });
+          }, this);
         },
         
         _startMediator: function() {
