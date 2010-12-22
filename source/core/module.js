@@ -61,7 +61,7 @@ JS.extend(JS.Module.prototype, {
     if (module.__fns__ && module.__inc__) {
       inclusion = new JS.Inclusion(this, module);
       this.__inc__.push(inclusion);
-      if (module.__dep__) module.__dep__.push(inclusion);
+      if ((module.__dep__ || {}).push) module.__dep__.push(inclusion);
       this.acceptModule(module, inclusion);
       
       if (extended = options._extended) {

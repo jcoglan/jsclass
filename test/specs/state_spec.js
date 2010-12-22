@@ -82,15 +82,13 @@ StateSpec = JS.Test.describe(JS.State, function() {
 
   describe("with inline states", function() {
     before(function() {
-      Stateful.include({
-        states: {
-          MIKE: {
-            isCalled: function(name) { return this.name === name },
-            setName: function() { this.name = "mike" }
-          },
-          BOB: {
-            setName: function(name) { this.name = name }
-          }
+      Stateful.states({
+        MIKE: {
+          isCalled: function(name) { return this.name === name },
+          setName: function() { this.name = "mike" }
+        },
+        BOB: {
+          setName: function(name) { this.name = name }
         }
       })
     })
@@ -161,17 +159,16 @@ StateSpec = JS.Test.describe(JS.State, function() {
     
     describe("subclass", function() {
       before(function() {
-        this.StatefulChild = new JS.Class(Stateful, {
-          states: {
-            BOB: {
-              setName: function() {
-                this.callSuper()
-                this.name += " (inherited)"
-              }
-            },
-            EXTRA: {
-              setName: function() { this.name = "extra" }
+        this.StatefulChild = new JS.Class(Stateful)
+        StatefulChild.states({
+          BOB: {
+            setName: function() {
+              this.callSuper()
+              this.name += " (inherited)"
             }
+          },
+          EXTRA: {
+            setName: function() { this.name = "extra" }
           }
         })
         this.subject = new StatefulChild()

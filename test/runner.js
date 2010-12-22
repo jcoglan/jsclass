@@ -29,7 +29,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'ProxySpec',
                 'RangeSpec',
                 'SetSpec',
-//                'StateSpec',
+                'StateSpec',
             
     JS.Test.method('autorun'))
 })
