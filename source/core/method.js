@@ -30,19 +30,44 @@ JS.extend(JS.Method.prototype, {
     return this.callable.call.apply(this.callable, arguments);
   },
   
-  compile: function(host) {
-    var callable = this.callable,
-        words    = this._words,
-        keywords = JS.Method._keywords,
-        i        = keywords.length,
+  compile: function() {
+    var method     = this,
+        callable   = method.callable,
+        words      = method._words,
+        allWords   = JS.Method._keywords,
+        i          = allWords.length,
+        keywords   = [],
         keyword;
     
-    while (i--) {
-      keyword = keywords[i];
-      if (words[keyword.name])
-        callable = keyword.transform(callable, this, host);
+    while  (i--) {
+      keyword = allWords[i];
+      if (words[keyword.name]) keywords.push(keyword);
     }
-    return callable;
+    if (keywords.length === 0) return callable;
+    
+    return function() {
+      var N = keywords.length, j = N, previous = {}, keyword;
+      
+      while (j--) {
+        keyword = keywords[j];
+        previous[keyword.name] = {
+          _value: this[keyword.name],
+          _own:   this.hasOwnProperty(keyword.name)
+        };
+        keyword.filter.call(method, this, arguments);
+      }
+      var returnValue = callable.apply(this, arguments),
+          j = N;
+      
+      while (j--) {
+        keyword = keywords[j];
+        if (previous[keyword.name]._own)
+          this[keyword.name] = previous[keyword.name]._value;
+        else
+          delete this[keyword.name];
+      }
+      return returnValue;
+    };
   }
 });
 
@@ -58,8 +83,8 @@ JS.Method.create = function(module, name, callable) {
   return method;
 };
 
-JS.Method.compile = function(method, host) {
-  if (method instanceof this) return method.compile(host);
+JS.Method.compile = function(method) {
+  if (method instanceof this) return method.compile();
   else return method;
 };
 
@@ -80,34 +105,9 @@ JS.Method.notify = function(method) {
   }
 };
 
-JS.Method._keywords = [
-  { name: 'callSuper',
-    transform: function(callable, method, host) {
-      return function() {
-        var currentSuper = this.callSuper,
-            parameters   = [].slice.apply(arguments),
-            functions    = host.lookup(method.name),
-            stackIndex   = functions.length;
-        
-        this.callSuper = function() {
-          var i = arguments.length;
-          while (i--) parameters[i] = arguments[i];
-          stackIndex -= 1;
-          var value = functions[stackIndex].callable.apply(this, parameters);
-          stackIndex += 1;
-          return value;
-        };
-        
-        var returnValue = this.callSuper();
-        
-        if (currentSuper === undefined)
-          delete this.callSuper;
-        else
-          this.callSuper = currentSuper;
-        
-        return returnValue;
-      };
-    }
-  }
-];
+JS.Method._keywords = [];
+
+JS.Method.keyword = function(name, filter) {
+  this._keywords.push({name: name, filter: filter});
+};
 
