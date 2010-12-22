@@ -620,7 +620,7 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
   describe("#yield", function() {
     before(function() {
       this.Class = new JS.Class({
-        noArgs:  function() { this.yield("hi", "there") },
+        noArgs:  function() { return this.yield("hi", "there") },
         twoArgs: function(a,b) { this.yield(b) }
       })
       this.object = new Class()
@@ -630,6 +630,10 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
       var result
       object.noArgs(function() { result = JS.array(arguments) })
       assertEqual( ["hi", "there"], result )
+    })
+    
+    it("returns the result of yielding to the callback", function() {
+      assertEqual( "result", object.noArgs(function() { return "result" }) )
     })
     
     it("allows arguments before the callback", function() {

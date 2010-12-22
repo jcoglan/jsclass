@@ -26,7 +26,7 @@ JS.Method.keyword('yield', function(receiver, args) {
   var block = Array.prototype.slice.call(args, this.arity);
   
   receiver.yield = function() {
-    block[0].apply(block[1] || null, arguments);
+    return block[0].apply(block[1] || null, arguments);
   };
 });
 
