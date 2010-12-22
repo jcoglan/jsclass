@@ -582,5 +582,67 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
       })
     })
   })
+  
+  describe("#blockGiven", function() {
+    before(function() {
+      this.Class = new JS.Class({
+        noArgs:  function() { return this.blockGiven() },
+        oneArg:  function(a) { return this.blockGiven() },
+        twoArgs: function(a,b) { return this.blockGiven() }
+      })
+      this.object = new Class()
+    })
+    
+    it("returns true if a block is passed after all the args", function() {
+      assert( object.noArgs(function() {}) )
+      assert( object.oneArg(0, function() {}) )
+      assert( object.twoArgs(0, 1, function() {}) )
+    })
+    
+    it("returns true if a block and context are passed after all the args", function() {
+      assert( object.noArgs(function() {}, {}) )
+      assert( object.oneArg(0, function() {}, {}) )
+      assert( object.twoArgs(0, 1, function() {}, {}) )
+    })
+    
+    it("returns false is a block is given within the arg list", function() {
+      assert( !object.oneArg(function() {}) )
+      assert( !object.twoArgs(0, function() {}) )
+    })
+    
+    it("returns false if the item in block position is not a function", function() {
+      assert( !object.noArgs(true) )
+      assert( !object.oneArg(0, true) )
+      assert( !object.twoArgs(0, 1, true) )
+    })
+  })
+  
+  describe("#yield", function() {
+    before(function() {
+      this.Class = new JS.Class({
+        noArgs:  function() { this.yield("hi", "there") },
+        twoArgs: function(a,b) { this.yield(b) }
+      })
+      this.object = new Class()
+    })
+    
+    it("calls the passed callback with the values", function() {
+      var result
+      object.noArgs(function() { result = JS.array(arguments) })
+      assertEqual( ["hi", "there"], result )
+    })
+    
+    it("allows arguments before the callback", function() {
+      var result
+      object.twoArgs("o", "hai", function() { result = JS.array(arguments) })
+      assertEqual( ["hai"], result )
+    })
+    
+    it("allows a context to be passed following the block", function() {
+      var context = {}, result
+      object.twoArgs("o", "hai", function() { result = [JS.array(arguments), this] }, context)
+      assertEqual( [["hai"], context], result )
+    })
+  })
 })
 

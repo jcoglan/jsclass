@@ -311,10 +311,10 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   update: function(hash, block, context) {
-    var blockGiven = JS.isFn(block);
+    var givenBlock = JS.isFn(block);
     hash.forEach(function(pair) {
       var key = pair.key, value = pair.value;
-      if (blockGiven && this.hasKey(key))
+      if (givenBlock && this.hasKey(key))
         value = block.call(context || null, key, this.get(key), value);
       this.store(key, value);
     }, this);

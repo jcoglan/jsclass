@@ -15,3 +15,18 @@ JS.Method.keyword('callSuper', function(receiver, args) {
   };
 });
 
+JS.Method.keyword('blockGiven', function(receiver, args) {
+  var block = Array.prototype.slice.call(args, this.arity),
+      hasBlock = (typeof block[0] === 'function');
+  
+  receiver.blockGiven = function() { return hasBlock };
+});
+
+JS.Method.keyword('yield', function(receiver, args) {
+  var block = Array.prototype.slice.call(args, this.arity);
+  
+  receiver.yield = function() {
+    block[0].apply(block[1] || null, arguments);
+  };
+});
+
