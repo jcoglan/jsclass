@@ -30,7 +30,7 @@ my $RCS_URL = "git://github.com/jcoglan/js.class.git";
 
 # The directory in which the checkouts will occur.
 
-my $BASE_DIR = "/var/www/testswarm/changeset/jsclass";
+my $BASE_DIR = "/var/www/testswarm/changeset/$USER";
 
 # A script tag loading in the TestSwarm injection script will
 # be added at the bottom of the <head> in the following file.
@@ -62,7 +62,13 @@ my $BROWSERS = "all";
 # All the suites that you wish to run within this job
 # (can be any number of suites)
 
-my %SUITES = ("test/browser.html");
+my %SUITES = ();
+
+# Comment these out if you wish to define a custom set of SUITES above
+my $SUITE = "$SWARM/changeset/$USER/{REV}";
+sub BUILD_SUITES {
+	%SUITES = map { /(\w+).html/; $1 => "$SUITE/$_"; } glob($INJECT_FILE);
+}
 
 ########### NO NEED TO CONFIGURE BELOW HERE ############
 
