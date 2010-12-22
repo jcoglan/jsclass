@@ -1,47 +1,12 @@
 Test = this.Test || {};
 
-TestSpecHelpers = new JS.Module({
-  suite: function(tests) {
-    return new JS.Class("TestedSuite", JS.Test.Unit.TestCase, tests).suite()
-  },
-  
-  runTests: function(tests, resume) {
-    if (tests) this.testcase = this.suite(tests)
-    this.testcase.run(this.result, resume || function() {}, function() {})
-  },
-  
-  assertTestResult: function(runs, assertions, failures, errors) { with(this) {
-    __wrapAssertion__(function() { with(this) {
-      assertEqual( runs,        result.runCount() )
-      assertEqual( assertions,  result.assertionCount() )
-      assertEqual( failures,    result.failureCount() )
-      assertEqual( errors,      result.errorCount() )
-      
-      assertEqual( failures + errors, faults.length )
-    }})
-  }},
-  
-  assertMessage: function(index, message) { with(this) {
-    if (typeof index === "string") {
-      message = index
-      index   = 1
-    }
-    assertEqual( message, faults[index-1].longDisplay() )
-  }}
-})
-
 Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
   include(JS.Test.Helpers)
   include(TestSpecHelpers)
-  
-  before("each", function() {
-    this.result = new JS.Test.Unit.TestResult()
-    this.faults = []
-    this.result.addListener(JS.Test.Unit.TestResult.FAULT, this.faults.push, this.faults)
-  })
+  before(function() { createTestEnvironment() })
   
   describe("empty TestCase", function() {
-    before("each", function(resume) {
+    before(function(resume) {
       this.runTests({}, resume)
     })
     

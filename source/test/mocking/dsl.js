@@ -1,6 +1,8 @@
 JS.Test.extend({
   Mocking: new JS.Module({
     extend: {
+      ExpectationError: new JS.Class(Error),
+      
       __activeStubs__: [],
       
       findStub: function(object, methodName) {
@@ -25,6 +27,16 @@ JS.Test.extend({
         this.__activeStubs__ = [];
       },
       
+      verify: function() {
+        try {
+          var stubs = this.__activeStubs__;
+          for (var i = 0, n = stubs.length; i < n; i++)
+            stubs[i]._verify();
+        } finally {
+          this.removeStubs();
+        }
+      },
+      
       Stub: new JS.Class({
         initialize: function(object, methodName) {
           this._object      = object;
@@ -32,6 +44,9 @@ JS.Test.extend({
           this._original    = object[methodName];
           this._ownProperty = object.hasOwnProperty(methodName);
           this._argMatchers = [new JS.Test.Mocking.Parameters(this, [])];
+          this._callsMade   = 0;
+          
+          this.apply();
         },
         
         apply: function() {
@@ -46,6 +61,11 @@ JS.Test.extend({
             this._object[this._methodName] = this._original;
           else
             delete this._object[this._methodName];
+        },
+        
+        expected: function() {
+          if (this.hasOwnProperty('_minCalls')) return;
+          this._minCalls = 1;
         },
         
         given: function() {
@@ -76,6 +96,8 @@ JS.Test.extend({
           var matchers = this._argMatchers,
               matcher, result;
           
+          this._callsMade += 1;
+          
           for (var i = 0, n = matchers.length; i < n; i++) {
             matcher = matchers[i];
             result  = matcher.match(args);
@@ -86,6 +108,12 @@ JS.Test.extend({
             if (result.callback)  return result.callback.apply(result.context, matcher._yieldArgs);
             if (result.exception) throw result.exception;
           }
+        },
+        
+        _verify: function() {
+          if (typeof this._minCalls !== 'number') return;
+          if (this._callsMade >= this._minCalls) return;
+          throw new JS.Test.Mocking.ExpectationError();
         }
       }),
       
@@ -169,7 +197,12 @@ JS.Test.extend({
       DSL: new JS.Module({
         stub: function(object, methodName) {
           var stub = JS.Test.Mocking.findStub(object, methodName);
-          stub.apply();
+          return stub;
+        },
+        
+        expect: function(object, methodName) {
+          var stub = JS.Test.Mocking.findStub(object, methodName);
+          stub.expected();
           return stub;
         },
         

@@ -1,9 +1,13 @@
 Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
+  include(JS.Test.Helpers)
+  include(TestSpecHelpers)
+  before(function() { createTestEnvironment() })
+  
+  before(function() {
+    this.object = {getName: function() { return "jester" }}
+  })
+  
   describe("stub", function() {
-    before(function() {
-      this.object = {getName: function() { return "jester" }}
-    })
-    
     it("replaces a method on an object", function() {
       stub(object, "getName").returns("king")
       assertEqual( "king", object.getName() )
@@ -159,6 +163,29 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           assertNotEqual( objectIncluding({bar: true, foo: true}), {bar: true, hi: true, there: true} )
         })
       })
+    })
+  })
+  
+  describe("mocking", function() {
+    it("passes if the method was called", function(resume) {
+      runTests({
+        testExpectMethod: function() { with(this) {
+          expect(object, "getName")
+          object.getName()
+        }}
+      }, function() { resume(function() {
+        assertTestResult( 1, 0, 0, 0 )
+      })})
+    })
+    
+    it("fails if the method was not called", function(resume) {
+      runTests({
+        testExpectMethod: function() { with(this) {
+          expect(object, "getName")
+        }}
+      }, function() { resume(function() {
+        assertTestResult( 1, 0, 0, 1 )
+      })})
     })
   })
 })
