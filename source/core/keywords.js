@@ -22,10 +22,10 @@ JS.Method.keyword('blockGiven', function(env, receiver, args) {
   receiver.blockGiven = function() { return hasBlock };
 });
 
-JS.Method.keyword('yield', function(env, receiver, args) {
+JS.Method.keyword('yieldWith', function(env, receiver, args) {
   var block = Array.prototype.slice.call(args, this.arity);
   
-  receiver.yield = function() {
+  receiver.yieldWith = function() {
     return block[0].apply(block[1] || null, arguments);
   };
 });

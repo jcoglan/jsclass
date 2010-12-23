@@ -633,8 +633,8 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
   describe("#yield", function() {
     before(function() {
       this.Class = new JS.Class({
-        noArgs:  function() { return this.yield("hi", "there") },
-        twoArgs: function(a,b) { this.yield(b) }
+        noArgs:  function() { return this.yieldWith("hi", "there") },
+        twoArgs: function(a,b) { this.yieldWith(b) }
       })
       this.object = new Class()
     })
