@@ -1,7 +1,7 @@
 JS.Test.extend({
   Mocking: new JS.Module({
     extend: {
-      ExpectationError: new JS.Class(Error),
+      ExpectationError: new JS.Class(JS.Test.Unit.AssertionFailedError),
       
       __activeStubs__: [],
       
@@ -113,7 +113,12 @@ JS.Test.extend({
         _verify: function() {
           if (typeof this._minCalls !== 'number') return;
           if (this._callsMade >= this._minCalls) return;
-          throw new JS.Test.Mocking.ExpectationError();
+          
+          var message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
+                            '<?> expected to receive call\n' + this._methodName + '().',
+                            [this._object]);
+          
+          throw new JS.Test.Mocking.ExpectationError(message);
         }
       }),
       
@@ -203,6 +208,7 @@ JS.Test.extend({
         expect: function(object, methodName) {
           var stub = JS.Test.Mocking.findStub(object, methodName);
           stub.expected();
+          this.addAssertion();
           return stub;
         },
         

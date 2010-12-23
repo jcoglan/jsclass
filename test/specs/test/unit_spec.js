@@ -15,6 +15,17 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
     })
   })
   
+  describe("when an error is thrown", function() {
+    it("catches and reports the error", function(resume) {
+      runTests({
+        testError: function() { throw new TypeError("derp") }
+      }, function() { resume(function() {
+        assertTestResult( 1, 0, 0, 1 )
+        assertMessage( 1, "Error:\ntestError(TestedSuite):\nTypeError: derp" )
+      })})
+    })
+  })
+  
   describe("#assertBlock", function() {
     it("passes when the block returns true", function(resume) {
       runTests({

@@ -38,6 +38,7 @@ packages:
       - unit/unit
       - unit/util/observable
       - unit/assertions
+      - unit/assertion_message
       - unit/failure
       - unit/error
       - unit/test_result

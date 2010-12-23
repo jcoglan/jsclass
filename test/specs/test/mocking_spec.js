@@ -5,6 +5,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
   
   before(function() {
     this.object = {getName: function() { return "jester" }}
+    this.object.toString = function() { return "[OBJECT]" }
   })
   
   describe("stub", function() {
@@ -174,7 +175,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           object.getName()
         }}
       }, function() { resume(function() {
-        assertTestResult( 1, 0, 0, 0 )
+        assertTestResult( 1, 1, 0, 0 )
       })})
     })
     
@@ -184,7 +185,8 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           expect(object, "getName")
         }}
       }, function() { resume(function() {
-        assertTestResult( 1, 0, 0, 1 )
+        assertTestResult( 1, 1, 1, 0 )
+        assertMessage( 1, "Failure:\ntestExpectMethod(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName()." )
       })})
     })
   })
