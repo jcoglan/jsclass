@@ -1,5 +1,5 @@
-JS.Method.keyword('callSuper', function(receiver, args) {
-  var methods    = receiver.__eigen__().lookup(this.name),
+JS.Method.keyword('callSuper', function(env, receiver, args) {
+  var methods    = env.lookup(this.name),
       stackIndex = methods.length - 1,
       params     = JS.array(args);
   
@@ -15,14 +15,14 @@ JS.Method.keyword('callSuper', function(receiver, args) {
   };
 });
 
-JS.Method.keyword('blockGiven', function(receiver, args) {
+JS.Method.keyword('blockGiven', function(env, receiver, args) {
   var block = Array.prototype.slice.call(args, this.arity),
       hasBlock = (typeof block[0] === 'function');
   
   receiver.blockGiven = function() { return hasBlock };
 });
 
-JS.Method.keyword('yield', function(receiver, args) {
+JS.Method.keyword('yield', function(env, receiver, args) {
   var block = Array.prototype.slice.call(args, this.arity);
   
   receiver.yield = function() {

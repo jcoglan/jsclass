@@ -1,8 +1,8 @@
 JS.State = new JS.Module('State', {
   __getState__: function(state) {
-    return  (typeof state === 'object' && state) ||
-            (typeof state === 'string' && ((this.states || {})[state] || {})) ||
-            {};
+    if (typeof state === 'object') return state;
+    if (typeof state === 'string') return (this.states || {})[state];
+    return {};
   },
   
   setState: function(state) {
@@ -36,7 +36,8 @@ JS.State = new JS.Module('State', {
       for (state in states) {
         collection[state] = {};
         for (method in states[state]) stubs[method] = this.stub;
-    } },
+      }
+    },
     
     findStates: function(collections, name) {
       var i = collections.length, results = [];
@@ -53,7 +54,6 @@ JS.State = new JS.Module('State', {
           superstates = module.lookup('states'),
           state, klass, methods, name, mixins, i, n;
       
-      
       this.buildStubs(stubs, collection, states);
       
       for (i = 0, n = superstates.length; i < n;  i++)
@@ -69,7 +69,9 @@ JS.State = new JS.Module('State', {
         }
         
         methods = {};
-        for (name in stubs) { if (!klass.prototype[name]) methods[name] = stubs[name]; }
+        for (name in stubs) {
+          if (!klass.prototype[name]) methods[name] = stubs[name];
+        }
         klass.include(methods);
         collection[state] = new klass;
       }
@@ -86,14 +88,14 @@ JS.State = new JS.Module('State', {
       
       for (method in state) {
         if (proto[method]) continue;
-        proto[method] = klass.__fns__[method] = this.wrapped(method);
+        klass.define(method, this.wrapped(method));
       }
     },
     
     wrapped: function(method) {
       return function() {
         var func = (this.__state__ || {})[method];
-        return func ? func.apply(this, arguments): this;
+        return func ? func.apply(this, arguments) : this;
       };
     }
   }

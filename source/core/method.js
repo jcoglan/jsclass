@@ -30,7 +30,7 @@ JS.extend(JS.Method.prototype, {
     return this.callable.call.apply(this.callable, arguments);
   },
   
-  compile: function() {
+  compile: function(environment) {
     var method     = this,
         callable   = method.callable,
         words      = method._words,
@@ -54,7 +54,7 @@ JS.extend(JS.Method.prototype, {
           _value: this[keyword.name],
           _own:   this.hasOwnProperty(keyword.name)
         };
-        keyword.filter.call(method, this, arguments);
+        keyword.filter.call(method, environment, this, arguments);
       }
       var returnValue = callable.apply(this, arguments),
           j = N;
@@ -75,16 +75,16 @@ JS.Method.create = function(module, name, callable) {
   if (callable && callable.__inc__ && callable.__fns__)
     return callable;
   
-  var method = (callable instanceof this)
-       ? callable
-       : new this(module, name, callable);
+  var method = (typeof callable !== 'function')
+             ? callable
+             : new this(module, name, callable);
   
   this.notify(method);
   return method;
 };
 
-JS.Method.compile = function(method) {
-  if (method instanceof this) return method.compile();
+JS.Method.compile = function(method, environment) {
+  if (method instanceof this) return method.compile(environment);
   else return method;
 };
 

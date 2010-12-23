@@ -177,6 +177,19 @@ ClassSpec = JS.Test.describe(JS.Class, function() {
       assertEqual( "foo, bar", method("foo", "bar") )
     })
     
+    describe("applying a function", function() {
+      before(function() {
+        this.Child = new JS.Class(Parent, {
+          aMethod: function() { return this.name + ": " + this.callSuper() }
+        })
+        this.object = {name: "user"}
+      })
+      
+      it("uses the inheritance chain of the applied method", function() {
+        assertEqual( "user: foo, bar", Child.prototype.aMethod.call(object, "foo", "bar") )
+      })
+    })
+    
     describe("calling the superclass with implicit args", function() {
       before(function() {
         this.Child = new JS.Class(Parent, {

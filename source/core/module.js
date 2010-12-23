@@ -154,8 +154,7 @@ JS.extend(JS.Module.prototype, {
     
     for (var i = 0, n = ancestors.length; i < n; i++) {
       fns = ancestors[i].__fns__;
-      if (fns.hasOwnProperty(name) && fns[name] instanceof JS.Method)
-        methods.push(fns[name]);
+      if (fns.hasOwnProperty(name)) methods.push(fns[name]);
     }
     return methods;
   },
