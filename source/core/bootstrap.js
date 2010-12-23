@@ -22,3 +22,5 @@ JS.extend(JS.Module, {
   }
 });
 
+JS.NotImplementedError = new JS.Class('NotImplementedError', Error);
+
