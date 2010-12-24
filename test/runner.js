@@ -38,4 +38,3 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
             
     JS.Test.method('autorun'))
 })
-
