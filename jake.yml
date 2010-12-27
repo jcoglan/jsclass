@@ -55,6 +55,9 @@ packages:
       - context/shared_behavior
       - context/test
       - context/suite
+      - mocking/stub
+      - mocking/parameters
+      - mocking/matchers
       - mocking/dsl
       - mocking/clock
       - helpers
