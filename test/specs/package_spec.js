@@ -1,7 +1,9 @@
 PackageSpec = JS.Test.describe(JS.Package, function() {
-  if (typeof setTimeout === 'undefined') return
-  
   include(JS.Test.Helpers)
+  include(JS.Test.Mocking.Clock)
+  
+  before(function() { clock.stub() })
+  after(function() { clock.reset() })
   
   var PackageSpecHelper = new JS.Module({
     store: function(name) {
@@ -81,16 +83,14 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
       assertEqual( "undefined", typeof Standalone )
     })
     
-    it("loads the object", function(resume) {
-      JS.require("Standalone", function() {
-        resume(function() {
-          assertKindOf( Object, Standalone )
-          assertEqual( "Standalone", Standalone.name )
-        })
-      })
+    it("loads the object", function() {
+      JS.require("Standalone")
+      clock.tick(500)
+      assertKindOf( Object, Standalone )
+      assertEqual( "Standalone", Standalone.name )
     })
     
-    it("loads the object once and runs every waiting block", function(resume) {
+    it("loads the object once and runs every waiting block", function() {
       var done1 = false, done2 = false, doneAsync = false
       
       JS.require("Standalone", function() { done1 = true })
@@ -105,15 +105,13 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
       assert( !done2 )
       assert( !doneAsync )
       
-      setTimeout(function() {
-        resume(function() {
-          assertKindOf( Object, Standalone )
-          assert( done1 )
-          assert( done2 )
-          assert( doneAsync )
-          assertEqual( ["Standalone"], _loaded )
-        })
-      }, 600)
+      clock.tick(600)
+      
+      assertKindOf( Object, Standalone )
+      assert( done1 )
+      assert( done2 )
+      assert( doneAsync )
+      assertEqual( ["Standalone"], _loaded )
     })
     
     describe("when the object is namespaced", function() {
@@ -126,12 +124,10 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
         assertEqual( undefined, Object.In )
       })
       
-      it("loads the object", function(resume) {
-        JS.require("Object.In.A.Namespace", function() {
-          resume(function() {
-            assertKindOf( Object, Object.In.A.Namespace )
-          })
-        })
+      it("loads the object", function() {
+        JS.require("Object.In.A.Namespace")
+        clock.tick(100)
+        assertKindOf( Object, Object.In.A.Namespace )
       })
     })
   })
@@ -142,7 +138,7 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
       declare("Bar", 300)
     })
     
-    it("runs the block once both objects are loaded", function(resume) {
+    it("runs the block once both objects are loaded", function() {
       assert( "undefined", typeof Foo )
       assert( "undefined", typeof Bar )
       
@@ -152,14 +148,12 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
         bothLoaded = (typeof Foo === "object") && (typeof Foo === "object")
       })
       
-      setTimeout(function() {
-        resume(function() {
-          assertKindOf( Object, Foo )
-          assertKindOf( Object, Bar )
-          assert( bothLoaded )
-          assertEqual( ["Bar", "Foo"], _loaded )
-        })
-      }, 400)
+      clock.tick(400)
+      
+      assertKindOf( Object, Foo )
+      assertKindOf( Object, Bar )
+      assert( bothLoaded )
+      assertEqual( ["Bar", "Foo"], _loaded )
     })
   })
   
@@ -174,47 +168,39 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
       assertEqual( "undefined", typeof Dependent )
     })
     
-    it("loads the packages in order when one is required", function(resume) {
+    it("loads the packages in order when one is required", function() {
       var done = false
       JS.require("Dependent", function() { done = true })
       
       assertEqual( "undefined", typeof Base )
       assertEqual( "undefined", typeof Dependent )
       
-      setTimeout(function() {
-        resume(function(resume) {                                     // 50ms
-          assertEqual( ["Base"], _loaded )
-          assertEqual( "undefined", typeof Base )
-          assert( !done )
-          
-          setTimeout(function() {
-            resume(function(resume) {                                 // 150ms
-              assertEqual( ["Base", "Dependent"], _loaded )
-              assertKindOf( Object, Base )
-              assertEqual( "undefined", typeof Dependent )
-              assert( !done )
-              
-              setTimeout(function() {
-                resume(function(resume) {                             // 250ms
-                  assertEqual( ["Base", "Dependent"], _loaded )
-                  assertKindOf( Object, Base )
-                  assertEqual( "undefined", typeof Dependent )
-                  assert( !done )
-                  
-                  setTimeout(function() {                             // 350ms
-                    resume(function() {
-                      assertEqual( ["Base", "Dependent"], _loaded )
-                      assertKindOf( Object, Base )
-                      assertKindOf( Object, Dependent )
-                      assert( done )
-                    })
-                  }, 100)
-                })
-              }, 100)
-            })
-          }, 100)
-        })
-      }, 50)
+      clock.tick(50)
+      
+      assertEqual( ["Base"], _loaded )
+      assertEqual( "undefined", typeof Base )
+      assert( !done )
+      
+      clock.tick(100)
+      
+      assertEqual( ["Base", "Dependent"], _loaded )
+      assertKindOf( Object, Base )
+      assertEqual( "undefined", typeof Dependent )
+      assert( !done )
+      
+      clock.tick(100)
+      
+      assertEqual( ["Base", "Dependent"], _loaded )
+      assertKindOf( Object, Base )
+      assertEqual( "undefined", typeof Dependent )
+      assert( !done )
+      
+      clock.tick(100)
+      
+      assertEqual( ["Base", "Dependent"], _loaded )
+      assertKindOf( Object, Base )
+      assertKindOf( Object, Dependent )
+      assert( done )
     })
     
     describe("when the dependency is already defined", function() {
@@ -223,25 +209,21 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
         assertEqual( "undefined", typeof Dependent )
       })
       
-      it("just loads the dependent object", function(resume) {
+      it("just loads the dependent object", function() {
         var done = false
         JS.require("Dependent", function() { done = true })
         
-        setTimeout(function() {
-          resume(function(resume) {                                   // 50ms
-            assertEqual( ["Dependent"], _loaded )
-            assertEqual( "undefined", typeof Dependent )
-            assert( !done )
-            
-            setTimeout(function() {
-              resume(function() {                                     // 250ms
-                assertEqual( ["Dependent"], _loaded )
-                assertKindOf( Object, Dependent )
-                assert( done )
-              })
-            }, 200)
-          })
-        }, 50)
+        clock.tick(50)
+        
+        assertEqual( ["Dependent"], _loaded )
+        assertEqual( "undefined", typeof Dependent )
+        assert( !done )
+        
+        clock.tick(200)
+        
+        assertEqual( ["Dependent"], _loaded )
+        assertKindOf( Object, Dependent )
+        assert( done )
       })
     })
     
@@ -251,25 +233,21 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
         assertEqual( "undefined", typeof Base )
       })
       
-      it("loads the dependency and waits", function(resume) {
+      it("loads the dependency and waits", function() {
         var done = false
         JS.require("Dependent", function() { done = true })
         
-        setTimeout(function() {
-          resume(function(resume) {                                   // 50ms
-            assertEqual( ["Base"], _loaded )
-            assertEqual( "undefined", typeof Base )
-            assert( !done )
-            
-            setTimeout(function() {
-              resume(function() {                                     // 150ms
-                assertEqual( ["Base"], _loaded )
-                assertKindOf( Object, Base )
-                assert( done )
-              })
-            }, 100)
-          })
-        }, 50)
+        clock.tick(50)
+        
+        assertEqual( ["Base"], _loaded )
+        assertEqual( "undefined", typeof Base )
+        assert( !done )
+        
+        clock.tick(100)
+        
+        assertEqual( ["Base"], _loaded )
+        assertKindOf( Object, Base )
+        assert( done )
       })
     })
   })
@@ -288,51 +266,43 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
       assertEqual( "undefined", typeof TreeSet )
     })
     
-    it("loads all the objects, parallelizing where possible", function(resume) {
+    it("loads all the objects, parallelizing where possible", function() {
       var done = false
       JS.require("TreeSet", function() { done = true })
       
-      setTimeout(function() {
-        resume(function(resume) {                                     // 50ms
-          assertEqual( ["Enumerable", "Comparable"], _loaded )
-          assertEqual( "undefined", typeof Enumerable )
-          assertEqual( "undefined", typeof Comparable )
-          assert( !done )
-          
-          setTimeout(function() {
-            resume(function(resume) {                                 // 150ms
-              assertEqual( ["Enumerable", "Comparable", "TreeSet", "Hash"], _loaded )
-              assertKindOf( Object, Enumerable )
-              assertKindOf( Object, Comparable )
-              assertEqual( "undefined", typeof TreeSet )
-              assertEqual( "undefined", typeof Hash )
-              assert( !done )
-              
-              setTimeout(function() {
-                resume(function(resume) {                             // 350ms
-                  assertEqual( ["Enumerable", "Comparable", "TreeSet", "Hash"], _loaded )
-                  assertKindOf( Object, Enumerable )
-                  assertKindOf( Object, Comparable )
-                  assertKindOf( Object, TreeSet )
-                  assertEqual( "undefined", typeof Hash )
-                  assert( !done )
-                  
-                  setTimeout(function() {
-                    resume(function() {                               // 450ms
-                      assertEqual( ["Enumerable", "Comparable", "TreeSet", "Hash"], _loaded )
-                      assertKindOf( Object, Enumerable )
-                      assertKindOf( Object, Comparable )
-                      assertKindOf( Object, TreeSet )
-                      assertKindOf( Object, Hash )
-                      assert( done )
-                    })
-                  }, 100)
-                })
-              }, 200)
-            })
-          }, 100)
-        })
-      }, 50)
+      clock.tick(50)
+      
+      assertEqual( ["Enumerable", "Comparable"], _loaded )
+      assertEqual( "undefined", typeof Enumerable )
+      assertEqual( "undefined", typeof Comparable )
+      assert( !done )
+      
+      clock.tick(100)
+      
+      assertEqual( ["Enumerable", "Comparable", "TreeSet", "Hash"], _loaded )
+      assertKindOf( Object, Enumerable )
+      assertKindOf( Object, Comparable )
+      assertEqual( "undefined", typeof TreeSet )
+      assertEqual( "undefined", typeof Hash )
+      assert( !done )
+      
+      clock.tick(200)
+      
+      assertEqual( ["Enumerable", "Comparable", "TreeSet", "Hash"], _loaded )
+      assertKindOf( Object, Enumerable )
+      assertKindOf( Object, Comparable )
+      assertKindOf( Object, TreeSet )
+      assertEqual( "undefined", typeof Hash )
+      assert( !done )
+      
+      clock.tick(100)
+      
+      assertEqual( ["Enumerable", "Comparable", "TreeSet", "Hash"], _loaded )
+      assertKindOf( Object, Enumerable )
+      assertKindOf( Object, Comparable )
+      assertKindOf( Object, TreeSet )
+      assertKindOf( Object, Hash )
+      assert( done )
     })
   })
   
@@ -342,39 +312,33 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
       declare("Application", 100, [], ["Helper"])
     })
     
-    it("loads the packages in parallel but waits until both are loaded", function(resume) {
+    it("loads the packages in parallel but waits until both are loaded", function() {
       var done = false
       JS.require("Application", function() { done = true })
       
       assertEqual( "undefined", typeof Helper )
       assertEqual( "undefined", typeof Application )
       
-      setTimeout(function() {
-        resume(function(resume) {                                     // 50ms
-          assertEqual( ["Helper", "Application"], _loaded )
-          assertEqual( "undefined", typeof Helper )
-          assertEqual( "undefined", typeof Application )
-          assert( !done )
-          
-          setTimeout(function() {
-            resume(function(resume) {                                 // 150ms
-              assertEqual( ["Helper", "Application"], _loaded )
-              assertKindOf( Object, Application )
-              assertEqual( "undefined", typeof Helper )
-              assert( !done )
-              
-              setTimeout(function() {
-                resume(function() {                                   // 550ms
-                  assertEqual( ["Helper", "Application"], _loaded )
-                  assertKindOf( Object, Helper )
-                  assertKindOf( Object, Application )
-                  assert( done )
-                })
-              }, 400)
-            })
-          }, 100)
-        })
-      }, 50)
+      clock.tick(50)
+      
+      assertEqual( ["Helper", "Application"], _loaded )
+      assertEqual( "undefined", typeof Helper )
+      assertEqual( "undefined", typeof Application )
+      assert( !done )
+      
+      clock.tick(100)
+      
+      assertEqual( ["Helper", "Application"], _loaded )
+      assertKindOf( Object, Application )
+      assertEqual( "undefined", typeof Helper )
+      assert( !done )
+      
+      clock.tick(400)
+      
+      assertEqual( ["Helper", "Application"], _loaded )
+      assertKindOf( Object, Helper )
+      assertKindOf( Object, Application )
+      assert( done )
     })
     
     describe("when the required object is defined but the dependency is missing", function() {
@@ -383,25 +347,21 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
         assertEqual( "undefined", typeof Helper )
       })
       
-      it("loads the dependency and waits", function(resume) {
+      it("loads the dependency and waits", function() {
         var done = false
         JS.require("Application", function() { done = true })
         
-        setTimeout(function() {
-          resume(function(resume) {
-            assertEqual( ["Helper"], _loaded )
-            assertEqual( "undefined", typeof Helper )
-            assert( !done )
-            
-            setTimeout(function() {
-              resume(function() {
-                assertEqual( ["Helper"], _loaded )
-                assertKindOf( Object, Helper )
-                assert( done )
-              })
-            }, 300)
-          })
-        }, 250)
+        clock.tick(250)
+        
+        assertEqual( ["Helper"], _loaded )
+        assertEqual( "undefined", typeof Helper )
+        assert( !done )
+        
+        clock.tick(300)
+        
+        assertEqual( ["Helper"], _loaded )
+        assertKindOf( Object, Helper )
+        assert( done )
       })
     })
     
@@ -411,25 +371,21 @@ PackageSpec = JS.Test.describe(JS.Package, function() {
         assertEqual( "undefined", typeof Application )
       })
       
-      it("loads the required object and waits", function(resume) {
+      it("loads the required object and waits", function() {
         var done = false
         JS.require("Application", function() { done = true })
         
-        setTimeout(function() {
-          resume(function(resume) {
-            assertEqual( ["Application"], _loaded )
-            assertEqual( "undefined", typeof Application )
-            assert( !done )
-            
-            setTimeout(function() {
-              resume(function() {
-                assertEqual( ["Application"], _loaded )
-                assertKindOf( Object, Application )
-                assert( done )
-              })
-            }, 150)
-          })
-        }, 50)
+        clock.tick(50)
+        
+        assertEqual( ["Application"], _loaded )
+        assertEqual( "undefined", typeof Application )
+        assert( !done )
+        
+        clock.tick(150)
+        
+        assertEqual( ["Application"], _loaded )
+        assertKindOf( Object, Application )
+        assert( done )
       })
     })
   })

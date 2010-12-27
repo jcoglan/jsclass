@@ -32,15 +32,11 @@ JS.Test.Mocking.extend({
       tick: function(milliseconds) {
         this._currentTime += milliseconds;
         
-        var timeouts = this._timeouts,
+        var timeouts = this._timeouts.slice(),
             i        = timeouts.length,
             timeout;
         
-        while (i--) {
-          timeout = timeouts[i];
-          if (timeout.time > this._currentTime) continue;
-          this._run(timeout, i);
-        }
+        while (i--) this._run(timeouts[i]);
       },
       
       _run: function(timeout, i) {
@@ -54,7 +50,7 @@ JS.Test.Mocking.extend({
         } else {
           this._callTime = timeout.time;
           timeout.callback();
-          if (typeof i === 'number') this._timeouts.splice(i, 1);
+          this.clearTimeout(timeout);
         }
       },
       
