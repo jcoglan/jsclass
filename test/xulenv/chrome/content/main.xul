@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://xultestenv/content/testui.css" type="text/css"?>
+<?xml-stylesheet href="chrome://xultestenv/content/jsclass/test/testui.css" type="text/css"?>
 
 <window id="main-win" title="XUL Test Environment - JS.Class" width="600" height="500"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -10,13 +10,13 @@
     <html:body flex="1" id="htmlbody"></html:body>
   </box>
   <script type="text/javascript">
-    var JSCLASS_PATH = "chrome://xultestenv/content/jsclass/build/src/";
+    JSCLASS_PATH = "chrome://xultestenv/content/jsclass/build/min/";
     document.body = document.getElementById("htmlbody");
     window.console = { log: function(a,b){ alert(a+"\n\n"+b) } }
   </script>
 
   <script type="text/javascript">CWD = 'chrome://xultestenv/content/jsclass/'</script>
-  <script type="text/javascript" src="jsclass/build/min/loader.js"></script>
+  <script type="text/javascript" src="chrome://xultestenv/content/jsclass/build/min/loader.js"></script>
   <script type="text/javascript" src="chrome://xultestenv/content/jsclass/test/runner.js"></script>
-
 </window>
+
