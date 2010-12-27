@@ -35,6 +35,20 @@ Test.Mocking = {
         clock.tick(1000)
         assertEqual( 0, calls )
       })
+      
+      describe("with nested calls", function() {
+        before(function() {
+          this.calls = 0
+          setTimeout(function() {
+            setTimeout(function() { calls += 1 }, 100)
+          }, 50)
+        })
+        
+        it("schedules chains of functions correctly", function() {
+          clock.tick(150)
+          assertEqual( 1, calls )
+        })
+      })
     })
     
     describe("setInterval", function() {
