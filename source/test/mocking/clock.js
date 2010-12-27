@@ -23,51 +23,55 @@ JS.Test.Mocking.extend({
         }
       },
       
+      Schedule: new JS.Class(JS.SortedSet, {
+        nextScheduledAt: function(time) {
+          return this.find(function(timeout) { return timeout.time <= time });
+        }
+      }),
+      
+      Timeout: new JS.Class({
+        include: JS.Comparable,
+        
+        initialize: function(callback, interval, repeat) {
+          this.callback = callback;
+          this.interval = interval;
+          this.repeat   = repeat;
+        },
+        
+        compareTo: function(other) {
+          return this.time - other.time;
+        }
+      }),
+      
       reset: function() {
         this._currentTime = 0;
         this._callTime    = 0;
-        this._timeouts    = [];
+        this._schedule    = new this.Schedule();
       },
       
       tick: function(milliseconds) {
         this._currentTime += milliseconds;
-        
-        var timeouts = this._timeouts.slice(),
-            i        = timeouts.length,
-            timeout;
-        
-        while (i--) this._run(timeouts[i]);
+        var timeout;
+        while (timeout = this._schedule.nextScheduledAt(this._currentTime))
+          this._run(timeout);
       },
       
-      _run: function(timeout, i) {
-        if (timeout.time > this._currentTime) return;
+      _run: function(timeout) {
+        this._callTime = timeout.time;
+        timeout.callback();
+        
         if (timeout.repeat) {
-          while (timeout.time <= this._currentTime) {
-            this._callTime = timeout.time;
-            timeout.callback();
-            timeout.time += timeout.interval;
-          }
+          timeout.time += timeout.interval;
+          this._schedule.rebuild();
         } else {
-          this._callTime = timeout.time;
-          timeout.callback();
           this.clearTimeout(timeout);
         }
       },
       
-      _schedule: function(timeout) {
-        if (timeout.time <= this._currentTime && !timeout.repeat) return;
-        this._timeouts.splice(0, 0, timeout);
-      },
-      
       _timer: function(callback, milliseconds, repeat) {
-        var timeout = {
-          callback: callback,
-          time:     this._callTime + milliseconds,
-          interval: milliseconds,
-          repeat:   repeat
-        };
-        this._run(timeout);
-        this._schedule(timeout);
+        var timeout = new this.Timeout(callback, milliseconds, repeat);
+        timeout.time = this._callTime + milliseconds;
+        this._schedule.add(timeout);
         return timeout;
       },
       
@@ -80,17 +84,11 @@ JS.Test.Mocking.extend({
       },
       
       clearTimeout: function(timeout) {
-        var timeouts = this._timeouts,
-            i        = timeouts.length;
-        
-        while (i--) {
-          if (timeouts[i] === timeout)
-            timeouts.splice(i, 1);
-        }
+        this._schedule.remove(timeout)
       },
       
       clearInterval: function(timeout) {
-        return this.clearTimeout(timeout);
+        this._schedule.remove(timeout);
       }
     }
   })

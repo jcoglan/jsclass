@@ -35,20 +35,6 @@ Test.Mocking = {
         clock.tick(1000)
         assertEqual( 0, calls )
       })
-      
-      describe("with nested calls", function() {
-        before(function() {
-          this.calls = 0
-          setTimeout(function() {
-            setTimeout(function() { calls += 1 }, 100)
-          }, 50)
-        })
-        
-        it("schedules chains of functions correctly", function() {
-          clock.tick(150)
-          assertEqual( 1, calls )
-        })
-      })
     })
     
     describe("setInterval", function() {
@@ -80,6 +66,26 @@ Test.Mocking = {
         clearInterval(timer)
         clock.tick(1000)
         assertEqual( 0, calls )
+      })
+    })
+    
+    describe("with interleaved calls", function() {
+      before(function() {
+        this.calls = []
+        
+        setTimeout(function() {
+          setTimeout(function() { calls.push("third") }, 100)
+          calls.push("first")
+        }, 50)
+        
+        setTimeout(function() { calls.push("second") }, 50)
+        
+        setInterval(function() { calls.push("ping") }, 40)
+      })
+      
+      it("schedules chains of functions correctly", function() {
+        clock.tick(150)
+        assertEqual( ["ping", "first", "second", "ping", "ping", "third"], calls )
       })
     })
   })

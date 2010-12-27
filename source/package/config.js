@@ -31,6 +31,8 @@ JS.Packages(function() { with(this) {
                                       'JS.Class',
                                       'JS.DOM',
                                       'JS.Enumerable',
+                                      'JS.SortedSet',
+                                      'JS.Comparable',
                                       'JS.Ruby');
     
     module('dom')           .provides('JS.DOM',
