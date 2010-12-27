@@ -16,6 +16,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
     JS.require( 'Test.UnitSpec',
                 'Test.ContextSpec',
                 'Test.MockingSpec',
+                'Test.Mocking.ClockSpec',
                 'ModuleSpec',
                 'ClassSpec',
                 'KernelSpec',

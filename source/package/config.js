@@ -20,6 +20,7 @@ JS.Packages(function() { with(this) {
     module('test')          .provides('JS.Test',
                                       'JS.Test.Context',
                                       'JS.Test.Mocking',
+                                      'JS.Test.Mocking.Clock',
                                       'JS.Test.Helpers',
                                       test,
                                       test + '.Assertions',

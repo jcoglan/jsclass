@@ -26,8 +26,8 @@ JS.Test.Unit.extend({
         
         var ping = function() {
           calls += 1;
-          if (typeof setTimeout === 'undefined') loop();
-          else setTimeout(iterate, 1);
+          if (typeof this.setTimeout === 'undefined') loop();
+          else this.setTimeout(iterate, 1);
         };
         
         var loop = function() {
@@ -44,7 +44,9 @@ JS.Test.Unit.extend({
         };
         
         ping();
-      }
+      },
+      
+      setTimeout: (function() { return this.setTimeout })()
     },
     
     /**

@@ -5,7 +5,7 @@ JS.Test.extend({
       
       __activeStubs__: [],
       
-      findStub: function(object, methodName) {
+      stub: function(object, methodName, implementation) {
         var stubs = this.__activeStubs__,
             i     = stubs.length;
         
@@ -14,7 +14,7 @@ JS.Test.extend({
             return stubs[i];
         }
         
-        var stub = new JS.Test.Mocking.Stub(object, methodName);
+        var stub = new JS.Test.Mocking.Stub(object, methodName, implementation);
         stubs.push(stub);
         return stub;
       },
@@ -38,9 +38,10 @@ JS.Test.extend({
       },
       
       Stub: new JS.Class({
-        initialize: function(object, methodName) {
+        initialize: function(object, methodName, implementation) {
           this._object      = object;
           this._methodName  = methodName;
+          this._callable    = implementation;
           this._original    = object[methodName];
           this._ownProperty = object.hasOwnProperty(methodName);
           this._argMatchers = [new JS.Test.Mocking.Parameters(this, [])];
@@ -52,8 +53,10 @@ JS.Test.extend({
         apply: function() {
           var object = this._object, methodName = this._methodName;
           if (object[methodName] !== this._original) return;
+          
           var self = this;
-          object[methodName] = function() { return self._dispatch(arguments) };
+          object[methodName] = this._callable ||
+                               function() { return self._dispatch(arguments) };
         },
         
         revoke: function() {
@@ -233,12 +236,11 @@ JS.Test.extend({
       
       DSL: new JS.Module({
         stub: function(object, methodName) {
-          var stub = JS.Test.Mocking.findStub(object, methodName);
-          return stub;
+          return JS.Test.Mocking.stub(object, methodName);
         },
         
         expect: function(object, methodName) {
-          var stub = JS.Test.Mocking.findStub(object, methodName);
+          var stub = JS.Test.Mocking.stub(object, methodName);
           stub.expected();
           this.addAssertion();
           return stub;
