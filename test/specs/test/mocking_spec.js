@@ -86,6 +86,27 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
     })
     
     describe("matchers", function() {
+      describe("anything", function() {
+        it("matches anything", function() {
+          assertEqual( anything(), null )
+          assertEqual( anything(), undefined )
+          assertEqual( anything(), 0 )
+          assertEqual( anything(), "" )
+          assertEqual( anything(), false )
+          assertEqual( anything(), function() {} )
+          assertEqual( anything(), /foo/ )
+          assertEqual( anything(), [] )
+          assertEqual( anything(), [] )
+          assertEqual( anything(), new Date() )
+        })
+      })
+      
+      describe("anyArgs", function() {
+        it("matches any number of items at the end of a list", function() {
+          assertEqual( [anyArgs()], [1,2,3] )
+        })
+      })
+      
       describe("a", function() {
         it("matches instances of the given type", function() {
           assertEqual( a(JS.Set), new JS.SortedSet() )

@@ -148,6 +148,14 @@ JS.Test.extend({
         }
       }),
       
+      Anything: new JS.Class({
+        equals: function() { return true }
+      }),
+      
+      AnyArgs: new JS.Class({
+        equals: function() { return JS.Enumerable.ALL_EQUAL }
+      }),
+      
       ArrayIncluding: new JS.Class({
         initialize: function(elements) {
           this._elements = elements;
@@ -210,6 +218,14 @@ JS.Test.extend({
           stub.expected();
           this.addAssertion();
           return stub;
+        },
+        
+        anything: function() {
+          return new JS.Test.Mocking.Anything();
+        },
+        
+        anyArgs: function() {
+          return new JS.Test.Mocking.AnyArgs();
         },
         
         a: function(type) {
