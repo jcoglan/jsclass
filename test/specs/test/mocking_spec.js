@@ -22,8 +22,8 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
     
     describe("with arguments", function() {
       before(function() {
-        stub(object, "getName").given(1).returns("one")
-        stub(object, "getName").given(2).returns("two")
+        stub(object, "getName").given(1).returns("one", "ONE")
+        stub(object, "getName").given(2).returns("two", "TWO")
         stub(object, "getName").given(1,2).returns("twelve")
         stub(object, "getName").given(1,3).returns("thirteen")
       })
@@ -33,6 +33,13 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         assertEqual( "two",      object.getName(2) )
         assertEqual( "twelve",   object.getName(1,2) )
         assertEqual( "thirteen", object.getName(1,3) )
+      })
+      
+      it("allows sequences of return values", function() {
+        assertEqual( "one", object.getName(1) )
+        assertEqual( "two", object.getName(2) )
+        assertEqual( "ONE", object.getName(1) )
+        assertEqual( "TWO", object.getName(2) )
       })
     })
     
@@ -52,9 +59,9 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
     
     describe("yields", function() {
       before(function() {
-        stub(object, "getName").yields("no", "args")
-        stub(object, "getName").given("a").yields("one arg")
-        stub(object, "getName").given("a", "b").yields("very", "many", "args")
+        stub(object, "getName").yields(["no", "args"], ["and", "again"])
+        stub(object, "getName").given("a").yields(["one arg"])
+        stub(object, "getName").given("a", "b").yields(["very", "many", "args"])
       })
       
       it("returns the stubbed value using a callback", function() {
@@ -67,6 +74,15 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         assertEqual( ["no", "args"], a )
         assertEqual( [["one arg"], context], b )
         assertEqual( ["very", "many", "args"], c )
+      })
+      
+      it("allows sequences of yield values", function() {
+        var a, c
+        object.getName(function() { a = JS.array(arguments) })
+        object.getName(function() { b = JS.array(arguments) })
+        
+        assertEqual( ["no", "args"], a )
+        assertEqual( ["and", "again"], b )
       })
     })
     

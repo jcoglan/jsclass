@@ -80,15 +80,15 @@ JS.Test.extend({
           return this;
         },
         
-        returns: function(returnValue) {
+        returns: function() {
           var matchers = this._argMatchers;
-          matchers[matchers.length - 1]._returnValue = returnValue;
+          matchers[matchers.length - 1].returns(arguments);
           return this;
         },
         
         yields: function() {
           var matchers = this._argMatchers;
-          matchers[matchers.length - 1]._yieldArgs = arguments;
+          matchers[matchers.length - 1].yields(arguments);
           return this;
         },
         
@@ -104,8 +104,8 @@ JS.Test.extend({
             
             if (!result) continue;
             
-            if (result === true)  return matcher._returnValue;
-            if (result.callback)  return result.callback.apply(result.context, matcher._yieldArgs);
+            if (result === true)  return matcher.nextReturnValue();
+            if (result.callback)  return result.callback.apply(result.context, matcher.nextYieldArgs());
             if (result.exception) throw result.exception;
           }
         },
@@ -127,6 +127,30 @@ JS.Test.extend({
           this._params = JS.array(params);
         },
         
+        returns: function(returnValues) {
+          this._returnIndex = 0;
+          this._returnValues = returnValues;
+        },
+        
+        nextReturnValue: function() {
+          if (!this._returnValues) return undefined;
+          var value = this._returnValues[this._returnIndex];
+          this._returnIndex = (this._returnIndex + 1) % this._returnValues.length;
+          return value;
+        },
+        
+        yields: function(yieldValues) {
+          this._yieldIndex = 0;
+          this._yieldArgs = yieldValues;
+        },
+        
+        nextYieldArgs: function() {
+          if (!this._yieldArgs) return undefined;
+          var value = this._yieldArgs[this._yieldIndex];
+          this._yieldIndex = (this._yieldIndex + 1) % this._yieldArgs.length;
+          return value;
+        },
+        
         match: function(args) {
           var argsCopy = JS.array(args), callback, context;
           
@@ -144,7 +168,7 @@ JS.Test.extend({
           
           if (this._exception) return {exception: this._exception};
           if (this._yieldArgs) return {callback: callback, context: context};
-          return true;
+          else                 return true;
         }
       }),
       
