@@ -1,7 +1,7 @@
 JS.Test.Mocking.extend({      
   DSL: new JS.Module({
-    stub: function(object, methodName) {
-      return JS.Test.Mocking.stub(object, methodName);
+    stub: function() {
+      return JS.Test.Mocking.stub.apply(JS.Test.Mocking, arguments);
     },
     
     expect: function(object, methodName) {

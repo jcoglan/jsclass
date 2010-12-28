@@ -10,8 +10,11 @@ JS.Test.extend({
             i     = stubs.length;
         
         while (i--) {
-          if (stubs[i]._object === object && stubs[i]._methodName === methodName)
+          if (stubs[i]._object === object && stubs[i]._methodName === methodName) {
+            if (typeof implementation === 'function')
+              stubs[i]._fake = implementation;
             return stubs[i];
+          }
         }
         
         var stub = new JS.Test.Mocking.Stub(object, methodName, implementation);
@@ -41,10 +44,10 @@ JS.Test.extend({
         initialize: function(object, methodName, implementation) {
           this._object      = object;
           this._methodName  = methodName;
-          this._callable    = implementation;
+          this._fake        = implementation;
           this._original    = object[methodName];
           this._ownProperty = object.hasOwnProperty(methodName);
-          this._argMatchers = [new JS.Test.Mocking.Parameters(this, [])];
+          this._argMatchers = [];
           this._callsMade   = 0;
           
           this.apply();
@@ -55,8 +58,7 @@ JS.Test.extend({
           if (object[methodName] !== this._original) return;
           
           var self = this;
-          object[methodName] = this._callable ||
-                               function() { return self._dispatch(arguments) };
+          object[methodName] = function() { return self._dispatch(arguments) };
         },
         
         revoke: function() {
@@ -78,21 +80,24 @@ JS.Test.extend({
         },
         
         raises: function(exception) {
-          var matchers = this._argMatchers;
-          matchers[matchers.length - 1]._exception = exception;
+          this._lastMatcher()._exception = exception;
           return this;
         },
         
         returns: function() {
-          var matchers = this._argMatchers;
-          matchers[matchers.length - 1].returns(arguments);
+          this._lastMatcher().returns(arguments);
           return this;
         },
         
         yields: function() {
-          var matchers = this._argMatchers;
-          matchers[matchers.length - 1].yields(arguments);
+          this._lastMatcher().yields(arguments);
           return this;
+        },
+        
+        _lastMatcher: function() {
+          var matchers = this._argMatchers;
+          if (matchers.length === 0) matchers.push(new JS.Test.Mocking.Parameters([]));
+          return matchers[matchers.length - 1];
         },
         
         _dispatch: function(args) {
@@ -111,6 +116,8 @@ JS.Test.extend({
             if (result.callback)  return result.callback.apply(result.context, matcher.nextYieldArgs());
             if (result.exception) throw result.exception;
           }
+          if (this._fake)
+            return this._fake.apply(this._object, args);
         },
         
         _verify: function() {
