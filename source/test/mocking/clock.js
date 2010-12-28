@@ -5,13 +5,13 @@ JS.Test.Mocking.extend({
         stub: function() {
           var mocking = JS.Test.Mocking,
               env     = JS.Package.ENV,
-              methods = ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+              methods = ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
               i       = methods.length;
           
-          while (i--) {
-            mocking.stub(env, methods[i], mocking.Clock.method(methods[i]));
-          }
           mocking.Clock.reset();
+          
+          while (i--)
+            mocking.stub(env, methods[i], mocking.Clock.method(methods[i]));
         },
         
         reset: function() {
@@ -22,6 +22,8 @@ JS.Test.Mocking.extend({
           return JS.Test.Mocking.Clock.tick(milliseconds);
         }
       },
+      
+      JSDate: Date,
       
       Schedule: new JS.Class(JS.SortedSet, {
         nextScheduledAt: function(time) {
@@ -44,8 +46,8 @@ JS.Test.Mocking.extend({
       }),
       
       reset: function() {
-        this._currentTime = 0;
-        this._callTime    = 0;
+        this._currentTime = new Date().getTime();
+        this._callTime    = this._currentTime;
         this._schedule    = new this.Schedule();
       },
       
@@ -73,6 +75,12 @@ JS.Test.Mocking.extend({
         timeout.time = this._callTime + milliseconds;
         this._schedule.add(timeout);
         return timeout;
+      },
+      
+      Date: function() {
+        var date = new this.JSDate();
+        date.setTime(this._callTime);
+        return date;
       },
       
       setTimeout: function(callback, milliseconds) {

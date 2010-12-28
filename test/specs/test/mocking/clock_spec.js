@@ -88,6 +88,19 @@ Test.Mocking = {
         assertEqual( ["ping", "first", "second", "ping", "ping", "third"], calls )
       })
     })
+    
+    describe(Date, function() {
+      before(function() {
+        this.a = this.b = null
+        setTimeout(function() { b = new Date().getTime() }, 100)
+        a = new Date().getTime()
+      })
+      
+      it("mirrors the fake time", function() {
+        clock.tick(200)
+        assertEqual( 100, b - a )
+      })
+    })
   })
 }
 
