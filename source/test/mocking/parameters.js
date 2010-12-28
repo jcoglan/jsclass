@@ -1,7 +1,15 @@
 JS.Test.Mocking.extend({
   Parameters: new JS.Class({
-    initialize: function(params) {
-      this._params = JS.array(params);
+    initialize: function(params, expected) {
+      this._params    = JS.array(params);
+      this._expected  = expected;
+      this._callsMade = 0;
+    },
+    
+    toArray: function() {
+      var array = this._params.slice();
+      if (this._yieldArgs) array.push(new JS.Test.Mocking.InstanceOf(Function));
+      return array;
     },
     
     returns: function(returnValues) {
@@ -42,10 +50,15 @@ JS.Test.Mocking.extend({
       }
       
       if (!JS.Enumerable.areEqual(this._params, argsCopy)) return false;
+      this._callsMade += 1;
       
       if (this._exception) return {exception: this._exception};
       if (this._yieldArgs) return {callback: callback, context: context};
       else                 return true;
+    },
+    
+    verify: function() {
+      return !this._expected || this._callsMade > 0;
     }
   })
 });

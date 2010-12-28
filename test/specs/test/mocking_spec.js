@@ -255,8 +255,110 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 1, 1, 0 )
-        assertMessage( 1, "Failure:\ntestExpectMethod(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName()." )
+        assertMessage( 1, "Failure:\ntestExpectMethod(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[]." )
       })})
+    })
+    
+    describe("with argument matchers", function() {
+      it("passes if the method was called with the right arguments", function(resume) {
+        runTests({
+          testExpectWithArgs: function() { with(this) {
+            expect(object, "getName").given(3,4).returning(7)
+            assertEqual( 7, object.getName(3,4) )
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 2, 0, 0 )
+        })})
+      })
+      
+      it("fails if the method was called with the wrong arguments", function(resume) {
+        runTests({
+          testExpectWithArgs: function() { with(this) {
+            expect(object, "getName").given(3,4).returning(7)
+            object.getName(3,9)
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[3,4]." )
+        })})
+      })
+      
+      it("fails if the method was not called", function(resume) {
+        runTests({
+          testExpectWithArgs: function() { with(this) {
+            expect(object, "getName").given(3,4).returning(7)
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[3,4]." )
+        })})
+      })
+    })
+    
+    describe("with yielding", function() {
+      it("passes if the method was called", function(resume) {
+        runTests({
+          testExpectWithYields: function() { with(this) {
+            var result
+            expect(object, "getName").yielding([5])
+            object.getName(function(r) { result = r })
+            assertEqual( 5, result )
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 2, 0, 0 )
+        })})
+      })
+      
+      it("passes if the method was called with any args", function(resume) {
+        runTests({
+          testExpectWithYields: function() { with(this) {
+            var result
+            expect(object, "getName").given(anyArgs()).yielding([5])
+            object.getName("oh", "hai", function(r) { result = r })
+            assertEqual( 5, result )
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 2, 0, 0 )
+        })})
+      })
+      
+      it("fails if the method was not called", function(resume) {
+        runTests({
+          testExpectWithYields: function() { with(this) {
+            expect(object, "getName").yielding([5])
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[a(Function)]." )
+        })})
+      })
+      
+      describe("with argument matchers", function() {
+        it("passes if the method was called with the right arguments", function(resume) {
+          runTests({
+            testExpectWithYields: function() { with(this) {
+              var result
+              expect(object, "getName").given(5,6).yielding([11])
+              object.getName(5, 6, function(r) { result = r })
+              assertEqual( 11, result )
+            }}
+          }, function() { resume(function() {
+            assertTestResult( 1, 2, 0, 0 )
+          })})
+        })
+        
+        it("fails if the method was called with the wrong arguments", function(resume) {
+          runTests({
+            testExpectWithYields: function() { with(this) {
+              expect(object, "getName").given(5,6).yielding([11])
+              object.getName(5, 8, function() {})
+            }}
+          }, function() { resume(function() {
+            assertTestResult( 1, 1, 1, 0 )
+            assertMessage( 1, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[5,6,a(Function)]." )
+          })})
+        })
+      })
     })
   })
 })

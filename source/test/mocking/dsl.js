@@ -1,3 +1,32 @@
+JS.Test.Mocking.Stub.include({
+  given: function() {
+    var matcher = new JS.Test.Mocking.Parameters(arguments, this._expected);
+    this._argMatchers.push(matcher);
+    return this;
+  },
+  
+  raises: function(exception) {
+    this._lastMatcher()._exception = exception;
+    return this;
+  },
+  
+  returns: function() {
+    this._lastMatcher().returns(arguments);
+    return this;
+  },
+  
+  yields: function() {
+    this._lastMatcher().yields(arguments);
+    return this;
+  }
+});
+
+JS.Test.Mocking.Stub.include({
+  raising:    JS.Test.Mocking.Stub.instanceMethod('raises'),
+  returning:  JS.Test.Mocking.Stub.instanceMethod('returns'),
+  yielding:   JS.Test.Mocking.Stub.instanceMethod('yields')
+});
+
 JS.Test.Mocking.extend({      
   DSL: new JS.Module({
     stub: function() {

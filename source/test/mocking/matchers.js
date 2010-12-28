@@ -1,10 +1,12 @@
 JS.Test.Mocking.extend({
   Anything: new JS.Class({
-    equals: function() { return true }
+    equals: function() { return true },
+    toString: function() { return 'anything' }
   }),
   
   AnyArgs: new JS.Class({
-    equals: function() { return JS.Enumerable.ALL_EQUAL }
+    equals: function() { return JS.Enumerable.ALL_EQUAL },
+    toString: function() { return 'anyArgs' }
   }),
   
   ArrayIncluding: new JS.Class({
@@ -20,6 +22,11 @@ JS.Test.Mocking.extend({
           return false;
       }
       return true;
+    },
+    
+    toString: function() {
+      var name = JS.Test.Unit.AssertionMessage.convert(this._elements);
+      return 'arrayIncluding' + name;
     }
   }),
   
@@ -35,6 +42,11 @@ JS.Test.Mocking.extend({
           return false;
       }
       return true;
+    },
+    
+    toString: function() {
+      var name = JS.Test.Unit.AssertionMessage.convert(this._elemets);
+      return 'objectIncluding' + name;
     }
   }),
   
@@ -45,6 +57,12 @@ JS.Test.Mocking.extend({
     
     equals: function(object) {
       return JS.isType(object, this._type);
+    },
+    
+    toString: function() {
+      var name = JS.Test.Unit.AssertionMessage.convert(this._type),
+          an   = /^[aeiou]/i.test(name) ? 'an' : 'a';
+      return an + '(' + name + ')';
     }
   }),
   
@@ -55,6 +73,11 @@ JS.Test.Mocking.extend({
     
     equals: function(object) {
       return JS.match(this._type, object);
+    },
+    
+    toString: function() {
+      var name = JS.Test.Unit.AssertionMessage.convert(this._type);
+      return 'matching(' + name + ')';
     }
   })
 });

@@ -48,6 +48,7 @@ JS.Test.extend({
           this._original    = object[methodName];
           this._ownProperty = object.hasOwnProperty(methodName);
           this._argMatchers = [];
+          this._expected    = false;
           this._callsMade   = 0;
           
           this.apply();
@@ -69,34 +70,12 @@ JS.Test.extend({
         },
         
         expected: function() {
-          if (this.hasOwnProperty('_minCalls')) return;
-          this._minCalls = 1;
-        },
-        
-        given: function() {
-          var matcher = new JS.Test.Mocking.Parameters(arguments);
-          this._argMatchers.push(matcher);
-          return this;
-        },
-        
-        raises: function(exception) {
-          this._lastMatcher()._exception = exception;
-          return this;
-        },
-        
-        returns: function() {
-          this._lastMatcher().returns(arguments);
-          return this;
-        },
-        
-        yields: function() {
-          this._lastMatcher().yields(arguments);
-          return this;
+          this._expected = true;
         },
         
         _lastMatcher: function() {
           var matchers = this._argMatchers;
-          if (matchers.length === 0) matchers.push(new JS.Test.Mocking.Parameters([]));
+          if (matchers.length === 0) matchers.push(new JS.Test.Mocking.Parameters([], this._expected));
           return matchers[matchers.length - 1];
         },
         
@@ -121,12 +100,23 @@ JS.Test.extend({
         },
         
         _verify: function() {
-          if (typeof this._minCalls !== 'number') return;
-          if (this._callsMade >= this._minCalls) return;
+          var parameters, message;
           
-          var message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
-                            '<?> expected to receive call\n' + this._methodName + '().',
-                            [this._object]);
+          for (var i = 0, n = this._argMatchers.length; i < n; i++) {
+            parameters = this._argMatchers[i];
+            if (parameters.verify()) continue;
+            
+            message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
+                            '<?> expected to receive call\n' + this._methodName + '?.',
+                            [this._object, parameters.toArray()]);
+            
+            throw new JS.Test.Mocking.ExpectationError(message);
+          }
+          if (!this._expected || this._callsMade > 0) return;
+          
+          message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
+                          '<?> expected to receive call\n' + this._methodName + '?.',
+                          [this._object, []]);
           
           throw new JS.Test.Mocking.ExpectationError(message);
         }
