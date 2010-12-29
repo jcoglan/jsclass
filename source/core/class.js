@@ -19,17 +19,18 @@ JS.extend(JS.Class.prototype, {
     klass.prototype.constructor =
     klass.prototype.klass = klass;
     
-    klass.__eigen__().include(parent.__meta__);
+    klass.__eigen__(false).include(parent.__meta__);
     
     klass.__tgt__ = klass.prototype;
     
     var parentModule = (parent === Object)
                      ? {}
-                     : (parent.__fns__ ? parent : new JS.Module(parent.prototype));
+                     : (parent.__fns__ ? parent : new JS.Module(parent.prototype, {_resolve: false}));
     
     klass.include(JS.Kernel, {}, false)
          .include(parentModule, {}, false)
-         .include(methods);
+         .include(methods, {}, false)
+         .resolve();
     
     if (typeof parent.inherited === 'function')
       parent.inherited(klass);

@@ -16,7 +16,7 @@ JS.extend(JS.Module.prototype, {
     this.__tgt__ = options._target;
     
     this.setName(name);
-    this.include(methods);
+    this.include(methods, {}, false);
     
     if (JS.Module.__queue__)
       JS.Module.__queue__.push(this);
@@ -51,12 +51,8 @@ JS.extend(JS.Module.prototype, {
   },
   
   include: function(module, options, resolve) {
+    if (!module) return this;
     resolve = (resolve !== false);
-    
-    if (!module) {
-      if (resolve) this.resolve();
-      return this;
-    }
     
     var options = options || {},
         extend  = module.extend,
