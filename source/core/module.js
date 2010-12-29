@@ -16,7 +16,7 @@ JS.extend(JS.Module.prototype, {
     this.__tgt__ = options._target;
     
     this.setName(name);
-    this.include(methods, {}, false);
+    this.include(methods, {_resolve: false});
     
     if (JS.Module.__queue__)
       JS.Module.__queue__.push(this);
@@ -50,11 +50,11 @@ JS.extend(JS.Module.prototype, {
     if (resolve !== false) this.resolve();
   },
   
-  include: function(module, options, resolve) {
+  include: function(module, options) {
     if (!module) return this;
-    resolve = (resolve !== false);
     
     var options = options || {},
+        resolve = options._resolve !== false,
         extend  = module.extend,
         include = module.include,
         extended, field, value, mixins, i, n;
@@ -81,7 +81,7 @@ JS.extend(JS.Module.prototype, {
       if (this.shouldIgnore('include', include)) {
         mixins = [].concat(include);
         for (i = 0, n = mixins.length; i < n; i++)
-          this.include(mixins[i], {}, false);
+          this.include(mixins[i], {_resolve: false});
       }
       for (field in module) {
         if (!module.hasOwnProperty(field)) continue;

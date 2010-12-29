@@ -27,9 +27,9 @@ JS.extend(JS.Class.prototype, {
                      ? {}
                      : (parent.__fns__ ? parent : new JS.Module(parent.prototype, {_resolve: false}));
     
-    klass.include(JS.Kernel, {}, false)
-         .include(parentModule, {}, false)
-         .include(methods, {}, false)
+    klass.include(JS.Kernel, {_resolve: false})
+         .include(parentModule, {_resolve: false})
+         .include(methods, {_resolve: false})
          .resolve();
     
     if (typeof parent.inherited === 'function')
