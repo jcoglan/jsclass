@@ -76,3 +76,8 @@ JS.makeClass = function(parent) {
   return constructor;
 };
 
+JS.match = function(category, object) {
+  if (object === undefined) return false;
+  return JS.isFn(category.test) ? category.test(object) : category.match(object);
+};
+

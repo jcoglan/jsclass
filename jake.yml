@@ -42,6 +42,7 @@ packages:
       - unit/unit
       - unit/util/observable
       - unit/assertions
+      - unit/assertion_message
       - unit/failure
       - unit/error
       - unit/test_result
@@ -58,6 +59,11 @@ packages:
       - context/shared_behavior
       - context/test
       - context/suite
+      - mocking/stub
+      - mocking/parameters
+      - mocking/matchers
+      - mocking/dsl
+      - mocking/clock
       - helpers
   
   dom:

@@ -20,6 +20,8 @@ JS.Packages(function() { with(this) {
     var test = 'JS.Test.Unit';
     module('test')          .provides('JS.Test',
                                       'JS.Test.Context',
+                                      'JS.Test.Mocking',
+                                      'JS.Test.Mocking.Clock',
                                       'JS.Test.Helpers',
                                       test,
                                       test + '.Assertions',
@@ -29,7 +31,9 @@ JS.Packages(function() { with(this) {
                             .requires('JS.Module',
                                       'JS.Class',
                                       'JS.DOM',
-                                      'JS.Enumerable');
+                                      'JS.Enumerable',
+                                      'JS.SortedSet',
+                                      'JS.Comparable');
     
     module('dom')           .provides('JS.DOM',
                                       'JS.DOM.Builder')

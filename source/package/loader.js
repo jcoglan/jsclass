@@ -9,29 +9,62 @@ JS.Package.DomLoader = {
   },
   
   loadFile: function(path, fireCallbacks) {
+    if (window.console && console.info)
+      console.info('Loading ' + path);
+    
     var self = this,
-        tag = document.createElement('script');
+        tag  = document.createElement('script');
     
     tag.type = 'text/javascript';
     tag.src = path;
     
     tag.onload = tag.onreadystatechange = function() {
       var state = tag.readyState, status = tag.status;
-      if ( !state || state === 'loaded' || state === 'complete' || (state === 4 && status === 200) ) {
+      if ( !state || state === 'loaded' || state === 'complete' ||
+           (state === 4 && status === 200) ) {
         fireCallbacks();
         tag.onload = tag.onreadystatechange = self._K;
         tag = null;
       }
     };
     
-    if (window.console && console.info)
-      console.info('Loading ' + path);
-    
     document.getElementsByTagName('head')[0].appendChild(tag);
   },
   
   _K: function() {}
 };
+
+JS.Package.MozIJSSubScriptLoader = {
+  usable: function() {
+    try {
+      if ( Components &&
+           Components.classes &&
+           Components.classes['@mozilla.org/moz/jssubscript-loader;1'] &&
+           Components.classes['@mozilla.org/moz/jssubscript-loader;1'].getService ) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch(e) {
+      return false;
+    }
+  },
+
+  setup: function() {
+    this.mozLoader = Components.
+                     classes['@mozilla.org/moz/jssubscript-loader;1'].
+                     getService(Components.interfaces.mozIJSSubScriptLoader);
+  },
+
+  loadFile: function(path, fireCallbacks) {
+    if (window.console && console.info)
+      console.info('Loading ' + path);
+    
+    this.mozLoader.loadSubScript(path);
+    fireCallbacks();
+  }
+};
+
 
 JS.Package.CommonJSLoader = {
   usable: function() {
@@ -115,7 +148,8 @@ JS.Package.WshLoader = {
 };
 
 (function() {
-  var candidates = [  JS.Package.DomLoader,
+  var candidates = [  JS.Package.MozIJSSubScriptLoader,
+                      JS.Package.DomLoader,
                       JS.Package.CommonJSLoader,
                       JS.Package.ServerLoader,
                       JS.Package.WshLoader ],

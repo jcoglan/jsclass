@@ -20,7 +20,13 @@ JS.DOM.Builder = new JS.Class('DOM.Builder', {
   },
   
   makeElement: function(name, children) {
-    var element = document.createElement(name), child, attribute;
+    var element, child, attribute;
+    if ( document.createElementNS ) {
+      // That makes possible to mix HTML within SVG or XUL.
+      element = document.createElementNS("http://www.w3.org/1999/xhtml", name);
+    } else {
+      element = document.createElement(name);
+    }
     for (var i = 0, n = children.length; i < n; i++) {
       child = children[i];
       if (JS.isFn(child)) {

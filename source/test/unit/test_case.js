@@ -86,9 +86,15 @@ JS.Test.Unit.extend({
         this.exec('teardown', complete, this.processError(complete));
       };
       
+      var verify = function() {
+        this.exec(function() { JS.Test.Unit.mocking.verify() },
+                  teardown,
+                  this.processError(teardown));
+      };
+      
       this.exec('setup', function() {
-        this.exec(this._methodName, teardown, this.processError(teardown));
-      }, this.processError(teardown));
+        this.exec(this._methodName, verify, this.processError(verify));
+      }, this.processError(verify));
     },
     
     exec: function(methodName, onSuccess, onError) {

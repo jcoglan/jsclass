@@ -48,6 +48,7 @@ should work using these JavaScript implementations:
   * Windows Script Host
 
 To run the tests in a browser, just open the `test/browser.html` file.
+To test in a XUL environment run: `xulrunner -app test/xulenv/application.ini`
 
 
 License

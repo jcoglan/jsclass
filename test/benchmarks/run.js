@@ -20,7 +20,7 @@ if (typeof require === 'function') {
 }
 
 JS.require('JS.Class', function() {
-  Benchmark.measure('Class creation', 100, {
+  Benchmark.measure('Class creation', 300, {
     test: function() {
       new JS.Class({
         method1: function() {},
@@ -30,7 +30,7 @@ JS.require('JS.Class', function() {
     }
   })
   
-  Benchmark.measure('Module#ancestors', 1000, {
+  Benchmark.measure('Module#ancestors', 5000, {
     setup: function() {
       var included = new JS.Module({ include: new JS.Module({ include: new JS.Module() }) })
       this.module = new JS.Module()
@@ -41,7 +41,7 @@ JS.require('JS.Class', function() {
     }
   })
   
-  Benchmark.measure('Module#ancestors (cached)', 1000, {
+  Benchmark.measure('Module#ancestors (cached)', 5000, {
     setup: function() {
       var included = new JS.Module({ include: new JS.Module({ include: new JS.Module() }) })
       this.module = new JS.Module()

@@ -1,5 +1,7 @@
 JS.Enumerable = new JS.Module('Enumerable', {
   extend: {
+    ALL_EQUAL: {},
+    
     forEach: function(block, context) {
       if (!block) return new JS.Enumerator(this, 'forEach');
       for (var i = 0; i < this.length; i++)
@@ -12,6 +14,8 @@ JS.Enumerable = new JS.Module('Enumerable', {
     },
     
     areEqual: function(expected, actual) {
+      var result;
+      
       if (expected === actual)
         return true;
       
@@ -23,11 +27,12 @@ JS.Enumerable = new JS.Module('Enumerable', {
       
       if (expected instanceof Array) {
         if (!(actual instanceof Array)) return false;
-        if (expected.length !== actual.length) return false;
         for (var i = 0, n = expected.length; i < n; i++) {
-          if (!this.areEqual(expected[i], actual[i]))
-            return false;
+          result = this.areEqual(expected[i], actual[i]);
+          if (result === this.ALL_EQUAL) return true;
+          if (!result) return false;
         }
+        if (expected.length !== actual.length) return false;
         return true;
       }
       

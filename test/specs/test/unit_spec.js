@@ -1,52 +1,28 @@
 Test = this.Test || {};
 
-TestSpecHelpers = new JS.Module({
-  suite: function(tests) {
-    return new JS.Class("TestedSuite", JS.Test.Unit.TestCase, tests).suite()
-  },
-  
-  runTests: function(tests, resume) {
-    if (tests) this.testcase = this.suite(tests)
-    this.testcase.run(this.result, resume || function() {}, function() {})
-  },
-  
-  assertTestResult: function(runs, assertions, failures, errors) { with(this) {
-    __wrapAssertion__(function() { with(this) {
-      assertEqual( runs,        result.runCount() )
-      assertEqual( assertions,  result.assertionCount() )
-      assertEqual( failures,    result.failureCount() )
-      assertEqual( errors,      result.errorCount() )
-      
-      assertEqual( failures + errors, faults.length )
-    }})
-  }},
-  
-  assertMessage: function(index, message) { with(this) {
-    if (typeof index === "string") {
-      message = index
-      index   = 1
-    }
-    assertEqual( message, faults[index-1].longDisplay() )
-  }}
-})
-
 Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
   include(JS.Test.Helpers)
   include(TestSpecHelpers)
-  
-  before("each", function() {
-    this.result = new JS.Test.Unit.TestResult()
-    this.faults = []
-    this.result.addListener(JS.Test.Unit.TestResult.FAULT, this.faults.push, this.faults)
-  })
+  before(function() { createTestEnvironment() })
   
   describe("empty TestCase", function() {
-    before("each", function(resume) {
+    before(function(resume) {
       this.runTests({}, resume)
     })
     
     it("passes with no assertions, failures or errors", function() {
       assertTestResult( 0, 0, 0, 0 )
+    })
+  })
+  
+  describe("when an error is thrown", function() {
+    it("catches and reports the error", function(resume) {
+      runTests({
+        testError: function() { throw new TypeError("derp") }
+      }, function() { resume(function() {
+        assertTestResult( 1, 0, 0, 1 )
+        assertMessage( 1, "Error:\ntestError(TestedSuite):\nTypeError: derp" )
+      })})
     })
   })
   
@@ -514,6 +490,17 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           assertTestResult( 2, 2, 2, 0 )
           assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"food\"> expected to match\n</Foo/>." )
           assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"food\"> expected not to match\n</Foo/i>." )
+        })})
+      })
+      
+      it("fails if the string is undefined", function(resume) {
+        runTests({
+          test1: function() { with(this) {
+            assertMatch( /[a-z]+/, undefined )
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<undefined> expected to match\n</[a-z]+/>." )
         })})
       })
     })
