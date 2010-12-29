@@ -84,8 +84,9 @@ JS.Method.create = function(module, name, callable) {
 };
 
 JS.Method.compile = function(method, environment) {
-  if (method instanceof this) return method.compile(environment);
-  else return method;
+  return method && method.compile
+       ? method.compile(environment)
+       : method;
 };
 
 JS.Method.__listeners__ = [];
