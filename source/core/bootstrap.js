@@ -14,7 +14,7 @@
     var klass  = JS[name],
         parent = JS[parentName];
     
-    klass.__inc__ = new JS.List();
+    klass.__inc__ = [];
     klass.__dep__ = [];
     klass.__fns__ = methodsFromPrototype(klass);
     klass.__tgt__ = klass.prototype;

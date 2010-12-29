@@ -17,5 +17,6 @@ JS.Forwardable = new JS.Module('Forwardable', {
         i       = methods.length;
     
     while (i--) this.defineDelegator(subject, methods[i], methods[i], false);
+    this.resolve();
   }
 });

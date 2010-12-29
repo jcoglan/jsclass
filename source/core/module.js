@@ -10,7 +10,7 @@ JS.extend(JS.Module.prototype, {
     }
     options = options || {};
     
-    this.__inc__ = new JS.List();
+    this.__inc__ = [];
     this.__dep__ = [];
     this.__fns__ = {};
     this.__tgt__ = options._target;
@@ -43,26 +43,29 @@ JS.extend(JS.Module.prototype, {
     if (JS.isFn(object)) object.displayName = name;
   },
   
-  define: function(name, callable) {
+  define: function(name, callable, resolve) {
     var method = JS.Method.create(this, name, callable);
     this.__fns__[name] = method;
     this.__name__(name);
-    this.acceptMethod(name, method);
+    if (resolve !== false) this.resolve();
   },
   
-  include: function(module, options) {
-    if (!module) return this;
+  include: function(module, options, resolve) {
+    resolve = (resolve !== false);
+    
+    if (!module) {
+      if (resolve) this.resolve();
+      return this;
+    }
     
     var options = options || {},
         extend  = module.extend,
         include = module.include,
-        inclusion, extended, field, value, mixins, i, n;
+        extended, field, value, mixins, i, n;
     
     if (module.__fns__ && module.__inc__) {
-      inclusion = new JS.Inclusion(this, module);
-      this.__inc__.push(inclusion);
-      if ((module.__dep__ || {}).push) module.__dep__.push(inclusion);
-      this.acceptModule(module, inclusion);
+      this.__inc__.push(module);
+      if ((module.__dep__ || {}).push) module.__dep__.push(this);
       
       if (extended = options._extended) {
         if (typeof module.extended === 'function')
@@ -82,16 +85,40 @@ JS.extend(JS.Module.prototype, {
       if (this.shouldIgnore('include', include)) {
         mixins = [].concat(include);
         for (i = 0, n = mixins.length; i < n; i++)
-          this.include(mixins[i]);
+          this.include(mixins[i], {}, false);
       }
       for (field in module) {
         if (!module.hasOwnProperty(field)) continue;
         value = module[field];
         if (this.shouldIgnore(field, value)) continue;
-        this.define(field, value);
+        this.define(field, value, false);
       }
     }
+    
+    if (resolve) this.resolve();
     return this;
+  },
+  
+  resolve: function(host) {
+    var host   = host || this,
+        target = host.__tgt__,
+        inc    = this.__inc__,
+        i, n, key, compiled;
+    
+    if (host === this) {
+      i = this.__dep__.length;
+      while (i--) this.__dep__[i].resolve();
+    }
+    
+    if (!target) return;
+    
+    for (i = 0, n = inc.length; i < n; i++)
+      inc[i].resolve(host);
+    
+    for (key in this.__fns__) {
+      compiled = JS.Method.compile(this.__fns__[key], host);
+      if (target[key] !== compiled) target[key] = compiled;
+    }
   },
   
   shouldIgnore: function(field, value) {
@@ -100,46 +127,12 @@ JS.extend(JS.Module.prototype, {
              (value.__fns__ && value.__inc__));
   },
   
-  acceptMethod: function(name, method, inclusion) {
-    if (this.__fns__.hasOwnProperty(name) &&
-        this.__fns__[name] !== method)
-      return;
-    
-    var compiled = JS.Method.compile(method, this);
-    if (this.__tgt__ && this.__tgt__[name] !== compiled)
-      this.__tgt__[name] = compiled;
-    
-    if (inclusion) inclusion.acceptMethod(name, method);
-    
-    var i = this.__dep__.length;
-    while (i--)
-      this.__dep__[i].acceptMethod(name, method);
-  },
-  
-  acceptModule: function(module, inclusion) {
-    var fns  = module.__fns__,
-        inc  = module.__inc__,
-        node = inc.head,
-        field, i, n;
-    
-    while (node) {
-      this.acceptModule(node.mixin, inclusion);
-      node = node.next;
-    }
-    
-    for (field in fns)
-      this.acceptMethod(field, fns[field], inclusion);
-  },
-  
   ancestors: function(list) {
     var list = list || [],
-        inc  = this.__inc__,
-        node = inc.head;
+        inc  = this.__inc__;
     
-    while (node) {
-      node.mixin.ancestors(list);
-      node = node.next;
-    }
+    for (var i = 0, n = inc.length; i < n; i++)
+      inc[i].ancestors(list);
     
     if (JS.indexOf(list, this) < 0)
       list.push(this);
@@ -162,13 +155,11 @@ JS.extend(JS.Module.prototype, {
   includes: function(module) {
     if (module === this) return true;
     
-    var inc  = this.__inc__,
-        node = inc.head;
+    var inc  = this.__inc__;
     
-    while (node) {
-      if (node.mixin.includes(module))
+    for (var i = 0, n = inc.length; i < n; i++) {
+      if (inc[i].includes(module))
         return true;
-      node = node.next;
     }
     return false;
   },
