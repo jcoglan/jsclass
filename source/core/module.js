@@ -62,6 +62,7 @@ JS.extend(JS.Module.prototype, {
     if (module.__fns__ && module.__inc__) {
       this.__inc__.push(module);
       if ((module.__dep__ || {}).push) module.__dep__.push(this);
+      this.uncache();
       
       if (extended = options._extended) {
         if (typeof module.extended === 'function')
@@ -117,6 +118,12 @@ JS.extend(JS.Module.prototype, {
     }
   },
   
+  uncache: function() {
+    delete this.__anc__;
+    var dep = this.__dep__, i = dep.length;
+    while (i--) dep[i].uncache();
+  },
+  
   shouldIgnore: function(field, value) {
     return (field === 'extend' || field === 'include') &&
            (typeof value !== 'function' ||
@@ -124,8 +131,11 @@ JS.extend(JS.Module.prototype, {
   },
   
   ancestors: function(list) {
-    var list = list || [],
-        inc  = this.__inc__;
+    var cachable = !list,
+        list     = list || [],
+        inc      = this.__inc__;
+        
+    if (cachable && this.__anc__) return this.__anc__.slice();
     
     for (var i = 0, n = inc.length; i < n; i++)
       inc[i].ancestors(list);
@@ -133,6 +143,7 @@ JS.extend(JS.Module.prototype, {
     if (JS.indexOf(list, this) < 0)
       list.push(this);
     
+    if (cachable) this.__anc__ = list.slice();
     return list;
   },
   
