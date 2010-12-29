@@ -31,9 +31,9 @@ JS.Test.extend({
   Context: new JS.Module({
     extend: {
       included: function(base) {
-        base.extend(JS.Test.Context.Context);
-        base.include(JS.Test.Context.LifeCycle);
-        base.extend(JS.Test.Context.Test);
+        base.extend(JS.Test.Context.Context, false);
+        base.include(JS.Test.Context.LifeCycle, {_resolve: false});
+        base.extend(JS.Test.Context.Test, false);
       },
       
       /** section: test
@@ -79,10 +79,14 @@ JS.Test.extend({
          *   }})
          **/
         context: function(name, block) {
-          var klass = new JS.Class(this);
+          var klass = new JS.Class(this, {}, {_resolve: false});
+          klass.__eigen__().resolve();
+          
           klass.setContextName(name.toString());
           klass.setName(klass.getContextName());
+          
           JS.Test.selfless(block).call(klass);
+          
           return klass;
         }
       })
@@ -90,9 +94,13 @@ JS.Test.extend({
   }),
   
   describe: function(name, block) {
-    var klass = new JS.Class(name.toString(), JS.Test.Unit.TestCase);
-    klass.include(JS.Test.Context);
+    var klass = new JS.Class(name.toString(), JS.Test.Unit.TestCase, {}, {_resolve: false});
+    klass.include(JS.Test.Context, {_resolve: false});
+    klass.__eigen__().resolve();
+    
     JS.Test.selfless(block).call(klass);
+    
+    klass.resolve();
     return klass;
   },
   

@@ -10,8 +10,8 @@ JS.Kernel = new JS.Module('Kernel', {
     return this === other;
   },
   
-  extend: function(module) {
-    this.__eigen__().include(module, {_extended: this});
+  extend: function(module, resolve) {
+    this.__eigen__().include(module, {_extended: this, _resolve: resolve});
     return this;
   },
   
