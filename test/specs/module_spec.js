@@ -197,6 +197,154 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
       })
     })
     
+    describe("#extended", function() {
+      before(function() {
+        this.extenders = []
+        this.module = new subjectClass()
+        this.module.extend({
+          extended: function(base) { extenders.push(base) }
+        })
+      })
+      
+      describe("when the module is included by a module", function() {
+        before(function() {
+          this.hostModule = new JS.Module()
+          hostModule.include(module)
+        })
+        
+        it("is not called", function() {
+          assertEqual( [], extenders )
+        })
+      })
+      
+      describe("when the module is included by a class", function() {
+        before(function() {
+          this.hostClass = new JS.Class()
+          hostClass.include(module)
+        })
+        
+        it("is not called", function() {
+          assertEqual( [], extenders )
+        })
+      })
+      
+      describe("when the module is used to extend a class", function() {
+        before(function() {
+          this.hostClass = new JS.Class()
+          hostClass.extend(module)
+        })
+        
+        it("is called with the extended class", function() {
+          assertEqual( [hostClass], extenders )
+        })
+        
+        describe("and that class is inherited", function() {
+          before(function() {
+            this.child = new JS.Class(hostClass)
+          })
+          
+          it("is not called with the subclass", function() {
+            assertEqual( [hostClass], extenders )
+          })
+        })
+      })
+      
+      describe("when the module is used to extend an object", function() {
+        before(function() {
+          this.hostModule = new JS.Module()
+          hostModule.extend(module)
+        })
+        
+        it("is called with the extended object", function() {
+          assertEqual( [hostModule], extenders )
+        })
+      })
+    })
+    
+    describe("#included", function() {
+      before(function() {
+        this.includers = []
+        this.module = new subjectClass({ theMethod: function() { return "an instance method" } })
+        this.module.extend({
+          included: function(base) { includers.push(base) }
+        })
+      })
+      
+      describe("when the module is included by a module", function() {
+        before(function() {
+          this.hostModule = new JS.Module()
+          hostModule.include(module)
+        })
+        
+        it("is called once with the including module", function() {
+          assertEqual( [hostModule], includers )
+        })
+        
+        describe("and the including module is included somewhere else", function() {
+          before(function() {
+            assertEqual( ancestors.concat([module, hostModule]), hostModule.ancestors() )
+            this.target = new JS.Module()
+            target.include(hostModule)
+          })
+          
+          it("is not called with the indirectly including module", function() {
+            assertEqual( [hostModule], includers )
+          })
+        })
+      })
+      
+      describe("when the module is used to extend an object", function() {
+        before(function() {
+          this.object = new JS.Module()
+          object.extend(module)
+        })
+        
+        it("is not called", function() {
+          assertEqual( [], includers )
+        })
+      })
+      
+      describe("when the module is included by a class", function() {
+        before(function() {
+          this.hostClass = new JS.Class()
+          hostClass.include(module)
+        })
+        
+        it("is called once with the including class", function() {
+          assertEqual( [hostClass], includers )
+        })
+      })
+      
+      describe("when the module is used to extend a class", function() {
+        before(function() {
+          this.object = new JS.Class()
+          object.extend(module)
+        })
+        
+        it("is not called", function() {
+          assertEqual( [], includers )
+        })
+      })
+      
+      describe("when the hook causes the host to extend itself with the same module", function() {
+        before(function() {
+          module.extend({
+            included: function(base) { base.extend(this) }
+          })
+          this.hostClass = new JS.Class()
+          hostClass.include(module)
+        })
+        
+        it("adds the module's methods as instance methods to the host", function() {
+          assertEqual( "an instance method", (new hostClass()).theMethod() )
+        })
+        
+        it("adds the module's methods as singleton methods to the host", function() {
+          assertEqual( "an instance method", hostClass.theMethod() )
+        })
+      })
+    })
+    
     describe("#instanceMethod", function() {
       before(function() {
         this.module = new subjectClass({ aMethod: function() {} })
@@ -269,72 +417,6 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
   
   it("has Class as a subclass", function() {
     assertEqual( [JS.Class, JS.Test.Context.SharedBehavior], JS.Module.subclasses )
-  })
-  
-  // TODO [v3.0] make Class pass the hook specs
-  
-  describe("#extended", function() {
-    before(function() {
-      this.extenders = []
-      this.module = new subjectClass()
-      this.module.extend({
-        extended: function(base) { extenders.push(base) }
-      })
-    })
-    
-    describe("when the module is included by a module", function() {
-      before(function() {
-        this.hostModule = new JS.Module()
-        hostModule.include(module)
-      })
-      
-      it("is not called", function() {
-        assertEqual( [], extenders )
-      })
-    })
-    
-    describe("when the module is included by a class", function() {
-      before(function() {
-        this.hostClass = new JS.Class()
-        hostClass.include(module)
-      })
-      
-      it("is not called", function() {
-        assertEqual( [], extenders )
-      })
-    })
-    
-    describe("when the module is used to extend a class", function() {
-      before(function() {
-        this.hostClass = new JS.Class()
-        hostClass.extend(module)
-      })
-      
-      it("is called with the extended class", function() {
-        assertEqual( [hostClass], extenders )
-      })
-      
-      describe("and that class is inherited", function() {
-        before(function() {
-          this.child = new JS.Class(hostClass)
-        })
-        
-        it("is not called with the subclass", function() {
-          assertEqual( [hostClass], extenders )
-        })
-      })
-    })
-    
-    describe("when the module is used to extend an object", function() {
-      before(function() {
-        this.hostModule = new JS.Module()
-        hostModule.extend(module)
-      })
-      
-      it("is called with the extended object", function() {
-        assertEqual( [hostModule], extenders )
-      })
-    })
   })
   
   describe("#include", function() {
@@ -417,90 +499,6 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
         assertEqual( undefined, object.theMethod )
         module.include(plainOldObject)
         assertEqual( "the method", object.theMethod() )
-      })
-    })
-  })
-  
-  describe("#included", function() {
-    before(function() {
-      this.includers = []
-      this.module = new subjectClass({ theMethod: function() { return "an instance method" } })
-      this.module.extend({
-        included: function(base) { includers.push(base) }
-      })
-    })
-    
-    describe("when the module is included by a module", function() {
-      before(function() {
-        this.hostModule = new JS.Module()
-        hostModule.include(module)
-      })
-      
-      it("is called once with the including module", function() {
-        assertEqual( [hostModule], includers )
-      })
-      
-      describe("and the including module is included somewhere else", function() {
-        before(function() {
-          assertEqual( [module, hostModule], hostModule.ancestors() )
-          this.target = new JS.Module()
-          target.include(hostModule)
-        })
-        
-        it("is not called with the indirectly including module", function() {
-          assertEqual( [hostModule], includers )
-        })
-      })
-    })
-    
-    describe("when the module is used to extend an object", function() {
-      before(function() {
-        this.object = new JS.Module()
-        object.extend(module)
-      })
-      
-      it("is not called", function() {
-        assertEqual( [], includers )
-      })
-    })
-    
-    describe("when the module is included by a class", function() {
-      before(function() {
-        this.hostClass = new JS.Class()
-        hostClass.include(module)
-      })
-      
-      it("is called once with the including class", function() {
-        assertEqual( [hostClass], includers )
-      })
-    })
-    
-    describe("when the module is used to extend a class", function() {
-      before(function() {
-        this.object = new JS.Class()
-        object.extend(module)
-      })
-      
-      it("is not called", function() {
-        assertEqual( [], includers )
-      })
-    })
-    
-    describe("when the hook causes the host to extend itself with the same module", function() {
-      before(function() {
-        module.extend({
-          included: function(base) { base.extend(this) }
-        })
-        this.hostClass = new JS.Class()
-        hostClass.include(module)
-      })
-      
-      it("adds the module's methods as instance methods to the host", function() {
-        assertEqual( "an instance method", (new hostClass()).theMethod() )
-      })
-      
-      it("adds the module's methods as singleton methods to the host", function() {
-        assertEqual( "an instance method", hostClass.theMethod() )
       })
     })
   })
