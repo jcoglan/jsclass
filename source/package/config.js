@@ -33,7 +33,8 @@ JS.Packages(function() { with(this) {
                                       'JS.Enumerable',
                                       'JS.SortedSet',
                                       'JS.Comparable',
-                                      'JS.Ruby');
+                                      'JS.Ruby')
+                            .styling(PATH + 'assets/testui.css');
     
     module('dom')           .provides('JS.DOM',
                                       'JS.DOM.Builder')

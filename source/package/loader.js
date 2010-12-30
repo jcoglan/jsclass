@@ -12,23 +12,32 @@ JS.Package.DomLoader = {
     if (window.console && console.info)
       console.info('Loading ' + path);
     
-    var self = this,
-        tag  = document.createElement('script');
+    var self   = this,
+        script = document.createElement('script');
     
-    tag.type = 'text/javascript';
-    tag.src = path;
+    script.type = 'text/javascript';
+    script.src  = path;
     
-    tag.onload = tag.onreadystatechange = function() {
-      var state = tag.readyState, status = tag.status;
+    script.onload = script.onreadystatechange = function() {
+      var state = script.readyState, status = script.status;
       if ( !state || state === 'loaded' || state === 'complete' ||
            (state === 4 && status === 200) ) {
         fireCallbacks();
-        tag.onload = tag.onreadystatechange = self._K;
-        tag = null;
+        script.onload = script.onreadystatechange = self._K;
+        script = null;
       }
     };
     
-    document.getElementsByTagName('head')[0].appendChild(tag);
+    document.getElementsByTagName('head')[0].appendChild(script);
+  },
+  
+  loadStyle: function(path) {
+    var link  = document.createElement('link');
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = path;
+    
+    document.getElementsByTagName('head')[0].appendChild(link);
   },
   
   _K: function() {}
