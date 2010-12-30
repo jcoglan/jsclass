@@ -68,6 +68,10 @@ JS.extend(JS.Method.prototype, {
       }
       return returnValue;
     };
+  },
+  
+  toString: function() {
+    return '#<Method:' + this.module.toString() + '#' + this.name + '>';
   }
 });
 

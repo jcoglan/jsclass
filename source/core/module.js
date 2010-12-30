@@ -14,6 +14,8 @@ JS.extend(JS.Module.prototype, {
     this.__dep__ = [];
     this.__fns__ = {};
     this.__tgt__ = options._target;
+    this.__anc__ = null;
+    this.__mct__ = {};
     
     this.setName(name);
     this.include(methods, {_resolve: false});
@@ -62,7 +64,6 @@ JS.extend(JS.Module.prototype, {
     if (module.__fns__ && module.__inc__) {
       this.__inc__.push(module);
       if ((module.__dep__ || {}).push) module.__dep__.push(this);
-      this.uncache();
       
       if (extended = options._extended) {
         if (typeof module.extended === 'function')
@@ -103,6 +104,8 @@ JS.extend(JS.Module.prototype, {
         i, n, key, compiled;
     
     if (host === this) {
+      this.__anc__ = null;
+      this.__mct__ = {};
       i = this.__dep__.length;
       while (i--) this.__dep__[i].resolve();
     }
@@ -116,12 +119,6 @@ JS.extend(JS.Module.prototype, {
       compiled = JS.Method.compile(this.__fns__[key], host);
       if (target[key] !== compiled) target[key] = compiled;
     }
-  },
-  
-  uncache: function() {
-    delete this.__anc__;
-    var dep = this.__dep__, i = dep.length;
-    while (i--) dep[i].uncache();
   },
   
   shouldIgnore: function(field, value) {
@@ -148,6 +145,9 @@ JS.extend(JS.Module.prototype, {
   },
   
   lookup: function(name) {
+    var cached = this.__mct__[name];
+    if (cached) return cached.slice();
+    
     var ancestors = this.ancestors(),
         methods   = [],
         fns;
@@ -156,6 +156,7 @@ JS.extend(JS.Module.prototype, {
       fns = ancestors[i].__fns__;
       if (fns.hasOwnProperty(name)) methods.push(fns[name]);
     }
+    this.__mct__[name] = methods.slice();
     return methods;
   },
   

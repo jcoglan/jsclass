@@ -273,6 +273,20 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
   
   // TODO [v3.0] make Class pass the hook specs
   
+  describe("#define", function() {
+    before(function() {
+      this.parent = new JS.Module("Parent")
+      this.child  = new JS.Module("Child", {aMethod: function() {}})
+      child.include(parent)
+    })
+    
+    it("adds the method to modules that depend on the receiver", function() {
+      assertEqual( [child.instanceMethod("aMethod")], child.lookup("aMethod") )
+      parent.define("aMethod", function() {})
+      assertEqual( [parent.instanceMethod("aMethod"), child.instanceMethod("aMethod")], child.lookup("aMethod") )
+    })
+  })
+  
   describe("#extended", function() {
     before(function() {
       this.extenders = []
