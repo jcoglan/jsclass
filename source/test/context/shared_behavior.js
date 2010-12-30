@@ -21,9 +21,7 @@ JS.Test.Context.extend({
     included: function(arg) {
       this._behavior.call(arg);
     }
-  }),
-  
-  ENV: (function() { return this })()
+  })
 });
 
 JS.Test.Unit.TestCase.extend({
@@ -51,7 +49,7 @@ JS.Test.Unit.TestCase.extend({
    */
   shared: function(name, block) {
     name = JS.Test.Context.SharedBehavior.moduleName(name);
-    JS.Test.Context.ENV[name] = JS.Test.Context.SharedBehavior.createFromBehavior(block);
+    JS.ENV[name] = JS.Test.Context.SharedBehavior.createFromBehavior(block);
   },
   
   /**
@@ -83,7 +81,7 @@ JS.Test.Unit.TestCase.extend({
     
     else if (JS.isType(sharedName, 'string')) {
       var name = JS.Test.Context.SharedBehavior.moduleName(sharedName),
-          beh  = JS.Test.Context.ENV[name];
+          beh  = JS.ENV[name];
       
       if (!beh) throw new Error('Could not find example group named "' + sharedName + '"');
       this.include(beh);

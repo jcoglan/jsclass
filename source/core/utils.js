@@ -1,5 +1,5 @@
 (function() {
-  var $ = this.global || this;
+  var $ = (typeof this.global === 'object') ? this.global : this;
   $.JS = $.JS || {};
   JS.ENV = $;
 })();

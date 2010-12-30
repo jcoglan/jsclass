@@ -4,7 +4,7 @@ JS.Test.Mocking.extend({
       API: {
         stub: function() {
           var mocking = JS.Test.Mocking,
-              env     = JS.Package.ENV,
+              env     = JS.ENV,
               methods = ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
               i       = methods.length;
           
