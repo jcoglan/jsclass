@@ -21,9 +21,7 @@ JS.Test.Context.extend({
     included: function(arg) {
       JS.Ruby(arg, this._behavior);
     }
-  }),
-  
-  ENV: (function() { return this })()
+  })
 });
 
 JS.Test.Unit.TestCase.extend({

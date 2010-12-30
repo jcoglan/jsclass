@@ -1,6 +1,7 @@
 (function() {
-  var $ = this.global || this;
+  var $ = (typeof this.global === 'object') ? this.global : this;
   $.JS = $.JS || {};
+  JS.ENV = $;
 })();
 
 JS.Package = function(loader) {
@@ -44,7 +45,7 @@ JS.Package = function(loader) {
   //================================================================
   // Environment settings
   
-  klass.ENV = this.global || this;
+  klass.ENV = JS.ENV;
   
   if ((this.document || {}).getElementsByTagName) {
     var script = document.getElementsByTagName('script')[0];

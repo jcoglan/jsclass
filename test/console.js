@@ -10,7 +10,7 @@ if (this.ActiveXObject) load = function(path) {
 };
 
 (function() {
-  var $ = this.global || this
+  var $ = (typeof this.global === 'object') ? this.global : this
   $.JSCLASS_PATH = 'build/src/'
 })()
 

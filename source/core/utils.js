@@ -12,7 +12,7 @@
  * public API, they are all 'plumbing' and may be removed or changed at any time.
  **/
 (function() {
-  var $ = this.global || this;
+  var $ = (typeof this.global === 'object') ? this.global : this;
   $.JS = $.JS || {};
   JS.ENV = $;
 })();
