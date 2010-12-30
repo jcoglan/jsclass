@@ -81,16 +81,6 @@ JS.Package.CommonJSLoader = {
            typeof exports === 'object';
   },
   
-  setup: function() {
-    var self = this;
-    require = (function(origRequire) {
-      return function() {
-        self._currentPath = arguments[0] + '.js';
-        return origRequire.apply(JS.Package.ENV, arguments);
-      };
-    })(require);
-  },
-  
   __FILE__: function() {
     return this._currentPath;
   },
@@ -101,7 +91,9 @@ JS.Package.CommonJSLoader = {
         module = path.replace(/\.[^\.]+$/g, ''),
         file   = node ? require('path') : require('file');
     
-    require(file.join(cwd, module));
+    var requirePath = file.join(cwd, module);
+    this._currentPath = requirePath + '.js';
+    require(requirePath);
     fireCallbacks();
   }
 };
@@ -112,21 +104,12 @@ JS.Package.ServerLoader = {
            typeof JS.Package.getObject('version') === 'function';
   },
   
-  setup: function() {
-    var self = this;
-    load = (function(origLoad) {
-      return function() {
-        self._currentPath = arguments[0];
-        return origLoad.apply(JS.Package.ENV, arguments);
-      };
-    })(load);
-  },
-  
   __FILE__: function() {
     return this._currentPath;
   },
   
   loadFile: function(path, fireCallbacks) {
+    this._currentPath = path;
     load(path);
     fireCallbacks();
   }
