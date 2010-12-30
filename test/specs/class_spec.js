@@ -1,4 +1,4 @@
-ClassSpec = JS.Test.describe(JS.Class, function() {
+JS.ENV.ClassSpec = JS.Test.describe(JS.Class, function() {
   before(function() {
     this.subjectClass    = JS.Class
     this.ancestors       = [JS.Kernel]

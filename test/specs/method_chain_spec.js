@@ -1,4 +1,4 @@
-MethodChainSpec = JS.Test.describe(JS.MethodChain, function() {
+JS.ENV.MethodChainSpec = JS.Test.describe(JS.MethodChain, function() {
   include(JS.Test.Helpers)
   
   define("Widget", new JS.Class({

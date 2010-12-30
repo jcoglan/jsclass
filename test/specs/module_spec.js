@@ -1,4 +1,4 @@
-ModuleSpec = JS.Test.describe(JS.Module, function() {
+JS.ENV.ModuleSpec = JS.Test.describe(JS.Module, function() {
   sharedBehavior("module", function() {
     before(function() {
       this.modA = new JS.Module('A')

@@ -43,6 +43,7 @@ JS.Package.DomLoader = {
   _K: function() {}
 };
 
+
 JS.Package.MozIJSSubScriptLoader = {
   usable: function() {
     try {
@@ -75,6 +76,28 @@ JS.Package.MozIJSSubScriptLoader = {
 };
 
 
+JS.Package.RhinoLoader = {
+  usable: function() {
+    return typeof java === 'object' &&
+           typeof require === 'function';
+  },
+  
+  __FILE__: function() {
+    return this._currentPath;
+  },
+  
+  loadFile: function(path, fireCallbacks) {
+    var cwd    = java.lang.System.getProperty('user.dir'),
+        module = path.replace(/\.[^\.]+$/g, '');
+    
+    var requirePath = new java.io.File(cwd, module).toString();
+    this._currentPath = requirePath + '.js';
+    require(requirePath);
+    fireCallbacks();
+  }
+};
+
+
 JS.Package.CommonJSLoader = {
   usable: function() {
     return typeof require === 'function' &&
@@ -86,10 +109,9 @@ JS.Package.CommonJSLoader = {
   },
   
   loadFile: function(path, fireCallbacks) {
-    var node   = (typeof process === 'object'),
-        cwd    = node ? process.cwd() : require('file').cwd(),
+    var cwd    = process.cwd(),
         module = path.replace(/\.[^\.]+$/g, ''),
-        file   = node ? require('path') : require('file');
+        file   = require('path');
     
     var requirePath = file.join(cwd, module);
     this._currentPath = requirePath + '.js';
@@ -97,6 +119,7 @@ JS.Package.CommonJSLoader = {
     fireCallbacks();
   }
 };
+
 
 JS.Package.ServerLoader = {
   usable: function() {
@@ -114,6 +137,7 @@ JS.Package.ServerLoader = {
     fireCallbacks();
   }
 };
+
 
 JS.Package.WshLoader = {
   usable: function() {
@@ -139,9 +163,11 @@ JS.Package.WshLoader = {
   }
 };
 
+
 (function() {
   var candidates = [  JS.Package.MozIJSSubScriptLoader,
                       JS.Package.DomLoader,
+                      JS.Package.RhinoLoader,
                       JS.Package.CommonJSLoader,
                       JS.Package.ServerLoader,
                       JS.Package.WshLoader ],

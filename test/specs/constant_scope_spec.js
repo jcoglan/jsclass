@@ -1,4 +1,4 @@
-ConstantScopeSpec = JS.Test.describe(JS.ConstantScope, function() {
+JS.ENV.ConstantScopeSpec = JS.Test.describe(JS.ConstantScope, function() {
   include(JS.Test.Helpers)
   
   define("createClass", function(methods) {

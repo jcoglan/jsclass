@@ -1,4 +1,4 @@
-ProxySpec = JS.Test.describe(JS.Proxy, function() {
+JS.ENV.ProxySpec = JS.Test.describe(JS.Proxy, function() {
   describe(JS.Proxy.Virtual, function() {
     before(function() {
       this.instances = 0

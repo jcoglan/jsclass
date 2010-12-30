@@ -1,4 +1,4 @@
-ObservableSpec = JS.Test.describe(JS.Observable, function() {
+JS.ENV.ObservableSpec = JS.Test.describe(JS.Observable, function() {
   before(function() {
     var Publisher  = new JS.Class(JS.Observable)
     this.publisher = new Publisher()

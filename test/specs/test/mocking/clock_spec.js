@@ -1,4 +1,4 @@
-Test.Mocking = {
+JS.ENV.Test.Mocking = {
   ClockSpec: JS.Test.describe(JS.Test.Mocking.Clock, function() {
     include(JS.Test.Mocking.Clock)
     

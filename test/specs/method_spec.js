@@ -1,4 +1,4 @@
-MethodSpec = JS.Test.describe(JS.Method, function() {
+JS.ENV.MethodSpec = JS.Test.describe(JS.Method, function() {
   before(function() {
     this.callable  = function(a,b) { return "something" }
     this.theModule = new JS.Module({ im_a_method: callable })

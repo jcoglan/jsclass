@@ -1,4 +1,4 @@
-EnumerableSpec = JS.Test.describe(JS.Enumerable, function() {
+JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() {
   include(JS.Test.Helpers)
   
   extend({

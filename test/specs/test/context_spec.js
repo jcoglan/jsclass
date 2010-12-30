@@ -1,4 +1,4 @@
-Test = this.Test || {}
+JS.ENV.Test = this.Test || {}
 
 Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() {
   include(JS.Test.Helpers)

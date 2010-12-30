@@ -1,5 +1,7 @@
 (function() {
-  this.JS = this.JS || {};
+  var $ = this.global || this;
+  $.JS = $.JS || {};
+  JS.ENV = $;
 })();
 
 JS.END_WITHOUT_DOT = /([^\.])$/;

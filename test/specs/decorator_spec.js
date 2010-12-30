@@ -1,4 +1,4 @@
-DecoratorSpec = JS.Test.describe(JS.Decorator, function() {
+JS.ENV.DecoratorSpec = JS.Test.describe(JS.Decorator, function() {
   var Bicycle = new JS.Class({
       initialize: function(model, gears) {
           this.model = model;

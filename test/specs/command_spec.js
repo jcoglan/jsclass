@@ -1,4 +1,4 @@
-CommandSpec = JS.Test.describe(JS.Command, function() {
+JS.ENV.CommandSpec = JS.Test.describe(JS.Command, function() {
   before(function() {
     this.counter = 0
   })

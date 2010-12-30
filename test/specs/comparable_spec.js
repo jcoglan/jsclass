@@ -1,4 +1,4 @@
-ComparableSpec = JS.Test.describe(JS.Comparable, function() {
+JS.ENV.ComparableSpec = JS.Test.describe(JS.Comparable, function() {
   include(JS.Test.Helpers)
   
   define("TodoItem", new JS.Class({

@@ -1,4 +1,4 @@
-TestSpecHelpers = new JS.Module({
+JS.ENV.TestSpecHelpers = new JS.Module({
   suite: function(tests) {
     return new JS.Class("TestedSuite", JS.Test.Unit.TestCase, tests).suite()
   },
