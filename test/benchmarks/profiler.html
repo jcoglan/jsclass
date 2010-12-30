@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>JS.Class profiler</title>
+  </head>
+  <body>
+    <script type="text/javascript" src="../../build/src/loader.js"></script>
+    <script type="text/javascript">
+      JS.require('JS.Class', function() {
+        
+        window.run = function() {
+          var i = 1000
+          while (i--) new JS.Class({m1: function() {},
+                                    m2: function() {},
+                                    m3: function() {}})
+        }
+      })
+    </script>
+    
+    <button onclick="run()">Run</button>
+  </body>
+</html>
+

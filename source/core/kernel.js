@@ -3,15 +3,15 @@ JS.Kernel = new JS.Module('Kernel', {
     if (this.__meta__) return this.__meta__;
     var name = this.toString() + '.';
     this.__meta__ = new JS.Module(name, null, {_target: this});
-    return this.__meta__.include(this.klass);
+    return this.__meta__.include(this.klass, {_resolve: false});
   },
   
   equals: function(other) {
     return this === other;
   },
   
-  extend: function(module) {
-    this.__eigen__().include(module, {_extended: this});
+  extend: function(module, resolve) {
+    this.__eigen__().include(module, {_extended: this, _resolve: resolve});
     return this;
   },
   

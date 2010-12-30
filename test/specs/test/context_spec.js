@@ -31,7 +31,7 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() {
     context("when nested", function() {
       before("each", function() {
         this.context = this.klass.context("and we're testing", function() {
-          klass.define("nested", function() {
+          __eigen__().define("nested", function() {
             return this.context("should be nested", function() {
               define("test_this_thing", function() {
                 return true

@@ -419,6 +419,20 @@ ModuleSpec = JS.Test.describe(JS.Module, function() {
     assertEqual( [JS.Class, JS.Test.Context.SharedBehavior], JS.Module.subclasses )
   })
   
+  describe("#define", function() {
+    before(function() {
+      this.parent = new JS.Module("Parent")
+      this.child  = new JS.Module("Child", {aMethod: function() {}})
+      child.include(parent)
+    })
+    
+    it("adds the method to modules that depend on the receiver", function() {
+      assertEqual( [child.instanceMethod("aMethod")], child.lookup("aMethod") )
+      parent.define("aMethod", function() {})
+      assertEqual( [parent.instanceMethod("aMethod"), child.instanceMethod("aMethod")], child.lookup("aMethod") )
+    })
+  })
+  
   describe("#include", function() {
     before(function() {
       this.module = new JS.Module()
