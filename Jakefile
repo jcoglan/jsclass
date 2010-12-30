@@ -16,5 +16,10 @@ jake_hook :build_complete do |build|
   build.packages.each do |doc|
     FileUtils.cp build.package(doc).build_path(:min), "site/site/javascripts/js.class/#{doc}.js"
   end
+  
+  [:src, :min].each do |size|
+    FileUtils.rm_rf "#{build.build_directory}/#{size}/assets"
+    FileUtils.cp_r "source/assets", "#{build.build_directory}/#{size}/assets"
+  end
 end
 

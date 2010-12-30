@@ -8,6 +8,7 @@ JS.Package = function(loader) {
   this._names     = new Set();
   this._deps      = new Set();
   this._uses      = new Set();
+  this._styles    = new Set();
   this._observers = {};
   this._events    = {};
 };
@@ -65,6 +66,10 @@ JS.Package = function(loader) {
   
   instance.addSoftDependency = function(pkg) {
     this._uses.push(pkg);
+  };
+  
+  instance.addStylesheet = function(path) {
+    this._styles.push(path);
   };
   
   instance.addName = function(name) {
@@ -150,6 +155,13 @@ JS.Package = function(loader) {
       typeof this._loader === 'function'
             ? this._loader(fireOnLoad)
             : klass.Loader.loadFile(this._loader, fireOnLoad);
+      
+      if (!klass.Loader.loadStyle) return;
+      
+      var styles = this._styles.list,
+          i      = styles.length;
+      
+      while (i--) klass.Loader.loadStyle(styles[i]);
       
       this.fire('download');
     }, this);

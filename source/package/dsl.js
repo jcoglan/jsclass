@@ -49,6 +49,10 @@ JS.Package.Description = function(pkg) {
     return this._batch('addSoftDependency', arguments);
   };
   
+  klass.styling = function() {
+    return this._batch('addStylesheet', arguments);
+  };
+  
   klass.setup = function(block) {
     this._pkg.onload(block);
     return this;
