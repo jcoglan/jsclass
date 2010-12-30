@@ -1,4 +1,4 @@
-KernelSpec = JS.Test.describe(JS.Kernel, function() {
+JS.ENV.KernelSpec = JS.Test.describe(JS.Kernel, function() {
   include(JS.Test.Helpers)
   
   before(function() {

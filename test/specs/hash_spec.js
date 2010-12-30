@@ -1,4 +1,4 @@
-HashSpec = JS.Test.describe(JS.Hash, function() {
+JS.ENV.HashSpec = JS.Test.describe(JS.Hash, function() {
   include(JS.Test.Helpers)
   
   before(function() {

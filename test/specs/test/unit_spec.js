@@ -1,4 +1,4 @@
-Test = this.Test || {};
+JS.ENV.Test = this.Test || {};
 
 Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
   include(JS.Test.Helpers)

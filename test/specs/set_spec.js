@@ -1,4 +1,4 @@
-SetSpec = JS.Test.describe(JS.Set, function() {
+JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() {
   include(JS.Test.Helpers)
   
   define("assertSetEqual", function(expected, actual) {

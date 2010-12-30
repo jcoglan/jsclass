@@ -90,7 +90,7 @@ JS.MethodChain.addMethods = function(object) {
   object.prototype && this.addMethods(object.prototype);
 };
 
-it = its = function() { return new JS.MethodChain; };
+JS.ENV.it = JS.ENV.its = function() { return new JS.MethodChain() };
 
 JS.Module.methodAdded(function(name) {
   JS.MethodChain.addMethod(name);

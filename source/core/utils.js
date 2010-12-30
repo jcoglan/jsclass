@@ -11,7 +11,11 @@
  * various utility methods used throughout. None of these methods should be taken as being
  * public API, they are all 'plumbing' and may be removed or changed at any time.
  **/
-JS = (typeof JS === 'undefined') ? {} : JS;
+(function() {
+  var $ = this.global || this;
+  $.JS = $.JS || {};
+  JS.ENV = $;
+})();
 
   /**
    * JS.extend(target, extensions) -> Object

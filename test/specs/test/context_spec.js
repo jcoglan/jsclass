@@ -1,4 +1,4 @@
-Test = this.Test || {}
+JS.ENV.Test = this.Test || {}
 
 Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() {
   include(JS.Test.Helpers)
@@ -120,8 +120,9 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() {
       before(function(resume) {
         this.result = new JS.Test.Unit.TestResult()
         this.suite  = sample_test.suite()
+        var self = this // TODO remove
         suite.run(this.result, function() {
-          this.hooks = klass.hook_register
+          self.hooks = klass.hook_register
           resume()
         }, function() {}, this)
       })

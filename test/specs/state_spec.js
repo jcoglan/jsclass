@@ -1,4 +1,4 @@
-StateSpec = JS.Test.describe(JS.State, function() {
+JS.ENV.StateSpec = JS.Test.describe(JS.State, function() {
   define("Positive", {
     ping: function() { this.value += 1 }
   })

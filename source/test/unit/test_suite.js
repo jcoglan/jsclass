@@ -83,7 +83,7 @@ JS.Test.Unit.extend({
         
       }, function() {
         callback.call(context || null, this.klass.FINISHED, this._name);
-        continuation();
+        continuation.call(context || null);
         
       }, this);
     },

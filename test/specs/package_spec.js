@@ -1,4 +1,4 @@
-PackageSpec = JS.Test.describe(JS.Package, function() {
+JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
   include(JS.Test.Helpers)
   include(JS.Test.Mocking.Clock)
   

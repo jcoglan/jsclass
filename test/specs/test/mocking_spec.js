@@ -1,4 +1,4 @@
-Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
+JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
   include(JS.Test.Helpers)
   include(TestSpecHelpers)
   before(function() { createTestEnvironment() })

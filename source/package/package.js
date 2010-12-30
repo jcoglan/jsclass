@@ -1,4 +1,7 @@
-JS = (typeof JS === 'undefined') ? {} : JS;
+(function() {
+  var $ = this.global || this;
+  $.JS = $.JS || {};
+})();
 
 JS.Package = function(loader) {
   var Set = JS.Package.OrderedSet;
@@ -41,7 +44,7 @@ JS.Package = function(loader) {
   //================================================================
   // Environment settings
   
-  klass.ENV = this;
+  klass.ENV = this.global || this;
   
   if ((this.document || {}).getElementsByTagName) {
     var script = document.getElementsByTagName('script')[0];
@@ -253,7 +256,7 @@ JS.Package = function(loader) {
                  .replace(/\./g, '/')
                  .toLowerCase() + '.js';
       
-      pkg = new this(path);
+      var pkg = new this(path);
       pkg.addName(name);
       
       if (path = autoloader[1].require)

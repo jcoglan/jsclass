@@ -1,4 +1,4 @@
-RangeSpec = JS.Test.describe(JS.Range, function() {
+JS.ENV.RangeSpec = JS.Test.describe(JS.Range, function() {
   include(JS.Test.Helpers)
   
   before(function() {

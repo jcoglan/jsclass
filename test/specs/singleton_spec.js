@@ -1,4 +1,4 @@
-SingletonSpec = JS.Test.describe(JS.Singleton, function() {
+JS.ENV.SingletonSpec = JS.Test.describe(JS.Singleton, function() {
   before(function() {
     this.mixin  = new JS.Module()
     this.parent = new JS.Class()

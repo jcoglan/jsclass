@@ -1,4 +1,4 @@
-ForwardableSpec = JS.Test.describe(JS.Forwardable, function() {
+JS.ENV.ForwardableSpec = JS.Test.describe(JS.Forwardable, function() {
   define("Subject", new JS.Class({
       initialize: function() {
           this.name = "something";

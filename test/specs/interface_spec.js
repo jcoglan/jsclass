@@ -1,4 +1,4 @@
-InterfaceSpec = JS.Test.describe(JS.Interface, function() {
+JS.ENV.InterfaceSpec = JS.Test.describe(JS.Interface, function() {
   before(function() {
     this.face = new JS.Interface(["foo", "bar"])
   })
