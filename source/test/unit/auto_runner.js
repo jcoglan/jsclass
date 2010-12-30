@@ -12,6 +12,8 @@ JS.Test.Unit.extend({
             names  = [],
             suites = [];
         
+        JS.Test.Unit.TestCase.resolve();
+        
         JS.Test.Unit.TestCase.forEach(function(testcase) {
           suites.push(testcase.suite());
           if (testcase.superclass === JS.Test.Unit.TestCase)

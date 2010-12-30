@@ -100,7 +100,6 @@ JS.Test.extend({
     
     JS.Test.selfless(block).call(klass);
     
-    klass.resolve();
     return klass;
   },
   
