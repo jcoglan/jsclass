@@ -1,9 +1,9 @@
 JS.Kernel = new JS.Module('Kernel', {
-  __eigen__: function(resolve) {
+  __eigen__: function() {
     if (this.__meta__) return this.__meta__;
     var name = this.toString() + '.';
     this.__meta__ = new JS.Module(name, null, {_target: this});
-    return this.__meta__.include(this.klass, {_resolve: resolve});
+    return this.__meta__.include(this.klass, {_resolve: false});
   },
   
   equals: function(other) {

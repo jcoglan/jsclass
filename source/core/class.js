@@ -23,7 +23,7 @@ JS.extend(JS.Class.prototype, {
     klass.prototype.constructor =
     klass.prototype.klass = klass;
     
-    klass.__eigen__(false).include(parent.__meta__, {_resolve: options._resolve});
+    klass.__eigen__().include(parent.__meta__, {_resolve: options._resolve});
     
     klass.__tgt__ = klass.prototype;
     
