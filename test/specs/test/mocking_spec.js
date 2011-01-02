@@ -109,7 +109,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       })
       
       it("allows sequences of yield values", function() {
-        var a, c
+        var a, b
         object.getName(function() { a = JS.array(arguments) })
         object.getName(function() { b = JS.array(arguments) })
         

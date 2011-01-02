@@ -1,4 +1,4 @@
-if (typeof CWD === 'undefined') CWD = '.'
+if (typeof CWD === 'undefined') this.CWD = '.'
 
 JS.Packages(function() { with(this) {
     autoload(/^(.*)Spec$/, {from: CWD + '/test/specs', require: 'JS.$1'})
