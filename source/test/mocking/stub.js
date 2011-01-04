@@ -46,7 +46,11 @@ JS.Test.extend({
           this._methodName  = methodName;
           this._fake        = implementation;
           this._original    = object[methodName];
-          this._ownProperty = object.hasOwnProperty(methodName);
+          
+          this._ownProperty = object.hasOwnProperty
+                            ? object.hasOwnProperty(methodName)
+                            : (typeof this._original !== 'undefined');
+          
           this._argMatchers = [];
           this._expected    = false;
           this._callsMade   = 0;
