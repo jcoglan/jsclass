@@ -69,6 +69,7 @@ packages:
       - builder
       - event
   
+  benchmark:        benchmark
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable

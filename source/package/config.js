@@ -40,6 +40,9 @@ JS.Packages(function() { with(this) {
                                       'JS.DOM.Builder')
                             .requires('JS.Class');
     
+    module('benchmark')     .provides('JS.Benchmark')
+                            .requires('JS.Module');
+    
     module('comparable')    .provides('JS.Comparable')
                             .requires('JS.Module');
     

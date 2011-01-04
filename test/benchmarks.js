@@ -1,26 +1,18 @@
-if (this.ActiveXObject) load = function(path) {
-  var fso = new ActiveXObject('Scripting.FileSystemObject'), file, runner;
-  try {
-    file   = fso.OpenTextFile(path);
-    runner = function() { eval(file.ReadAll()) }
-    runner()
-  } finally {
-    try { if (file) file.Close() } catch (e) {}
-  }
-};
+(function() {
+  var $ = (typeof this.global === 'object') ? this.global : this
+  $.JSCLASS_PATH = 'build/min/'
+})()
 
-JSCLASS_PATH = 'build/min/'
-
-if (typeof require === 'function') {
-  require('../../' + JSCLASS_PATH + 'loader')
-  require('./benchmark')
-} else {
+if (typeof require === 'function')
+  require('../' + JSCLASS_PATH + 'loader')
+else
   load(JSCLASS_PATH + 'loader.js')
-  load('test/benchmarks/benchmark.js')
-}
 
-JS.require('JS.Class', function() {
-  Benchmark.measure('Class creation', 300, {
+
+JS.require('JS.Benchmark', function() {
+  var bm = JS.Benchmark
+  
+  bm.measure('Class creation', 300, {
     test: function() {
       new JS.Class({
         method1: function() {},
@@ -30,7 +22,7 @@ JS.require('JS.Class', function() {
     }
   })
   
-  Benchmark.measure('Module#ancestors', 5000, {
+  bm.measure('Module#ancestors', 5000, {
     setup: function() {
       var included = new JS.Module({ include: new JS.Module({ include: new JS.Module() }) })
       this.module = new JS.Module()
@@ -41,7 +33,7 @@ JS.require('JS.Class', function() {
     }
   })
   
-  Benchmark.measure('Module#ancestors (cached)', 5000, {
+  bm.measure('Module#ancestors (cached)', 5000, {
     setup: function() {
       var included = new JS.Module({ include: new JS.Module({ include: new JS.Module() }) })
       this.module = new JS.Module()
