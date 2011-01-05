@@ -132,108 +132,6 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         object.getName(5,6,7)
       })
     })
-    
-    describe("matchers", function() {
-      describe("anything", function() {
-        it("matches anything", function() {
-          assertEqual( anything(), null )
-          assertEqual( anything(), undefined )
-          assertEqual( anything(), 0 )
-          assertEqual( anything(), "" )
-          assertEqual( anything(), false )
-          assertEqual( anything(), function() {} )
-          assertEqual( anything(), /foo/ )
-          assertEqual( anything(), [] )
-          assertEqual( anything(), [] )
-          assertEqual( anything(), new Date() )
-        })
-      })
-      
-      describe("anyArgs", function() {
-        it("matches any number of items at the end of a list", function() {
-          assertEqual( [anyArgs()], [1,2,3] )
-        })
-      })
-      
-      describe("a", function() {
-        it("matches instances of the given type", function() {
-          assertEqual( a(JS.Set), new JS.SortedSet() )
-          assertEqual( a(JS.Enumerable), new JS.Hash() )
-          assertEqual( a(String), "hi" )
-          assertEqual( a("string"), "hi" )
-          assertEqual( a(Number), 9 )
-          assertEqual( a("number"), 9 )
-          assertEqual( a(Boolean), false )
-          assertEqual( a("boolean"), true )
-          assertEqual( an(Array), [] )
-          assertEqual( an("object"), {} )
-          assertEqual( a("function"), function() {} )
-          assertEqual( a(Function), function() {} )
-        })
-        
-        it("does not match instances of other types", function() {
-          assertNotEqual( an("object"), 9 )
-          assertNotEqual( a(JS.Comparable), new JS.Set )
-          assertNotEqual( a(JS.SortedSet), new JS.Set )
-          assertNotEqual( a(Function), "string" )
-          assertNotEqual( an(Array), {} )
-        })
-      })
-      
-      describe("match", function() {
-        it("matches objects the match the type", function() {
-          assertEqual( match(/foo/), "foo" )
-          assertEqual( match(JS.Enumerable), new JS.Set() )
-        })
-        
-        it("does not match objects that don't match the type", function() {
-          assertNotEqual( match(/foo/), "bar" )
-          assertNotEqual( match(JS.Enumerable), new JS.Class() )
-        })
-      })
-      
-      describe("arrayIncluding", function() {
-        it("matches an array containing all the required elements", function() {
-          assertEqual( arrayIncluding("foo"), ["hi", "foo", "there"] )
-          assertEqual( arrayIncluding(), ["hi", "foo", "there"] )
-          assertEqual( arrayIncluding("foo", "bar"), ["bar", "hi", "foo", "there"] )
-        })
-        
-        it("does not match other data types", function() {
-          assertNotEqual( arrayIncluding("foo"), {foo: true} )
-          assertNotEqual( arrayIncluding("foo"), true )
-          assertNotEqual( arrayIncluding("foo"), "foo" )
-          assertNotEqual( arrayIncluding("foo"), null )
-          assertNotEqual( arrayIncluding("foo"), undefined )
-        })
-        
-        it("does not match arrays that don't contain all the required elements", function() {
-          assertNotEqual( arrayIncluding("foo", "bar"), ["hi", "foo", "there"] )
-          assertNotEqual( arrayIncluding("foo", "bar"), ["bar", "hi", "there"] )
-        })
-      })
-      
-      describe("objectIncluding", function() {
-        it("matches an object containing all the required pairs", function() {
-          assertEqual( objectIncluding({foo: true}), {hi: true, foo: true, there: true} )
-          assertEqual( objectIncluding(), {hi: true, foo: true, there: true} )
-          assertEqual( objectIncluding({bar: true, foo: true}), {bar: true, hi: true, foo: true, there: true} )
-        })
-        
-        it("does not match other data types", function() {
-          assertNotEqual( objectIncluding({foo: true}), ["foo"] )
-          assertNotEqual( objectIncluding({foo: true}), true )
-          assertNotEqual( objectIncluding({foo: true}), "foo" )
-          assertNotEqual( objectIncluding({foo: true}), null )
-          assertNotEqual( objectIncluding({foo: true}), undefined )
-        })
-        
-        it("does not match objects that don't contain all the required pairs", function() {
-          assertNotEqual( objectIncluding({bar: true, foo: true}), {bar: false, hi: true, foo: true, there: true} )
-          assertNotEqual( objectIncluding({bar: true, foo: true}), {bar: true, hi: true, there: true} )
-        })
-      })
-    })
   })
   
   describe("mocking", function() {
@@ -358,6 +256,108 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
             assertMessage( 1, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[5,6,a(Function)]." )
           })})
         })
+      })
+    })
+  })
+  
+  describe("matchers", function() {
+    describe("anything", function() {
+      it("matches anything", function() {
+        assertEqual( anything(), null )
+        assertEqual( anything(), undefined )
+        assertEqual( anything(), 0 )
+        assertEqual( anything(), "" )
+        assertEqual( anything(), false )
+        assertEqual( anything(), function() {} )
+        assertEqual( anything(), /foo/ )
+        assertEqual( anything(), [] )
+        assertEqual( anything(), [] )
+        assertEqual( anything(), new Date() )
+      })
+    })
+    
+    describe("anyArgs", function() {
+      it("matches any number of items at the end of a list", function() {
+        assertEqual( [anyArgs()], [1,2,3] )
+      })
+    })
+    
+    describe("a", function() {
+      it("matches instances of the given type", function() {
+        assertEqual( a(JS.Set), new JS.SortedSet() )
+        assertEqual( a(JS.Enumerable), new JS.Hash() )
+        assertEqual( a(String), "hi" )
+        assertEqual( a("string"), "hi" )
+        assertEqual( a(Number), 9 )
+        assertEqual( a("number"), 9 )
+        assertEqual( a(Boolean), false )
+        assertEqual( a("boolean"), true )
+        assertEqual( an(Array), [] )
+        assertEqual( an("object"), {} )
+        assertEqual( a("function"), function() {} )
+        assertEqual( a(Function), function() {} )
+      })
+      
+      it("does not match instances of other types", function() {
+        assertNotEqual( an("object"), 9 )
+        assertNotEqual( a(JS.Comparable), new JS.Set )
+        assertNotEqual( a(JS.SortedSet), new JS.Set )
+        assertNotEqual( a(Function), "string" )
+        assertNotEqual( an(Array), {} )
+      })
+    })
+    
+    describe("match", function() {
+      it("matches objects the match the type", function() {
+        assertEqual( match(/foo/), "foo" )
+        assertEqual( match(JS.Enumerable), new JS.Set() )
+      })
+      
+      it("does not match objects that don't match the type", function() {
+        assertNotEqual( match(/foo/), "bar" )
+        assertNotEqual( match(JS.Enumerable), new JS.Class() )
+      })
+    })
+    
+    describe("arrayIncluding", function() {
+      it("matches an array containing all the required elements", function() {
+        assertEqual( arrayIncluding("foo"), ["hi", "foo", "there"] )
+        assertEqual( arrayIncluding(), ["hi", "foo", "there"] )
+        assertEqual( arrayIncluding("foo", "bar"), ["bar", "hi", "foo", "there"] )
+      })
+      
+      it("does not match other data types", function() {
+        assertNotEqual( arrayIncluding("foo"), {foo: true} )
+        assertNotEqual( arrayIncluding("foo"), true )
+        assertNotEqual( arrayIncluding("foo"), "foo" )
+        assertNotEqual( arrayIncluding("foo"), null )
+        assertNotEqual( arrayIncluding("foo"), undefined )
+      })
+      
+      it("does not match arrays that don't contain all the required elements", function() {
+        assertNotEqual( arrayIncluding("foo", "bar"), ["hi", "foo", "there"] )
+        assertNotEqual( arrayIncluding("foo", "bar"), ["bar", "hi", "there"] )
+      })
+    })
+    
+    describe("objectIncluding", function() {
+      it("matches an object containing all the required pairs", function() {
+        assertEqual( objectIncluding({foo: true}), {hi: true, foo: true, there: true} )
+        assertEqual( objectIncluding(), {hi: true, foo: true, there: true} )
+        assertEqual( objectIncluding({bar: true, foo: true}), {bar: true, hi: true, foo: true, there: true} )
+      })
+      
+      it("does not match other data types", function() {
+        assertNotEqual( objectIncluding({foo: true}), ["foo"] )
+        assertNotEqual( objectIncluding({foo: true}), true )
+        assertNotEqual( objectIncluding({foo: true}), "foo" )
+        assertNotEqual( objectIncluding({foo: true}), null )
+        assertNotEqual( objectIncluding({foo: true}), undefined )
+      })
+      
+      it("does not match objects that don't contain all the required pairs", function() {
+        assertNotEqual( objectIncluding({bar: true, foo: true}), {bar: false, hi: true, foo: true, there: true} )
+        assertNotEqual( objectIncluding({bar: true, foo: true}), {bar: true, hi: true, there: true} )
       })
     })
   })
