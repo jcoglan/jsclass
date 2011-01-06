@@ -664,8 +664,8 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\nclasses are not enumerable.\n<Set> expected to respond to\n<isA([Enumerable])> with a true value." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected to respond to\n<includes([Class])> with a true value." )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\nclasses are not enumerable.\n<Set> expected to respond to\n<isA(Enumerable)> with a true value." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected to respond to\n<includes(Class)> with a true value." )
       })})
     })
   })

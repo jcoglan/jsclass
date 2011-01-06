@@ -16,10 +16,10 @@ JS.ENV.TestSpecHelpers = new JS.Module({
   
   assertTestResult: function(runs, assertions, failures, errors) { with(this) {
     __wrapAssertion__(function() { with(this) {
-      assertEqual( runs,        result.runCount() )
-      assertEqual( assertions,  result.assertionCount() )
-      assertEqual( failures,    result.failureCount() )
-      assertEqual( errors,      result.errorCount() )
+      assertEqual( runs,        result.runCount(),        "Incorrect run count" )
+      assertEqual( assertions,  result.assertionCount(),  "Incorrect assertion count" )
+      assertEqual( failures,    result.failureCount(),    "Incorrect failure count" )
+      assertEqual( errors,      result.errorCount(),      "Incorrect error count" )
       
       assertEqual( failures + errors, faults.length )
     }})

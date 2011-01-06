@@ -3,6 +3,12 @@ JS.Test.extend({
     extend: {
       ExpectationError: new JS.Class(JS.Test.Unit.AssertionFailedError),
       
+      UnexpectedCallError: new JS.Class(Error, {
+        initialize: function(message) {
+          this.message = message.toString();
+        }
+      }),
+      
       __activeStubs__: [],
       
       stub: function(object, methodName, implementation) {
@@ -10,16 +16,13 @@ JS.Test.extend({
             i     = stubs.length;
         
         while (i--) {
-          if (stubs[i]._object === object && stubs[i]._methodName === methodName) {
-            if (typeof implementation === 'function')
-              stubs[i]._fake = implementation;
-            return stubs[i];
-          }
+          if (stubs[i]._object === object && stubs[i]._methodName === methodName)
+            return stubs[i].defaultMatcher(implementation);
         }
         
-        var stub = new JS.Test.Mocking.Stub(object, methodName, implementation);
+        var stub = new JS.Test.Mocking.Stub(object, methodName);
         stubs.push(stub);
-        return stub;
+        return stub.defaultMatcher(implementation);
       },
       
       removeStubs: function() {
@@ -41,21 +44,30 @@ JS.Test.extend({
       },
       
       Stub: new JS.Class({
-        initialize: function(object, methodName, implementation) {
+        initialize: function(object, methodName) {
           this._object      = object;
           this._methodName  = methodName;
-          this._fake        = implementation;
           this._original    = object[methodName];
           
           this._ownProperty = object.hasOwnProperty
                             ? object.hasOwnProperty(methodName)
                             : (typeof this._original !== 'undefined');
           
+          var mocking = JS.Test.Mocking;
+          
           this._argMatchers = [];
+          this._anyArgs     = new mocking.Parameters([new mocking.AnyArgs()]);
           this._expected    = false;
           this._callsMade   = 0;
           
           this.apply();
+        },
+        
+        defaultMatcher: function(implementation) {
+          this._currentMatcher = this._anyArgs;
+          if (typeof implementation === 'function')
+            this._currentMatcher._fake = implementation;
+          return this;
         },
         
         apply: function() {
@@ -77,14 +89,8 @@ JS.Test.extend({
           this._expected = true;
         },
         
-        _lastMatcher: function() {
-          var matchers = this._argMatchers;
-          if (matchers.length === 0) matchers.push(new JS.Test.Mocking.Parameters([], this._expected));
-          return matchers[matchers.length - 1];
-        },
-        
         _dispatch: function(args) {
-          var matchers = this._argMatchers,
+          var matchers = this._argMatchers.concat(this._anyArgs),
               matcher, result;
           
           this._callsMade += 1;
@@ -95,15 +101,19 @@ JS.Test.extend({
             
             if (!result) continue;
             
+            if (typeof result === 'function')
+              return result.apply(this._object, args);
+            
             if (result === true)  return matcher.nextReturnValue();
             if (result.callback)  return result.callback.apply(result.context, matcher.nextYieldArgs());
             if (result.exception) throw result.exception;
           }
-          if (this._fake)
-            return this._fake.apply(this._object, args);
+          
+          throw new JS.Test.Mocking.UnexpectedCallError('dispatch fail');
         },
         
         _verify: function() {
+          if (!this._expected) return;
           var parameters, message;
           
           for (var i = 0, n = this._argMatchers.length; i < n; i++) {
@@ -111,16 +121,17 @@ JS.Test.extend({
             if (parameters.verify()) continue;
             
             message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
-                            '<?> expected to receive call\n' + this._methodName + '?.',
+                            '<?> expected to receive call\n' + this._methodName + '(?).',
                             [this._object, parameters.toArray()]);
             
             throw new JS.Test.Mocking.ExpectationError(message);
           }
-          if (!this._expected || this._callsMade > 0) return;
+          
+          if (this._callsMade > 0) return;
           
           message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
-                          '<?> expected to receive call\n' + this._methodName + '?.',
-                          [this._object, []]);
+                        '<?> expected to receive call\n' + this._methodName + '(?).',
+                        [this._object, this._anyArgs.toArray()]);
           
           throw new JS.Test.Mocking.ExpectationError(message);
         }

@@ -9,15 +9,18 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
   })
   
   describe("stub", function() {
-    it("replaces a method on an object", function() {
-      stub(object, "getName").returns("king")
-      assertEqual( "king", object.getName() )
-    })
-    
-    it("revokes the stub", function() {
-      stub(object, "getName").returns("king")
-      JS.Test.Mocking.removeStubs()
-      assertEqual( "jester", object.getName() )
+    describe("with no arguments specified", function() {
+      it("replaces a method on an object for any arguments", function() {
+        stub(object, "getName").returns("king")
+        assertEqual( "king", object.getName() )
+        assertEqual( "king", object.getName("any", "args") )
+      })
+      
+      it("revokes the stub", function() {
+        stub(object, "getName").returns("king")
+        JS.Test.Mocking.removeStubs()
+        assertEqual( "jester", object.getName() )
+      })
     })
     
     describe("with arguments", function() {
@@ -40,6 +43,11 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         assertEqual( "two", object.getName(2) )
         assertEqual( "ONE", object.getName(1) )
         assertEqual( "TWO", object.getName(2) )
+      })
+      
+      it("throws an error for unexpected arguments", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName(4) })
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName() })
       })
     })
     
@@ -87,11 +95,16 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         assert( !object.getName(["these", "words", "bar"]) )
         assert( object.getName(["qux", "words", "bar"]) )
       })
+      
+      it("throws an error for unexpected arguments", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName(["qux"]) })
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName() })
+      })
     })
     
     describe("yields", function() {
       before(function() {
-        stub(object, "getName").yields(["no", "args"], ["and", "again"])
+        stub(object, "getName").given().yields(["no", "args"], ["and", "again"])
         stub(object, "getName").given("a").yields(["one arg"])
         stub(object, "getName").given("a", "b").yields(["very", "many", "args"])
       })
@@ -116,6 +129,16 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         assertEqual( ["no", "args"], a )
         assertEqual( ["and", "again"], b )
       })
+      
+      it("throws an error for unexpected arguments", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() {
+          object.getName("b", function() {})
+        })
+      })
+      
+      it("throws an error if no callback is given", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName("a") })
+      })
     })
     
     describe("raises", function() {
@@ -128,8 +151,8 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         assertThrows(TypeError, function() { object.getName(5,6) })
       })
       
-      it("does not throw anything if the arguments do not match", function() {
-        object.getName(5,6,7)
+      it("throws UnexpectedCallError if the arguments do not match", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName(5,6,7) })
       })
     })
   })
@@ -138,7 +161,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
     it("passes if the method was called", function(resume) {
       runTests({
         testExpectMethod: function() { with(this) {
-          expect(object, "getName")
+          expect(object, "getName").returning("me")
           object.getName()
         }}
       }, function() { resume(function() {
@@ -153,7 +176,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 1, 1, 0 )
-        assertMessage( 1, "Failure:\ntestExpectMethod(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[]." )
+        assertMessage( 1, "Failure:\ntestExpectMethod(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(*arguments)." )
       })})
     })
     
@@ -176,8 +199,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
             object.getName(3,9)
           }}
         }, function() { resume(function() {
-          assertTestResult( 1, 1, 1, 0 )
-          assertMessage( 1, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[3,4]." )
+          assertTestResult( 1, 1, 1, 1 )
+          // TODO test error message
+          assertMessage( 2, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(3,4)." )
         })})
       })
       
@@ -188,7 +212,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 0 )
-          assertMessage( 1, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[3,4]." )
+          assertMessage( 1, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(3,4)." )
         })})
       })
     })
@@ -227,7 +251,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 0 )
-          assertMessage( 1, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[a(Function)]." )
+          assertMessage( 1, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(*arguments,a(Function))." )
         })})
       })
       
@@ -252,8 +276,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
               object.getName(5, 8, function() {})
             }}
           }, function() { resume(function() {
-            assertTestResult( 1, 1, 1, 0 )
-            assertMessage( 1, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[5,6,a(Function)]." )
+            assertTestResult( 1, 1, 1, 1 )
+            // TODO test error message
+            assertMessage( 2, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(5,6,a(Function))." )
           })})
         })
       })

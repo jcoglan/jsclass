@@ -6,7 +6,7 @@ JS.Test.Mocking.extend({
   
   AnyArgs: new JS.Class({
     equals: function() { return JS.Enumerable.ALL_EQUAL },
-    toString: function() { return 'anyArgs' }
+    toString: function() { return '*arguments' }
   }),
   
   ArrayIncluding: new JS.Class({

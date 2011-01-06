@@ -52,9 +52,11 @@ JS.Test.Mocking.extend({
       if (!JS.Enumerable.areEqual(this._params, argsCopy)) return false;
       this._callsMade += 1;
       
-      if (this._exception) return {exception: this._exception};
-      if (this._yieldArgs) return {callback: callback, context: context};
-      else                 return true;
+      if (this._exception)    return {exception: this._exception};
+      if (this._yieldArgs)    return {callback: callback, context: context};
+      if (this._returnValues) return true;
+      if (this._fake)         return this._fake;
+      else                    return false;
     },
     
     verify: function() {
