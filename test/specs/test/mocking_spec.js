@@ -1,3 +1,5 @@
+JS.ENV.Test = JS.ENV.Test || {}
+
 JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
   include(JS.Test.Helpers)
   include(TestSpecHelpers)

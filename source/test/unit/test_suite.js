@@ -46,7 +46,11 @@ JS.Test.Unit.extend({
         ping();
       },
       
-      setTimeout: (function() { return this.setTimeout })()
+      setTimeout: (function() {
+        return (typeof setTimeout === 'function')
+               ? setTimeout
+               : undefined;
+      })()
     },
     
     /**
