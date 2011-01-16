@@ -49,6 +49,7 @@ should work using these JavaScript implementations:
 
 To run the tests in a browser, just open the `test/browser.html` file.
 To test in a XUL environment run: `xulrunner -app test/xulenv/application.ini`
+To run using Adobe Air, run `adl test/airenv/app.xml`
 
 
 License

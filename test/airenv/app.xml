@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<application xmlns="http://ns.adobe.com/air/application/2.5"> 
+    <id>JSClass</id> 
+    <versionNumber>3.0</versionNumber> 
+    <filename>JSClass</filename> 
+    <initialWindow> 
+        <content>index.html</content> 
+        <visible>true</visible> 
+        <width>580</width> 
+        <height>500</height> 
+    </initialWindow> 
+</application>
