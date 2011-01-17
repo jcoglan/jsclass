@@ -6,7 +6,7 @@
   and it's designed to run on a wide variety of platforms without
   configuration. In combination with "@JS.Packages@":/packages.html it
   makes it really easy to organise and run your test suite in a way that
-  works cross-platform. It runs without configuration on all of JS.Class's
+  works cross-platform. It runs without modification on all of JS.Class's
   "supported platforms":/platforms.html.
   
   h3. Getting started
@@ -219,7 +219,7 @@
           $.JSCLASS_PATH = 'vendor/jsclass';
       })();</pre>
   
-  Your tests will not run a wide range of server-side platforms, but
+  Your tests will now run a wide range of server-side platforms, but
   not on Windows Script Host. If you need to support this platform, you
   need to define a @load()@ function before doing anything else. Your
   final @test/run.js@ file will look like this, at which point it will
@@ -378,4 +378,55 @@
     @assertNothingThrown(TypeError, ReferenceError, function() { 1 + 1 })@;
     if the @callback@ throws any other type of error this will be reported
     as an error rather than a test failure.
-
+  
+  h3. Context blocks
+  
+  JS.Test specs are arranged in nested context blocks, much like in RSpec,
+  Jasmine and other frameworks. Contexts are delimited by @describe@ blocks
+  (you can use @context@ instead of @describe@). Within each block you can
+  have multiple @before@ and @after@ blocks, that describe what to do before
+  and after each test. The tests themselves are added using the @it@ or
+  @shouldd@ function.
+  
+  Each test is run by performing the following tasks:
+  
+  * The @before@ blocks from all the enclosing contexts are run from outermost
+    to innermost.
+  * The test itself is run.
+  * The @after@ blocks from all the enclosing contexts are run in order,
+    again from outermost to innermost.
+  
+  For example, the following test run prints:
+  
+  <pre>    outer before
+      outer test
+      outer after
+      
+      outer before
+      INNER before
+      INNER test
+      outer after
+      INNER after</pre>
+  
+  <pre class="prettyprint">    ThingSpec = JS.Test.describe("thing", function() {
+          before(function() { print("outer before") });
+          after (function() { print("outer after") });
+          
+          it("has tests", function() {
+              print("outer test");
+          });
+          
+          describe("nested", function() {
+              before(function() { print("INNER before") });
+              after (function() { print("INNER after") });
+              
+              it("does something", function() {
+                  print("INNER test");
+              });
+          });
+      });</pre>
+  
+  Your @before@ and @after@ blocks are run once for every @it@ block in your
+  tests. @before@ blocks are typically used to create or modify the objects
+  you want to test, and @after@ blocks are used used to reset any global state
+  you may have changed during the tests, for example to clear out a database.
