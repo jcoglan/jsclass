@@ -394,7 +394,7 @@
     to innermost.
   * The test itself is run.
   * The @after@ blocks from all the enclosing contexts are run in order,
-    again from outermost to innermost.
+    this time from innermost to outermost.
   
   For example, the following test run prints:
   
@@ -428,5 +428,6 @@
   
   Your @before@ and @after@ blocks are run once for every @it@ block in your
   tests. @before@ blocks are typically used to create or modify the objects
-  you want to test, and @after@ blocks are used used to reset any global state
+  you want to test, and @after@ blocks are used to reset any global state
   you may have changed during the tests, for example to clear out a database.
+
