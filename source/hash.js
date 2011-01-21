@@ -265,7 +265,7 @@ JS.Hash = new JS.Class('Hash', {
     if (index < 0) return JS.isFn(block) ? this.fetch(key, block) : this.getDefault(key);
     
     result = bucket[index].value;
-    bucket.splice(index, 1);
+    this._delete(bucket, index);
     this.size -= 1;
     this.length -= 1;
     
@@ -273,6 +273,10 @@ JS.Hash = new JS.Class('Hash', {
       delete this._buckets[this.klass.codeFor(key)];
     
     return result;
+  },
+  
+  _delete: function(bucket, index) {
+    bucket.splice(index, 1);
   },
   
   removeIf: function(block, context) {
@@ -339,3 +343,53 @@ JS.Hash.include({
   put:      JS.Hash.instanceMethod('store')
 }, true);
 
+JS.OrderedHash = new JS.Class('OrderedHash', JS.Hash, {
+  assoc: function(key, createIfAbsent) {
+    var existing = this.callSuper(key, false);
+    if (existing || !createIfAbsent) return existing;
+    var pair = this.callSuper(key, true);
+    if (!this._first) {
+      this._first = this._last = pair;
+    } else {
+      this._last._next = pair;
+      pair._prev = this._last;
+      this._last = pair;
+    }
+    return pair;
+  },
+  
+  clear: function() {
+    this.callSuper();
+    this._first = this._last = null;
+  },
+  
+  _delete: function(bucket, index) {
+    var pair = bucket[index];
+    if (pair._prev) {
+      pair._prev._next = pair._next;
+    } else {
+      this._first = pair._next;
+    }
+    return this.callSuper();
+  },
+  
+  forEach: function(block, context) {
+    if (!block) return this.enumFor('forEach');
+    block = JS.Enumerable.toFn(block);
+    
+    var pair = this._first;
+    while (pair) {
+      block.call(context || null, pair);
+      pair = pair._next;
+    }
+  },
+  
+  rehash: function() {
+    var pair = this._first;
+    this.clear();
+    while (pair) {
+      this.store(pair.key, pair.value);
+      pair = pair._next;
+    }
+  }
+});
