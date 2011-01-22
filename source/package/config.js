@@ -59,7 +59,8 @@ JS.Packages(function() { with(this) {
     module('observable')    .provides('JS.Observable')
                             .requires('JS.Module');
     
-    module('hash')          .provides('JS.Hash', 'JS.OrderedHash')
+    module('hash')          .provides('JS.Hash',
+                                      'JS.OrderedHash')
                             .requires('JS.Class',
                                       'JS.Enumerable',
                                       'JS.Comparable');
