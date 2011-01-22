@@ -81,9 +81,9 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() {
         this.division = set.divide(function(x) { return x % 3 })
       })
       
-      it("returns a HashSet of sets of the same type as the receiver", function() {
+      it("returns a Set of sets of the same type as the receiver", function() {
         var diva = a.divide(function(x) { return x % 3 })
-        assertEqual( JS.HashSet, diva.klass )
+        assertEqual( JS.Set, diva.klass )
         assert( diva.all(function(s) { return s.klass === Set }) )
       })
       
@@ -115,10 +115,10 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() {
         this.l = new JS.SortedSet([5,6,7,8])
       })
       
-      it("returns a HashSet", function() {
-        assertEqual( JS.HashSet, a.x(b).klass )
-        assertEqual( JS.HashSet, b.x(a).klass )
-        assertEqual( JS.HashSet, k.x(l).klass )
+      it("returns a Set", function() {
+        assertEqual( JS.Set, a.x(b).klass )
+        assertEqual( JS.Set, b.x(a).klass )
+        assertEqual( JS.Set, k.x(l).klass )
       })
       
       it("returns a set containing all possible pairs of members", function() {
@@ -242,13 +242,13 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() {
     })
   })
   
-  sharedBehavior("unordered set", function() {
+  sharedBehavior("unsorted set", function() {
     describe("#flatten", function() {
       before(function() {
         this.list     = [9,3,7,8,4]
         this.sorted   = new JS.SortedSet(['fred', 'baz'])
-        this.nested   = new JS.HashSet([5, sorted])
-        this.hashset  = new JS.HashSet([45,'twelve'])
+        this.nested   = new JS.Set([5, sorted])
+        this.hashset  = new JS.Set([45,'twelve'])
         
         this.set      = new Set([4, 'foo', nested, 12, hashset])
         this.withList = new Set([4,13,list])
@@ -271,22 +271,22 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() {
       })
       
       it("rejects equal objects", function() {
-        set.add( new JS.HashSet )
+        set.add( new JS.OrderedSet )
         set.add( new JS.Set )
         assertSetEqual( [new JS.Set], set )
       })
       
       it("accepts non-equal objects", function() {
-        set.add( new JS.HashSet )
+        set.add( new JS.SortedSet )
         set.add( new JS.Set([12]) )
         assertEqual( 2, set.entries().length )
-        assert( set.contains(new JS.HashSet) )
+        assert( set.contains(new JS.OrderedSet) )
         assert( set.contains(new JS.Set([12])) )
       })
       
       describe("#remove", function() {
         before(function() {
-          set.add( new JS.HashSet )
+          set.add( new JS.OrderedSet )
           set.add( new JS.Set([12]) )
         })
         
@@ -316,13 +316,33 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() {
   describe("Set", function() {
     before(function() { this.Set = JS.Set })
     behavesLike("set")
-    behavesLike("unordered set")
+    behavesLike("unsorted set")
   })
   
-  describe("HashSet", function() {
-    before(function() { this.Set = JS.HashSet })
+  describe("OrderedSet", function() {
+    before(function() { this.Set = JS.OrderedSet })
     behavesLike("set")
-    behavesLike("unordered set")
+    behavesLike("unsorted set")
+    
+    before(function() {
+      this.Color = new JS.Class({
+          initialize: function(code) {
+              this.code = code;
+          },
+          equals: function(color) {
+              return color.code === this.code;
+          },
+          hash: function() {
+            return this.code.toLowerCase();
+          }
+      });
+    })
+    
+    it("keeps its elements in insertion order", function() {
+      var colors = map($w('red blue RED'), function(c) { return new Color(c) })
+      var set = new JS.OrderedSet(colors)
+      assertEqual( $w('red blue RED'), map(set.entries(), 'code') )
+    })
   })
   
   describe("SortedSet", function() {
@@ -332,31 +352,31 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() {
   
   describe("#equals", function() {
     before(function() {
-      this.set     = new JS.Set(['j','s','c'])
-      this.hashset = new JS.HashSet(['j','s','c'])
-      this.sorted  = new JS.SortedSet(['j','s','c'])
-      this.bigger  = new JS.Set(['j','s','c','g'])
-      this.smaller = new JS.Set(['j','s'])
-      this.diff    = new JS.SortedSet(['j','b','f'])
+      this.set        = new JS.Set(['j','s','c'])
+      this.orderedset = new JS.OrderedSet(['j','s','c'])
+      this.sorted     = new JS.SortedSet(['j','s','c'])
+      this.bigger     = new JS.Set(['j','s','c','g'])
+      this.smaller    = new JS.Set(['j','s'])
+      this.diff       = new JS.SortedSet(['j','b','f'])
     })
     
     it("returns true for sets with the same members", function() {
-      assertEqual( set,     hashset )
-      assertEqual( set,     sorted  )
-      assertEqual( hashset, sorted  )
+      assertEqual( set,        orderedset )
+      assertEqual( set,        sorted  )
+      assertEqual( orderedset, sorted  )
     })
     
     it("returns false for sets with different members", function() {
-      assertNotEqual( set,     bigger  )
-      assertNotEqual( hashset, smaller )
-      assertNotEqual( sorted,  diff    )
+      assertNotEqual( set,        bigger  )
+      assertNotEqual( orderedset, smaller )
+      assertNotEqual( sorted,     diff    )
     })
   })
   
   describe("sorted sets", function() {
     before(function() {
       this.a = new JS.SortedSet([8,3,6,1])
-      this.b = new JS.HashSet([2,9,7,4])
+      this.b = new JS.Set([2,9,7,4])
       
       this.TodoItem = new JS.Class({
         include: JS.Comparable,
@@ -382,7 +402,7 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() {
       repeat(10, function() {
         // make a list of unique random numbers
         var list    = $R(1,20).map(function() { return Math.round(Math.random() * 100) }),
-            uniques = new JS.HashSet(list).entries()
+            uniques = new JS.Set(list).entries()
         
         assertNotEqual( [], uniques )
         

@@ -9,16 +9,16 @@
   storage mechanisms. They are:
   
   * *@JS.Set@* - This is the base class; other set classes inherit most of their methods
-    from here. Uses a JavaScript array to store its members, so search performance scales
-    linearly with the size of the set. No iteration order is specified for this class.
-  * *@JS.HashSet@* - Added in version 2.1, this class uses a "@Hash@":/hash.html for storing
-    its members, making it much faster for searching than @Set@ assuming the members have
-    good hash distribution. No iteration order is specified.
+    from here. Uses a "@Hash@":/hash.html to store its members, so search performance is
+    constant time assuming a good hash distribution. No particular iteration order is
+    specified for this class.
+  * *@JS.OrderedSet@*  - This class uses an "@OrderedHash@":/hash.html to store its members,
+    and iterates over them in insertion order. Search time is constant, though insertion
+    time may be slower because of the higher overhead of keeping the hash ordered correctly.
   * *@JS.SortedSet@* - This class keeps all its members in sort order as long as they are
     mutually comparable, either using JavaScript's @<@, @<=@, @==@, @>@, @>=@ operators or
-    using the "@Comparable@":/comparable.html module. Sorting the elements allows this class
-    to guarantee iteration order, and gives the class a search performance benefit over the
-    base @Set@ class, especially on larger data sets.
+    using the "@Comparable@":/comparable.html module. Iteration visits the elements in sort
+    order, and search performance is logarithmic with the number of elements.
   
   If you try to add an object that has an "@equals()@ method":/equality.html to a set, that
   method will be used to compare the object to the set's members. @equals()@ should accept one

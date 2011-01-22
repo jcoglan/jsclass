@@ -46,7 +46,11 @@ JS.Test.Unit.extend({
         ping();
       },
       
-      setTimeout: (function() { return this.setTimeout })()
+      setTimeout: (function() {
+        return (typeof setTimeout === 'function')
+               ? setTimeout
+               : undefined;
+      })()
     },
     
     /**
@@ -83,7 +87,7 @@ JS.Test.Unit.extend({
         
       }, function() {
         callback.call(context || null, this.klass.FINISHED, this._name);
-        continuation();
+        continuation.call(context || null);
         
       }, this);
     },

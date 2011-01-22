@@ -24,19 +24,8 @@
   
   As well as making it easy to improve the load time of your web applications,
   @JS.Packages@ works great as a dependency manager for server-side JavaScript
-  projects. It currently supports the following platforms.
-  
-  * "Google Chrome":http://www.google.com/chrome
-  * "Mozilla Firefox":http://www.getfirefox.com/
-  * "Safari":http://www.apple.com/safari/
-  * "Opera":http://www.opera.com/
-  * "Internet Explorer":http://www.microsoft.com/windows/internet-explorer/default.aspx
-  * "Mozilla Rhino":http://www.mozilla.org/rhino/
-  * "Node.js":http://nodejs.org/
-  * "Narwhal":http://narwhaljs.org/
-  * "Mozilla SpiderMonkey":http://www.mozilla.org/js/spidermonkey/
-  * "V8 shell":http://code.google.com/p/v8/
-  * "Windows Script Host":http://msdn.microsoft.com/en-us/library/9bbdkx3k(VS.85).aspx
+  projects. It currently works unmodified on all of JS.Class's
+  "supported platforms":/platforms.html.
   
   h3. Setting up
   
@@ -103,10 +92,10 @@
   
   In addition to @requires()@, there is a statement called @uses()@ that specifies a
   'soft dependency', i.e. an object the package needs but that does not necessarily
-  need to be loaded first. For example, "@HashSet@":/set.html uses a "@Hash@":/hash.html
+  need to be loaded first. For example, "@Set@":/set.html uses a "@Hash@":/hash.html
   for storage but you could load @Hash@ after the @Set@ package just fine. On the other
-  hand, @HashSet@ mixes in "@Enumerable@":/enumerable.html and this must be loaded
-  before @HashSet@ is defined. And, @Hash@ is itself based on @Enumerable@. So the package
+  hand, @Set@ mixes in "@Enumerable@":/enumerable.html and this must be loaded
+  before @Set@ is defined. And, @Hash@ is itself based on @Enumerable@. So the package
   config for this might look like:
   
   <pre class="prettyprint">    JS.Packages(function() { with(this) {
@@ -117,8 +106,8 @@
                                           .requires('JS.Enumerable');
           
           file('/js-class/set.js')        .provides('JS.Set',
-                                                    'JS.SortedSet',
-                                                    'JS.HashSet')
+                                                    'JS.OrderedSet',
+                                                    'JS.SortedSet')
                                           .requires('JS.Enumerable')
                                           .uses(    'JS.Hash');
       });</pre>

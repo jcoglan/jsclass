@@ -1,3 +1,5 @@
+JS.ENV.Test = JS.ENV.Test || {}
+
 JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
   include(JS.Test.Helpers)
   include(TestSpecHelpers)
@@ -9,15 +11,18 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
   })
   
   describe("stub", function() {
-    it("replaces a method on an object", function() {
-      stub(object, "getName").returns("king")
-      assertEqual( "king", object.getName() )
-    })
-    
-    it("revokes the stub", function() {
-      stub(object, "getName").returns("king")
-      JS.Test.Mocking.removeStubs()
-      assertEqual( "jester", object.getName() )
+    describe("with no arguments specified", function() {
+      it("replaces a method on an object for any arguments", function() {
+        stub(object, "getName").returns("king")
+        assertEqual( "king", object.getName() )
+        assertEqual( "king", object.getName("any", "args") )
+      })
+      
+      it("revokes the stub", function() {
+        stub(object, "getName").returns("king")
+        JS.Test.Mocking.removeStubs()
+        assertEqual( "jester", object.getName() )
+      })
     })
     
     describe("with arguments", function() {
@@ -40,6 +45,11 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         assertEqual( "two", object.getName(2) )
         assertEqual( "ONE", object.getName(1) )
         assertEqual( "TWO", object.getName(2) )
+      })
+      
+      it("throws an error for unexpected arguments", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName(4) })
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName() })
       })
     })
     
@@ -87,11 +97,16 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         assert( !object.getName(["these", "words", "bar"]) )
         assert( object.getName(["qux", "words", "bar"]) )
       })
+      
+      it("throws an error for unexpected arguments", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName(["qux"]) })
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName() })
+      })
     })
     
     describe("yields", function() {
       before(function() {
-        stub(object, "getName").yields(["no", "args"], ["and", "again"])
+        stub(object, "getName").given().yields(["no", "args"], ["and", "again"])
         stub(object, "getName").given("a").yields(["one arg"])
         stub(object, "getName").given("a", "b").yields(["very", "many", "args"])
       })
@@ -116,6 +131,16 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         assertEqual( ["no", "args"], a )
         assertEqual( ["and", "again"], b )
       })
+      
+      it("throws an error for unexpected arguments", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() {
+          object.getName("b", function() {})
+        })
+      })
+      
+      it("throws an error if no callback is given", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName("a") })
+      })
     })
     
     describe("raises", function() {
@@ -128,110 +153,8 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         assertThrows(TypeError, function() { object.getName(5,6) })
       })
       
-      it("does not throw anything if the arguments do not match", function() {
-        object.getName(5,6,7)
-      })
-    })
-    
-    describe("matchers", function() {
-      describe("anything", function() {
-        it("matches anything", function() {
-          assertEqual( anything(), null )
-          assertEqual( anything(), undefined )
-          assertEqual( anything(), 0 )
-          assertEqual( anything(), "" )
-          assertEqual( anything(), false )
-          assertEqual( anything(), function() {} )
-          assertEqual( anything(), /foo/ )
-          assertEqual( anything(), [] )
-          assertEqual( anything(), [] )
-          assertEqual( anything(), new Date() )
-        })
-      })
-      
-      describe("anyArgs", function() {
-        it("matches any number of items at the end of a list", function() {
-          assertEqual( [anyArgs()], [1,2,3] )
-        })
-      })
-      
-      describe("a", function() {
-        it("matches instances of the given type", function() {
-          assertEqual( a(JS.Set), new JS.SortedSet() )
-          assertEqual( a(JS.Enumerable), new JS.Hash() )
-          assertEqual( a(String), "hi" )
-          assertEqual( a("string"), "hi" )
-          assertEqual( a(Number), 9 )
-          assertEqual( a("number"), 9 )
-          assertEqual( a(Boolean), false )
-          assertEqual( a("boolean"), true )
-          assertEqual( an(Array), [] )
-          assertEqual( an("object"), {} )
-          assertEqual( a("function"), function() {} )
-          assertEqual( a(Function), function() {} )
-        })
-        
-        it("does not match instances of other types", function() {
-          assertNotEqual( an("object"), 9 )
-          assertNotEqual( a(JS.Comparable), new JS.Set )
-          assertNotEqual( a(JS.SortedSet), new JS.Set )
-          assertNotEqual( a(Function), "string" )
-          assertNotEqual( an(Array), {} )
-        })
-      })
-      
-      describe("match", function() {
-        it("matches objects the match the type", function() {
-          assertEqual( match(/foo/), "foo" )
-          assertEqual( match(JS.Enumerable), new JS.Set() )
-        })
-        
-        it("does not match objects that don't match the type", function() {
-          assertNotEqual( match(/foo/), "bar" )
-          assertNotEqual( match(JS.Enumerable), new JS.Class() )
-        })
-      })
-      
-      describe("arrayIncluding", function() {
-        it("matches an array containing all the required elements", function() {
-          assertEqual( arrayIncluding("foo"), ["hi", "foo", "there"] )
-          assertEqual( arrayIncluding(), ["hi", "foo", "there"] )
-          assertEqual( arrayIncluding("foo", "bar"), ["bar", "hi", "foo", "there"] )
-        })
-        
-        it("does not match other data types", function() {
-          assertNotEqual( arrayIncluding("foo"), {foo: true} )
-          assertNotEqual( arrayIncluding("foo"), true )
-          assertNotEqual( arrayIncluding("foo"), "foo" )
-          assertNotEqual( arrayIncluding("foo"), null )
-          assertNotEqual( arrayIncluding("foo"), undefined )
-        })
-        
-        it("does not match arrays that don't contain all the required elements", function() {
-          assertNotEqual( arrayIncluding("foo", "bar"), ["hi", "foo", "there"] )
-          assertNotEqual( arrayIncluding("foo", "bar"), ["bar", "hi", "there"] )
-        })
-      })
-      
-      describe("objectIncluding", function() {
-        it("matches an object containing all the required pairs", function() {
-          assertEqual( objectIncluding({foo: true}), {hi: true, foo: true, there: true} )
-          assertEqual( objectIncluding(), {hi: true, foo: true, there: true} )
-          assertEqual( objectIncluding({bar: true, foo: true}), {bar: true, hi: true, foo: true, there: true} )
-        })
-        
-        it("does not match other data types", function() {
-          assertNotEqual( objectIncluding({foo: true}), ["foo"] )
-          assertNotEqual( objectIncluding({foo: true}), true )
-          assertNotEqual( objectIncluding({foo: true}), "foo" )
-          assertNotEqual( objectIncluding({foo: true}), null )
-          assertNotEqual( objectIncluding({foo: true}), undefined )
-        })
-        
-        it("does not match objects that don't contain all the required pairs", function() {
-          assertNotEqual( objectIncluding({bar: true, foo: true}), {bar: false, hi: true, foo: true, there: true} )
-          assertNotEqual( objectIncluding({bar: true, foo: true}), {bar: true, hi: true, there: true} )
-        })
+      it("throws UnexpectedCallError if the arguments do not match", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName(5,6,7) })
       })
     })
   })
@@ -240,7 +163,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
     it("passes if the method was called", function(resume) {
       runTests({
         testExpectMethod: function() { with(this) {
-          expect(object, "getName")
+          expect(object, "getName").returning("me")
           object.getName()
         }}
       }, function() { resume(function() {
@@ -255,7 +178,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 1, 1, 0 )
-        assertMessage( 1, "Failure:\ntestExpectMethod(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[]." )
+        assertMessage( 1, "Failure:\ntestExpectMethod(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(*arguments)." )
       })})
     })
     
@@ -278,8 +201,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
             object.getName(3,9)
           }}
         }, function() { resume(function() {
-          assertTestResult( 1, 1, 1, 0 )
-          assertMessage( 1, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[3,4]." )
+          assertTestResult( 1, 1, 1, 1 )
+          // TODO test error message
+          assertMessage( 2, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(3,4)." )
         })})
       })
       
@@ -290,7 +214,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 0 )
-          assertMessage( 1, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[3,4]." )
+          assertMessage( 1, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(3,4)." )
         })})
       })
     })
@@ -329,7 +253,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 0 )
-          assertMessage( 1, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[a(Function)]." )
+          assertMessage( 1, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(*arguments,a(Function))." )
         })})
       })
       
@@ -354,10 +278,113 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
               object.getName(5, 8, function() {})
             }}
           }, function() { resume(function() {
-            assertTestResult( 1, 1, 1, 0 )
-            assertMessage( 1, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName[5,6,a(Function)]." )
+            assertTestResult( 1, 1, 1, 1 )
+            // TODO test error message
+            assertMessage( 2, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(5,6,a(Function))." )
           })})
         })
+      })
+    })
+  })
+  
+  describe("matchers", function() {
+    describe("anything", function() {
+      it("matches anything", function() {
+        assertEqual( anything(), null )
+        assertEqual( anything(), undefined )
+        assertEqual( anything(), 0 )
+        assertEqual( anything(), "" )
+        assertEqual( anything(), false )
+        assertEqual( anything(), function() {} )
+        assertEqual( anything(), /foo/ )
+        assertEqual( anything(), [] )
+        assertEqual( anything(), [] )
+        assertEqual( anything(), new Date() )
+      })
+    })
+    
+    describe("anyArgs", function() {
+      it("matches any number of items at the end of a list", function() {
+        assertEqual( [anyArgs()], [1,2,3] )
+      })
+    })
+    
+    describe("a", function() {
+      it("matches instances of the given type", function() {
+        assertEqual( a(JS.Set), new JS.SortedSet() )
+        assertEqual( a(JS.Enumerable), new JS.Hash() )
+        assertEqual( a(String), "hi" )
+        assertEqual( a("string"), "hi" )
+        assertEqual( a(Number), 9 )
+        assertEqual( a("number"), 9 )
+        assertEqual( a(Boolean), false )
+        assertEqual( a("boolean"), true )
+        assertEqual( an(Array), [] )
+        assertEqual( an("object"), {} )
+        assertEqual( a("function"), function() {} )
+        assertEqual( a(Function), function() {} )
+      })
+      
+      it("does not match instances of other types", function() {
+        assertNotEqual( an("object"), 9 )
+        assertNotEqual( a(JS.Comparable), new JS.Set )
+        assertNotEqual( a(JS.SortedSet), new JS.Set )
+        assertNotEqual( a(Function), "string" )
+        assertNotEqual( an(Array), {} )
+      })
+    })
+    
+    describe("match", function() {
+      it("matches objects the match the type", function() {
+        assertEqual( match(/foo/), "foo" )
+        assertEqual( match(JS.Enumerable), new JS.Set() )
+      })
+      
+      it("does not match objects that don't match the type", function() {
+        assertNotEqual( match(/foo/), "bar" )
+        assertNotEqual( match(JS.Enumerable), new JS.Class() )
+      })
+    })
+    
+    describe("arrayIncluding", function() {
+      it("matches an array containing all the required elements", function() {
+        assertEqual( arrayIncluding("foo"), ["hi", "foo", "there"] )
+        assertEqual( arrayIncluding(), ["hi", "foo", "there"] )
+        assertEqual( arrayIncluding("foo", "bar"), ["bar", "hi", "foo", "there"] )
+      })
+      
+      it("does not match other data types", function() {
+        assertNotEqual( arrayIncluding("foo"), {foo: true} )
+        assertNotEqual( arrayIncluding("foo"), true )
+        assertNotEqual( arrayIncluding("foo"), "foo" )
+        assertNotEqual( arrayIncluding("foo"), null )
+        assertNotEqual( arrayIncluding("foo"), undefined )
+      })
+      
+      it("does not match arrays that don't contain all the required elements", function() {
+        assertNotEqual( arrayIncluding("foo", "bar"), ["hi", "foo", "there"] )
+        assertNotEqual( arrayIncluding("foo", "bar"), ["bar", "hi", "there"] )
+      })
+    })
+    
+    describe("objectIncluding", function() {
+      it("matches an object containing all the required pairs", function() {
+        assertEqual( objectIncluding({foo: true}), {hi: true, foo: true, there: true} )
+        assertEqual( objectIncluding(), {hi: true, foo: true, there: true} )
+        assertEqual( objectIncluding({bar: true, foo: true}), {bar: true, hi: true, foo: true, there: true} )
+      })
+      
+      it("does not match other data types", function() {
+        assertNotEqual( objectIncluding({foo: true}), ["foo"] )
+        assertNotEqual( objectIncluding({foo: true}), true )
+        assertNotEqual( objectIncluding({foo: true}), "foo" )
+        assertNotEqual( objectIncluding({foo: true}), null )
+        assertNotEqual( objectIncluding({foo: true}), undefined )
+      })
+      
+      it("does not match objects that don't contain all the required pairs", function() {
+        assertNotEqual( objectIncluding({bar: true, foo: true}), {bar: false, hi: true, foo: true, there: true} )
+        assertNotEqual( objectIncluding({bar: true, foo: true}), {bar: true, hi: true, there: true} )
       })
     })
   })

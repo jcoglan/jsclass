@@ -40,6 +40,9 @@ JS.Packages(function() { with(this) {
                                       'JS.DOM.Builder')
                             .requires('JS.Class');
     
+    module('benchmark')     .provides('JS.Benchmark')
+                            .requires('JS.Module');
+    
     module('comparable')    .provides('JS.Comparable')
                             .requires('JS.Module');
     
@@ -56,7 +59,8 @@ JS.Packages(function() { with(this) {
     module('observable')    .provides('JS.Observable')
                             .requires('JS.Module');
     
-    module('hash')          .provides('JS.Hash')
+    module('hash')          .provides('JS.Hash',
+                                      'JS.OrderedHash')
                             .requires('JS.Class',
                                       'JS.Enumerable',
                                       'JS.Comparable');
@@ -67,6 +71,7 @@ JS.Packages(function() { with(this) {
     
     module('set')           .provides('JS.Set',
                                       'JS.HashSet',
+                                      'JS.OrderedSet',
                                       'JS.SortedSet')
                             .requires('JS.Class',
                                       'JS.Enumerable')

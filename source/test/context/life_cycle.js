@@ -44,15 +44,15 @@ JS.Test.Context.LifeCycle = new JS.Module({
       },
       
       gatherCallbacks: function(callbackType, period) {
-        var callbacks = JS.isFn(this.superclass.gatherCallbacks)
+        var outerCallbacks = JS.isFn(this.superclass.gatherCallbacks)
           ? this.superclass.gatherCallbacks(callbackType, period)
           : [];
         
         var mine = this[callbackType + '_' + (period + '_') + 'callbacks'];
-        for (var i = 0, n = mine.length; i < n; i++)
-          callbacks.push(mine[i]);
         
-        return callbacks;
+        return (callbackType === 'before')
+                ? outerCallbacks.concat(mine)
+                : mine.concat(outerCallbacks);
       }
     })
   },

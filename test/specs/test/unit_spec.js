@@ -1,4 +1,4 @@
-JS.ENV.Test = this.Test || {};
+JS.ENV.Test = this.Test || {}
 
 Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
   include(JS.Test.Helpers)
@@ -128,7 +128,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           assertEqual( {}, {} )
           assertEqual( {foo: 2}, {foo: 2} )
           assertEqual( {foo: 2}, {foo: 2} )
-          assertEqual( new JS.Set([1,2]), new JS.Set([2,1]) )
+          assertEqual( new JS.SortedSet([1,2]), new JS.SortedSet([2,1]) )
           
           assertNotEqual( true, false )
           assertNotEqual( false, null )
@@ -139,7 +139,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           assertNotEqual( {foo: 2}, {foo: 3} )
           assertNotEqual( {foo: 2}, {foo: 2, bar: 1} )
           assertNotEqual( {foo: 2, bar: 1}, {foo: 2} )
-          assertNotEqual( new JS.Set([3,2]), new JS.Set([2,1]) )
+          assertNotEqual( new JS.SortedSet([3,2]), new JS.SortedSet([2,1]) )
           assertNotEqual( function() {}, function() {} )
         }}
       }, function() { resume(function() {
@@ -240,37 +240,37 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         it("fails when given unequal objects", function(resume) {
           runTests({
             test1: function() { with(this) {
-              assertEqual( new JS.Set([1,2]), new JS.Set([3,2]) )
+              assertEqual( new JS.SortedSet([1,2]), new JS.SortedSet([3,2]) )
             }},
             
             test2: function() { with(this) {
-              assertNotEqual( new JS.Set([2,1]), new JS.Set([1,2]) )
+              assertNotEqual( new JS.SortedSet([2,1]), new JS.SortedSet([1,2]) )
             }}
           }, function() { resume(function() {
             assertTestResult( 2, 2, 2, 0 )
             
             // TODO stub Set#toString
-            assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set:{1,2}> expected but was\n<Set:{3,2}>." )
-            assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set:{2,1}> expected not to be equal to\n<Set:{1,2}>." )
+            assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<SortedSet:{1,2}> expected but was\n<SortedSet:{2,3}>." )
+            assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<SortedSet:{1,2}> expected not to be equal to\n<SortedSet:{1,2}>." )
           })})
         })
       })
     })
     
     describe("with functions", function() {
-      it("always fails when passed non-identical functions", function(resume) {
+      it("fails when passed non-identical functions", function(resume) {
         runTests({
           test1: function() { with(this) {
             assertEqual( function() {}, function() {} )
           }},
           
           test2: function() { with(this) {
-            assertNotEqual( JS.Set, JS.Set )
+            assertNotEqual( JS.SortedSet, JS.SortedSet )
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
           assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<#function> expected but was\n<#function>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected not to be equal to\n<Set>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<SortedSet> expected not to be equal to\n<SortedSet>." )
         })})
       })
     })
@@ -384,14 +384,14 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       it("passes when the object's inheritance chain includes the given module", function(resume) {
         runTests({
           testAssertKindOf: function() { with(this) {
-            var set = new JS.HashSet([1,2])
+            var set = new JS.SortedSet([1,2])
             
-            assertKindOf( JS.Module,  JS.Set )
-            assertKindOf( JS.Class,   JS.Set )
-            assertKindOf( JS.Kernel,  JS.Set )
+            assertKindOf( JS.Module,  JS.SortedSet )
+            assertKindOf( JS.Class,   JS.SortedSet )
+            assertKindOf( JS.Kernel,  JS.SortedSet )
             
             assertKindOf( JS.Set,         set )
-            assertKindOf( JS.HashSet,     set )
+            assertKindOf( JS.SortedSet,   set )
             assertKindOf( JS.Kernel,      set )
             assertKindOf( JS.Enumerable,  set )
             
@@ -405,20 +405,20 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       
       it("fails when the object's inheritance chain does not include the given module", function(resume) {
         runTests({
-          test1: function() { with(this) { assertKindOf( Array,         JS.Set ) }},
-          test2: function() { with(this) { assertKindOf( JS.Enumerable, JS.Set ) }},
-          test3: function() { with(this) { assertKindOf( JS.Observable, JS.Set ) }},
-          test4: function() { with(this) { assertKindOf( JS.Module,     new JS.Set([1,2]) ) }},
-          test5: function() { with(this) { assertKindOf( JS.Class,      new JS.Set([1,2]) ) }},
-          test6: function() { with(this) { assertKindOf( JS.Observable, new JS.Set([1,2]) ) }}
+          test1: function() { with(this) { assertKindOf( Array,         JS.SortedSet ) }},
+          test2: function() { with(this) { assertKindOf( JS.Enumerable, JS.SortedSet ) }},
+          test3: function() { with(this) { assertKindOf( JS.Observable, JS.SortedSet ) }},
+          test4: function() { with(this) { assertKindOf( JS.Module,     new JS.SortedSet([1,2]) ) }},
+          test5: function() { with(this) { assertKindOf( JS.Class,      new JS.SortedSet([1,2]) ) }},
+          test6: function() { with(this) { assertKindOf( JS.Observable, new JS.SortedSet([1,2]) ) }}
         }, function() { resume(function() {
           assertTestResult( 6, 6, 6, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set> expected to be an instance of\n<Array> but was\n<Class>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected to be an instance of\n<Enumerable> but was\n<Class>." )
-          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<Set> expected to be an instance of\n<Observable> but was\n<Class>." )
-          assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Module> but was\n<Set>." )
-          assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Class> but was\n<Set>." )
-          assertMessage( 6, "Failure:\ntest6(TestedSuite):\n<Set:{1,2}> expected to be an instance of\n<Observable> but was\n<Set>." )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<SortedSet> expected to be an instance of\n<Array> but was\n<Class>." )
+          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<SortedSet> expected to be an instance of\n<Enumerable> but was\n<Class>." )
+          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<SortedSet> expected to be an instance of\n<Observable> but was\n<Class>." )
+          assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<SortedSet:{1,2}> expected to be an instance of\n<Module> but was\n<SortedSet>." )
+          assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<SortedSet:{1,2}> expected to be an instance of\n<Class> but was\n<SortedSet>." )
+          assertMessage( 6, "Failure:\ntest6(TestedSuite):\n<SortedSet:{1,2}> expected to be an instance of\n<Observable> but was\n<SortedSet>." )
         })})
       })
     })
@@ -510,7 +510,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         runTests({
           testAssertMatch: function() { with(this) {
             assertMatch( JS.Module, JS.Enumerable )
-            assertNoMatch( JS.Class, new JS.Set([1,2]) )
+            assertNoMatch( JS.Class, new JS.SortedSet([1,2]) )
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 2, 0, 0 )
@@ -520,7 +520,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       it("fails if the object is not of the given type", function(resume) {
         runTests({
           test1: function() { with(this) {
-            assertMatch( JS.Class, new JS.Set([1,2]) )
+            assertMatch( JS.Class, new JS.SortedSet([1,2]) )
           }},
           
           test2: function() { with(this) {
@@ -528,7 +528,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Set:{1,2}> expected to match\n<Class>." )
+          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<SortedSet:{1,2}> expected to match\n<Class>." )
           assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Enumerable> expected not to match\n<Module>." )
         })})
       })
@@ -568,7 +568,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
     it("passes when the objects are identical", function(resume) {
       runTests({
         testAssertSame: function() { with(this) {
-          var obj = {}, arr = [], fn = function() {}, set = new JS.Set([1,2])
+          var obj = {}, arr = [], fn = function() {}, set = new JS.SortedSet([1,2])
           
           assertSame( obj, obj )
           assertSame( arr, arr )
@@ -578,7 +578,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           assertNotSame( obj, {} )
           assertNotSame( arr, [] )
           assertNotSame( fn,  function() {}  )
-          assertNotSame( set, new JS.Set([1,2]) )
+          assertNotSame( set, new JS.SortedSet([1,2]) )
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 8, 0, 0 )
@@ -597,14 +597,14 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           assertNotSame( Object, Object )
         }},
         test4: function() { with(this) {
-          assertSame( new JS.Set([2,1]), new JS.Set([2,1]) )
+          assertSame( new JS.SortedSet([2,1]), new JS.SortedSet([2,1]) )
         }}
       }, function() { resume(function() {
         assertTestResult( 4, 4, 4, 0 )
         assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<{}> expected to be the same as\n<{}>." )
         assertMessage( 2, "Failure:\ntest2(TestedSuite):\ncustom message.\n<[]> expected to be the same as\n<[]>." )
         assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<Object> expected not to be the same as\n<Object>." )
-        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Set:{2,1}> expected to be the same as\n<Set:{2,1}>." )
+        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<SortedSet:{1,2}> expected to be the same as\n<SortedSet:{1,2}>." )
       })})
     })
   })
@@ -646,8 +646,8 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
     it("passes when the constructed method call returns true", function(resume) {
       runTests({
         testAssertSend: function() { with(this) {
-          assertSend( [JS.Set, 'includes', JS.Enumerable] )
-          assertSend( [JS.Set, 'isA', JS.Class] )
+          assertSend( [JS.SortedSet, 'includes', JS.Enumerable] )
+          assertSend( [JS.SortedSet, 'isA', JS.Class] )
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 2, 0, 0 )
@@ -657,15 +657,15 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
     it("fails when the constructed method call returns false", function(resume) {
       runTests({
         test1: function() { with(this) {
-          assertSend( [JS.Set, 'isA', JS.Enumerable], "classes are not enumerable" )
+          assertSend( [JS.SortedSet, 'isA', JS.Enumerable], "classes are not enumerable" )
         }},
         test2: function() { with(this) {
-          assertSend( [JS.Set, 'includes', JS.Class] )
+          assertSend( [JS.SortedSet, 'includes', JS.Class] )
         }}
       }, function() { resume(function() {
         assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\nclasses are not enumerable.\n<Set> expected to respond to\n<isA([Enumerable])> with a true value." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Set> expected to respond to\n<includes([Class])> with a true value." )
+        assertMessage( 1, "Failure:\ntest1(TestedSuite):\nclasses are not enumerable.\n<SortedSet> expected to respond to\n<isA(Enumerable)> with a true value." )
+        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<SortedSet> expected to respond to\n<includes(Class)> with a true value." )
       })})
     })
   })

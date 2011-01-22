@@ -2,21 +2,22 @@ JS.Test.Mocking.Stub.include({
   given: function() {
     var matcher = new JS.Test.Mocking.Parameters(arguments, this._expected);
     this._argMatchers.push(matcher);
+    this._currentMatcher = matcher;
     return this;
   },
   
   raises: function(exception) {
-    this._lastMatcher()._exception = exception;
+    this._currentMatcher._exception = exception;
     return this;
   },
   
   returns: function() {
-    this._lastMatcher().returns(arguments);
+    this._currentMatcher.returns(arguments);
     return this;
   },
   
   yields: function() {
-    this._lastMatcher().yields(arguments);
+    this._currentMatcher.yields(arguments);
     return this;
   }
 });

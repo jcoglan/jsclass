@@ -1,4 +1,4 @@
-JS.ENV.Test = this.Test || {}
+JS.ENV.Test = JS.ENV.Test || {}
 
 Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() {
   include(JS.Test.Helpers)
@@ -120,8 +120,9 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() {
       before(function(resume) {
         this.result = new JS.Test.Unit.TestResult()
         this.suite  = sample_test.suite()
+        var self = this // TODO remove
         suite.run(this.result, function() {
-          this.hooks = klass.hook_register
+          self.hooks = klass.hook_register
           resume()
         }, function() {}, this)
       })
@@ -165,12 +166,12 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() {
       })
       
       it("runs before_all, then before_each, then after_each, then after_all", function() {
-        assertEqual( ["inherited_before_all",   "superclass_before_all",  "before_all",
-                      "inherited_before_each",  "superclass_before_each", "before_each",
-                      "inherited_after_each",   "superclass_after_each",  "after_each", "a method ran",
-                      "inherited_before_each",  "superclass_before_each", "before_each",
-                      "inherited_after_each",   "superclass_after_each",  "after_each", "a method ran",
-                      "inherited_after_all",    "superclass_after_all",   "after_all"],
+        assertEqual( ["inherited_before_all",       "superclass_before_all",  "before_all",
+                      "inherited_before_each",      "superclass_before_each", "before_each",
+                      "after_each", "a method ran", "inherited_after_each",   "superclass_after_each",
+                      "inherited_before_each",      "superclass_before_each", "before_each",
+                      "after_each", "a method ran", "inherited_after_each",   "superclass_after_each",
+                      "after_all",                  "inherited_after_all",    "superclass_after_all"],
                      klass.hook_register.entries() )
       })
     })

@@ -120,10 +120,6 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
         assertEqual( undefined, Object.In )
       })
       
-      after(function() {
-        assertEqual( undefined, Object.In )
-      })
-      
       it("loads the object", function() {
         JS.require("Object.In.A.Namespace")
         clock.tick(100)
@@ -161,11 +157,6 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
     before(function() {
       declare("Base", 100)
       declare("Dependent", 200, ["Base"])
-    })
-    
-    after(function() {
-      assertEqual( "undefined", typeof Base )
-      assertEqual( "undefined", typeof Dependent )
     })
     
     it("loads the packages in order when one is required", function() {

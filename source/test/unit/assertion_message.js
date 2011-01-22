@@ -19,21 +19,23 @@ JS.Test.Unit.extend({
       Template: new JS.Class({
         extend: {
           create: function(string) {
-            var parts = string ? string.match(/(?=[^\\])\?|(?:\\\?|[^\?])+/g) : [];
+            var parts = string ? string.match(/\(\?\)|(?=[^\\])\?|(?:(?!\(\?\))(?:\\\?|[^\?]))+/g) : [];
             return new this(parts);
           }
         },
         
         initialize: function(parts) {
           this._parts = new JS.Enumerable.Collection(parts);
-          this.count = this._parts.findAll(function(e) { return e === '?' }).length;
+          this.count = this._parts.findAll(function(e) { return e === '?' || e === '(?)' }).length;
         },
         
         result: function(parameters) {
           if (parameters.length !== this.count) throw "The number of parameters does not match the number of substitutions.";
           var params = JS.array(parameters);
           return this._parts.collect(function(e) {
-            return e === '?' ? params.shift() : e.replace(/\\\?/g, '?');
+            if (e === '(?)') return params.shift().replace(/^\[/, '(').replace(/\]$/, ')');
+            if (e === '?') return params.shift();
+            return e.replace(/\\\?/g, '?');
           }).join('');
         }
       }),

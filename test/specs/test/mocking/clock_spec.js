@@ -1,3 +1,6 @@
+JS.ENV.Test = JS.ENV.Test || {}
+JS.ENV.Test.Mocking = JS.ENV.Test.Mocking || {}
+
 JS.ENV.Test.Mocking = {
   ClockSpec: JS.Test.describe(JS.Test.Mocking.Clock, function() {
     include(JS.Test.Mocking.Clock)
@@ -8,7 +11,7 @@ JS.ENV.Test.Mocking = {
     describe("setTimeout", function() {
       before(function() {
         this.calls = 0
-        this.timer = setTimeout(function() { calls += 1 }, 1000)
+        this.timer = JS.ENV.setTimeout(function() { calls += 1 }, 1000)
       })
       
       it("runs the timeout after clock has ticked enough", function() {
@@ -73,12 +76,12 @@ JS.ENV.Test.Mocking = {
       before(function() {
         this.calls = []
         
-        setTimeout(function() {
-          setTimeout(function() { calls.push("third") }, 100)
+        JS.ENV.setTimeout(function() {
+          JS.ENV.setTimeout(function() { calls.push("third") }, 100)
           calls.push("first")
         }, 50)
         
-        setTimeout(function() { calls.push("second") }, 50)
+        JS.ENV.setTimeout(function() { calls.push("second") }, 50)
         
         setInterval(function() { calls.push("ping") }, 40)
       })
@@ -92,7 +95,7 @@ JS.ENV.Test.Mocking = {
     describe(Date, function() {
       before(function() {
         this.a = this.b = null
-        setTimeout(function() { b = new Date().getTime() }, 100)
+        JS.ENV.setTimeout(function() { b = new Date().getTime() }, 100)
         a = new Date().getTime()
       })
       
