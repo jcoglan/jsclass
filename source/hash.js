@@ -283,10 +283,16 @@ JS.Hash = new JS.Class('Hash', {
     if (!block) return this.enumFor('removeIf');
     block = JS.Enumerable.toFn(block);
     
+    var toRemove = [];
+    
     this.forEach(function(pair) {
       if (block.call(context || null, pair))
-        this.remove(pair.key);
+        toRemove.push(pair.key);
     }, this);
+    
+    var i = toRemove.length;
+    while (i--) this.remove(toRemove[i]);
+    
     return this;
   },
   
@@ -345,9 +351,13 @@ JS.Hash.include({
 
 JS.OrderedHash = new JS.Class('OrderedHash', JS.Hash, {
   assoc: function(key, createIfAbsent) {
-    var existing = this.callSuper(key, false);
+    var _super = JS.Hash.prototype.assoc;
+    
+    var existing = _super.call(this, key, false);
     if (existing || !createIfAbsent) return existing;
-    var pair = this.callSuper(key, true);
+    
+    var pair = _super.call(this, key, true);
+    
     if (!this._first) {
       this._first = this._last = pair;
     } else {
@@ -365,11 +375,13 @@ JS.OrderedHash = new JS.Class('OrderedHash', JS.Hash, {
   
   _delete: function(bucket, index) {
     var pair = bucket[index];
-    if (pair._prev) {
-      pair._prev._next = pair._next;
-    } else {
-      this._first = pair._next;
-    }
+    
+    if (pair._prev) pair._prev._next = pair._next;
+    if (pair._next) pair._next._prev = pair._prev;
+    
+    if (pair === this._first) this._first = pair._next;
+    if (pair === this._last) this._last = pair._prev;
+    
     return this.callSuper();
   },
   

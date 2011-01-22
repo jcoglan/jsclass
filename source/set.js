@@ -337,6 +337,14 @@ JS.HashSet = new JS.Class('HashSet', JS.Set, {
   }
 });
 
+
+JS.OrderedSet = new JS.Class('OrderedSet', JS.HashSet, {
+  clear: function() {
+    this._members = new JS.OrderedHash();
+    this.size = this.length = 0;
+  }
+});
+
 JS.Enumerable.include({
   toSet: function(klass, block, context) {
     klass = klass || JS.Set;

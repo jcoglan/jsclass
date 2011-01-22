@@ -9,8 +9,20 @@ else
   load(JSCLASS_PATH + 'loader.js')
 
 
-JS.require('JS.Benchmark', function() {
+JS.require('JS.Benchmark', 'JS.Set', function() {
   var bm = JS.Benchmark
+  
+  var sets = [JS.SortedSet, JS.OrderedSet, JS.HashSet, JS.Set],
+      i    = sets.length
+  
+  while (i--) {
+    bm.measure(sets[i] + ' creation', 10, {
+      test: function() {
+        var set = new sets[i](), n = 1000
+        while (n--) set.add(n)
+      }
+    })
+  }
   
   bm.measure('Class creation', 300, {
     test: function() {

@@ -242,7 +242,7 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() {
     })
   })
   
-  sharedBehavior("unordered set", function() {
+  sharedBehavior("unsorted set", function() {
     describe("#flatten", function() {
       before(function() {
         this.list     = [9,3,7,8,4]
@@ -316,13 +316,39 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() {
   describe("Set", function() {
     before(function() { this.Set = JS.Set })
     behavesLike("set")
-    behavesLike("unordered set")
+    behavesLike("unsorted set")
   })
   
   describe("HashSet", function() {
     before(function() { this.Set = JS.HashSet })
     behavesLike("set")
-    behavesLike("unordered set")
+    behavesLike("unsorted set")
+  })
+  
+  describe("OrderedSet", function() {
+    before(function() { this.Set = JS.OrderedSet })
+    behavesLike("set")
+    behavesLike("unsorted set")
+    
+    before(function() {
+      this.Color = new JS.Class({
+          initialize: function(code) {
+              this.code = code;
+          },
+          equals: function(color) {
+              return color.code === this.code;
+          },
+          hash: function() {
+            return this.code.toLowerCase();
+          }
+      });
+    })
+    
+    it("keeps its elements in insertion order", function() {
+      var colors = map($w('red blue RED'), function(c) { return new Color(c) })
+      var set = new JS.OrderedSet(colors)
+      assertEqual( $w('red blue RED'), map(set.entries(), 'code') )
+    })
   })
   
   describe("SortedSet", function() {

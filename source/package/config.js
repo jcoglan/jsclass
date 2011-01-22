@@ -70,6 +70,7 @@ JS.Packages(function() { with(this) {
     
     module('set')           .provides('JS.Set',
                                       'JS.HashSet',
+                                      'JS.OrderedSet',
                                       'JS.SortedSet')
                             .requires('JS.Class',
                                       'JS.Enumerable')
