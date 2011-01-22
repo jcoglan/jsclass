@@ -12,7 +12,7 @@ else
 JS.require('JS.Benchmark', 'JS.Set', function() {
   var bm = JS.Benchmark
   
-  var sets = [JS.SortedSet, JS.OrderedSet, JS.HashSet, JS.Set],
+  var sets = [JS.SortedSet, JS.OrderedSet, JS.Set],
       i    = sets.length
   
   while (i--) {

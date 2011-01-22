@@ -24,13 +24,13 @@ JS.Set = new JS.Class('Set', {
     if (!block) return this.enumFor('forEach');
     block = JS.Enumerable.toFn(block);
     
-    this.klass.forEach(this._members, block, context);
+    this._members.forEachKey(block, context);
     return this;
   },
   
   add: function(item) {
     if (this.contains(item)) return false;
-    this._members.push(item);
+    this._members.store(item, true);
     this.length = this.size = this._members.length;
     return true;
   },
@@ -49,8 +49,8 @@ JS.Set = new JS.Class('Set', {
   },
   
   clear: function() {
-    this._members = [];
-    this.length = this.size = 0;
+    this._members = new JS.Hash();
+    this.size = this.length = 0;
   },
   
   complement: function(other) {
@@ -62,7 +62,7 @@ JS.Set = new JS.Class('Set', {
   },
   
   contains: function(item) {
-    return this._indexOf(item) !== -1;
+    return this._members.hasKey(item);
   },
   
   difference: function(other) {
@@ -79,7 +79,7 @@ JS.Set = new JS.Class('Set', {
     block = JS.Enumerable.toFn(block);
     
     var classes = this.classify(block, context),
-        sets    = new JS.HashSet;
+        sets    = new JS.Set;
     
     classes.forEachValue(sets.method('add'));
     return sets;
@@ -154,7 +154,7 @@ JS.Set = new JS.Class('Set', {
   },
   
   product: function(other) {
-    var pairs = new JS.HashSet;
+    var pairs = new JS.Set;
     this.forEach(function(item) {
       this.klass.forEach(other, function(partner) {
         pairs.add([item, partner]);
@@ -164,15 +164,12 @@ JS.Set = new JS.Class('Set', {
   },
   
   rebuild: function() {
-    var members = this._members;
-    this.clear();
-    this.merge(members);
+    this._members.rehash();
+    this.length = this.size = this._members.length;
   },
   
   remove: function(item) {
-    var index = this._indexOf(item);
-    if (index === -1) return;
-    this._members.splice(index, 1);
+    this._members.remove(item);
     this.length = this.size = this._members.length;
   },
   
@@ -180,13 +177,10 @@ JS.Set = new JS.Class('Set', {
     if (!block) return this.enumFor('removeIf');
     block = JS.Enumerable.toFn(block);
     
-    var members = this._members,
-        i       = members.length;
-    
-    while (i--) {
-      if (block.call(context || null, members[i]))
-        this.remove(members[i]);
-    }
+    this._members.removeIf(function(pair) {
+      return block.call(context || null, pair.key);
+    });
+    this.length = this.size = this._members.length;
     return this;
   },
   
@@ -241,6 +235,15 @@ JS.Set.include({
   x:  JS.Set.instanceMethod('product')
 }, false);
 
+JS.HashSet = JS.Set;
+
+JS.OrderedSet = new JS.Class('OrderedSet', JS.Set, {
+  clear: function() {
+    this._members = new JS.OrderedHash();
+    this.size = this.length = 0;
+  }
+});
+
 JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
   extend: {
     compare: function(one, another) {
@@ -250,6 +253,13 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     }
   },
   
+  forEach: function(block, context) {
+    if (!block) return this.enumFor('forEach');
+    block = JS.Enumerable.toFn(block);
+    this.klass.forEach(this._members, block, context);
+    return this;
+  },
+
   add: function(item) {
     var point = this._indexOf(item, true);
     if (point === null) return false;
@@ -258,6 +268,42 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     return true;
   },
   
+  clear: function() {
+    this._members = [];
+    this.size = this.length = 0;
+  },
+
+  contains: function(item) {
+    return this._indexOf(item) !== -1;
+  },
+
+  rebuild: function() {
+    var members = this._members;
+    this.clear();
+    this.merge(members);
+  },
+
+  remove: function(item) {
+    var index = this._indexOf(item);
+    if (index === -1) return;
+    this._members.splice(index, 1);
+    this.length = this.size = this._members.length;
+  },
+
+  removeIf: function(block, context) {
+    if (!block) return this.enumFor('removeIf');
+    block = JS.Enumerable.toFn(block);
+
+    var members = this._members,
+        i       = members.length;
+
+    while (i--) {
+      if (block.call(context || null, members[i]))
+        this.remove(members[i]);
+    }
+    return this;
+  },
+
   _indexOf: function(item, insertionPoint) {
     var items   = this._members,
         n       = items.length,
@@ -287,61 +333,6 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     return insertionPoint
         ? (found ? null : i)
         : (found ? i : -1);
-  }
-});
-
-JS.HashSet = new JS.Class('HashSet', JS.Set, {
-  forEach: function(block, context) {
-    if (!block) return this.enumFor('forEach');
-    block = JS.Enumerable.toFn(block);
-    
-    this._members.forEachKey(block, context);
-    return this;
-  },
-  
-  add: function(item) {
-    if (this.contains(item)) return false;
-    this._members.store(item, true);
-    this.length = this.size = this._members.length;
-    return true;
-  },
-  
-  clear: function() {
-    this._members = new JS.Hash();
-    this.size = this.length = 0;
-  },
-  
-  contains: function(item) {
-    return this._members.hasKey(item);
-  },
-  
-  rebuild: function() {
-    this._members.rehash();
-    this.length = this.size = this._members.length;
-  },
-  
-  remove: function(item) {
-    this._members.remove(item);
-    this.length = this.size = this._members.length;
-  },
-  
-  removeIf: function(block, context) {
-    if (!block) return this.enumFor('removeIf');
-    block = JS.Enumerable.toFn(block);
-    
-    this._members.removeIf(function(pair) {
-      return block.call(context || null, pair.key);
-    });
-    this.length = this.size = this._members.length;
-    return this;
-  }
-});
-
-
-JS.OrderedSet = new JS.Class('OrderedSet', JS.HashSet, {
-  clear: function() {
-    this._members = new JS.OrderedHash();
-    this.size = this.length = 0;
   }
 });
 
