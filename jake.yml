@@ -86,5 +86,6 @@ packages:
   range:            range
   set:              set
   stack_trace:      stack_trace
+  tsort:            tsort
   ruby:             ruby
 
