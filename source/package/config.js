@@ -56,6 +56,9 @@ JS.Packages(function() { with(this) {
                             .requires('JS.Module',
                                       'JS.Class');
     
+    module('deferrable')    .provides('JS.Deferrable')
+                            .requires('JS.Module');
+    
     module('observable')    .provides('JS.Observable')
                             .requires('JS.Module');
     
