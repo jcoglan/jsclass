@@ -75,6 +75,7 @@ packages:
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable
+  deferrable:       deferrable
   observable:       observable
   forwardable:      forwardable
   method_chain:     method_chain
@@ -87,4 +88,4 @@ packages:
   range:            range
   set:              set
   stack_trace:      stack_trace
-
+  tsort:            tsort

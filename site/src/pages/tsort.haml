@@ -1,0 +1,66 @@
+:textile
+  h3. @JS.TSort@
+  
+  @JS.TSort@ is a JavaScript version of Ruby's @TSort@ module, which provides
+  "topological sort":http://en.wikipedia.org/wiki/Topological_sorting capability
+  to data structures. The canonical example of this is determining how a
+  set of dependent tasks should be sorted such that each task comes after those
+  it depends on in the list. One way to represent this information may be as
+  a task table:
+  
+  <pre class="prettyprint">    var tasks = new Tasks({
+          'eat breakfast': ['serve'],
+          'serve':         ['cook'],
+          'cook':          ['buy bacon', 'buy eggs'],
+          'buy bacon':     [],
+          'buy eggs':      []
+      });</pre>
+  
+  (This example is borrowed from the excellent "Getting to know the Ruby
+  standard library":http://endofline.wordpress.com/2010/12/22/ruby-standard-library-tsort/
+  blog.)
+  
+  This table represents each task involved in serving breakfast. The tasks are
+  the keys in the table, and each task maps to the list of tasks which must be
+  done immediately before it. We want to to sort all our tasks into a linear
+  list so we can process them in the correct order, and @TSort@ lets us do that.
+  
+  To use @TSort@, our @Tasks@ class must implement two methods. @tsortEachNode@
+  must take a callback function and context and yield each task in the set to
+  the callback. @tsortEachChild@ must accept an individual task and yield each
+  of its direct children. We can implement this simply:
+  
+  <pre class="prettyprint">    var Tasks = new JS.Class({
+          include: JS.TSort,
+          
+          initialize: function(table) {
+              this.table = table;
+          },
+          
+          tsortEachNode: function(block, context) {
+              for (var task in this.table) {
+                  if (this.table.hasOwnProperty(task))
+                      block.call(context, task);
+              }
+          },
+          
+          tsortEachChild: function(task, block, context) {
+              var tasks = this.table[task];
+              for (var i = 0, n = tasks.length; i < n; i++)
+                  block.call(context, tasks[i]);
+          }
+      });</pre>
+  
+  Once we've told @TSort@ how to traverse our list of tasks, it can sort the
+  dependent tasks out for us:
+  
+  <pre class="prettyprint">    tasks.tsort()
+      // -> ['buy bacon', 'buy eggs', 'cook', 'serve', 'eat breakfast']</pre>
+  
+  We now have a flat list of the tasks and can iterate over them in order,
+  knowing that each task will have all its dependencies run before it in the
+  list.
+  
+  Note that @TSort@ sorts based on the how objects are related to each other
+  in a graph, not by how they compare using "comparison":/comparable.html
+  methods.

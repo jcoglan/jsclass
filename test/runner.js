@@ -31,12 +31,14 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'ForwardableSpec',
                 'HashSpec',
                 'MethodChainSpec',
+                'DeferrableSpec',
                 'ObservableSpec',
                 'PackageSpec',
                 'ProxySpec',
                 'RangeSpec',
                 'SetSpec',
                 'StateSpec',
+                'TSortSpec',
             
     JS.Test.method('autorun'))
 })

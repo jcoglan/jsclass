@@ -289,14 +289,14 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     this._members.splice(index, 1);
     this.length = this.size = this._members.length;
   },
-  
+
   removeIf: function(block, context) {
     if (!block) return this.enumFor('removeIf');
     block = JS.Enumerable.toFn(block);
-    
+
     var members = this._members,
         i       = members.length;
-        
+
     while (i--) {
       if (block.call(context || null, members[i]))
         this.remove(members[i]);

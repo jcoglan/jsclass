@@ -56,6 +56,9 @@ JS.Packages(function() { with(this) {
                             .requires('JS.Module',
                                       'JS.Class');
     
+    module('deferrable')    .provides('JS.Deferrable')
+                            .requires('JS.Module');
+    
     module('observable')    .provides('JS.Observable')
                             .requires('JS.Module');
     
@@ -109,5 +112,10 @@ JS.Packages(function() { with(this) {
     module('state')         .provides('JS.State')
                             .requires('JS.Module',
                                       'JS.Class');
+    
+    module('tsort')         .provides('JS.TSort')
+                            .requires('JS.Module')
+                            .requires('JS.Class')
+                            .requires('JS.Hash');
 }});
 

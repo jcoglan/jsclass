@@ -40,3 +40,5 @@
   eigen.call(JS.Class).include(JS.Module.__meta__);
 })();
 
+JS.NotImplementedError = new JS.Class('NotImplementedError', Error);
+
