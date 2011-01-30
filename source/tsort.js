@@ -1,3 +1,9 @@
+/**
+ * This library is based on Ruby's TSort
+ * Originally released under the Ruby License
+ * http://www.ruby-lang.org/en/LICENSE.txt
+ **/
+
 JS.TSort = new JS.Module('TSort', {
   extend: {
     Cyclic: new JS.Class(Error)
