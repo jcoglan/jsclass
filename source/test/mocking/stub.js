@@ -64,6 +64,7 @@ JS.Test.extend({
         },
         
         defaultMatcher: function(implementation) {
+          this._activeLastMatcher();
           this._currentMatcher = this._anyArgs;
           if (typeof implementation === 'function')
             this._currentMatcher._fake = implementation;
@@ -89,7 +90,12 @@ JS.Test.extend({
           this._expected = true;
         },
         
+        _activeLastMatcher: function() {
+          if (this._currentMatcher) this._currentMatcher._active = true;
+        },
+        
         _dispatch: function(args) {
+          this._activeLastMatcher();
           var matchers = this._argMatchers.concat(this._anyArgs),
               matcher, result;
           

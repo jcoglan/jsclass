@@ -3,6 +3,7 @@ JS.Test.Mocking.extend({
     initialize: function(params, expected) {
       this._params    = JS.array(params);
       this._expected  = expected;
+      this._active    = false;
       this._callsMade = 0;
     },
     
@@ -37,6 +38,8 @@ JS.Test.Mocking.extend({
     },
     
     match: function(args) {
+      if (!this._active) return false;
+      
       var argsCopy = JS.array(args), callback, context;
       
       if (this._yieldArgs) {
@@ -54,9 +57,8 @@ JS.Test.Mocking.extend({
       
       if (this._exception)    return {exception: this._exception};
       if (this._yieldArgs)    return {callback: callback, context: context};
-      if (this._returnValues) return true;
       if (this._fake)         return this._fake;
-      else                    return false;
+      else                    return true;
     },
     
     verify: function() {

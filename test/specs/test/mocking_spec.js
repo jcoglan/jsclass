@@ -11,7 +11,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
   })
   
   describe("stub", function() {
-    describe("with no arguments specified", function() {
+    describe("without specified arguments", function() {
       it("replaces a method on an object for any arguments", function() {
         stub(object, "getName").returns("king")
         assertEqual( "king", object.getName() )
@@ -22,6 +22,20 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         stub(object, "getName").returns("king")
         JS.Test.Mocking.removeStubs()
         assertEqual( "jester", object.getName() )
+      })
+    })
+    
+    describe("with no arguments", function() {
+      before(function() {
+        stub(object, "getName").given().returns("king")
+      })
+      
+      it("responsed to calls with no arguments", function() {
+        assertEqual( "king", object.getName() )
+      })
+      
+      it("does not respond to calls with arguments", function() {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName(1) })
       })
     })
     
@@ -50,6 +64,14 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       it("throws an error for unexpected arguments", function() {
         assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName(4) })
         assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName() })
+      })
+      
+      describe("when an any-arg matcher is present", function() {
+        before(function() { stub(object, "getName") })
+        
+        it("allows calls with any arguments", function() {
+          assertNothingThrown(function() { object.getName(4) })
+        })
       })
     })
     
@@ -140,6 +162,22 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       
       it("throws an error if no callback is given", function() {
         assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName("a") })
+      })
+      
+      describe("when an any-arg matcher is present", function() {
+        before(function() {
+          stub(object, "getName").yields(["some", "args"])
+        })
+        
+        it("allows calls with any arguments", function() {
+          assertNothingThrown(function() { object.getName(function() {}) })
+          assertNothingThrown(function() { object.getName(4, function() {}) })
+          assertNothingThrown(function() { object.getName(5,6,7, function() {}) })
+        })
+        
+        it("throws an error if no callback is given", function() {
+          assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName("a") })
+        })
       })
     })
     
