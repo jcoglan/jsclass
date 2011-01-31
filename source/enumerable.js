@@ -464,92 +464,95 @@ JS.Enumerable = new JS.Module('Enumerable', {
 });
   
 // http://developer.mozilla.org/en/docs/index.php?title=Core_JavaScript_1.5_Reference:Global_Objects:Array&oldid=58326
-JS.Enumerable.include({
-  forEach:    JS.Enumerable.forEach,
-  collect:    JS.Enumerable.instanceMethod('map'),
-  detect:     JS.Enumerable.instanceMethod('find'),
-  entries:    JS.Enumerable.instanceMethod('toArray'),
-  every:      JS.Enumerable.instanceMethod('all'),
-  findAll:    JS.Enumerable.instanceMethod('select'),
-  filter:     JS.Enumerable.instanceMethod('select'),
-  some:       JS.Enumerable.instanceMethod('any'),
+JS.Enumerable.define('forEach', JS.Enumerable.forEach);
+
+JS.Enumerable.alias({
+  collect:    'map',
+  detect:     'find',
+  entries:    'toArray',
+  every:      'all',
+  findAll:    'select',
+  filter:     'select',
+  some:       'any'
+});
+
+JS.Enumerable.extend({
+  toFn: function(object) {
+    if (!object) return object;
+    if (object.toFunction) return object.toFunction();
+    if (this.OPS[object]) return this.OPS[object];
+    if (JS.isType(object, 'string') || JS.isType(object, String))
+    return function() {
+        var args   = JS.array(arguments),
+            target = args.shift(),
+            method = target[object];
+        return JS.isFn(method) ? method.apply(target, args) : method;
+      };
+    return object;
+  },
   
-  extend: {
-    toFn: function(object) {
-      if (!object) return object;
-      if (object.toFunction) return object.toFunction();
-      if (this.OPS[object]) return this.OPS[object];
-      if (JS.isType(object, 'string') || JS.isType(object, String))
-        return function() {
-          var args   = JS.array(arguments),
-              target = args.shift(),
-              method = target[object];
-          return JS.isFn(method) ? method.apply(target, args) : method;
-        };
-      return object;
+  OPS: {
+    '+':    function(a,b) { return a + b },
+    '-':    function(a,b) { return a - b },
+    '*':    function(a,b) { return a * b },
+    '/':    function(a,b) { return a / b },
+    '%':    function(a,b) { return a % b },
+    '^':    function(a,b) { return a ^ b },
+    '&':    function(a,b) { return a & b },
+    '&&':   function(a,b) { return a && b },
+    '|':    function(a,b) { return a | b },
+    '||':   function(a,b) { return a || b },
+    '==':   function(a,b) { return a == b },
+    '!=':   function(a,b) { return a != b },
+    '>':    function(a,b) { return a > b },
+    '>=':   function(a,b) { return a >= b },
+    '<':    function(a,b) { return a < b },
+    '<=':   function(a,b) { return a <= b },
+    '===':  function(a,b) { return a === b },
+    '!==':  function(a,b) { return a !== b },
+    '[]':   function(a,b) { return a[b] },
+    '()':   function(a,b) { return a(b) }
+  },
+  
+  Enumerator: new JS.Class({
+    include: JS.Enumerable,
+    
+    extend: {
+      DEFAULT_METHOD: 'forEach'
     },
     
-    OPS: {
-      '+':    function(a,b) { return a + b },
-      '-':    function(a,b) { return a - b },
-      '*':    function(a,b) { return a * b },
-      '/':    function(a,b) { return a / b },
-      '%':    function(a,b) { return a % b },
-      '^':    function(a,b) { return a ^ b },
-      '&':    function(a,b) { return a & b },
-      '&&':   function(a,b) { return a && b },
-      '|':    function(a,b) { return a | b },
-      '||':   function(a,b) { return a || b },
-      '==':   function(a,b) { return a == b },
-      '!=':   function(a,b) { return a != b },
-      '>':    function(a,b) { return a > b },
-      '>=':   function(a,b) { return a >= b },
-      '<':    function(a,b) { return a < b },
-      '<=':   function(a,b) { return a <= b },
-      '===':  function(a,b) { return a === b },
-      '!==':  function(a,b) { return a !== b },
-      '[]':   function(a,b) { return a[b] },
-      '()':   function(a,b) { return a(b) }
+    initialize: function(object, method, args) {
+      this._object = object;
+      this._method = method || this.klass.DEFAULT_METHOD;
+      this._args   = (args || []).slice();
     },
     
-    Enumerator: new JS.Class({
-      include: JS.Enumerable,
-      
-      extend: {
-        DEFAULT_METHOD: 'forEach'
-      },
-      
-      initialize: function(object, method, args) {
-        this._object = object;
-        this._method = method || this.klass.DEFAULT_METHOD;
-        this._args   = (args || []).slice();
-      },
-      
-      // this is largely here to support testing
-      // since I don't want to make the ivars public
-      equals: function(enumerator) {
-        return JS.isType(enumerator, this.klass) &&
-               this._object === enumerator._object &&
-               this._method === enumerator._method &&
-               JS.Enumerable.areEqual(this._args, enumerator._args);
-      },
-      
-      forEach: function(block, context) {
-        if (!block) return this;
-        var args = this._args.slice();
-        args.push(block);
-        if (context) args.push(context);
-        return this._object[this._method].apply(this._object, args);
-      },
-      
-      cons:       JS.Enumerable.instanceMethod('forEachCons'),
-      reverse:    JS.Enumerable.instanceMethod('reverseForEach'),
-      slice:      JS.Enumerable.instanceMethod('forEachSlice'),
-      withIndex:  JS.Enumerable.instanceMethod('forEachWithIndex'),
-      withObject: JS.Enumerable.instanceMethod('forEachWithObject')
-    })
-  }
-}, false);
+    // this is largely here to support testing
+    // since I don't want to make the ivars public
+    equals: function(enumerator) {
+      return JS.isType(enumerator, this.klass) &&
+             this._object === enumerator._object &&
+             this._method === enumerator._method &&
+             JS.Enumerable.areEqual(this._args, enumerator._args);
+          },
+          
+          forEach: function(block, context) {
+      if (!block) return this;
+      var args = this._args.slice();
+      args.push(block);
+      if (context) args.push(context);
+      return this._object[this._method].apply(this._object, args);
+    }
+  })
+});
+
+JS.Enumerable.Enumerator.alias({
+  cons:       'forEachCons',
+  reverse:    'reverseForEach',
+  slice:      'forEachSlice',
+  withIndex:  'forEachWithIndex',
+  withObject: 'forEachWithObject'
+});
 
 JS.Enumerable.Collection.include(JS.Enumerable, true);
 
@@ -561,5 +564,5 @@ JS.Kernel.include({
   }
 }, false);
 
-JS.Kernel.define('toEnum', JS.Kernel.instanceMethod('enumFor'), true);
+JS.Kernel.alias({toEnum: 'enumFor'});
 

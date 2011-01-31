@@ -229,11 +229,11 @@ JS.Set = new JS.Class('Set', {
   }
 });
 
-JS.Set.include({
-  n:  JS.Set.instanceMethod('intersection'),
-  u:  JS.Set.instanceMethod('union'),
-  x:  JS.Set.instanceMethod('product')
-}, false);
+JS.Set.alias({
+  n:  'intersection',
+  u:  'union',
+  x:  'product'
+});
 
 JS.HashSet = JS.Set;
 

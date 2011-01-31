@@ -343,11 +343,11 @@ JS.Hash = new JS.Class('Hash', {
   }
 });
 
-JS.Hash.include({
-  includes: JS.Hash.instanceMethod('hasKey'),
-  index:    JS.Hash.instanceMethod('key'),
-  put:      JS.Hash.instanceMethod('store')
-}, true);
+JS.Hash.alias({
+  includes: 'hasKey',
+  index:    'key',
+  put:      'store'
+});
 
 JS.OrderedHash = new JS.Class('OrderedHash', JS.Hash, {
   assoc: function(key, createIfAbsent) {

@@ -123,9 +123,7 @@ JS.Test.extend({
    }
 });
 
-JS.Test.Context.Context.include({
-  describe: JS.Test.Context.Context.instanceMethod('context')
-});
+JS.Test.Context.Context.alias({describe: 'context'});
 
 JS.Test.extend({
   context:  JS.Test.describe

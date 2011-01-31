@@ -97,6 +97,14 @@ JS.extend(JS.Module.prototype, {
     return this;
   },
   
+  alias: function(aliases) {
+    for (var method in aliases) {
+      if (!aliases.hasOwnProperty(method)) continue;
+      this.define(method, this.instanceMethod(aliases[method]), false);
+    }
+    this.resolve();
+  },
+  
   resolve: function(host) {
     var host   = host || this,
         target = host.__tgt__,

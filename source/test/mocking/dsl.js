@@ -22,10 +22,10 @@ JS.Test.Mocking.Stub.include({
   }
 });
 
-JS.Test.Mocking.Stub.include({
-  raising:    JS.Test.Mocking.Stub.instanceMethod('raises'),
-  returning:  JS.Test.Mocking.Stub.instanceMethod('returns'),
-  yielding:   JS.Test.Mocking.Stub.instanceMethod('yields')
+JS.Test.Mocking.Stub.alias({
+  raising:    'raises',
+  returning:  'returns',
+  yielding:   'yields'
 });
 
 JS.Test.Mocking.extend({      
@@ -67,9 +67,7 @@ JS.Test.Mocking.extend({
   })
 });
 
-JS.Test.Mocking.DSL.include({
-  an: JS.Test.Mocking.DSL.instanceMethod('a')
-});
+JS.Test.Mocking.DSL.alias({an: 'a'});
 
 JS.Test.Unit.TestCase.include(JS.Test.Mocking.DSL);
 JS.Test.Unit.mocking = JS.Test.Mocking;
