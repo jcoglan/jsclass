@@ -216,8 +216,159 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 1, 1, 0 )
-        assertMessage( 1, "Failure:\ntestExpectMethod(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(*arguments)." )
+        assertMessage( 1, "Failure:\n" +
+                          "testExpectMethod(TestedSuite):\n" +
+                          "Mock expectation not met.\n" +
+                          "<[OBJECT]> expected to receive call\n" +
+                          "getName(*arguments)." )
       })})
+    })
+    
+    describe("#atLeast", function() {
+      it("passes if the method was called enough times", function(resume) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").returning("me").atLeast(3)
+            object.getName()
+            object.getName()
+            object.getName()
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 0, 0 )
+        })})
+      })
+      
+      it("fails if the method was not called enough times", function(resume) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").returning("me").atLeast(3)
+            object.getName()
+            object.getName()
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\n" +
+                            "testExpectMethod(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<[OBJECT]> expected to receive call\n" +
+                            "getName(*arguments)\n" +
+                            "at least 3 times\n" +
+                            "but 2 calls were made." )
+        })})
+      })
+      
+      it("fails if the method was not called at all", function(resume) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").returning("me").atLeast(3)
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\n" +
+                            "testExpectMethod(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<[OBJECT]> expected to receive call\n" +
+                            "getName(*arguments)." )
+        })})
+      })
+    })
+    
+    describe("#atMost", function() {
+      it("passes if the method was called enough times", function(resume) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").returning("me").atMost(3)
+            object.getName()
+            object.getName()
+            object.getName()
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 0, 0 )
+        })})
+      })
+      
+      it("fails if the method was called too many times", function(resume) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").returning("me").atMost(3)
+            object.getName()
+            object.getName()
+            object.getName()
+            object.getName()
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\n" +
+                            "testExpectMethod(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<[OBJECT]> expected to receive call\n" +
+                            "getName(*arguments)\n" +
+                            "at most 3 times\n" +
+                            "but 4 calls were made." )
+        })})
+      })
+      
+      it("passes if the method was not called at all", function(resume) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").returning("me").atMost(3)
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 0, 0 )
+        })})
+      })
+    })
+    
+    describe("#exactly", function() {
+      it("passes if the method was called enough times", function(resume) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").returning("me").exactly(2)
+            object.getName()
+            object.getName()
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 0, 0 )
+        })})
+      })
+      
+      it("fails if the method was called too many times", function(resume) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").returning("me").exactly(2)
+            object.getName()
+            object.getName()
+            object.getName()
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\n" +
+                            "testExpectMethod(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<[OBJECT]> expected to receive call\n" +
+                            "getName(*arguments)\n" +
+                            "exactly 2 times\n" +
+                            "but 3 calls were made." )
+        })})
+      })
+      
+      it("fails if the method was called too few times", function(resume) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").returning("me").exactly(2)
+            object.getName()
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\n" +
+                            "testExpectMethod(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<[OBJECT]> expected to receive call\n" +
+                            "getName(*arguments)\n" +
+                            "exactly 2 times\n" +
+                            "but 1 call was made." )
+        })})
+      })
     })
     
     describe("with argument matchers", function() {
@@ -240,8 +391,15 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 1 )
-          assertMessage( 1, "Error:\ntestExpectWithArgs(TestedSuite):\nError: <[OBJECT]> received call to getName() with unexpected arguments:\n(3,9)" )
-          assertMessage( 2, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(3,4)." )
+          assertMessage( 1, "Error:\n" +
+                            "testExpectWithArgs(TestedSuite):\n" +
+                            "Error: <[OBJECT]> received call to getName() with unexpected arguments:\n" +
+                            "(3,9)" )
+          assertMessage( 2, "Failure:\n" +
+                            "testExpectWithArgs(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<[OBJECT]> expected to receive call\n" +
+                            "getName(3,4)." )
         })})
       })
       
@@ -252,7 +410,11 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 0 )
-          assertMessage( 1, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(3,4)." )
+          assertMessage( 1, "Failure:\n" +
+                            "testExpectWithArgs(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<[OBJECT]> expected to receive call\n" +
+                            "getName(3,4)." )
         })})
       })
     })
@@ -291,7 +453,11 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 0 )
-          assertMessage( 1, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(*arguments,a(Function))." )
+          assertMessage( 1, "Failure:\n" +
+                            "testExpectWithYields(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<[OBJECT]> expected to receive call\n" +
+                            "getName(*arguments,a(Function))." )
         })})
       })
       
@@ -317,8 +483,15 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
             }}
           }, function() { resume(function() {
             assertTestResult( 1, 1, 1, 1 )
-            assertMessage( 1, "Error:\ntestExpectWithYields(TestedSuite):\nError: <[OBJECT]> received call to getName() with unexpected arguments:\n(5,8,#function)" )
-            assertMessage( 2, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(5,6,a(Function))." )
+            assertMessage( 1, "Error:\n" +
+                              "testExpectWithYields(TestedSuite):\n" +
+                              "Error: <[OBJECT]> received call to getName() with unexpected arguments:\n" +
+                              "(5,8,#function)" )
+            assertMessage( 2, "Failure:\n" +
+                              "testExpectWithYields(TestedSuite):\n" +
+                              "Mock expectation not met.\n" +
+                              "<[OBJECT]> expected to receive call\n" +
+                              "getName(5,6,a(Function))." )
           })})
         })
       })

@@ -58,7 +58,6 @@ JS.Test.extend({
           this._argMatchers = [];
           this._anyArgs     = new mocking.Parameters([new mocking.AnyArgs()]);
           this._expected    = false;
-          this._callsMade   = 0;
           
           this.apply();
         },
@@ -88,6 +87,7 @@ JS.Test.extend({
         
         expected: function() {
           this._expected = true;
+          this._anyArgs._expected = true;
         },
         
         _activeLastMatcher: function() {
@@ -99,13 +99,14 @@ JS.Test.extend({
           var matchers = this._argMatchers.concat(this._anyArgs),
               matcher, result;
           
-          this._callsMade += 1;
+          this._anyArgs.ping();
           
           for (var i = 0, n = matchers.length; i < n; i++) {
             matcher = matchers[i];
             result  = matcher.match(args);
             
             if (!result) continue;
+            if (matcher !== this._anyArgs) matcher.ping();
             
             if (typeof result === 'function')
               return result.apply(this._object, args);
@@ -124,26 +125,15 @@ JS.Test.extend({
         
         _verify: function() {
           if (!this._expected) return;
-          var parameters, message;
           
-          for (var i = 0, n = this._argMatchers.length; i < n; i++) {
-            parameters = this._argMatchers[i];
-            if (parameters.verify()) continue;
-            
-            message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
-                            '<?> expected to receive call\n' + this._methodName + '(?).',
-                            [this._object, parameters.toArray()]);
-            
-            throw new JS.Test.Mocking.ExpectationError(message);
-          }
+          for (var i = 0, n = this._argMatchers.length; i < n; i++)
+            this._verifyParameters(this._argMatchers[i]);
           
-          if (this._callsMade > 0) return;
-          
-          message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
-                        '<?> expected to receive call\n' + this._methodName + '(?).',
-                        [this._object, this._anyArgs.toArray()]);
-          
-          throw new JS.Test.Mocking.ExpectationError(message);
+          this._verifyParameters(this._anyArgs);
+        },
+        
+        _verifyParameters: function(parameters) {
+          parameters.verify(this._object, this._methodName);
         }
       })
     }

@@ -19,6 +19,21 @@ JS.Test.Mocking.Stub.include({
   yields: function() {
     this._currentMatcher.yields(arguments);
     return this;
+  },
+  
+  atLeast: function(n) {
+    this._currentMatcher.setMinimum(n);
+    return this;
+  },
+  
+  atMost: function(n) {
+    this._currentMatcher.setMaximum(n);
+    return this;
+  },
+  
+  exactly: function(n) {
+    this._currentMatcher.setExpected(n);
+    return this;
   }
 });
 
