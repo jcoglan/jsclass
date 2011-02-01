@@ -240,7 +240,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 1 )
-          // TODO test error message
+          assertMessage( 1, "Error:\ntestExpectWithArgs(TestedSuite):\nError: <[OBJECT]> received call to getName() with unexpected arguments:\n(3,9)" )
           assertMessage( 2, "Failure:\ntestExpectWithArgs(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(3,4)." )
         })})
       })
@@ -317,7 +317,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
             }}
           }, function() { resume(function() {
             assertTestResult( 1, 1, 1, 1 )
-            // TODO test error message
+            assertMessage( 1, "Error:\ntestExpectWithYields(TestedSuite):\nError: <[OBJECT]> received call to getName() with unexpected arguments:\n(5,8,#function)" )
             assertMessage( 2, "Failure:\ntestExpectWithYields(TestedSuite):\nMock expectation not met.\n<[OBJECT]> expected to receive call\ngetName(5,6,a(Function))." )
           })})
         })

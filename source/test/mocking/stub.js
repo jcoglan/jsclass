@@ -115,7 +115,11 @@ JS.Test.extend({
             if (result.exception) throw result.exception;
           }
           
-          throw new JS.Test.Mocking.UnexpectedCallError('dispatch fail');
+          var message = new JS.Test.Unit.AssertionMessage('',
+                            '<?> received call to ' + this._methodName + '() with unexpected arguments:\n(?)',
+                            [this._object, JS.array(args)]);
+          
+          throw new JS.Test.Mocking.UnexpectedCallError(message);
         },
         
         _verify: function() {
