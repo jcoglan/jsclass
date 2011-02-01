@@ -228,7 +228,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       it("passes if the method was called enough times", function(resume) {
         runTests({
           testExpectMethod: function() { with(this) {
-            expect(object, "getName").returning("me").atLeast(3)
+            expect(object, "getName").atLeast(3).returning("me")
             object.getName()
             object.getName()
             object.getName()
@@ -241,7 +241,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       it("fails if the method was not called enough times", function(resume) {
         runTests({
           testExpectMethod: function() { with(this) {
-            expect(object, "getName").returning("me").atLeast(3)
+            expect(object, "getName").atLeast(3).returning("me")
             object.getName()
             object.getName()
           }}
@@ -260,7 +260,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       it("fails if the method was not called at all", function(resume) {
         runTests({
           testExpectMethod: function() { with(this) {
-            expect(object, "getName").returning("me").atLeast(3)
+            expect(object, "getName").atLeast(3).returning("me")
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 0 )
@@ -277,7 +277,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       it("passes if the method was called enough times", function(resume) {
         runTests({
           testExpectMethod: function() { with(this) {
-            expect(object, "getName").returning("me").atMost(3)
+            expect(object, "getName").atMost(3).returning("me")
             object.getName()
             object.getName()
             object.getName()
@@ -290,7 +290,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       it("fails if the method was called too many times", function(resume) {
         runTests({
           testExpectMethod: function() { with(this) {
-            expect(object, "getName").returning("me").atMost(3)
+            expect(object, "getName").atMost(3).returning("me")
             object.getName()
             object.getName()
             object.getName()
@@ -323,7 +323,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       it("passes if the method was called enough times", function(resume) {
         runTests({
           testExpectMethod: function() { with(this) {
-            expect(object, "getName").returning("me").exactly(2)
+            expect(object, "getName").exactly(2).returning("me")
             object.getName()
             object.getName()
           }}
@@ -335,7 +335,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       it("fails if the method was called too many times", function(resume) {
         runTests({
           testExpectMethod: function() { with(this) {
-            expect(object, "getName").returning("me").exactly(2)
+            expect(object, "getName").exactly(2).returning("me")
             object.getName()
             object.getName()
             object.getName()
@@ -355,7 +355,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() {
       it("fails if the method was called too few times", function(resume) {
         runTests({
           testExpectMethod: function() { with(this) {
-            expect(object, "getName").returning("me").exactly(2)
+            expect(object, "getName").exactly(2).returning("me")
             object.getName()
           }}
         }, function() { resume(function() {
