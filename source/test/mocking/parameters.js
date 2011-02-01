@@ -113,7 +113,7 @@ JS.Test.Mocking.extend({
       var copy = {
         'exactly':   this._expectedCalls,
         'at most':   this._maximumCalls,
-        'at least':  this._minimumCalls,
+        'at least':  this._minimumCalls
       };
       return type + ' ' + copy[type] + ' times\n' + report;
     }
