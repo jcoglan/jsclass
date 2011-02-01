@@ -169,7 +169,7 @@
   (@returns@, @yields@ and @raises@ are aliased as @returning@, @yielding@ and
   @raising@ since these read a little better when setting mock expectations.)
   
-  You can specify how many times a given call can be made using the modifiers
+  You can specify how many times a given call should be made using the modifiers
   @atLeast@, @atMost@ and @exactly@. These should be added after the @given@
   modifier if one is used. For example, this tests that exactly 2 calls to
   @User.create('jcoglan')@ are made during the test, returning @true@ each time:
