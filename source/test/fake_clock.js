@@ -1,5 +1,5 @@
-JS.Test.Mocking.extend({
-  Clock: new JS.Module({
+JS.Test.extend({
+  FakeClock: new JS.Module({
     extend: {
       API: {
         stub: function() {
@@ -8,18 +8,18 @@ JS.Test.Mocking.extend({
               methods = ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
               i       = methods.length;
           
-          mocking.Clock.reset();
+          JS.Test.FakeClock.reset();
           
           while (i--)
-            mocking.stub(env, methods[i], mocking.Clock.method(methods[i]));
+            mocking.stub(env, methods[i], JS.Test.FakeClock.method(methods[i]));
         },
         
         reset: function() {
-          return JS.Test.Mocking.Clock.reset();
+          return JS.Test.FakeClock.reset();
         },
         
         tick: function(milliseconds) {
-          return JS.Test.Mocking.Clock.tick(milliseconds);
+          return JS.Test.FakeClock.tick(milliseconds);
         }
       },
       
@@ -102,7 +102,7 @@ JS.Test.Mocking.extend({
   })
 });
 
-JS.Test.Mocking.Clock.include({
-  clock: JS.Test.Mocking.Clock.API
+JS.Test.FakeClock.include({
+  clock: JS.Test.FakeClock.API
 });
 

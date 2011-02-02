@@ -1,5 +1,5 @@
 JS.ENV.DeferrableSpec = JS.Test.describe(JS.Deferrable, function() {
-  include(JS.Test.Mocking.Clock)
+  include(JS.Test.FakeClock)
   
   before(function() { clock.stub() })
   after(function() { clock.reset() })

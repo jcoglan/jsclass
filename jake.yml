@@ -78,7 +78,7 @@ packages:
       - mocking/parameters
       - mocking/matchers
       - mocking/dsl
-      - mocking/clock
+      - fake_clock
       - helpers
   
   dom:
