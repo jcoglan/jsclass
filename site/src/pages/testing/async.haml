@@ -1,0 +1,39 @@
+:textile
+  h3. Asynchronous tests
+  
+  @JS.Test@ provides a simple mechanism for asynchronous testing based on
+  continuation-passing style. Test suites are organised using "contexts":/testing/context.html
+  with each test delimited by an @it@ block. For example:
+  
+  <pre class="prettyprint">    JS.ENV.AjaxSpec = JS.Test.describe('Ajax', function() {
+          it('adds numbers', function() {
+              assertEqual(2, 1 + 1)
+          });
+      });</pre>
+  
+  The test runner assumes that your tests are synchronous by default; that is
+  when we reach the end of the @it@ block that test has finished and we can move
+  onto the next. But it might not have finished - we may have started an Ajax
+  request or set a timeout that we're waiting on before finishing the test.
+  
+  To tell @JS.Test@ that a test is asynchronous, we can add a parameter to the
+  @it@ block. The test runner will then fill this parameter with a callback
+  function that you can use to resume the test. When you can the @resume@
+  function you pass in a function containing the assertions you want to make.
+  
+  For example, here's a quick test using jQuery to make an Ajax call to a server:
+  
+  <pre class="prettyprint">    JS.ENV.AjaxSpec = JS.Test.describe('Ajax', function() {
+          it('fetches a page', function(resume) {
+              jQuery.get('/foo.html', function(response) {
+                  resume(function() {
+                      assertEqual('Hello, World', response);
+                  });
+              });
+          });
+      });</pre>
+  
+  If you add the @resume@ parameter to the @it@ block, the test runner will not
+  consider the test complete until the @resume@ function is invoked. If you do
+  not invoke the @resume@ function the test runner will never move onto the next
+  test.
