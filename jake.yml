@@ -79,6 +79,7 @@ packages:
       - mocking/matchers
       - mocking/dsl
       - fake_clock
+      - async_steps
       - helpers
   
   dom:

@@ -21,6 +21,7 @@ JS.Packages(function() { with(this) {
                                       'JS.Test.Context',
                                       'JS.Test.Mocking',
                                       'JS.Test.FakeClock',
+                                      'JS.Test.AsyncSteps',
                                       'JS.Test.Helpers',
                                       test,
                                       test + '.Assertions',
