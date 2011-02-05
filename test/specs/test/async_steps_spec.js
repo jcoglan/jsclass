@@ -1,10 +1,6 @@
 JS.ENV.Test = JS.ENV.Test || {}
 
 Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
-  include(JS.Test.FakeClock)
-  before(function() { clock.stub() })
-  after(function() { clock.reset() })
-  
   before(function() {
     this.StepModule = JS.Test.asyncSteps({
       multiply: function(x, y, callback) {
@@ -20,6 +16,10 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
           self.result -= n
           callback()
         }, 100)
+      },
+      checkResult: function(n, callback) {
+        this.assertEqual(n, this.result)
+        callback()
       }
     })
     this.steps = new JS.Singleton(StepModule)
@@ -43,7 +43,6 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
         steps.sync(function() {
           resume(function() { assertEqual( 56, steps.result ) })
         })
-        clock.tick(110)
       })
     })
     
@@ -59,8 +58,38 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
         steps.sync(function() {
           resume(function() { assertEqual( 51, steps.result ) })
         })
-        clock.tick(210)
       })
+    })
+  })
+  
+  describe("Test.Unit integration", function() {
+    before(function() {
+      this.MathTest = JS.Test.describe("MathSpec", function() {
+        it("passes", function() {
+          multiply(6,3)
+          subtract(7)
+          checkResult(11)
+        })
+        it("fails", function() {
+          multiply(9,4)
+          checkResult(5)
+        })
+      })
+      this.MathTest.include(StepModule)
+      this.result = new JS.Test.Unit.TestResult()
+      this.faults = []
+      this.result.addListener(JS.Test.Unit.TestResult.FAULT, this.faults.push, this.faults)
+    })
+    
+    it("hides all the async stuff", function(resume) {
+      MathTest.suite().run(result, function() {
+        resume(function() {
+          assertEqual( 2, result.runCount() )
+          assertEqual( 2, result.assertionCount() )
+          assertEqual( 1, result.failureCount() )
+          assertEqual( 0, result.errorCount() )
+        })
+      }, function() {})
     })
   })
 })

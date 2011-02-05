@@ -11,7 +11,7 @@ if (this.ActiveXObject) load = function(path) {
 
 (function() {
   var $ = (typeof this.global === 'object') ? this.global : this
-  $.JSCLASS_PATH = 'build/min/'
+  $.JSCLASS_PATH = 'build/src/'
 })()
 
 if (typeof require === 'function') {
