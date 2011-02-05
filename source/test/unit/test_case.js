@@ -76,23 +76,19 @@ JS.Test.Unit.extend({
       callback.call(context || null, this.klass.STARTED, this);
       this._result = result;
       
-      var complete = function() {
-        result.addRun();
-        callback.call(context || null, this.klass.FINISHED, this);
-        continuation();
-      };
-      
       var teardown = function() {
-        this.exec('teardown', complete);
-      };
-      
-      var verify = function() {
-        this.exec(function() { JS.Test.Unit.mocking.verify() }, teardown);
+        this.exec(function() { JS.Test.Unit.mocking.verify() }, function() {
+          this.exec('teardown', function() {
+            result.addRun();
+            callback.call(context || null, this.klass.FINISHED, this);
+            continuation();
+          });
+        });
       };
       
       this.exec('setup', function() {
-        this.exec(this._methodName, verify);
-      }, verify);
+        this.exec(this._methodName, teardown);
+      }, teardown);
     },
     
     exec: function(methodName, onSuccess, onError) {
