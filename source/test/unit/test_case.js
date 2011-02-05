@@ -83,22 +83,22 @@ JS.Test.Unit.extend({
       };
       
       var teardown = function() {
-        this.exec('teardown', complete, complete);
+        this.exec('teardown', complete);
       };
       
       var verify = function() {
-        this.exec(function() { JS.Test.Unit.mocking.verify() },
-                  teardown,
-                  teardown);
+        this.exec(function() { JS.Test.Unit.mocking.verify() }, teardown);
       };
       
       this.exec('setup', function() {
-        this.exec(this._methodName, verify, verify);
+        this.exec(this._methodName, verify);
       }, verify);
     },
     
     exec: function(methodName, onSuccess, onError) {
       if (!methodName) return onSuccess.call(this);
+      
+      if (!onError) onError = onSuccess;
       onError = this.processError(onError);
       
       var method = JS.isFn(methodName) ? methodName : this[methodName],

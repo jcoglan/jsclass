@@ -10,7 +10,7 @@ JS.Test.extend({
     included: function(klass) {
       klass.include(JS.Test.AsyncSteps.Sync);
       if (klass.includes(JS.Test.Context))
-        klass.include(JS.Test.AsyncSteps.Hooks);
+        klass.after(function(resume) { sync(resume) });
     },
     
     extend: {
@@ -35,15 +35,12 @@ JS.Test.extend({
           
           var methodName = step.shift(),
               method     = step.shift(),
-              parameters = step.slice();
+              parameters = step.slice(),
+              block      = function() { method.apply(this, parameters) };
           
           parameters[method.length - 1] = this.method('__runNextStep__');
-          this.__executeStep__(function() { method.apply(this, parameters) },
-                               this.method('__runNextStep__'));
-        },
-        
-        __executeStep__: function(block) {
-          block.call(this);
+          if (!this.exec) return block.call(this);
+          this.exec(block, function() {}, this.method('__runNextStep__'));
         },
         
         sync: function(callback) {
@@ -51,27 +48,11 @@ JS.Test.extend({
           this.__stepCallbacks__ = this.__stepCallbacks__ || [];
           this.__stepCallbacks__.push(callback);
         }
-      }),
-      
-      Hooks: new JS.Module({
-        __executeStep__: function(block, onError) {
-          this.exec(block, function() {}, onError);
-        },
-        
-        extend: {
-          included: function(testCase) {
-            testCase.after(function(resume) { sync(resume) });
-          }
-        }
       })
     }
   }),
   
   asyncSteps: function(methods) {
     return new this.AsyncSteps(methods);
-  },
-  
-  puts: function(string) {
-    require('sys').puts(string);
   }
 });
