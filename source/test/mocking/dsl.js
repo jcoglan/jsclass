@@ -64,7 +64,7 @@ JS.Test.Mocking.extend({
       return new JS.Test.Mocking.AnyArgs();
     },
     
-    a: function(type) {
+    instanceOf: function(type) {
       return new JS.Test.Mocking.InstanceOf(type);
     },
     
@@ -80,10 +80,6 @@ JS.Test.Mocking.extend({
       return new JS.Test.Mocking.ObjectIncluding(elements);
     }
   })
-});
-
-JS.Test.Mocking.DSL.include({
-  an: JS.Test.Mocking.DSL.instanceMethod('a')
 });
 
 JS.Test.Unit.TestCase.include(JS.Test.Mocking.DSL);
