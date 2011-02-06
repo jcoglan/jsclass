@@ -1,7 +1,7 @@
 JS.ENV.Test = JS.ENV.Test || {}
 
 Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
-  if (typeof setTimeout === 'undefined') return
+  if (typeof JS.ENV.setTimeout === 'undefined') return
   
   before(function() {
     this.StepModule = JS.Test.asyncSteps({
