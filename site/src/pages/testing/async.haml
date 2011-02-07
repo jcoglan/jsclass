@@ -121,6 +121,7 @@
   using the @include()@ function:
   
   <pre class="prettyprint">    JS.ENV.BlogPostSpec = JS.Test.describe('blog post API', function() {
+          // Make the step functions available in this test
           include(BlogPostSteps);
           
           it('creates a blog post on the server', function() {
@@ -137,6 +138,28 @@
   actions that define the test, then @JS.Test@ deals with sequencing the actions
   for you. For this reason, you can't inspect the state of the test from within
   the @it@ block, you must put any debugging into the step functions themselves.
+  
+  One other side effect of this is that if you write an @after@ block, your test
+  code will still be running when the @after@ block starts. To wait for the test
+  to complete, use the @sync()@ function; for example if we were stubbing out
+  @jQuery@ in our test above:
+  
+  <pre class="prettyprint">    JS.ENV.BlogPostSpec = JS.Test.describe('blog post API', function() {
+          include(BlogPostSteps);
+          
+          before(function() {
+              JS.ENV.jQuery = {};
+              stub(jQuery, 'post').yields(['{"id":1}']);
+              stub(jQuery, 'get').yields(['{"title":"JavaScript testing"}']);
+          });
+          
+          after(function(resume) {
+              // This waits for the async commands to complete
+              sync(function() {
+                  delete JS.ENV.jQuery;
+                  resume();
+              });
+          });</pre>
   
   It is also good practise to confine the steps themselves to one asynchronous
   action at most per step. The purpose of this pattern is to break a large async

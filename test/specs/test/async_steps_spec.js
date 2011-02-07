@@ -4,7 +4,7 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
   if (typeof JS.ENV.setTimeout === 'undefined') return
   
   before(function() {
-    JS.ENV.StepModule = JS.Test.asyncSteps({
+    this.StepModule = JS.Test.asyncSteps({
       multiply: function(x, y, callback) {
         var self = this
         JS.ENV.setTimeout(function() {
@@ -74,13 +74,15 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
   describe("Test.Unit integration", function() {
     before(function() {
       this.MathTest = JS.Test.describe("MathSpec", function() {
-        include(StepModule)
         before(function() {
           JS.ENV.FakeMath = {}
           stub(FakeMath, "zero").returns(0)
         })
-        after(function() {
-          delete JS.ENV.FakeMath
+        after(function(resume) {
+          sync(function() {
+            delete JS.ENV.FakeMath
+            resume()
+          })
         })
         it("passes", function() {
           multiply(6,3)
@@ -96,6 +98,7 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
           checkResult(0)
         })
       })
+      this.MathTest.include(StepModule)
       this.result = new JS.Test.Unit.TestResult()
       this.faults = []
       this.result.addListener(JS.Test.Unit.TestResult.FAULT, this.faults.push, this.faults)
