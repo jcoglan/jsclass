@@ -20,7 +20,7 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
         }, 100)
       },
       checkResult: function(n, callback) {
-        this.assertEqual(n, this.result)
+        assertEqual(n, result)
         callback()
       }
     })

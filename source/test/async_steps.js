@@ -2,7 +2,7 @@ JS.Test.extend({
   AsyncSteps: new JS.Class(JS.Module, {
     define: function(name, method) {
       this.callSuper(name, function() {
-        var args = [name, method].concat(JS.array(arguments));
+        var args = [name, JS.Ruby.selfless(method)].concat(JS.array(arguments));
         this.__enqueue__(args);
       });
     },
