@@ -77,8 +77,8 @@ JS.Test.Unit.extend({
       this._result = result;
       
       var teardown = function() {
-        this.exec(function() { JS.Test.Unit.mocking.verify() }, function() {
-          this.exec('teardown', function() {
+        this.exec('teardown', function() {
+          this.exec(function() { JS.Test.Unit.mocking.verify() }, function() {
             result.addRun();
             callback.call(context || null, this.klass.FINISHED, this);
             continuation();

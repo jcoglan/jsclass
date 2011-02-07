@@ -4,7 +4,7 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
   if (typeof JS.ENV.setTimeout === 'undefined') return
   
   before(function() {
-    this.StepModule = JS.Test.asyncSteps({
+    JS.ENV.StepModule = JS.Test.asyncSteps({
       multiply: function(x, y, callback) {
         var self = this
         JS.ENV.setTimeout(function() {
@@ -16,6 +16,13 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
         var self = this
         JS.ENV.setTimeout(function() {
           self.result -= n
+          callback()
+        }, 100)
+      },
+      zero: function(callback) {
+        var self = this
+        JS.ENV.setTimeout(function() {
+          self.result = FakeMath.zero()
           callback()
         }, 100)
       },
@@ -67,6 +74,14 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
   describe("Test.Unit integration", function() {
     before(function() {
       this.MathTest = JS.Test.describe("MathSpec", function() {
+        include(StepModule)
+        before(function() {
+          JS.ENV.FakeMath = {}
+          stub(FakeMath, "zero").returns(0)
+        })
+        after(function() {
+          delete JS.ENV.FakeMath
+        })
         it("passes", function() {
           multiply(6,3)
           subtract(7)
@@ -76,8 +91,11 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
           multiply(9,4)
           checkResult(5)
         })
+        it("uses stubs", function() {
+          zero()
+          checkResult(0)
+        })
       })
-      this.MathTest.include(StepModule)
       this.result = new JS.Test.Unit.TestResult()
       this.faults = []
       this.result.addListener(JS.Test.Unit.TestResult.FAULT, this.faults.push, this.faults)
@@ -86,8 +104,8 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
     it("hides all the async stuff", function(resume) {
       MathTest.suite().run(result, function() {
         resume(function() {
-          assertEqual( 2, result.runCount() )
-          assertEqual( 2, result.assertionCount() )
+          assertEqual( 3, result.runCount() )
+          assertEqual( 3, result.assertionCount() )
           assertEqual( 1, result.failureCount() )
           assertEqual( 0, result.errorCount() )
         })

@@ -19,15 +19,16 @@ JS.Test.Unit.extend({
       FINISHED: 'Test.Unit.TestSuite.FINISHED',
       
       forEach: function(tests, block, continuation, context) {
-        var looping = false,
-            n       = tests.length,
-            i       = -1,
-            calls   = 0;
+        var looping    = false,
+            n          = tests.length,
+            i          = -1,
+            calls      = 0,
+            setTimeout = this.setTimeout;
         
         var ping = function() {
           calls += 1;
-          if (typeof this.setTimeout === 'undefined') loop();
-          else this.setTimeout(iterate, 1);
+          if (typeof setTimeout === 'undefined') loop();
+          else setTimeout(iterate, 1);
         };
         
         var loop = function() {
