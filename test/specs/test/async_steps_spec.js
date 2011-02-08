@@ -91,7 +91,8 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
         })
         it("fails", function() {
           multiply(9,4)
-          checkResult(5)
+          checkResult(5)  // should fail
+          checkResult(5)  // should not run
         })
         it("uses stubs", function() {
           zero()

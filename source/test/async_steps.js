@@ -29,7 +29,7 @@ JS.Test.extend({
           if (!step) {
             this.__runningSteps__ = false;
             if (!this.__stepCallbacks__) return;
-            while (callback = this.__stepCallbacks__.shift())callback();
+            while (callback = this.__stepCallbacks__.shift()) callback();
             return;
           }
           
@@ -40,7 +40,12 @@ JS.Test.extend({
           
           parameters[method.length - 1] = this.method('__runNextStep__');
           if (!this.exec) return block.call(this);
-          this.exec(block, function() {}, this.method('__runNextStep__'));
+          this.exec(block, function() {}, this.method('__endSteps__'));
+        },
+
+        __endSteps__: function() {
+          this.__stepQueue__ = [];
+          this.__runNextStep__();
         },
         
         sync: function(callback) {
