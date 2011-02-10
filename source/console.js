@@ -62,6 +62,8 @@ JS.Console = new JS.Module('Console', {
   },
   
   emitFormat: function(escapeCode) {
+    if (typeof WScript !== 'undefined') return;
+    
     var text     = JS.Console.escape(escapeCode + 'm'),
         buffer   = JS.Console.__buffer__,
         wasEmpty = (JS.Console.bufferSize() === 0);
