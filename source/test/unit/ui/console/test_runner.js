@@ -7,11 +7,7 @@ JS.Test.Unit.UI.extend({
        * Runs a `JS.Test.Unit.TestSuite` on the console.
        **/
       TestRunner: new JS.Class({
-        extend: [JS.Test.Unit.UI.TestRunnerUtilities, {
-          
-          ANSI_CSI: String.fromCharCode(0x1B) + '[',
-          MAX_BUFFER_LENGTH: 72
-        }],
+        extend: JS.Test.Unit.UI.TestRunnerUtilities,
         
         /**
          * new JS.Test.Unit.UI.Console.TestRunner(suite, outputLevel)
@@ -24,7 +20,6 @@ JS.Test.Unit.UI.extend({
           this._outputLevel = outputLevel || JS.Test.Unit.UI.NORMAL;
           this._alreadyOutputted = false;
           this._faults = [];
-          this._lineBuffer = [];
         },
         
         /**
@@ -100,35 +95,16 @@ JS.Test.Unit.UI.extend({
         
         _output: function(string, level) {
           if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
-          this._lineBuffer = [];
-          this._print(string);
+          JS.Console.puts(string);
         },
         
         _outputSingle: function(string, level) {
           if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
-          
-          if (typeof process === 'object') return require('sys').print(string);
-          
-          if (this._lineBuffer.length >= this.klass.MAX_BUFFER_LENGTH)
-            this._lineBuffer = [];
-          
-          var esc = (this._lineBuffer.length === 0) ? '' : this._escape('F') + this._escape('K');
-          this._lineBuffer.push(string);
-          this._print(esc + this._lineBuffer.join(''));
+          JS.Console.print(string);
         },
         
         _shouldOutput: function(level) {
           return level <= this._outputLevel;
-        },
-        
-        _print: function(string) {
-          if (typeof process === 'object') return require('sys').puts(string);
-          if (typeof WScript !== 'undefined') return WScript.Echo(string);
-          if (typeof print === 'function') return print(string);
-        },
-        
-        _escape: function(string) {
-          return this.klass.ANSI_CSI + string;
         }
       })
     }

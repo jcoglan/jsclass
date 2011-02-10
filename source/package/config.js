@@ -30,6 +30,7 @@ JS.Packages(function() { with(this) {
                                       test + '.TestResult')
                             .requires('JS.Module',
                                       'JS.Class',
+                                      'JS.Console',
                                       'JS.DOM',
                                       'JS.Enumerable',
                                       'JS.SortedSet',
@@ -41,6 +42,10 @@ JS.Packages(function() { with(this) {
                                       'JS.DOM.Builder')
                             .requires('JS.Class');
     
+
+    module('console')       .provides('JS.Console')
+                            .requires('JS.Module');
+
     module('benchmark')     .provides('JS.Benchmark')
                             .requires('JS.Module');
     
