@@ -37,8 +37,8 @@ JS.Test.Unit.UI.extend({
         _setupMediator: function() {
           this._mediator = this._createMediator(this._suite);
           var suiteName = this._suite.toString();
-          if (JS.isType(this._suite, JS.Module))
-            suiteName = this._suite.displayName;
+          if (JS.isType(this._suite, JS.Module)) suiteName = this._suite.displayName;
+          this.bold();
           this._output('Loaded suite ' + suiteName);
         },
         
@@ -60,22 +60,43 @@ JS.Test.Unit.UI.extend({
         
         _addFault: function(fault) {
           this._faults.push(fault);
+          this.bold();
+          this.red();
           this._outputSingle(fault.singleCharacterDisplay(), JS.Test.Unit.UI.PROGRESS_ONLY);
           this._alreadyOutputted = true;
         },
         
         _started: function(result) {
           this._result = result;
+          this.normal();
+          this._nl();
           this._output('Started');
         },
         
         _finished: function(elapsedTime) {
+          this.normal();
+          this.nocolor();
           this._nl();
           this._output('Finished in ' + elapsedTime + ' seconds.');
           for (var i = 0, n = this._faults.length; i < n; i++) {
+            this.bold();
+            this.red();
             this._nl();
-            this._output((i + 1) + ') ' + this._faults[i].longDisplay());
+            
+            var message   = this._faults[i].longDisplay(),
+                parts     = message.split('\n'),
+                errorType = parts.shift(),
+                testName  = parts.shift(),
+                report    = parts.join('\n');
+            
+            this._output((i + 1) + ') ' + errorType);
+            this._output(testName);
+            this.normal();
+            this.nocolor();
+            this._output(report);
           }
+          this.bold();
+          this.nocolor();
           this._nl();
           this._output(this._result, JS.Test.Unit.UI.PROGRESS_ONLY);
         },
@@ -85,6 +106,8 @@ JS.Test.Unit.UI.extend({
         },
         
         _testFinished: function(testCase) {
+          this.bold();
+          this.green();
           if (!this._alreadyOutputted) this._outputSingle('.', JS.Test.Unit.UI.PROGRESS_ONLY);
           this._nl(JS.Test.Unit.UI.VERBOSE);
           this._alreadyOutputted = false;
