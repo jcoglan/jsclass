@@ -190,7 +190,11 @@ JS.Test.Unit.extend({
      * this instance of `JS.Test.Unit.TestCase` represents.
      **/
     name: function() {
-      return this._methodName + '(' + this.klass.displayName + ')';
+      var short = this._methodName.replace(/^test\W*/ig, '');
+      if (short.replace(this.klass.displayName, '') === short)
+        return this._methodName + '(' + this.klass.displayName + ')';
+      else
+        return short;
     },
     
     /**

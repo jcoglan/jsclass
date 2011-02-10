@@ -13,8 +13,9 @@ JS.Test.Unit.extend({
             suites = [];
         
         JS.Test.Unit.TestCase.forEach(function(testcase) {
-          names.push(testcase.displayName);
           suites.push(testcase.suite());
+          if (testcase.superclass === JS.Test.Unit.TestCase)
+            names.push(testcase.displayName);
         });
         
         var suite = new JS.Test.Unit.TestSuite(names.join(', '));
