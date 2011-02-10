@@ -23,21 +23,21 @@ JS.Console = new JS.Module('Console', {
   print: function(string) {
     if (typeof process === 'object') return require('sys').print(string);
     
-    JS.Console.__buffer__ += string;
+    var buffer   = JS.Console.__buffer__,
+        wasEmpty = (buffer === ''),
+        max      = JS.Console.MAX_BUFFER_LENGTH;
     
-    var buffer = JS.Console.__buffer__,
-        max    = JS.Console.MAX_BUFFER_LENGTH;
+    buffer += string;
     
-    while (buffer.length >= max) {
+    while (buffer.length > max) {
       var line = buffer.substr(0, max);
       buffer = buffer.substr(max);
       this.puts(line);
     }
     
     JS.Console.__buffer__ = buffer;
-    if (buffer === '') return;
     
-    var esc = JS.Console.escape('F') + JS.Console.escape('K');
+    var esc = wasEmpty ? '' : JS.Console.escape('F') + JS.Console.escape('K');
     JS.Console.printToStdout(esc + buffer);
   }
 });
