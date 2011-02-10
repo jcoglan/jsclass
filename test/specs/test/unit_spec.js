@@ -1095,5 +1095,43 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
     })
   })
   
-})
+  describe("async tests", function() {
+    include(JS.Test.FakeClock)
+    before(function() { clock.stub() })
+    after(function() { clock.reset() })
 
+    sharedBehavior("asynchronous test", function() {
+      it("picks up assertions run on resume", function(resume) {
+        runTests({testAsync: asyncTest}, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\n" +
+                            "testAsync(TestedSuite):\n" +
+                            "<2> expected but was\n" +
+                            "<3>." )
+        })})
+      })
+    })
+
+    describe("when resume() is used asynchronously", function() {
+      before(function() {
+        this.asyncTest = function(resume) { with(this) {
+            JS.ENV.setTimeout(function() {
+              resume(function() { assertEqual( 2, 3 ) })
+            }, 1000)
+
+            clock.tick(1000)
+          }}
+      })
+      behavesLike("asynchronous test")
+    })
+
+    describe("when resume() is used synchronously", function() {
+      before(function() {
+        this.asyncTest = function(resume) { with(this) {
+            resume(function() { assertEqual( 2, 3 ) })
+          }}
+      })
+      behavesLike("asynchronous test")
+    })
+  })
+})

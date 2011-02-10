@@ -95,7 +95,6 @@ JS.Test.Unit.extend({
       if (!methodName) return onSuccess.call(this);
       
       if (!onError) onError = onSuccess;
-      onError = this.processError(onError);
       
       var method = JS.isFn(methodName) ? methodName : this[methodName],
           arity  = (method.arity === undefined) ? method.length : method.arity,
@@ -105,13 +104,13 @@ JS.Test.Unit.extend({
         return this._runWithExceptionHandlers(function() {
           method.call(this);
           onSuccess.call(this);
-        }, onError);
+        }, this.processError(onError));
       
       this._runWithExceptionHandlers(function() {
         method.call(this, function(asyncBlock) {
           self.exec(asyncBlock, onSuccess, onError);
-        })
-      }, onError);
+        });
+      }, this.processError(onError));
     },
     
     processError: function(doNext) {
