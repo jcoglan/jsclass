@@ -19,6 +19,21 @@ JS.Test.Mocking.Stub.include({
   yields: function() {
     this._currentMatcher.yields(arguments);
     return this;
+  },
+  
+  atLeast: function(n) {
+    this._currentMatcher.setMinimum(n);
+    return this;
+  },
+  
+  atMost: function(n) {
+    this._currentMatcher.setMaximum(n);
+    return this;
+  },
+  
+  exactly: function(n) {
+    this._currentMatcher.setExpected(n);
+    return this;
   }
 });
 
@@ -49,7 +64,7 @@ JS.Test.Mocking.extend({
       return new JS.Test.Mocking.AnyArgs();
     },
     
-    a: function(type) {
+    instanceOf: function(type) {
       return new JS.Test.Mocking.InstanceOf(type);
     },
     
@@ -66,8 +81,6 @@ JS.Test.Mocking.extend({
     }
   })
 });
-
-JS.Test.Mocking.DSL.alias({an: 'a'});
 
 JS.Test.Unit.TestCase.include(JS.Test.Mocking.DSL);
 JS.Test.Unit.mocking = JS.Test.Mocking;

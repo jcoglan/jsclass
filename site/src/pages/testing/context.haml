@@ -1,0 +1,52 @@
+:textile
+  h3. Context blocks
+  
+  JS.Test specs are arranged in nested context blocks, much like in RSpec,
+  Jasmine and other frameworks. Contexts are delimited by @describe@ blocks (you
+  can use @context@ instead of @describe@). Within each block you can have
+  multiple @before@ and @after@ blocks, that describe what to do before and
+  after each test. The tests themselves are added using the @it@ or @should@
+  function.
+  
+  Each test is run by performing the following tasks:
+  
+  * The @before@ blocks from all the enclosing contexts are run from outermost
+    to innermost.
+  * The test itself is run.
+  * The @after@ blocks from all the enclosing contexts are run in order, this
+    time from innermost to outermost.
+  
+  For example, the following test run prints:
+  
+  <pre>    outer before
+      outer test
+      outer after
+      
+      outer before
+      INNER before
+      INNER test
+      outer after
+      INNER after</pre>
+  
+  <pre class="prettyprint">    ThingSpec = JS.Test.describe("thing", function() {
+          before(function() { print("outer before") });
+          after (function() { print("outer after") });
+          
+          it("has tests", function() {
+              print("outer test");
+          });
+          
+          describe("nested", function() {
+              before(function() { print("INNER before") });
+              after (function() { print("INNER after") });
+              
+              it("does something", function() {
+                  print("INNER test");
+              });
+          });
+      });</pre>
+  
+  Your @before@ and @after@ blocks are run once for every @it@ block in your
+  tests. @before@ blocks are typically used to create or modify the objects you
+  want to test, and @after@ blocks are used to reset any global state you may
+  have changed during the tests, for example to clear out a database.

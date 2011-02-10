@@ -1,4 +1,4 @@
-TSortSpec = JS.Test.describe(JS.TSort, function() {
+JS.ENV.TSortSpec = JS.Test.describe(JS.TSort, function() {
   before(function() {
     this.Hash = new JS.Class(JS.Hash, {
       include: JS.TSort,

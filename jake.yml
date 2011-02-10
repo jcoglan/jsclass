@@ -22,10 +22,29 @@ packages:
       - interface
       - singleton
   
+  package-browser:
+    directory: package
+    files:
+      - package
+      - loaders/dom
+      - browser
+      - dsl
+  
+  loader-browser:
+    extends: package-browser
+    files:
+      - config
+  
   package:
     directory: package
     files:
       - package
+      - loaders/commonjs
+      - loaders/dom
+      - loaders/rhino
+      - loaders/server
+      - loaders/wsh
+      - loaders/xulrunner
       - loader
       - dsl
   
@@ -61,7 +80,8 @@ packages:
       - mocking/parameters
       - mocking/matchers
       - mocking/dsl
-      - mocking/clock
+      - fake_clock
+      - async_steps
       - helpers
   
   dom:
@@ -72,6 +92,7 @@ packages:
       - event
   
   benchmark:        benchmark
+  console:          console
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable

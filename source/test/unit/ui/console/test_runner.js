@@ -7,11 +7,8 @@ JS.Test.Unit.UI.extend({
        * Runs a `JS.Test.Unit.TestSuite` on the console.
        **/
       TestRunner: new JS.Class({
-        extend: [JS.Test.Unit.UI.TestRunnerUtilities, {
-          
-          ANSI_CSI: String.fromCharCode(0x1B) + '[',
-          MAX_BUFFER_LENGTH: 72
-        }],
+        extend: JS.Test.Unit.UI.TestRunnerUtilities,
+        include: JS.Console,
         
         /**
          * new JS.Test.Unit.UI.Console.TestRunner(suite, outputLevel)
@@ -24,7 +21,6 @@ JS.Test.Unit.UI.extend({
           this._outputLevel = outputLevel || JS.Test.Unit.UI.NORMAL;
           this._alreadyOutputted = false;
           this._faults = [];
-          this._lineBuffer = [];
         },
         
         /**
@@ -41,8 +37,8 @@ JS.Test.Unit.UI.extend({
         _setupMediator: function() {
           this._mediator = this._createMediator(this._suite);
           var suiteName = this._suite.toString();
-          if (JS.isType(this._suite, JS.Module))
-            suiteName = this._suite.displayName;
+          if (JS.isType(this._suite, JS.Module)) suiteName = this._suite.displayName;
+          this.bold();
           this._output('Loaded suite ' + suiteName);
         },
         
@@ -64,22 +60,43 @@ JS.Test.Unit.UI.extend({
         
         _addFault: function(fault) {
           this._faults.push(fault);
+          this.bold();
+          this.red();
           this._outputSingle(fault.singleCharacterDisplay(), JS.Test.Unit.UI.PROGRESS_ONLY);
           this._alreadyOutputted = true;
         },
         
         _started: function(result) {
           this._result = result;
+          this.normal();
+          this._nl();
           this._output('Started');
         },
         
         _finished: function(elapsedTime) {
+          this.normal();
+          this.nocolor();
           this._nl();
           this._output('Finished in ' + elapsedTime + ' seconds.');
           for (var i = 0, n = this._faults.length; i < n; i++) {
+            this.bold();
+            this.red();
             this._nl();
-            this._output((i + 1) + ') ' + this._faults[i].longDisplay());
+            
+            var message   = this._faults[i].longDisplay(),
+                parts     = message.split('\n'),
+                errorType = parts.shift(),
+                testName  = parts.shift(),
+                report    = parts.join('\n');
+            
+            this._output((i + 1) + ') ' + errorType);
+            this._output(testName);
+            this.normal();
+            this.nocolor();
+            this._output(report);
           }
+          this.bold();
+          this.nocolor();
           this._nl();
           this._output(this._result, JS.Test.Unit.UI.PROGRESS_ONLY);
         },
@@ -89,6 +106,8 @@ JS.Test.Unit.UI.extend({
         },
         
         _testFinished: function(testCase) {
+          this.bold();
+          this.green();
           if (!this._alreadyOutputted) this._outputSingle('.', JS.Test.Unit.UI.PROGRESS_ONLY);
           this._nl(JS.Test.Unit.UI.VERBOSE);
           this._alreadyOutputted = false;
@@ -100,35 +119,16 @@ JS.Test.Unit.UI.extend({
         
         _output: function(string, level) {
           if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
-          this._lineBuffer = [];
-          this._print(string);
+          this.puts(string);
         },
         
         _outputSingle: function(string, level) {
           if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
-          
-          if (typeof process === 'object') return require('sys').print(string);
-          
-          if (this._lineBuffer.length >= this.klass.MAX_BUFFER_LENGTH)
-            this._lineBuffer = [];
-          
-          var esc = (this._lineBuffer.length === 0) ? '' : this._escape('F') + this._escape('K');
-          this._lineBuffer.push(string);
-          this._print(esc + this._lineBuffer.join(''));
+          this.print(string);
         },
         
         _shouldOutput: function(level) {
           return level <= this._outputLevel;
-        },
-        
-        _print: function(string) {
-          if (typeof process === 'object') return require('sys').puts(string);
-          if (typeof WScript !== 'undefined') return WScript.Echo(string);
-          if (typeof print === 'function') return print(string);
-        },
-        
-        _escape: function(string) {
-          return this.klass.ANSI_CSI + string;
         }
       })
     }

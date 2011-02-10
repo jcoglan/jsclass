@@ -1,6 +1,6 @@
 JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
   include(JS.Test.Helpers)
-  include(JS.Test.Mocking.Clock)
+  include(JS.Test.FakeClock)
   
   before(function() { clock.stub() })
   after(function() { clock.reset() })

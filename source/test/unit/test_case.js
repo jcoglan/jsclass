@@ -76,29 +76,25 @@ JS.Test.Unit.extend({
       callback.call(context || null, this.klass.STARTED, this);
       this._result = result;
       
-      var complete = function() {
-        result.addRun();
-        callback.call(context || null, this.klass.FINISHED, this);
-        continuation();
-      };
-      
       var teardown = function() {
-        this.exec('teardown', complete, this.processError(complete));
-      };
-      
-      var verify = function() {
-        this.exec(function() { JS.Test.Unit.mocking.verify() },
-                  teardown,
-                  this.processError(teardown));
+        this.exec('teardown', function() {
+          this.exec(function() { JS.Test.Unit.mocking.verify() }, function() {
+            result.addRun();
+            callback.call(context || null, this.klass.FINISHED, this);
+            continuation();
+          });
+        });
       };
       
       this.exec('setup', function() {
-        this.exec(this._methodName, verify, this.processError(verify));
-      }, this.processError(verify));
+        this.exec(this._methodName, teardown);
+      }, teardown);
     },
     
     exec: function(methodName, onSuccess, onError) {
       if (!methodName) return onSuccess.call(this);
+      
+      if (!onError) onError = onSuccess;
       
       var arity = JS.isFn(methodName)
                 ? methodName.length
@@ -111,13 +107,13 @@ JS.Test.Unit.extend({
         return this._runWithExceptionHandlers(function() {
           callable.call(this);
           onSuccess.call(this);
-        }, onError);
+        }, this.processError(onError));
       
       this._runWithExceptionHandlers(function() {
         callable.call(this, function(asyncBlock) {
           self.exec(asyncBlock, onSuccess, onError);
-        })
-      }, onError);
+        });
+      }, this.processError(onError));
     },
     
     processError: function(doNext) {
@@ -197,7 +193,11 @@ JS.Test.Unit.extend({
      * this instance of `JS.Test.Unit.TestCase` represents.
      **/
     name: function() {
-      return this._methodName + '(' + this.klass.displayName + ')';
+      var short = this._methodName.replace(/^test\W*/ig, '');
+      if (short.replace(this.klass.displayName, '') === short)
+        return this._methodName + '(' + this.klass.displayName + ')';
+      else
+        return short;
     },
     
     /**

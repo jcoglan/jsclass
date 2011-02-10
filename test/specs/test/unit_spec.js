@@ -21,7 +21,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         testError: function() { throw new TypeError("derp") }
       }, function() { resume(function() {
         assertTestResult( 1, 0, 0, 1 )
-        assertMessage( 1, "Error:\ntestError(TestedSuite):\nTypeError: derp" )
+        assertMessage( 1, "Error:\n" +
+                          "testError(TestedSuite):\n" +
+                          "TypeError: derp" )
       })})
     })
   })
@@ -44,7 +46,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 1, 1, 0 )
-        assertMessage( "Failure:\ntestAssertBlock(TestedSuite):\nsome message." )
+        assertMessage( "Failure:\n" +
+                       "testAssertBlock(TestedSuite):\n" +
+                       "some message." )
       })})
     })
     
@@ -55,7 +59,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 1, 1, 0 )
-        assertMessage( "Failure:\ntestAssertBlock(TestedSuite):\nassertBlock failed." )
+        assertMessage( "Failure:\n" +
+                       "testAssertBlock(TestedSuite):\n" +
+                       "assertBlock failed." )
       })})
     })
   })
@@ -68,7 +74,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 1, 1, 0 )
-        assertMessage( "Failure:\ntestFlunk(TestedSuite):\nsome message." )
+        assertMessage( "Failure:\n" +
+                       "testFlunk(TestedSuite):\n" +
+                       "some message." )
       })})
     })
     
@@ -79,7 +87,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 1, 1, 0 )
-        assertMessage( "Failure:\ntestFlunk(TestedSuite):\nFlunked." )
+        assertMessage( "Failure:\n" +
+                       "testFlunk(TestedSuite):\n" +
+                       "Flunked." )
       })})
     })
   })
@@ -107,7 +117,10 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 1, 1, 0 )
-        assertMessage( "Failure:\ntestAssert(TestedSuite):\nIt's not true.\n<false> is not true." )
+        assertMessage( "Failure:\n" +
+                       "testAssert(TestedSuite):\n" +
+                       "It's not true.\n" +
+                       "<false> is not true." )
       })})
     })
   })
@@ -159,8 +172,17 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<true> expected but was\n<false>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\nfalse and null are not equal.\n<false> expected but was\n<null>." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<true> expected but was\n" +
+                            "<false>." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "false and null are not equal.\n" +
+                            "<false> expected but was\n" +
+                            "<null>." )
         })})
       })
     })
@@ -177,8 +199,17 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<3> expected but was\n<4>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\nfour is the same as itself.\n<4> expected not to be equal to\n<4>." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<3> expected but was\n" +
+                            "<4>." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "four is the same as itself.\n" +
+                            "<4> expected not to be equal to\n" +
+                            "<4>." )
         })})
       })
     })
@@ -195,8 +226,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"foo\"> expected but was\n<\"bar\">." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"foo\"> expected not to be equal to\n<\"foo\">." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<\"foo\"> expected but was\n" +
+                            "<\"bar\">." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<\"foo\"> expected not to be equal to\n" +
+                            "<\"foo\">." )
         })})
       })
     })
@@ -213,8 +252,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<[1,2]> expected but was\n<[2,1]>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[9]> expected not to be equal to\n<[9]>." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<[1,2]> expected but was\n" +
+                            "<[2,1]>." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<[9]> expected not to be equal to\n" +
+                            "<[9]>." )
         })})
       })
     })
@@ -231,8 +278,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<{\"foo\":2}> expected but was\n<{\"bar\":3,\"foo\":2}>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<{\"foo\":[3,4]}> expected not to be equal to\n<{\"foo\":[3,4]}>." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<{\"foo\":2}> expected but was\n" +
+                            "<{\"bar\":3,\"foo\":2}>." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<{\"foo\":[3,4]}> expected not to be equal to\n" +
+                            "<{\"foo\":[3,4]}>." )
         })})
       })
       
@@ -250,8 +305,15 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
             assertTestResult( 2, 2, 2, 0 )
             
             // TODO stub Set#toString
-            assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<SortedSet:{1,2}> expected but was\n<SortedSet:{2,3}>." )
-            assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<SortedSet:{1,2}> expected not to be equal to\n<SortedSet:{1,2}>." )
+            assertMessage( 1, "Failure:\n" +
+                              "test1(TestedSuite):\n" +
+                              "<SortedSet:{1,2}> expected but was\n" +
+                              "<SortedSet:{2,3}>." )
+
+            assertMessage( 2, "Failure:\n" +
+                              "test2(TestedSuite):\n" +
+                              "<SortedSet:{1,2}> expected not to be equal to\n" +
+                              "<SortedSet:{1,2}>." )
           })})
         })
       })
@@ -269,8 +331,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<#function> expected but was\n<#function>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<SortedSet> expected not to be equal to\n<SortedSet>." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<#function> expected but was\n" +
+                            "<#function>." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<SortedSet> expected not to be equal to\n" +
+                            "<SortedSet>." )
         })})
       })
     })
@@ -299,8 +369,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<null> expected but was\n<false>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\nit's null.\n<null> expected not to be null." )
+
+        assertMessage( 1, "Failure:\n" +
+                          "test1(TestedSuite):\n" +
+                          "<null> expected but was\n" +
+                          "<false>." )
+
+        assertMessage( 2, "Failure:\n" +
+                          "test2(TestedSuite):\n" +
+                          "it's null.\n" +
+                          "<null> expected not to be null." )
       })})
     })
   })
@@ -334,12 +412,42 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           test6: function() { with(this) { assertKindOf( "array",     [] )        }}
         }, function() { resume(function() {
           assertTestResult( 6, 6, 6, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<67> expected to be an instance of\n<\"string\"> but was\n<\"number\">." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"four\"> expected to be an instance of\n<\"number\"> but was\n<\"string\">." )
-          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<undefined> expected to be an instance of\n<\"boolean\"> but was\n<\"undefined\">." )
-          assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<null> expected to be an instance of\n<\"undefined\"> but was\n<\"object\">." )
-          assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<\"string\"> expected to be an instance of\n<\"object\"> but was\n<\"string\">." )
-          assertMessage( 6, "Failure:\ntest6(TestedSuite):\n<[]> expected to be an instance of\n<\"array\"> but was\n<\"object\">." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<67> expected to be an instance of\n" +
+                            "<\"string\"> but was\n" +
+                            "<\"number\">." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<\"four\"> expected to be an instance of\n" +
+                            "<\"number\"> but was\n" +
+                            "<\"string\">." )
+
+          assertMessage( 3, "Failure:\n" +
+                            "test3(TestedSuite):\n" +
+                            "<undefined> expected to be an instance of\n" +
+                            "<\"boolean\"> but was\n" +
+                            "<\"undefined\">." )
+
+          assertMessage( 4, "Failure:\n" +
+                            "test4(TestedSuite):\n" +
+                            "<null> expected to be an instance of\n" +
+                            "<\"undefined\"> but was\n" +
+                            "<\"object\">." )
+
+          assertMessage( 5, "Failure:\n" +
+                            "test5(TestedSuite):\n" +
+                            "<\"string\"> expected to be an instance of\n" +
+                            "<\"object\"> but was\n" +
+                            "<\"string\">." )
+
+          assertMessage( 6, "Failure:\n" +
+                            "test6(TestedSuite):\n" +
+                            "<[]> expected to be an instance of\n" +
+                            "<\"array\"> but was\n" +
+                            "<\"object\">." )
         })})
       })
     })
@@ -371,11 +479,36 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           test5: function() { with(this) { assertKindOf( Array,     undefined ) }}
         }, function() { resume(function() {
           assertTestResult( 5, 5, 5, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"foo\"> expected to be an instance of\n<Object> but was\n<String>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<{}> expected to be an instance of\n<Array> but was\n<Object>." )
-          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<[]> expected to be an instance of\n<Function> but was\n<Array>." )
-          assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<true> expected to be an instance of\n<String> but was\n<Boolean>." )
-          assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<undefined> expected to be an instance of\n<Array> but was\n<\"undefined\">." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<\"foo\"> expected to be an instance of\n" +
+                            "<Object> but was\n" +
+                            "<String>." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<{}> expected to be an instance of\n" +
+                            "<Array> but was\n" +
+                            "<Object>." )
+
+          assertMessage( 3, "Failure:\n" +
+                            "test3(TestedSuite):\n" +
+                            "<[]> expected to be an instance of\n" +
+                            "<Function> but was\n" +
+                            "<Array>." )
+
+          assertMessage( 4, "Failure:\n" +
+                            "test4(TestedSuite):\n" +
+                            "<true> expected to be an instance of\n" +
+                            "<String> but was\n" +
+                            "<Boolean>." )
+
+          assertMessage( 5, "Failure:\n" +
+                            "test5(TestedSuite):\n" +
+                            "<undefined> expected to be an instance of\n" +
+                            "<Array> but was\n" +
+                            "<\"undefined\">." )
         })})
       })
     })
@@ -413,12 +546,42 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           test6: function() { with(this) { assertKindOf( JS.Observable, new JS.SortedSet([1,2]) ) }}
         }, function() { resume(function() {
           assertTestResult( 6, 6, 6, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<SortedSet> expected to be an instance of\n<Array> but was\n<Class>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<SortedSet> expected to be an instance of\n<Enumerable> but was\n<Class>." )
-          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<SortedSet> expected to be an instance of\n<Observable> but was\n<Class>." )
-          assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<SortedSet:{1,2}> expected to be an instance of\n<Module> but was\n<SortedSet>." )
-          assertMessage( 5, "Failure:\ntest5(TestedSuite):\n<SortedSet:{1,2}> expected to be an instance of\n<Class> but was\n<SortedSet>." )
-          assertMessage( 6, "Failure:\ntest6(TestedSuite):\n<SortedSet:{1,2}> expected to be an instance of\n<Observable> but was\n<SortedSet>." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<SortedSet> expected to be an instance of\n" +
+                            "<Array> but was\n" +
+                            "<Class>." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<SortedSet> expected to be an instance of\n" +
+                            "<Enumerable> but was\n" +
+                            "<Class>." )
+
+          assertMessage( 3, "Failure:\n" +
+                            "test3(TestedSuite):\n" +
+                            "<SortedSet> expected to be an instance of\n" +
+                            "<Observable> but was\n" +
+                            "<Class>." )
+
+          assertMessage( 4, "Failure:\n" +
+                            "test4(TestedSuite):\n" +
+                            "<SortedSet:{1,2}> expected to be an instance of\n" +
+                            "<Module> but was\n" +
+                            "<SortedSet>." )
+
+          assertMessage( 5, "Failure:\n" +
+                            "test5(TestedSuite):\n" +
+                            "<SortedSet:{1,2}> expected to be an instance of\n" +
+                            "<Class> but was\n" +
+                            "<SortedSet>." )
+
+          assertMessage( 6, "Failure:\n" +
+                            "test6(TestedSuite):\n" +
+                            "<SortedSet:{1,2}> expected to be an instance of\n" +
+                            "<Observable> but was\n" +
+                            "<SortedSet>." )
         })})
       })
     })
@@ -456,10 +619,30 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 4, 4, 4, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<Object>\nof type <Function>\nexpected to respond to <\"foo\">." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"foo\">\nof type <String>\nexpected to respond to <\"downcase\">." )
-        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<undefined>\nof type <\"undefined\">\nexpected to respond to <\"downcase\">." )
-        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<Class>\nof type <Class>\nexpected to respond to <\"nomethod\">." )
+
+        assertMessage( 1, "Failure:\n" +
+                          "test1(TestedSuite):\n" +
+                          "<Object>\n" +
+                          "of type <Function>\n" +
+                          "expected to respond to <\"foo\">." )
+
+        assertMessage( 2, "Failure:\n" +
+                          "test2(TestedSuite):\n" +
+                          "<\"foo\">\n" +
+                          "of type <String>\n" +
+                          "expected to respond to <\"downcase\">." )
+
+        assertMessage( 3, "Failure:\n" +
+                          "test3(TestedSuite):\n" +
+                          "<undefined>\n" +
+                          "of type <\"undefined\">\n" +
+                          "expected to respond to <\"downcase\">." )
+
+        assertMessage( 4, "Failure:\n" +
+                          "test4(TestedSuite):\n" +
+                          "<Class>\n" +
+                          "of type <Class>\n" +
+                          "expected to respond to <\"nomethod\">." )
       })})
     })
   })
@@ -488,8 +671,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<\"food\"> expected to match\n</Foo/>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<\"food\"> expected not to match\n</Foo/i>." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<\"food\"> expected to match\n" +
+                            "</Foo/>." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<\"food\"> expected not to match\n" +
+                            "</Foo/i>." )
         })})
       })
       
@@ -500,7 +691,10 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<undefined> expected to match\n</[a-z]+/>." )
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<undefined> expected to match\n" +
+                            "</[a-z]+/>." )
         })})
       })
     })
@@ -528,8 +722,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<SortedSet:{1,2}> expected to match\n<Class>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<Enumerable> expected not to match\n<Module>." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<SortedSet:{1,2}> expected to match\n" +
+                            "<Class>." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<Enumerable> expected not to match\n" +
+                            "<Module>." )
         })})
       })
     })
@@ -557,8 +759,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<10> expected to match\n<1...10>." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<10> expected not to match\n<1..10>." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<10> expected to match\n" +
+                            "<1...10>." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<10> expected not to match\n" +
+                            "<1..10>." )
         })})
       })
     })
@@ -601,10 +811,27 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 4, 4, 4, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<{}> expected to be the same as\n<{}>." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\ncustom message.\n<[]> expected to be the same as\n<[]>." )
-        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<Object> expected not to be the same as\n<Object>." )
-        assertMessage( 4, "Failure:\ntest4(TestedSuite):\n<SortedSet:{1,2}> expected to be the same as\n<SortedSet:{1,2}>." )
+
+        assertMessage( 1, "Failure:\n" +
+                          "test1(TestedSuite):\n" +
+                          "<{}> expected to be the same as\n" +
+                          "<{}>." )
+
+        assertMessage( 2, "Failure:\n" +
+                          "test2(TestedSuite):\n" +
+                          "custom message.\n" +
+                          "<[]> expected to be the same as\n" +
+                          "<[]>." )
+
+        assertMessage( 3, "Failure:\n" +
+                          "test3(TestedSuite):\n" +
+                          "<Object> expected not to be the same as\n" +
+                          "<Object>." )
+
+        assertMessage( 4, "Failure:\n" +
+                          "test4(TestedSuite):\n" +
+                          "<SortedSet:{1,2}> expected to be the same as\n" +
+                          "<SortedSet:{1,2}>." )
       })})
     })
   })
@@ -635,9 +862,25 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 3, 3, 3, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\nout by 0.1.\n<5> and\n<3.9> expected to be within\n<1> of each other." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<5> and\n<1> expected to be within\n<3> of each other." )
-        assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<-3> and\n<5> expected to be within\n<7> of each other." )
+
+        assertMessage( 1, "Failure:\n" +
+                          "test1(TestedSuite):\n" +
+                          "out by 0.1.\n" +
+                          "<5> and\n" +
+                          "<3.9> expected to be within\n" +
+                          "<1> of each other." )
+
+        assertMessage( 2, "Failure:\n" +
+                          "test2(TestedSuite):\n" +
+                          "<5> and\n" +
+                          "<1> expected to be within\n" +
+                          "<3> of each other." )
+
+        assertMessage( 3, "Failure:\n" +
+                          "test3(TestedSuite):\n" +
+                          "<-3> and\n" +
+                          "<5> expected to be within\n" +
+                          "<7> of each other." )
       })})
     })
   })
@@ -664,8 +907,17 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 2, 2, 2, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\nclasses are not enumerable.\n<SortedSet> expected to respond to\n<isA(Enumerable)> with a true value." )
-        assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<SortedSet> expected to respond to\n<includes(Class)> with a true value." )
+
+        assertMessage( 1, "Failure:\n" +
+                          "test1(TestedSuite):\n" +
+                          "classes are not enumerable.\n" +
+                          "<SortedSet> expected to respond to\n" +
+                          "<isA(Enumerable)> with a true value." )
+
+        assertMessage( 2, "Failure:\n" +
+                          "test2(TestedSuite):\n" +
+                          "<SortedSet> expected to respond to\n" +
+                          "<includes(Class)> with a true value." )
       })})
     })
   })
@@ -700,8 +952,14 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<["+__TypeError+"]> exception expected but none was thrown." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but none was thrown." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<["+__TypeError+"]> exception expected but none was thrown." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<[String]> exception expected but none was thrown." )
         })})
       })
       
@@ -718,9 +976,21 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 3, 3, 3, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<["+__TypeError+"]> exception expected but was\nRangeError: this is the wrong type." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<[String]> exception expected but was\n"+__TypeError+"." )
-          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<["+__TypeError+"]> exception expected but was\n\"string error\"." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<["+__TypeError+"]> exception expected but was\n" +
+                            "RangeError: this is the wrong type." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<[String]> exception expected but was\n" +
+                            __TypeError+"." )
+
+          assertMessage( 3, "Failure:\n" +
+                            "test3(TestedSuite):\n" +
+                            "<["+__TypeError+"]> exception expected but was\n" +
+                            "\"string error\"." )
         })})
       })
     })
@@ -750,9 +1020,18 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 3, 3, 3, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<["+__TypeError+","+__RangeError+"]> exception expected but none was thrown." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<["+__ReferenceError+","+__SyntaxError+"]> exception expected but none was thrown." )
-          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<["+__SyntaxError+",String]> exception expected but none was thrown." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<["+__TypeError+","+__RangeError+"]> exception expected but none was thrown." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<["+__ReferenceError+","+__SyntaxError+"]> exception expected but none was thrown." )
+
+          assertMessage( 3, "Failure:\n" +
+                            "test3(TestedSuite):\n" +
+                            "<["+__SyntaxError+",String]> exception expected but none was thrown." )
         })})
       })
       
@@ -769,9 +1048,21 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
           }}
         }, function() { resume(function() {
           assertTestResult( 3, 3, 3, 0 )
-          assertMessage( 1, "Failure:\ntest1(TestedSuite):\n<["+__TypeError+","+__RangeError+"]> exception expected but was\n\"a string\"." )
-          assertMessage( 2, "Failure:\ntest2(TestedSuite):\n<["+__ReferenceError+","+__SyntaxError+"]> exception expected but was\n"+__TypeError+"." )
-          assertMessage( 3, "Failure:\ntest3(TestedSuite):\n<["+__SyntaxError+",String]> exception expected but was\nTypeError: a type error." )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<["+__TypeError+","+__RangeError+"]> exception expected but was\n" +
+                            "\"a string\"." )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<["+__ReferenceError+","+__SyntaxError+"]> exception expected but was\n" +
+                            __TypeError+"." )
+
+          assertMessage( 3, "Failure:\n" +
+                            "test3(TestedSuite):\n" +
+                            "<["+__SyntaxError+",String]> exception expected but was\n" +
+                            "TypeError: a type error." )
         })})
       })
     })
@@ -795,10 +1086,52 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 1, 1, 0 )
-        assertMessage( 1, "Failure:\ntest1(TestedSuite):\nbut there was an error.\nException thrown:\nTypeError: the wrong type." )
+        assertMessage( 1, "Failure:\n" +
+                          "test1(TestedSuite):\n" +
+                          "but there was an error.\n" +
+                          "Exception thrown:\n" +
+                          "TypeError: the wrong type." )
       })})
     })
   })
   
-})
+  describe("async tests", function() {
+    include(JS.Test.FakeClock)
+    before(function() { clock.stub() })
+    after(function() { clock.reset() })
 
+    sharedBehavior("asynchronous test", function() {
+      it("picks up assertions run on resume", function(resume) {
+        runTests({testAsync: asyncTest}, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\n" +
+                            "testAsync(TestedSuite):\n" +
+                            "<2> expected but was\n" +
+                            "<3>." )
+        })})
+      })
+    })
+
+    describe("when resume() is used asynchronously", function() {
+      before(function() {
+        this.asyncTest = function(resume) { with(this) {
+            JS.ENV.setTimeout(function() {
+              resume(function() { assertEqual( 2, 3 ) })
+            }, 1000)
+
+            clock.tick(1000)
+          }}
+      })
+      behavesLike("asynchronous test")
+    })
+
+    describe("when resume() is used synchronously", function() {
+      before(function() {
+        this.asyncTest = function(resume) { with(this) {
+            resume(function() { assertEqual( 2, 3 ) })
+          }}
+      })
+      behavesLike("asynchronous test")
+    })
+  })
+})

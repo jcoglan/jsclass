@@ -416,7 +416,7 @@ JS.ENV.ModuleSpec = JS.Test.describe(JS.Module, function() {
   })
   
   it("has Class as a subclass", function() {
-    assertEqual( [JS.Class, JS.Test.Context.SharedBehavior], JS.Module.subclasses )
+    assertEqual( 0, JS.indexOf(JS.Module.subclasses, JS.Class) )
   })
   
   describe("#define", function() {

@@ -1,6 +1,5 @@
 JS.ENV.DeferrableSpec = JS.Test.describe(JS.Deferrable, function() {
-  include(JS.Test.Mocking)
-  include(JS.Test.Mocking.Clock)
+  include(JS.Test.FakeClock)
   
   before(function() { clock.stub() })
   after(function() { clock.reset() })
@@ -65,7 +64,7 @@ JS.ENV.DeferrableSpec = JS.Test.describe(JS.Deferrable, function() {
         future.errback(callback)
         future.timeout(200)
         clock.tick(250)
-        assertEqual( [a(JS.Deferrable.Timeout)], values )
+        assertEqual( [instanceOf(JS.Deferrable.Timeout)], values )
       })
       
       it("can be cancelled using cancelTimeout()", function() {
