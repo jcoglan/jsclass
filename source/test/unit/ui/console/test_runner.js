@@ -8,6 +8,7 @@ JS.Test.Unit.UI.extend({
        **/
       TestRunner: new JS.Class({
         extend: JS.Test.Unit.UI.TestRunnerUtilities,
+        include: JS.Console,
         
         /**
          * new JS.Test.Unit.UI.Console.TestRunner(suite, outputLevel)
@@ -95,12 +96,12 @@ JS.Test.Unit.UI.extend({
         
         _output: function(string, level) {
           if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
-          JS.Console.puts(string);
+          this.puts(string);
         },
         
         _outputSingle: function(string, level) {
           if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
-          JS.Console.print(string);
+          this.print(string);
         },
         
         _shouldOutput: function(level) {
