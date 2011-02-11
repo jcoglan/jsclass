@@ -2,6 +2,8 @@ JS.Console = new JS.Module('Console', {
   extend: {
     ANSI_CSI: String.fromCharCode(0x1B) + '[',
     MAX_BUFFER_LENGTH: 78,
+    WINDOZE: (typeof WScript !== 'undefined'),
+    
     __buffer__: [],
     
     ESCAPE_CODES: {
@@ -62,7 +64,7 @@ JS.Console = new JS.Module('Console', {
   },
   
   emitFormat: function(escapeCode) {
-    if (typeof WScript !== 'undefined') return;
+    if (JS.Console.WINDOZE) return;
     
     var text     = JS.Console.escape(escapeCode + 'm'),
         buffer   = JS.Console.__buffer__,
@@ -78,8 +80,11 @@ JS.Console = new JS.Module('Console', {
   },
   
   puts: function(string) {
-    if (JS.Console.bufferSize() === 0)
-      string = JS.Console.bufferText() + string;
+    var bufferText = JS.Console.bufferText();
+    
+    if (JS.Console.bufferSize() === 0) string = bufferText + string;
+    if (JS.Console.WINDOZE && bufferText !== '')
+      this.writeToStdout(bufferText);
     
     JS.Console.__buffer__ = [];
     if (JS.Console._printing && typeof process === 'object')
@@ -101,6 +106,8 @@ JS.Console = new JS.Module('Console', {
     
     while (JS.Console.bufferSize() > max)
       this.writeToStdout(JS.Console.bufferChunk(max));
+    
+    if (JS.Console.WINDOZE) return;
     
     var esc = wasEmpty ? '' : JS.Console.escape('F') + JS.Console.escape('K');
     this.writeToStdout(esc + JS.Console.bufferText());
