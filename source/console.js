@@ -82,10 +82,15 @@ JS.Console = new JS.Module('Console', {
       string = JS.Console.bufferText() + string;
     
     JS.Console.__buffer__ = [];
+    if (JS.Console._printing && typeof process === 'object')
+      this.writeToStdout('');
+    
+    JS.Console._printing = false;
     this.writeToStdout(string);
   },
   
   print: function(string) {
+    JS.Console._printing = true;
     if (typeof process === 'object') return require('sys').print(string);
     
     var buffer   = JS.Console.__buffer__,

@@ -63,6 +63,8 @@ JS.Test.Unit.UI.extend({
           this.bold();
           this.red();
           this._outputSingle(fault.singleCharacterDisplay(), JS.Test.Unit.UI.PROGRESS_ONLY);
+          this.normal();
+          this.nocolor();
           this._alreadyOutputted = true;
         },
         
@@ -106,9 +108,10 @@ JS.Test.Unit.UI.extend({
         },
         
         _testFinished: function(testCase) {
-          this.bold();
+          this.normal();
           this.green();
           if (!this._alreadyOutputted) this._outputSingle('.', JS.Test.Unit.UI.PROGRESS_ONLY);
+          this.nocolor();
           this._nl(JS.Test.Unit.UI.VERBOSE);
           this._alreadyOutputted = false;
         },
