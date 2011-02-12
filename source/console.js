@@ -5,22 +5,25 @@ JS.Console = new JS.Module('Console', {
     WINDOZE: (typeof WScript !== 'undefined'),
     
     __buffer__: [],
+    __format__: {},
     
     ESCAPE_CODES: {
-      reset:    0,
-      bold:     1,
-      normal:   22,
-      black:    30,
-      red:      31,
-      green:    32,
-      yellow:   33,
-      blue:     34,
-      magenta:  35,
-      cyan:     36,
-      white:    37,
-      nocolor:  39
+      reset:      {code: 0,   color: true,  weight: true,   decoration: true},
+      bold:       {code: 1,                 weight: true},
+      underline:  {code: 4,                                 decoration: true},
+      normal:     {code: 22,                weight: true},
+      noline:     {code: 24,                                decoration: true},
+      black:      {code: 30,  color: true},
+      red:        {code: 31,  color: true},
+      green:      {code: 32,  color: true},
+      yellow:     {code: 33,  color: true},
+      blue:       {code: 34,  color: true},
+      magenta:    {code: 35,  color: true},
+      cyan:       {code: 36,  color: true},
+      white:      {code: 37,  color: true},
+      nocolor:    {code: 39,  color: true}
     },
-
+    
     escape: function(string) {
       return this.ANSI_CSI + string;
     },
@@ -48,11 +51,19 @@ JS.Console = new JS.Module('Console', {
           buffer.shift();
         } else {
           text       += next.text.substr(0, size - length);
-          length     += next.length;
           next.text   = next.text.substr(size - length);
+          length      = size;
           next.length = next.text.length;
         }
       }
+      var formats = [], F = this.__format__;
+      
+      if (F.color)      formats.push({text: this.escape(F.color      + 'm'), length: 0});
+      if (F.decoration) formats.push({text: this.escape(F.decoration + 'm'), length: 0});
+      if (F.weight)     formats.push({text: this.escape(F.weight     + 'm'), length: 0});
+      
+      this.__buffer__ = formats.concat(buffer);
+      
       return text;
     },
     
@@ -75,8 +86,7 @@ JS.Console = new JS.Module('Console', {
     
     if (wasEmpty) return;
     
-    var esc = JS.Console.escape('F') + JS.Console.escape('K');
-    this.writeToStdout(esc + JS.Console.bufferText());
+    this.writeToStdout(JS.Console.PREVIOUS_LINE + JS.Console.bufferText());
   },
   
   puts: function(string) {
@@ -101,16 +111,20 @@ JS.Console = new JS.Module('Console', {
     var buffer   = JS.Console.__buffer__,
         wasEmpty = (JS.Console.bufferSize() === 0),
         max      = JS.Console.MAX_BUFFER_LENGTH;
+        escape;
     
     buffer.push({text: string, length: string.length});
     
-    while (JS.Console.bufferSize() > max)
-      this.writeToStdout(JS.Console.bufferChunk(max));
+    while (JS.Console.bufferSize() > max) {
+      escape = (!wasEmpty && !JS.Console.WINDOZE) ? JS.Console.PREVIOUS_LINE : '';
+      this.writeToStdout(escape + JS.Console.bufferChunk(max));
+      wasEmpty = true;
+    }
     
     if (JS.Console.WINDOZE) return;
     
-    var esc = wasEmpty ? '' : JS.Console.escape('F') + JS.Console.escape('K');
-    this.writeToStdout(esc + JS.Console.bufferText());
+    var escape = wasEmpty ? '' : JS.Console.PREVIOUS_LINE;
+    this.writeToStdout(escape + JS.Console.bufferText());
   },
   
   writeToStdout: function(string) {
@@ -120,10 +134,21 @@ JS.Console = new JS.Module('Console', {
   }
 });
 
+JS.Console.extend({
+  PREVIOUS_LINE: JS.Console.escape('F') + JS.Console.escape('K')
+});
+
 (function() {
   for (var key in JS.Console.ESCAPE_CODES) (function(key) {
     JS.Console.define(key, function() {
-      this.emitFormat(JS.Console.ESCAPE_CODES[key]);
+      if (JS.Console.WINDOZE) return;
+      var escape = JS.Console.ESCAPE_CODES[key];
+      
+      if (escape.color)      JS.Console.__format__.color      = escape.code;
+      if (escape.decoration) JS.Console.__format__.decoration = escape.code;
+      if (escape.weight)     JS.Console.__format__.weight     = escape.code;
+      
+      this.emitFormat(escape.code);
     });
   })(key);
 })();

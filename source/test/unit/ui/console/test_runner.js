@@ -61,6 +61,7 @@ JS.Test.Unit.UI.extend({
         _addFault: function(fault) {
           this._faults.push(fault);
           this.bold();
+          this.noline();
           this.red();
           this._outputSingle(fault.singleCharacterDisplay(), JS.Test.Unit.UI.PROGRESS_ONLY);
           this.normal();
@@ -71,6 +72,7 @@ JS.Test.Unit.UI.extend({
         _started: function(result) {
           this._result = result;
           this.normal();
+          this.noline();
           this._nl();
           this._output('Started');
         },
@@ -78,6 +80,7 @@ JS.Test.Unit.UI.extend({
         _finished: function(elapsedTime) {
           this.normal();
           this.nocolor();
+          this.noline();
           this._nl();
           this._output('Finished in ' + elapsedTime + ' seconds.');
           for (var i = 0, n = this._faults.length; i < n; i++) {
@@ -108,9 +111,11 @@ JS.Test.Unit.UI.extend({
         },
         
         _testFinished: function(testCase) {
-          this.normal();
+          this.bold();
           this.green();
+          this.noline();
           if (!this._alreadyOutputted) this._outputSingle('.', JS.Test.Unit.UI.PROGRESS_ONLY);
+          this.normal();
           this.nocolor();
           this._nl(JS.Test.Unit.UI.VERBOSE);
           this._alreadyOutputted = false;
