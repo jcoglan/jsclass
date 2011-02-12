@@ -2,7 +2,9 @@ JS.Console = new JS.Module('Console', {
   extend: {
     ANSI_CSI: String.fromCharCode(0x1B) + '[',
     MAX_BUFFER_LENGTH: 78,
+    
     WINDOZE: (typeof WScript !== 'undefined'),
+    NODE:    (typeof process === 'object'),
     
     __buffer__: '',
     __format__: '',
@@ -75,11 +77,17 @@ JS.Console = new JS.Module('Console', {
   },
   
   puts: function(string) {
-    JS.Console.output(string, false);
+    var C = JS.Console;
+    if (!C.NODE) return C.output(string, false);
+    require('sys').puts((C.__print__ ? '\n' : '') + C.flushFormat() + string);
+    C.__print__ = false;
   },
   
   print: function(string) {
-    JS.Console.output(string, true);
+    var C = JS.Console;
+    if (!C.NODE) return C.output(string, true);
+    require('sys').print(C.flushFormat() + string);
+    C.__print__ = true;
   }
 });
 
