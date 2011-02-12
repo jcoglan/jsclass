@@ -2,6 +2,7 @@ JS.Console = new JS.Module('Console', {
   extend: {
     ANSI_CSI: String.fromCharCode(0x1B) + '[',
     MAX_BUFFER_LENGTH: 78,
+    WINDOZE: (typeof WScript !== 'undefined'),
     
     __buffer__: '',
     __format__: '',
@@ -34,19 +35,28 @@ JS.Console = new JS.Module('Console', {
     },
     
     output: function(string, followon) {
+      if (this.WINDOZE && !followon && this.__buffer__)
+        this.writeToStdout(this.__buffer__);
+      
       string = (string && string.toString() || '');
       if (string === '' && !followon) this.writeToStdout('');
       
       while (string.length > 0) {
-        var length = followon ? this.__buffer__.length : 0,
-            max    = this.MAX_BUFFER_LENGTH,
-            escape = (!followon || length === 0) ? '' : this.escape('1F') + this.escape((length + 1) + 'G'),
-            line   = string.substr(0, max - length);
+        var length  = followon ? this.__buffer__.length : 0,
+            max     = this.MAX_BUFFER_LENGTH,
+            movable = (followon && length > 0 && !this.WINDOZE),
+            escape  = movable ? this.escape('1F') + this.escape((length + 1) + 'G') : '',
+            line    = string.substr(0, max - length);
         
         this.__buffer__ += line;
-        if (this.__buffer__.length === max) this.__buffer__ = '';
+        if (this.__buffer__.length === max) {
+          if (this.WINDOZE && followon) this.writeToStdout(this.__buffer__);
+          this.__buffer__ = '';
+        }
         
-        this.writeToStdout(escape + this.flushFormat() + line);
+        if (!this.WINDOZE || !followon)
+          this.writeToStdout(escape + this.flushFormat() + line);
+        
         string = string.substr(max - length);
       }
       if (!followon) this.__buffer__ = '';
@@ -60,6 +70,7 @@ JS.Console = new JS.Module('Console', {
   },
   
   consoleFormat: function(escapeCode) {
+    if (JS.Console.WINDOZE) return;
     JS.Console.__format__ += JS.Console.escape(escapeCode + 'm');
   },
   
@@ -84,4 +95,3 @@ JS.Console = new JS.Module('Console', {
   
   C.extend(C);
 })();
-  
