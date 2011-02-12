@@ -45,9 +45,9 @@ JS.Console = new JS.Module('Console', {
       if (string === '' && !followon) this.writeToStdout('');
       
       while (string.length > 0) {
-        var length  = followon ? this.__buffer__.length : 0,
+        var length  = this.__buffer__.length,
             max     = this.MAX_BUFFER_LENGTH,
-            movable = (followon && length > 0 && !this.WINDOZE),
+            movable = (length > 0 && !this.WINDOZE),
             escape  = movable ? this.escape('1F') + this.escape((length + 1) + 'G') : '',
             line    = string.substr(0, max - length);
         
