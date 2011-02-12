@@ -34,6 +34,7 @@ JS.Test.extend({
         base.extend(JS.Test.Context.Context, false);
         base.include(JS.Test.Context.LifeCycle, {_resolve: false});
         base.extend(JS.Test.Context.Test, false);
+        base.include(JS.Console);
       },
       
       /** section: test

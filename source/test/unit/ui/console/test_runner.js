@@ -38,7 +38,7 @@ JS.Test.Unit.UI.extend({
           this._mediator = this._createMediator(this._suite);
           var suiteName = this._suite.toString();
           if (JS.isType(this._suite, JS.Module)) suiteName = this._suite.displayName;
-          this.bold();
+          this.consoleFormat('bold');
           this._output('Loaded suite ' + suiteName);
         },
         
@@ -60,27 +60,24 @@ JS.Test.Unit.UI.extend({
         
         _addFault: function(fault) {
           this._faults.push(fault);
-          this.bold();
-          this.red();
+          this.consoleFormat('bold', 'red');
           this._outputSingle(fault.singleCharacterDisplay(), JS.Test.Unit.UI.PROGRESS_ONLY);
+          this.reset();
           this._alreadyOutputted = true;
         },
         
         _started: function(result) {
           this._result = result;
-          this.normal();
           this._nl();
+          this.reset();
           this._output('Started');
         },
         
         _finished: function(elapsedTime) {
-          this.normal();
-          this.nocolor();
           this._nl();
+          this.reset();
           this._output('Finished in ' + elapsedTime + ' seconds.');
           for (var i = 0, n = this._faults.length; i < n; i++) {
-            this.bold();
-            this.red();
             this._nl();
             
             var message   = this._faults[i].longDisplay(),
@@ -89,15 +86,14 @@ JS.Test.Unit.UI.extend({
                 testName  = parts.shift(),
                 report    = parts.join('\n');
             
+            this.consoleFormat('bold', 'red');
             this._output((i + 1) + ') ' + errorType);
             this._output(testName);
-            this.normal();
-            this.nocolor();
+            this.reset();
             this._output(report);
           }
-          this.bold();
-          this.nocolor();
           this._nl();
+          this.consoleFormat('bold');
           this._output(this._result, JS.Test.Unit.UI.PROGRESS_ONLY);
         },
         
@@ -106,9 +102,9 @@ JS.Test.Unit.UI.extend({
         },
         
         _testFinished: function(testCase) {
-          this.bold();
-          this.green();
+          this.consoleFormat('bold', 'green');
           if (!this._alreadyOutputted) this._outputSingle('.', JS.Test.Unit.UI.PROGRESS_ONLY);
+          this.reset();
           this._nl(JS.Test.Unit.UI.VERBOSE);
           this._alreadyOutputted = false;
         },

@@ -1,0 +1,69 @@
+:textile
+  h3. @JS.Console@
+  
+  Most JavaScript environments have some sort of console that allows running
+  programs to print output, log messages and the like. In many web browsers,
+  this capability is provided by the @window.console@ object, and in server-side
+  environments the program may write output to the terminal. @JS.Console@
+  provides a single interface to all these facilities, using the most
+  appropriate device wherever it is being used.
+  
+  When writing output to a terminal, @JS.Console@ also supports many ANSI
+  formatting commands for changing the color and other attributes of printed
+  text.
+  
+  The main two output methods are as follows:
+  
+  * @JS.Console.puts(string)@ - prints @string@ to the console with a line break
+    afterward, so that subsequent messages appear on the next line.
+  * @JS.Console.print(string)@ - prints @string@ without applying line breaks,
+    allowing multiple @print()@ calls to write output to the same line if the
+    console supports this. In web browsers, this method is equivalent to
+    @puts()@.
+  
+  The output devices used are as follows:
+  
+  * In web browsers that support @window.console@, the development console is
+    used to log output.
+  * In web browsers with no @console@ object, the @alert()@ function is used.
+  * In Adobe AIR applications running under @adl@, the @runtime.trace()@
+    function is used to write to the terminal.
+  * In programs running in a terminal, output is sent to @STDOUT@.
+  
+  In addition, the following formatting commands are available for formatting
+  output in environments that support ANSI escape codes for formatting text.
+  All commands are methods of @JS.Console@, for example you can switch to bold
+  text by calling @JS.Console.bold()@. Text printed after the command has been
+  issued will have the formatting applied to it. In environments that do not
+  support formatting these methods have no effect.
+  
+  * @reset()@ resets all formatting attributes
+  * @bold()@, @normal()@ set the weight of the text
+  * @underline()@, @noline()@ apply and remove underlining
+  * @blink()@, @noblink()@ apply and remove blinking text
+  * @black()@, @red()@, @green()@, @yellow()@, @blue()@, @magenta()@, @cyan()@,
+    @white()@, @nocolor()@ set the current text color
+  * Color methods can be prefixed with @bg@, for example @bgyellow()@, to set
+    the current background color
+  
+  Multiple formatting instructions can be combined using this method:
+  
+  <pre class="prettyprint">    JS.Console.consoleFormat('bold', 'red');</pre>
+  
+  The @consoleFormat()@ method takes a list of formatting instructions as input.
+  It calls @reset()@ and then applies the given formats.
+  
+  Finally note that @JS.Console@ can be used as a mixin so all the above methods
+  appear in the current class:
+  
+  <pre class="prettyprint">    Logger = new JS.Class({
+          include: JS.Console,
+          
+          info: function(message) {
+              this.bgblack();
+              this.white();
+              this.print('INFO');
+              this.reset();
+              this.puts(' ' + message);
+          }
+      });</pre>
