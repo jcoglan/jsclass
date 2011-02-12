@@ -9,7 +9,7 @@ JS.Package.DomLoader = {
   },
   
   loadFile: function(path, fireCallbacks) {
-    if (typeof air === 'object') air.trace('Loading ' + path);
+    if (typeof window.runtime === 'object') window.runtime.trace('Loading ' + path);
     if (window.console && console.info)
       console.info('Loading ' + path);
     

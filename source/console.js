@@ -4,8 +4,8 @@ JS.Console = new JS.Module('Console', {
     MAX_BUFFER_LENGTH: 78,
     
     BROWSER: (typeof window !== 'undefined'),
-    WINDOZE: (typeof WScript !== 'undefined'),
     NODE:    (typeof process === 'object'),
+    WINDOZE: (typeof WScript !== 'undefined'),
     
     __buffer__: '',
     __format__: '',
@@ -66,6 +66,7 @@ JS.Console = new JS.Module('Console', {
     },
     
     writeToStdout: function(string) {
+      if (this.BROWSER && window.runtime) return window.runtime.trace(string);
       if (typeof process === 'object')    return require('sys').puts(string);
       if (typeof WScript !== 'undefined') return WScript.Echo(string);
       if (typeof print === 'function')    return print(string);
@@ -74,7 +75,7 @@ JS.Console = new JS.Module('Console', {
   
   consoleFormat: function(escapeCode) {
     var C = JS.Console;
-    if (C.BROWSER || C.WINDOZE) return;
+    if ((C.BROWSER && !window.runtime) || C.WINDOZE) return;
     C.__format__ += C.escape(escapeCode + 'm');
   },
   
@@ -87,7 +88,7 @@ JS.Console = new JS.Module('Console', {
   
   puts: function(string) {
     var C = JS.Console;
-    if (C.BROWSER) return this.consoleLog(string);
+    if (C.BROWSER && !window.runtime) return this.consoleLog(string);
     if (!C.NODE) return C.output(string, false);
     require('sys').puts((C.__print__ ? '\n' : '') + C.flushFormat() + string);
     C.__print__ = false;
@@ -95,7 +96,7 @@ JS.Console = new JS.Module('Console', {
   
   print: function(string) {
     var C = JS.Console;
-    if (C.BROWSER) return this.consoleLog(string);
+    if (C.BROWSER && !window.runtime) return this.consoleLog(string);
     if (!C.NODE) return C.output(string, true);
     require('sys').print(C.flushFormat() + string);
     C.__print__ = true;
