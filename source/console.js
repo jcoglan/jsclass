@@ -3,6 +3,7 @@ JS.Console = new JS.Module('Console', {
     ANSI_CSI: String.fromCharCode(0x1B) + '[',
     MAX_BUFFER_LENGTH: 78,
     
+    BROWSER: (typeof window !== 'undefined'),
     WINDOZE: (typeof WScript !== 'undefined'),
     NODE:    (typeof process === 'object'),
     
@@ -72,12 +73,21 @@ JS.Console = new JS.Module('Console', {
   },
   
   consoleFormat: function(escapeCode) {
-    if (JS.Console.WINDOZE) return;
-    JS.Console.__format__ += JS.Console.escape(escapeCode + 'm');
+    var C = JS.Console;
+    if (C.BROWSER || C.WINDOZE) return;
+    C.__format__ += C.escape(escapeCode + 'm');
+  },
+  
+  consoleLog: function(string) {
+    if (typeof console !== 'undefined')
+      console.log(string);
+    else
+      alert(string);
   },
   
   puts: function(string) {
     var C = JS.Console;
+    if (C.BROWSER) return this.consoleLog(string);
     if (!C.NODE) return C.output(string, false);
     require('sys').puts((C.__print__ ? '\n' : '') + C.flushFormat() + string);
     C.__print__ = false;
@@ -85,6 +95,7 @@ JS.Console = new JS.Module('Console', {
   
   print: function(string) {
     var C = JS.Console;
+    if (C.BROWSER) return this.consoleLog(string);
     if (!C.NODE) return C.output(string, true);
     require('sys').print(C.flushFormat() + string);
     C.__print__ = true;
