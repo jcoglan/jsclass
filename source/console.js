@@ -12,10 +12,10 @@ JS.Console = new JS.Module('Console', {
     
     ESCAPE_CODES: {
       reset:      0,
-      bold:       1,
-      underline:  4,
-      normal:     22,
-      noline:     24,
+      bold:       1,    normal:       22,
+      underline:  4,    noline:       24,
+      blink:      5,    noblink:      25,
+      
       black:      30,   bgblack:      40,
       red:        31,   bgred:        41,
       green:      32,   bggreen:      42,
