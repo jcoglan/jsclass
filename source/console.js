@@ -90,7 +90,7 @@ JS.Console = new JS.Module('Console', {
     var C = JS.Console;
     if (C.BROWSER && !window.runtime) return this.consoleLog(string);
     if (!C.NODE) return C.output(string, false);
-    require('sys').puts((C.__print__ ? '\n' : '') + C.flushFormat() + string);
+    require('sys').puts(C.flushFormat() + string);
     C.__print__ = false;
   },
   
