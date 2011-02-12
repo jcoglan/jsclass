@@ -16,15 +16,15 @@ JS.Console = new JS.Module('Console', {
       underline:  4,
       normal:     22,
       noline:     24,
-      black:      30,
-      red:        31,
-      green:      32,
-      yellow:     33,
-      blue:       34,
-      magenta:    35,
-      cyan:       36,
-      white:      37,
-      nocolor:    39
+      black:      30,   bgblack:      40,
+      red:        31,   bgred:        41,
+      green:      32,   bggreen:      42,
+      yellow:     33,   bgyellow:     43,
+      blue:       34,   bgblue:       44,
+      magenta:    35,   bgmagenta:    45,
+      cyan:       36,   bgcyan:       46,
+      white:      37,   bgwhite:      47,
+      nocolor:    39,   bgnocolor:    49
     },
     
     escape: function(string) {
@@ -73,17 +73,17 @@ JS.Console = new JS.Module('Console', {
     }
   },
   
-  consoleFormat: function(escapeCode) {
-    var C = JS.Console;
-    if ((C.BROWSER && !window.runtime) || C.WINDOZE) return;
-    C.__format__ += C.escape(escapeCode + 'm');
-  },
-  
   consoleLog: function(string) {
     if (typeof console !== 'undefined')
       console.log(string);
     else
       alert(string);
+  },
+  
+  consoleFormat: function() {
+    this.reset();
+    var i = arguments.length;
+    while (i--) this[arguments[i]]();
   },
   
   puts: function(string) {
@@ -108,8 +108,9 @@ JS.Console = new JS.Module('Console', {
   
   for (var key in C.ESCAPE_CODES) (function(key) {
     C.define(key, function() {
+      if ((C.BROWSER && !window.runtime) || C.WINDOZE) return;
       var escape = C.ESCAPE_CODES[key];
-      this.consoleFormat(escape);
+      C.__format__ += C.escape(escape + 'm');
     });
   })(key);
   
