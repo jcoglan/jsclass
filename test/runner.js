@@ -30,6 +30,7 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'EnumerableSpec',
                 'ForwardableSpec',
                 'HashSpec',
+                'LinkedListSpec',
                 'MethodChainSpec',
                 'DeferrableSpec',
                 'ObservableSpec',
