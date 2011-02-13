@@ -6,7 +6,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
           method;
       
       module.extend({define: function(name, func) {
-        if (!JS.isFn(func)) return this.callSuper();
+        if (typeof func !== 'function') return this.callSuper();
         var wrapper = self.wrap(func, module, name);
         return this.callSuper(name, wrapper);
       } });

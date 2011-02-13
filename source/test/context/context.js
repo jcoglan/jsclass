@@ -43,7 +43,7 @@ JS.Test.extend({
       Context: new JS.Module({
         getContextName: function() {
           this._contextName = this._contextName || '';
-          return JS.isFn(this.superclass.getContextName)
+          return (typeof this.superclass.getContextName === 'function')
             ? (this.superclass.getContextName() + ' ' + this._contextName).replace(/^\s+/, '')
             : this.displayName;
         },
@@ -105,7 +105,7 @@ JS.Test.extend({
   },
   
   selfless: function(block) {
-    if (!JS.isFn(block)) return block;
+    if (typeof block !== 'function') return block;
     
     var source = block.toString(),
         args   = source.match(/^[^\(]*\(([^\(]*)\)/)[1].split(/\s*,\s*/),

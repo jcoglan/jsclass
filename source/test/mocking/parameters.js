@@ -58,10 +58,10 @@ JS.Test.Mocking.extend({
       var argsCopy = JS.array(args), callback, context;
       
       if (this._yieldArgs) {
-        if (JS.isFn(argsCopy[argsCopy.length - 2])) {
+        if (typeof argsCopy[argsCopy.length - 2] === 'function') {
           context  = argsCopy.pop();
           callback = argsCopy.pop();
-        } else if (JS.isFn(argsCopy[argsCopy.length - 1])) {
+        } else if (typeof argsCopy[argsCopy.length - 1] === 'function') {
           context  = null;
           callback = argsCopy.pop();
         }

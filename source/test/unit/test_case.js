@@ -60,7 +60,7 @@ JS.Test.Unit.extend({
      * test represented by `testMethodName`.
      **/
     initialize: function(testMethodName) {
-      if (!JS.isFn(this[testMethodName])) throw 'invalid_test';
+      if (typeof this[testMethodName] !== 'function') throw 'invalid_test';
       this._methodName = testMethodName;
       this._testPassed = true;
     },
@@ -96,11 +96,11 @@ JS.Test.Unit.extend({
       
       if (!onError) onError = onSuccess;
       
-      var arity = JS.isFn(methodName)
+      var arity = (typeof methodName === 'function')
                 ? methodName.length
                 : this.__eigen__().instanceMethod(methodName).arity,
           
-          callable = JS.isFn(methodName) ? methodName : this[methodName],
+          callable = (typeof methodName === 'function') ? methodName : this[methodName],
           self     = this;
       
       if (arity === 0)

@@ -29,7 +29,7 @@ JS.DOM.Builder = new JS.Class('DOM.Builder', {
     }
     for (var i = 0, n = children.length; i < n; i++) {
       child = children[i];
-      if (JS.isFn(child)) {
+      if (typeof child === 'function') {
         child(new this.klass(element));
       } else if (JS.isType(child, 'string')) {
         element.appendChild(document.createTextNode(child));

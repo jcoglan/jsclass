@@ -41,8 +41,8 @@ JS.extend(JS.Module.prototype, {
     if (!object) return;
     
     name = this.displayName.replace(JS.END_WITHOUT_DOT, '$1#') + name;
-    if (JS.isFn(object.setName)) return object.setName(name);
-    if (JS.isFn(object)) object.displayName = name;
+    if (typeof object.setName === 'function') return object.setName(name);
+    if (typeof object === 'function') object.displayName = name;
   },
   
   define: function(name, callable, resolve) {

@@ -39,7 +39,7 @@ JS.Range = new JS.Class('Range', {
       }
       
       if (JS.isType(object, 'number')) return object + 1;
-      if (JS.isFn(object.succ)) return object.succ();
+      if (typeof object.succ === 'function') return object.succ();
       return null;
     }
   },

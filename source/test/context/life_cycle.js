@@ -26,7 +26,7 @@ JS.Test.Context.LifeCycle = new JS.Module({
     
     ClassMethods: new JS.Module({
       before: function(period, block) {
-        if (JS.isFn(period) || !block) {
+        if ((typeof period === 'function') || !block) {
           block  = period;
           period = 'each';
         }
@@ -35,7 +35,7 @@ JS.Test.Context.LifeCycle = new JS.Module({
       },
       
       after: function(period, block) {
-        if (JS.isFn(period) || !block) {
+        if ((typeof period === 'function') || !block) {
           block  = period;
           period = 'each';
         }
@@ -44,7 +44,7 @@ JS.Test.Context.LifeCycle = new JS.Module({
       },
       
       gatherCallbacks: function(callbackType, period) {
-        var outerCallbacks = JS.isFn(this.superclass.gatherCallbacks)
+        var outerCallbacks = (typeof this.superclass.gatherCallbacks === 'function')
           ? this.superclass.gatherCallbacks(callbackType, period)
           : [];
         

@@ -10,7 +10,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
     },
     
     isComparable: function(list) {
-      return list.all(function(item) { return JS.isFn(item.compareTo) });
+      return list.all(function(item) { return typeof item.compareTo === 'function' });
     },
     
     areEqual: function(expected, actual) {
@@ -19,7 +19,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
       if (expected === actual)
         return true;
       
-      if (expected && JS.isFn(expected.equals))
+      if (expected && typeof expected.equals === 'function')
         return expected.equals(actual);
       
       if (expected instanceof Function)
@@ -96,10 +96,10 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   count: function(block, context) {
-    if (JS.isFn(this.size)) return this.size();
+    if (typeof this.size === 'function') return this.size();
     var count = 0, object = block;
     
-    if (block && !JS.isFn(block))
+    if (block && typeof block !== 'function')
       block = function(x) { return JS.Enumerable.areEqual(x, object) };
     
     this.forEach(function() {
@@ -168,7 +168,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
   },
   
   forEachWithIndex: function(offset, block, context) {
-    if (JS.isFn(offset)) {
+    if (typeof offset === 'function') {
       context = block;
       block   = offset;
       offset  = 0;
@@ -212,7 +212,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
     if (needle === undefined) return this.enumFor('findIndex');
     
     var index = null,
-        block = JS.isFn(needle);
+        block = (typeof needle === 'function');
     
     this.forEachWithIndex(function(item, i) {
       if (index !== null) return;
@@ -231,8 +231,8 @@ JS.Enumerable = new JS.Module('Enumerable', {
     block = JS.Enumerable.toFn(block);
     var results = [];
     this.forEach(function(item) {
-      var match = JS.isFn(pattern.match) ? pattern.match(item)
-                : JS.isFn(pattern.test)  ? pattern.test(item)
+      var match = (typeof pattern.match === 'function') ? pattern.match(item)
+                : (typeof pattern.test === 'function')  ? pattern.test(item)
                 : JS.isType(item, pattern);
       
       if (!match) return;
@@ -265,7 +265,7 @@ JS.Enumerable = new JS.Module('Enumerable', {
                 block     = args[0];
                 break;
       
-      case 2:   if (JS.isFn(memo)) {
+      case 2:   if (typeof memo === 'function') {
                   memo    = K;
                   block   = args[0];
                   context = args[1];
@@ -440,10 +440,10 @@ JS.Enumerable = new JS.Module('Enumerable', {
         n       = arguments.length,
         block, context;
     
-    if (JS.isFn(arguments[n-1])) {
+    if (typeof arguments[n-1] === 'function') {
       block = arguments[n-1]; context = {};
     }
-    if (JS.isFn(arguments[n-2])) {
+    if (typeof arguments[n-2] === 'function') {
       block = arguments[n-2]; context = arguments[n-1];
     }
     util.forEach.call(arguments, function(arg) {
@@ -486,7 +486,7 @@ JS.Enumerable.extend({
         var args   = JS.array(arguments),
             target = args.shift(),
             method = target[object];
-        return JS.isFn(method) ? method.apply(target, args) : method;
+        return (typeof method === 'function') ? method.apply(target, args) : method;
       };
     return object;
   },

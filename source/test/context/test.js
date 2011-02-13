@@ -21,7 +21,7 @@ JS.Test.Context.Test = new JS.Module({
     
     opts = opts || {};
     
-    if (JS.isFn(opts)) {
+    if (typeof opts === 'function') {
       block = opts;
     } else {     
       if (opts.before !== undefined)

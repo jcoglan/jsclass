@@ -37,11 +37,6 @@ JS.indexOf = function(list, item) {
   return -1;
 };
 
-// TODO inline this method and remove it
-JS.isFn = function(object) {
-  return typeof object === 'function';
-};
-
 JS.isType = function(object, type) {
   if (typeof type === 'string')
     return typeof object === type;
@@ -80,6 +75,8 @@ JS.makeClass = function(parent) {
 
 JS.match = function(category, object) {
   if (object === undefined) return false;
-  return JS.isFn(category.test) ? category.test(object) : category.match(object);
+  return typeof category.test === 'function'
+       ? category.test(object)
+       : category.match(object);
 };
 

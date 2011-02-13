@@ -3,7 +3,7 @@ JS.Interface = new JS.Class('Interface', {
     this.test = function(object, returnName) {
       var n = methods.length;
       while (n--) {
-        if (!JS.isFn(object[methods[n]]))
+        if (typeof object[methods[n]] !== 'function')
           return returnName ? methods[n] : false;
       }
       return true;
