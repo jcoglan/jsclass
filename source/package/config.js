@@ -47,7 +47,8 @@ JS.Packages(function() { with(this) {
                             .requires('JS.Module');
 
     module('benchmark')     .provides('JS.Benchmark')
-                            .requires('JS.Module');
+                            .requires('JS.Module')
+                            .requires('JS.Console');
     
     module('comparable')    .provides('JS.Comparable')
                             .requires('JS.Module');
