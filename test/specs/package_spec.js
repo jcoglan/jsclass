@@ -57,7 +57,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
   include(PackageSpecHelper)
   
   before(function() {
-    JS.Package.onerror = this.method('processError')
+    JS.Package.onerror = this.method('addError')
     
     this._objectNames = []
     this._undefined   = []

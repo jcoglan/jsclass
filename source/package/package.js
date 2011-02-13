@@ -119,7 +119,7 @@ JS.Package = function(loader) {
         name, object;
     
     while (i--) { name = names[i];
-      object = klass.getObject(name);
+      object = klass.getObject(name, this._exports);
       if (object !== undefined) continue;
       if (withExceptions)
         return klass._throw('Expected package at ' + this._loader + ' to define ' + name);
