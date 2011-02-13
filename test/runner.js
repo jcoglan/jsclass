@@ -1,4 +1,4 @@
-var CWD = (typeof CWD === 'undefined') ? '.' : CWD
+JS.ENV.CWD = (typeof CWD === 'undefined') ? '.' : CWD
 
 JS.Packages(function() { with(this) {
     autoload(/^(.*)Spec$/, {from: CWD + '/test/specs', require: 'JS.$1'})

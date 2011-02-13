@@ -92,6 +92,7 @@ JS.Package = function(loader) {
     if (this._events[eventType]) return block.call(scope);
     var list = this._observers[eventType] = this._observers[eventType] || [];
     list.push([block, scope]);
+    this.load();
   };
   
   instance.fire = function(eventType) {
@@ -189,19 +190,18 @@ JS.Package = function(loader) {
       while (i--) eventList.push([event, packages.list[i], i]);
     }
     
-    var waiting = i = eventList.length, event, pkg;
+    var waiting = i = eventList.length;
     if (waiting === 0) return block && block.call(scope, objects);
     
-    while (i--) {
-      event = eventList[i];
-      pkg = klass.getByName(event[1]);
-      pkg.on(event[0], function() {
-        objects[event[0]][event[2]] = klass.getObject(event[1], pkg._exports);
-        waiting -= 1;
-        if (waiting === 0 && block) block.call(scope, objects);
-      });
-      pkg.load();
-    }
+    while (i--)
+      (function(event) {
+        var pkg = klass.getByName(event[1]);
+        pkg.on(event[0], function() {
+          objects[event[0]][event[2]] = klass.getObject(event[1], pkg._exports);
+          waiting -= 1;
+          if (waiting === 0 && block) block.call(scope, objects);
+        });
+      })(eventList[i]);
   };
   
   //================================================================

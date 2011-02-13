@@ -80,7 +80,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
   describe("loading a CommonJS module", function() {
     before(function() {
       JS.Packages(function() { with(this) {
-        file(JSCLASS_PATH + "/../../test/fixtures/common.js").provides("Common", "HTTP")
+        file(CWD + "/test/fixtures/common.js").provides("Common", "HTTP")
       }})
     })
     after(function() { JS.Package.remove("Common") })
