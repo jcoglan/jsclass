@@ -12,7 +12,7 @@ JS.Packages(function() { with(this) {
     pkg('Test.MockingSpec').requires('TestSpecHelpers')
 }})
 
-JS.require('JS.Test', 'JS.MethodChain', function() {
+JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
     JS.require( 'Test.UnitSpec',
                 'Test.ContextSpec',
                 'Test.MockingSpec',
@@ -41,5 +41,5 @@ JS.require('JS.Test', 'JS.MethodChain', function() {
                 'StateSpec',
                 'TSortSpec',
             
-    JS.Test.method('autorun'))
+    Test.method('autorun'))
 })

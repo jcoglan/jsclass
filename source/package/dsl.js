@@ -73,7 +73,11 @@ JS.require = function() {
     requirements.push(arguments[i]);
     i += 1;
   }
+  var callback = arguments[i], context = arguments[i+1];
   
-  JS.Package.when({complete: requirements}, arguments[i], arguments[i+1]);
+  JS.Package.when({complete: requirements}, function(objects) {
+    if (!callback) return;
+    callback.apply(context || null, objects && objects.complete);
+  });
 };
 

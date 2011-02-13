@@ -142,7 +142,8 @@ JS.Package = function(loader) {
         this.fire('complete');
       }, this);
       
-      var self = this, fireOnLoad = function() {
+      var self = this, fireOnLoad = function(exports) {
+        self._exports = exports;
         if (self._onload) self._onload();
         self.isLoaded(true);
         self.fire('load');
@@ -179,23 +180,27 @@ JS.Package = function(loader) {
   // Class-level event API, handles group listeners
   
   klass.when = function(eventTable, block, scope) {
-    var eventList = [], event, packages, i;
+    var eventList = [], objects = {}, event, packages, i;
     for (event in eventTable) {
       if (!eventTable.hasOwnProperty(event)) continue;
-      packages = new klass.OrderedSet(eventTable[event], function(name) { return klass.getByName(name) });
+      objects[event] = [];
+      packages = new klass.OrderedSet(eventTable[event]);
       i = packages.list.length;
-      while (i--) eventList.push([event, packages.list[i]]);
+      while (i--) eventList.push([event, packages.list[i], i]);
     }
     
-    var waiting = i = eventList.length;
-    if (waiting === 0) return block && block.call(scope);
+    var waiting = i = eventList.length, event, pkg;
+    if (waiting === 0) return block && block.call(scope, objects);
     
     while (i--) {
-      eventList[i][1].on(eventList[i][0], function() {
+      event = eventList[i];
+      pkg = klass.getByName(event[1]);
+      pkg.on(event[0], function() {
+        objects[event[0]][event[2]] = klass.getObject(event[1], pkg._exports);
         waiting -= 1;
-        if (waiting === 0 && block) block.call(scope);
+        if (waiting === 0 && block) block.call(scope, objects);
       });
-      eventList[i][1].load();
+      pkg.load();
     }
   };
   
@@ -275,16 +280,21 @@ JS.Package = function(loader) {
     return this._indexByName[name] = this._indexByName[name] || {};
   };
   
-  klass.getObject = function(name) {
-    var cached = this.getFromCache(name);
+  klass.getObject = function(name, rootObject) {
+    if (typeof name !== 'string') return undefined;
+    
+    var cached = rootObject ? {} : this.getFromCache(name);
     if (cached.obj !== undefined) return cached.obj;
     
-    var object = this.ENV,
+    var object = rootObject || this.ENV,
         parts  = name.split('.'), part;
     
     while (part = parts.shift()) object = object && object[part];
     
-    return this.getFromCache(name).obj = object;
+    if (rootObject && object === undefined)
+      return this.getObject(name);
+    
+    return cached.obj = object;
   };
   
 })(JS.Package);

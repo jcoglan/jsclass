@@ -14,7 +14,6 @@ JS.Package.RhinoLoader = {
     
     var requirePath = new java.io.File(cwd, module).toString();
     this._currentPath = requirePath + '.js';
-    require(requirePath);
-    fireCallbacks();
+    fireCallbacks(require(requirePath));
   }
 };

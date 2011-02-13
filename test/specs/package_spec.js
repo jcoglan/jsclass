@@ -77,6 +77,28 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
     })
   })
   
+  describe("loading a CommonJS module", function() {
+    before(function() {
+      JS.Packages(function() { with(this) {
+        file(JSCLASS_PATH + "/../../test/fixtures/common.js").provides("Common", "HTTP")
+      }})
+    })
+    after(function() { JS.Package.remove("Common") })
+    
+    it("does not exist initially", function() {
+      assertEqual( "undefined", typeof Common )
+    })
+    
+    it("yields the required objects to the callback", function(resume) {
+      JS.require("Common", "HTTP", function(Common, HTTP) {
+        resume(function() {
+          assertEqual( "CommonJS module", Common.name )
+          assertEqual( "CommonJS HTTP lib", HTTP.name )
+        })
+      })
+    })
+  })
+  
   describe("loading a package for an undefined object", function() {
     before(function() {
       declare("Standalone", 500)
