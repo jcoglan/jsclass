@@ -177,6 +177,16 @@ JS.ENV.ClassSpec = JS.Test.describe(JS.Class, function() {
       assertEqual( "foo, bar", method("foo", "bar") )
     })
     
+    // For backward compatibility: now we can add arbitrary keywords,
+    // we don't want to clobber user-defined methods with the same names
+    it("calls the real method named callSuper if one exists", function() {
+      var Child = new JS.Class(Parent, {
+        aMethod: function() { return this.callSuper() },
+        callSuper: function() { return "super" }
+      })
+      assertEqual( "super", new Child().aMethod() )
+    })
+    
     describe("applying a function", function() {
       before(function() {
         this.Child = new JS.Class(Parent, {

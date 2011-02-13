@@ -46,21 +46,27 @@ JS.extend(JS.Method.prototype, {
     if (keywords.length === 0) return callable;
     
     return function() {
-      var N = keywords.length, j = N, previous = {}, keyword;
+      var N = keywords.length, j = N, previous = {}, keyword, existing;
       
       while (j--) {
-        keyword = keywords[j];
+        keyword  = keywords[j];
+        existing = this[keyword.name];
+        
+        if (existing && !existing.__kwd__) continue;
+        
         previous[keyword.name] = {
-          _value: this[keyword.name],
+          _value: existing,
           _own:   this.hasOwnProperty(keyword.name)
         };
         keyword.filter.call(method, environment, this, arguments);
+        this[keyword.name].__kwd__ = true;
       }
       var returnValue = callable.apply(this, arguments),
           j = N;
       
       while (j--) {
         keyword = keywords[j];
+        if (!previous[keyword.name]) continue;
         if (previous[keyword.name]._own)
           this[keyword.name] = previous[keyword.name]._value;
         else
