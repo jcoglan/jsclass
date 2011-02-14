@@ -31,9 +31,9 @@ JS.Test.extend({
   Context: new JS.Module({
     extend: {
       included: function(base) {
-        base.extend(JS.Test.Context.Context);
-        base.include(JS.Test.Context.LifeCycle);
-        base.extend(JS.Test.Context.Test);
+        base.extend(JS.Test.Context.Context, false);
+        base.include(JS.Test.Context.LifeCycle, {_resolve: false});
+        base.extend(JS.Test.Context.Test, false);
         base.include(JS.Console);
       },
       
@@ -43,7 +43,7 @@ JS.Test.extend({
       Context: new JS.Module({
         getContextName: function() {
           this._contextName = this._contextName || '';
-          return JS.isFn(this.superclass.getContextName)
+          return (typeof this.superclass.getContextName === 'function')
             ? (this.superclass.getContextName() + ' ' + this._contextName).replace(/^\s+/, '')
             : this.displayName;
         },
@@ -80,10 +80,14 @@ JS.Test.extend({
          *   }})
          **/
         context: function(name, block) {
-          var klass = new JS.Class(this);
+          var klass = new JS.Class(this, {}, {_resolve: false});
+          klass.__eigen__().resolve();
+          
           klass.setContextName(name.toString());
           klass.setName(klass.getContextName());
-          JS.Ruby(klass, block);
+          
+          JS.Test.selfless(block).call(klass);
+          
           return klass;
         }
       })
@@ -91,16 +95,36 @@ JS.Test.extend({
   }),
   
   describe: function(name, block) {
-    var klass = new JS.Class(name.toString(), JS.Test.Unit.TestCase);
-    klass.include(JS.Test.Context);
-    JS.Ruby(klass, block);
+    var klass = new JS.Class(name.toString(), JS.Test.Unit.TestCase, {}, {_resolve: false});
+    klass.include(JS.Test.Context, {_resolve: false});
+    klass.__eigen__().resolve();
+    
+    JS.Test.selfless(block).call(klass);
+    
     return klass;
-  }
+  },
+  
+  selfless: function(block) {
+    if (typeof block !== 'function') return block;
+    
+    var source = block.toString(),
+        args   = source.match(/^[^\(]*\(([^\(]*)\)/)[1].split(/\s*,\s*/),
+        body   = source.match(/^[^\{]*{((.*\n*)*)}/m)[1];
+    
+    body = 'with(this) { ' + body + ' }';
+    
+    if (args.length === 3)
+      return new Function(args[0], args[1], args[2], body);
+    else if (args.length === 2)
+      return new Function(args[0], args[1], body);
+    else if (args.length === 1)
+      return new Function(args[0], body);
+    else if (args.length === 0)
+      return new Function(body);
+   }
 });
 
-JS.Test.Context.Context.include({
-  describe: JS.Test.Context.Context.instanceMethod('context')
-});
+JS.Test.Context.Context.alias({describe: 'context'});
 
 JS.Test.extend({
   context:  JS.Test.describe

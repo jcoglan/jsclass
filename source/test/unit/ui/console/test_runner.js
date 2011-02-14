@@ -17,7 +17,7 @@ JS.Test.Unit.UI.extend({
          * for running the passed `suite`.
          **/
         initialize: function(suite, outputLevel) {
-          this._suite = JS.isFn(suite.suite) ? suite.suite() : suite;
+          this._suite = (typeof suite.suite === 'function') ? suite.suite() : suite;
           this._outputLevel = outputLevel || JS.Test.Unit.UI.NORMAL;
           this._alreadyOutputted = false;
           this._faults = [];

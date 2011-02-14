@@ -1,8 +1,8 @@
 JS.State = new JS.Module('State', {
   __getState__: function(state) {
-    return  (typeof state === 'object' && state) ||
-            (typeof state === 'string' && ((this.states || {})[state] || {})) ||
-            {};
+    if (typeof state === 'object') return state;
+    if (typeof state === 'string') return (this.states || {})[state];
+    return {};
   },
   
   setState: function(state) {
@@ -19,6 +19,16 @@ JS.State = new JS.Module('State', {
   },
   
   extend: {
+    ClassMethods: new JS.Module({
+      states: function(block) {
+        this.define('states', JS.State.buildCollection(this, block));
+      }
+    }),
+    
+    included: function(klass) {
+      klass.extend(this.ClassMethods);
+    },
+    
     stub: function() { return this; },
     
     buildStubs: function(stubs, collection, states) {
@@ -26,7 +36,8 @@ JS.State = new JS.Module('State', {
       for (state in states) {
         collection[state] = {};
         for (method in states[state]) stubs[method] = this.stub;
-    } },
+      }
+    },
     
     findStates: function(collections, name) {
       var i = collections.length, results = [];
@@ -58,11 +69,13 @@ JS.State = new JS.Module('State', {
         }
         
         methods = {};
-        for (name in stubs) { if (!klass.prototype[name]) methods[name] = stubs[name]; }
+        for (name in stubs) {
+          if (!klass.prototype[name]) methods[name] = stubs[name];
+        }
         klass.include(methods);
         collection[state] = new klass;
       }
-      if (module.__res__) this.addMethods(stubs, module.__res__.klass);
+      if (module.__tgt__) this.addMethods(stubs, module.__tgt__.klass);
       return collection;
     },
     
@@ -70,28 +83,21 @@ JS.State = new JS.Module('State', {
       if (!klass) return;
       
       var methods = {},
-          p       = klass.prototype,
+          proto   = klass.prototype,
           method;
       
       for (method in state) {
-        if (p[method]) continue;
-        p[method] = klass.__mod__.__fns__[method] = this.wrapped(method);
+        if (proto[method]) continue;
+        klass.define(method, this.wrapped(method));
       }
     },
     
     wrapped: function(method) {
       return function() {
         var func = (this.__state__ || {})[method];
-        return func ? func.apply(this, arguments): this;
+        return func ? func.apply(this, arguments) : this;
       };
     }
   }
 });
 
-JS.Module.include({define: (function(wrapped) {
-  return function(name, block) {
-    if (name === 'states' && typeof block === 'object')
-      arguments[1] = JS.State.buildCollection(this, block);
-    return wrapped.apply(this, arguments);
-  };
-})(JS.Module.prototype.define)}, true);

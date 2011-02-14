@@ -30,7 +30,7 @@ JS.Test.Unit.extend({
      * block yields `true`.
      **/
     assertBlock: function(message, block, context) {
-      if (JS.isFn(message)) {
+      if (typeof message === 'function') {
         context = block;
         block   = message;
         message = null;
@@ -174,7 +174,9 @@ JS.Test.Unit.extend({
       this.__wrapAssertion__(function() {
         var fullMessage = this.buildMessage(message, "<?> expected not to match\n<?>.", string, pattern);
         this.assertBlock(fullMessage, function() {
-          return JS.isFn(pattern.test) ? !pattern.test(string) : !pattern.match(string);
+          return (typeof pattern.test === 'function')
+               ? !pattern.test(string)
+               : !pattern.match(string);
         });
       });
     },
@@ -255,7 +257,7 @@ JS.Test.Unit.extend({
     
     __processExceptionArgs__: function(args) {
       var args     = JS.array(args),
-          context  = JS.isFn(args[args.length - 1]) ? null : args.pop(),
+          context  = (typeof args[args.length - 1] === 'function') ? null : args.pop(),
           block    = args.pop(),
           message  = JS.isType(args[args.length - 1], 'string') ? args.pop() : '',
           expected = new JS.Enumerable.Collection(args);

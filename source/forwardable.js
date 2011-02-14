@@ -5,7 +5,7 @@ JS.Forwardable = new JS.Module('Forwardable', {
       var object   = this[subject],
           property = object[method];
       
-      return JS.isFn(property)
+      return (typeof property === 'function')
           ? property.apply(object, arguments)
           : property;
     }, resolve !== false);

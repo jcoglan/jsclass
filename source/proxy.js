@@ -11,7 +11,7 @@ JS.Proxy = new JS.Module('Proxy', {
         
         for (method in klass.prototype) {
           func = klass.prototype[method];
-          if (JS.isFn(func) && func !== klass) func = this.klass.forward(method);
+          if (typeof func === 'function' && func !== klass) func = this.klass.forward(method);
           delegators[method] = func;
         }
         
@@ -49,7 +49,7 @@ JS.Proxy = new JS.Module('Proxy', {
             var method, func;
             for (method in source) {
               func = source[method];
-              if (JS.isFn(func)) func = JS.Proxy.Virtual.forward(method);
+              if (typeof func  === 'function') func = JS.Proxy.Virtual.forward(method);
               this[method] = func;
             }
           }

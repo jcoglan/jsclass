@@ -37,7 +37,7 @@ JS.Hash = new JS.Class('Hash', {
     
     codeFor: function(object) {
       if (typeof object !== 'object') return String(object);
-      return JS.isFn(object.hash)
+      return (typeof object.hash === 'function')
           ? object.hash()
           : object.toString();
     }
@@ -128,7 +128,7 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   getDefault: function(key) {
-    return JS.isFn(this._default)
+    return (typeof this._default === 'function')
         ? this._default(this, key)
         : (this._default || null);
   },
@@ -156,7 +156,7 @@ JS.Hash = new JS.Class('Hash', {
     if (pair) return pair.value;
     
     if (defaultValue === undefined) throw new Error('key not found');
-    if (JS.isFn(defaultValue)) return defaultValue.call(context || null, key);
+    if (typeof defaultValue === 'function') return defaultValue.call(context || null, key);
     return defaultValue;
   },
   
@@ -259,10 +259,14 @@ JS.Hash = new JS.Class('Hash', {
     var bucket, index, result;
     
     bucket = this._bucketForKey(key);
-    if (!bucket) return JS.isFn(block) ? this.fetch(key, block) : this.getDefault(key);
+    if (!bucket) return (typeof block === 'function')
+                      ? this.fetch(key, block)
+                      : this.getDefault(key);
     
     index = this._indexInBucket(bucket, key);
-    if (index < 0) return JS.isFn(block) ? this.fetch(key, block) : this.getDefault(key);
+    if (index < 0) return (typeof block === 'function')
+                        ? this.fetch(key, block)
+                        : this.getDefault(key);
     
     result = bucket[index].value;
     this._delete(bucket, index);
@@ -321,10 +325,10 @@ JS.Hash = new JS.Class('Hash', {
   },
   
   update: function(hash, block, context) {
-    var blockGiven = JS.isFn(block);
+    var givenBlock = (typeof block === 'function');
     hash.forEach(function(pair) {
       var key = pair.key, value = pair.value;
-      if (blockGiven && this.hasKey(key))
+      if (givenBlock && this.hasKey(key))
         value = block.call(context || null, key, this.get(key), value);
       this.store(key, value);
     }, this);
@@ -343,11 +347,11 @@ JS.Hash = new JS.Class('Hash', {
   }
 });
 
-JS.Hash.include({
-  includes: JS.Hash.instanceMethod('hasKey'),
-  index:    JS.Hash.instanceMethod('key'),
-  put:      JS.Hash.instanceMethod('store')
-}, true);
+JS.Hash.alias({
+  includes: 'hasKey',
+  index:    'key',
+  put:      'store'
+});
 
 JS.OrderedHash = new JS.Class('OrderedHash', JS.Hash, {
   assoc: function(key, createIfAbsent) {

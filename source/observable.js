@@ -34,7 +34,7 @@ JS.Observable = new JS.Module('Observable', {
       observer = this.__observers__[i];
       block    = observer._block;
       context  = observer._context;
-      if (JS.isFn(block)) block.apply(context || null, arguments);
+      if (typeof block === 'function') block.apply(context || null, arguments);
       else block[context || JS.Observable.DEFAULT_METHOD].apply(block, arguments);
     }
   },
@@ -49,8 +49,8 @@ JS.Observable = new JS.Module('Observable', {
   }
 });
 
-JS.Observable.include({
-  subscribe:    JS.Observable.instanceMethod('addObserver'),
-  unsubscribe:  JS.Observable.instanceMethod('removeObserver')
+JS.Observable.alias({
+  subscribe:    'addObserver',
+  unsubscribe:  'removeObserver'
 }, true);
 

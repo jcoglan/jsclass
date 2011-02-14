@@ -1,26 +1,44 @@
-// This file bootstraps the framework by redefining Module and Class using their
-// own prototypes and mixing in methods from Kernel, making these classes appear
-// to be instances of themselves.
-
-JS.Module = new JS.Class('Module', JS.Module.prototype);
-JS.Class = new JS.Class('Class', JS.Module, JS.Class.prototype);
-JS.Module.klass = JS.Module.constructor =
-JS.Class.klass = JS.Class.constructor = JS.Class;
-
-JS.extend(JS.Module, {
-  _observers: [],
+(function() {
+  var methodsFromPrototype = function(klass) {
+    var methods = {},
+        proto   = klass.prototype;
+    
+    for (var field in proto) {
+      if (!proto.hasOwnProperty(field)) continue;
+      methods[field] = JS.Method.create(klass, field, proto[field]);
+    }
+    return methods;
+  };
   
-  __chainq__: [],
+  var classify = function(name, parentName) {
+    var klass  = JS[name],
+        parent = JS[parentName];
+    
+    klass.__inc__ = [];
+    klass.__dep__ = [];
+    klass.__fns__ = methodsFromPrototype(klass);
+    klass.__tgt__ = klass.prototype;
+    
+    klass.prototype.constructor =
+    klass.prototype.klass = klass;
+    
+    JS.extend(klass, JS.Class.prototype);
+    klass.include(parent || JS.Kernel);
+    klass.setName(name);
+    
+    klass.constructor = klass.klass = JS.Class;
+  };
   
-  methodAdded: function(block, context) {
-    this._observers.push([block, context]);
-  },
+  classify('Method');
+  classify('Module');
+  classify('Class', 'Module');
   
-  _notify: function(name, object) {
-    var obs = this._observers, i = obs.length;
-    while (i--) obs[i][0].call(obs[i][1] || null, name, object);
-  }
-});
+  var eigen = JS.Kernel.instanceMethod('__eigen__');
+  
+  eigen.call(JS.Method);
+  eigen.call(JS.Module);
+  eigen.call(JS.Class).include(JS.Module.__meta__);
+})();
 
 JS.NotImplementedError = new JS.Class('NotImplementedError', Error);
 

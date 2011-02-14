@@ -169,6 +169,37 @@ JS.ENV.ClassSpec = JS.Test.describe(JS.Class, function() {
       })
     })
     
+    it("can be bound using Kernel#method()", function() {
+      var Child = new JS.Class(Parent, {
+        aMethod: function() { return this.method("callSuper") }
+      })
+      var method = new Child().aMethod()
+      assertEqual( "foo, bar", method("foo", "bar") )
+    })
+    
+    // For backward compatibility: now we can add arbitrary keywords,
+    // we don't want to clobber user-defined methods with the same names
+    it("calls the real method named callSuper if one exists", function() {
+      var Child = new JS.Class(Parent, {
+        aMethod: function() { return this.callSuper() },
+        callSuper: function() { return "super" }
+      })
+      assertEqual( "super", new Child().aMethod() )
+    })
+    
+    describe("applying a function", function() {
+      before(function() {
+        this.Child = new JS.Class(Parent, {
+          aMethod: function() { return this.name + ": " + this.callSuper() }
+        })
+        this.object = {name: "user"}
+      })
+      
+      it("uses the inheritance chain of the applied method", function() {
+        assertEqual( "user: foo, bar", Child.prototype.aMethod.call(object, "foo", "bar") )
+      })
+    })
+    
     describe("calling the superclass with implicit args", function() {
       before(function() {
         this.Child = new JS.Class(Parent, {
@@ -520,7 +551,7 @@ JS.ENV.ClassSpec = JS.Test.describe(JS.Class, function() {
     })
     
     it("returns the named instance method", function() {
-      assertSame( module.prototype.bar, module.instanceMethod("bar") )
+      assertSame( module.prototype.bar, module.instanceMethod("bar").callable )
     })
   })
   
@@ -572,6 +603,72 @@ JS.ENV.ClassSpec = JS.Test.describe(JS.Class, function() {
         Module.define("someCall", function() { return "Module" })
         assertEqual( "parent", object.someCall() )
       })
+    })
+  })
+  
+  describe("#blockGiven", function() {
+    before(function() {
+      this.Class = new JS.Class({
+        noArgs:  function() { return this.blockGiven() },
+        oneArg:  function(a) { return this.blockGiven() },
+        twoArgs: function(a,b) { return this.blockGiven() }
+      })
+      this.object = new Class()
+    })
+    
+    it("returns true if a block is passed after all the args", function() {
+      assert( object.noArgs(function() {}) )
+      assert( object.oneArg(0, function() {}) )
+      assert( object.twoArgs(0, 1, function() {}) )
+    })
+    
+    it("returns true if a block and context are passed after all the args", function() {
+      assert( object.noArgs(function() {}, {}) )
+      assert( object.oneArg(0, function() {}, {}) )
+      assert( object.twoArgs(0, 1, function() {}, {}) )
+    })
+    
+    it("returns false is a block is given within the arg list", function() {
+      assert( !object.oneArg(function() {}) )
+      assert( !object.twoArgs(0, function() {}) )
+    })
+    
+    it("returns false if the item in block position is not a function", function() {
+      assert( !object.noArgs(true) )
+      assert( !object.oneArg(0, true) )
+      assert( !object.twoArgs(0, 1, true) )
+    })
+  })
+  
+  describe("#yield", function() {
+    before(function() {
+      this.Class = new JS.Class({
+        noArgs:  function() { return this.yieldWith("hi", "there") },
+        twoArgs: function(a,b) { this.yieldWith(b) }
+      })
+      this.object = new Class()
+    })
+    
+    it("calls the passed callback with the values", function() {
+      var result
+      object.noArgs(function() { result = JS.array(arguments) })
+      assertEqual( ["hi", "there"], result )
+    })
+    
+    it("returns the result of yielding to the callback", function() {
+      assertEqual( "result", object.noArgs(function() { return "result" }) )
+    })
+    
+    it("allows arguments before the callback", function() {
+      var result
+      object.twoArgs("o", "hai", function() { result = JS.array(arguments) })
+      assertEqual( ["hai"], result )
+    })
+    
+    it("allows a context to be passed following the block", function() {
+      var context = {}, result
+      object.twoArgs("o", "hai", function() { result = [JS.array(arguments), this] }, context)
+      assertEqual( [["hai"], context], result )
     })
   })
 })

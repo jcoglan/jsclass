@@ -229,11 +229,11 @@ JS.Set = new JS.Class('Set', {
   }
 });
 
-JS.Set.include({
-  n:  JS.Set.instanceMethod('intersection'),
-  u:  JS.Set.instanceMethod('union'),
-  x:  JS.Set.instanceMethod('product')
-}, false);
+JS.Set.alias({
+  n:  'intersection',
+  u:  'union',
+  x:  'product'
+});
 
 JS.HashSet = JS.Set;
 
@@ -259,7 +259,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     this.klass.forEach(this._members, block, context);
     return this;
   },
-
+  
   add: function(item) {
     var point = this._indexOf(item, true);
     if (point === null) return false;
@@ -272,17 +272,17 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     this._members = [];
     this.size = this.length = 0;
   },
-
+  
   contains: function(item) {
     return this._indexOf(item) !== -1;
   },
-
+  
   rebuild: function() {
     var members = this._members;
     this.clear();
     this.merge(members);
   },
-
+  
   remove: function(item) {
     var index = this._indexOf(item);
     if (index === -1) return;
@@ -303,7 +303,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
     }
     return this;
   },
-
+  
   _indexOf: function(item, insertionPoint) {
     var items   = this._members,
         n       = items.length,

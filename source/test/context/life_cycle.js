@@ -26,25 +26,25 @@ JS.Test.Context.LifeCycle = new JS.Module({
     
     ClassMethods: new JS.Module({
       before: function(period, block) {
-        if (JS.isFn(period) || !block) {
+        if ((typeof period === 'function') || !block) {
           block  = period;
           period = 'each';
         }
         
-        this['before_' + (period + '_') + 'callbacks'].push(JS.Ruby.selfless(block));
+        this['before_' + (period + '_') + 'callbacks'].push(JS.Test.selfless(block));
       },
       
       after: function(period, block) {
-        if (JS.isFn(period) || !block) {
+        if ((typeof period === 'function') || !block) {
           block  = period;
           period = 'each';
         }
         
-        this['after_' + (period + '_') + 'callbacks'].push(JS.Ruby.selfless(block));
+        this['after_' + (period + '_') + 'callbacks'].push(JS.Test.selfless(block));
       },
       
       gatherCallbacks: function(callbackType, period) {
-        var outerCallbacks = JS.isFn(this.superclass.gatherCallbacks)
+        var outerCallbacks = (typeof this.superclass.gatherCallbacks === 'function')
           ? this.superclass.gatherCallbacks(callbackType, period)
           : [];
         

@@ -39,7 +39,7 @@ JS.Range = new JS.Class('Range', {
       }
       
       if (JS.isType(object, 'number')) return object + 1;
-      if (JS.isFn(object.succ)) return object.succ();
+      if (typeof object.succ === 'function') return object.succ();
       return null;
     }
   },
@@ -129,14 +129,14 @@ JS.Range.extend({
   DIGITS:     new JS.Range('0','9'),
   LOWERCASE:  new JS.Range('a','z'),
   UPPERCASE:  new JS.Range('A','Z'),
-  SETS: ['DIGITS', 'LOWERCASE', 'UPPERCASE']
+  SETS:       ['DIGITS', 'LOWERCASE', 'UPPERCASE']
 });
 
-JS.Range.include({
-  begin:  JS.Range.instanceMethod('first'),
-  end:    JS.Range.instanceMethod('last'),
-  covers: JS.Range.instanceMethod('includes'),
-  match:  JS.Range.instanceMethod('includes'),
-  member: JS.Range.instanceMethod('includes')
+JS.Range.alias({
+  begin:  'first',
+  end:    'last',
+  covers: 'includes',
+  match:  'includes',
+  member: 'includes'
 });
 

@@ -12,6 +12,7 @@ JS.Packages(function() { with(this) {
     
     module('core')          .provides('JS.Module',
                                       'JS.Class',
+                                      'JS.Method',
                                       'JS.Kernel',
                                       'JS.Singleton',
                                       'JS.Interface');
@@ -34,8 +35,7 @@ JS.Packages(function() { with(this) {
                                       'JS.DOM',
                                       'JS.Enumerable',
                                       'JS.SortedSet',
-                                      'JS.Comparable',
-                                      'JS.Ruby')
+                                      'JS.Comparable')
                             .styling(PATH + 'assets/testui.css');
     
     module('dom')           .provides('JS.DOM',
@@ -111,9 +111,6 @@ JS.Packages(function() { with(this) {
                                       'JS.Proxy.Virtual')
                             .requires('JS.Module',
                                       'JS.Class');
-    
-    module('ruby')          .provides('JS.Ruby')
-                            .requires('JS.Class');
     
     module('stack_trace')   .provides('JS.StackTrace')
                             .requires('JS.Module',

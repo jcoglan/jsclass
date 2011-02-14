@@ -31,6 +31,8 @@ JS.MethodChain.exec = function(queue, object) {
   return object;
 };
 
+JS.MethodChain.displayName = 'MethodChain';
+
 JS.MethodChain.toString = function() {
   return 'MethodChain';
 };
@@ -70,18 +72,18 @@ JS.MethodChain.addMethod = function(name) {
   func.displayName = 'MethodChain#' + name;
 };
 
-JS.MethodChain.displayName = 'MethodChain';
-
 JS.MethodChain.addMethods = function(object) {
   var methods = [], property, i;
   
-  for (property in object)
-    Number(property) !== property && methods.push(property);
+  for (property in object) {
+    if (Number(property) !== property) methods.push(property);
+  }
   
   if (object instanceof Array) {
     i = object.length;
-    while (i--)
-      typeof object[i] === 'string' && methods.push(object[i]);
+    while (i--) {
+      if (typeof object[i] === 'string') methods.push(object[i]);
+    }
   }
   i = methods.length;
   while (i--) this.addMethod(methods[i]);
@@ -92,8 +94,8 @@ JS.MethodChain.addMethods = function(object) {
 
 JS.ENV.it = JS.ENV.its = function() { return new JS.MethodChain() };
 
-JS.Module.methodAdded(function(name) {
-  JS.MethodChain.addMethod(name);
+JS.Method.added(function(method) {
+  JS.MethodChain.addMethod(method.name);
 });
 
 JS.Kernel.include({
@@ -121,94 +123,107 @@ JS.Kernel.include({
             (typeof base === 'function' && base.apply(this, args)) ||
             this;
   }
-}, true);
+});
 
 (function() {
-  var queue = JS.Module.__chainq__,
+  var queue = JS.Module.__queue__,
       n     = queue.length;
   
   while (n--) JS.MethodChain.addMethods(queue[n]);
-  JS.Module.__chainq__ = null;
+  delete JS.Module.__queue__;
 })();
 
+// Last updated December 30 2010 (483 methods)
 JS.MethodChain.addMethods([
-  "abs", "accept", "accessKey", "acos", "addEventListener", "align", "alt",
-  "altKey", "anchor", "appendChild", "apply", "arguments", "arity", "asin",
-  "atan", "atan2", "attributes", "azimuth", "background", "backgroundAttachment",
+  "abs", "accept", "acceptCharset", "accesskey", "acos", "action", "add",
+  "addEventListener", "alt", "altKey", "anchor", "appendChild", "apply",
+  "archive", "arguments", "arity", "asin", "atan", "atan2", "attributes",
+  "autocomplete", "autofocus", "azimuth", "background", "backgroundAttachment",
   "backgroundColor", "backgroundImage", "backgroundPosition", "backgroundRepeat",
-  "baseURI", "baseURIObject", "big", "blink", "blur", "bold", "border",
+  "baseURI", "baseURIObject", "big", "bind", "blink", "blur", "bold", "border",
   "borderBottom", "borderBottomColor", "borderBottomStyle", "borderBottomWidth",
   "borderCollapse", "borderColor", "borderLeft", "borderLeftColor",
   "borderLeftStyle", "borderLeftWidth", "borderRight", "borderRightColor",
   "borderRightStyle", "borderRightWidth", "borderSpacing", "borderStyle",
   "borderTop", "borderTopColor", "borderTopStyle", "borderTopWidth",
-  "borderWidth", "bottom", "bubbles", "button", "call", "caller", "clientHeight",
-  "clientLeft", "clientTop", "clientWidth", "clientX", "clientY", "clip",
-  "cloneNode", "color", "cols", "compareDocumentPosition", "concat",
-  "constructor", "content", "cos", "counterIncrement", "counterReset",
-  "create", "cssFloat", "ctrlKey", "cue", "cueAfter", "cueBefore",
-  "currentTarget", "cursor", "defaultChecked", "defaultValue",
+  "borderWidth", "bottom", "bubbles", "button", "call", "caller", "cancelBubble",
+  "cancelable", "captionSide", "ceil", "charAt", "charCode", "charCodeAt",
+  "checkValidity", "childNodes", "classList", "className", "clear", "click",
+  "clientHeight", "clientLeft", "clientTop", "clientWidth", "clientX", "clientY",
+  "clip", "cloneNode", "codebase", "codetype", "color", "cols",
+  "compareDocumentPosition", "concat", "constructor", "content", "cos",
+  "counterIncrement", "counterReset", "create", "cssFloat", "ctrlKey", "cue",
+  "cueAfter", "cueBefore", "currentTarget", "cursor", "data", "declare",
   "defineProperties", "defineProperty", "description", "detail", "dir",
-  "direction", "disabled", "dispatchEvent", "display", "elevation", "emptyCells",
-  "eval", "eventPhase", "every", "exec", "exp", "explicitOriginalTarget",
-  "fileName", "files", "filter", "firstChild", "fixed", "floor", "focus", "font",
-  "fontFamily", "fontSize", "fontSizeAdjust", "fontStretch", "fontStyle",
-  "fontVariant", "fontWeight", "fontcolor", "fontsize", "forEach", "form",
-  "fromCharCode", "getAttribute", "getAttributeNS", "getAttributeNode",
-  "getAttributeNodeNS", "getDate", "getDay", "getElementsByClassName",
-  "getElementsByTagName", "getElementsByTagNameNS", "getFullYear", "getHours",
-  "getMilliseconds", "getMinutes", "getMonth", "getOwnPropertyDescriptor",
+  "direction", "disabled", "dispatchEvent", "display", "elements", "elevation",
+  "emptyCells", "encoding", "enctype", "eval", "eventPhase", "every", "exec",
+  "exp", "explicitOriginalTarget", "fileName", "filter", "firstChild", "fixed",
+  "floor", "focus", "font", "fontFamily", "fontSize", "fontSizeAdjust",
+  "fontStretch", "fontStyle", "fontVariant", "fontWeight", "fontcolor",
+  "fontsize", "for", "forEach", "formaction", "formenctype", "formmethod",
+  "formnovalidate", "formtarget", "freeze", "fromCharCode", "getAttribute",
+  "getAttributeNS", "getAttributeNode", "getAttributeNodeNS", "getDate",
+  "getDay", "getElementsByClassName", "getElementsByTagName",
+  "getElementsByTagNameNS", "getFullYear", "getHours", "getMilliseconds",
+  "getMinutes", "getMonth", "getOwnPropertyDescriptor", "getOwnPropertyNames",
   "getPrototypeOf", "getSeconds", "getTime", "getTimezoneOffset", "getUTCDate",
   "getUTCDay", "getUTCFullYear", "getUTCHours", "getUTCMilliseconds",
   "getUTCMinutes", "getUTCMonth", "getUTCSeconds", "getYear", "global",
   "hasAttribute", "hasAttributeNS", "hasAttributes", "hasChildNodes",
-  "hasOwnProperty", "height", "id", "ignoreCase", "imeMode", "index", "indexOf",
-  "initEvent", "initKeyEvent", "initMessageEvent", "initMouseEvent",
-  "initUIEvent", "innerHTML", "input", "insertBefore", "isChar",
-  "isDefaultNamespace", "isPrototypeOf", "isSameNode", "isSupported", "italics",
-  "join", "keyCode", "lang", "lastChild", "lastIndex", "lastIndexOf", "layerX",
+  "hasOwnProperty", "height", "href", "id", "ignoreCase", "imeMode", "index",
+  "indexOf", "initEvent", "initKeyEvent", "initMessageEvent", "initMouseEvent",
+  "initUIEvent", "innerHTML", "input", "insertBefore", "isArray", "isChar",
+  "isDefaultNamespace", "isExtensible", "isFrozen", "isPrototypeOf",
+  "isSameNode", "isSealed", "isSupported", "ismap", "italics", "item", "join",
+  "keyCode", "keys", "lang", "lastChild", "lastIndex", "lastIndexOf", "layerX",
   "layerY", "left", "length", "letterSpacing", "lineHeight", "lineNumber",
   "link", "listStyle", "listStyleImage", "listStylePosition", "listStyleType",
   "localName", "localeCompare", "log", "map", "margin", "marginBottom",
   "marginLeft", "marginRight", "marginTop", "markerOffset", "marks", "match",
-  "max", "maxHeight", "maxLength", "maxWidth", "message", "metaKey", "min",
-  "minHeight", "minWidth", "mozMatchesSelector", "mozSetFileNameArray",
-  "multiline", "multiple", "name", "namespaceURI", "nextSibling", "nodeArg",
-  "nodeName", "nodePrincipal", "nodeType", "nodeValue", "normalize", "now",
+  "max", "maxHeight", "maxWidth", "maxlength", "message", "metaKey", "method",
+  "min", "minHeight", "minWidth", "mozGetFileNameArray", "mozInputSource",
+  "mozMatchesSelector", "mozSetFileNameArray", "multiline", "multiple", "name",
+  "namedItem", "namespaceURI", "nextSibling", "nodeArg", "nodeName",
+  "nodePrincipal", "nodeType", "nodeValue", "normalize", "novalidate", "now",
   "nsIDOMNodeList", "nsIPrincipal", "nsIURI", "number", "offsetHeight",
-  "offsetLeft", "offsetParent", "offsetTop", "offsetWidth", "opacity",
-  "originalTarget", "orphans", "otherNode", "outline", "outlineColor",
+  "offsetLeft", "offsetParent", "offsetTop", "offsetWidth", "onafterprint",
+  "onbeforeprint", "onbeforeunload", "onhashchange", "onmessage", "onoffline",
+  "ononline", "onpopstate", "onredo", "onresize", "onundo", "onunload",
+  "opacity", "originalTarget", "orphans", "otherNode", "outline", "outlineColor",
   "outlineOffset", "outlineStyle", "outlineWidth", "overflow", "overflowX",
   "overflowY", "ownerDocument", "padding", "paddingBottom", "paddingLeft",
   "paddingRight", "paddingTop", "page", "pageBreakAfter", "pageBreakBefore",
-  "pageBreakInside", "pageX", "pageY", "parentNode", "parse", "pause",
-  "pauseAfter", "pauseBefore", "pitch", "pitchRange", "playDuring", "pop",
-  "position", "pow", "prefix", "preventBubble", "preventCapture",
-  "preventDefault", "previousSibling", "propertyIsEnumerable", "prototype",
-  "push", "querySelector", "querySelectorAll", "quote", "quotes", "random",
-  "readOnly", "reduce", "reduceRight", "relatedTarget", "removeAttribute",
+  "pageBreakInside", "pageX", "pageY", "parentNode", "parse", "pattern", "pause",
+  "pauseAfter", "pauseBefore", "pitch", "pitchRange", "placeholder",
+  "playDuring", "pop", "position", "pow", "prefix", "preventBubble",
+  "preventCapture", "preventDefault", "preventExtensions", "previousSibling",
+  "propertyIsEnumerable", "prototype", "push", "querySelector",
+  "querySelectorAll", "quote", "quotes", "random", "readonly", "reduce",
+  "reduceRight", "relatedTarget", "remove", "removeAttribute",
   "removeAttributeNS", "removeAttributeNode", "removeChild",
-  "removeEventListener", "replace", "replaceChild", "reverse", "richness",
-  "right", "round", "rows", "screenX", "screenY", "scrollHeight",
-  "scrollIntoView", "scrollLeft", "scrollTop", "scrollWidth", "search",
-  "select", "selectionEnd", "selectionStart", "setAttribute", "setAttributeNS",
-  "setAttributeNode", "setAttributeNodeNS", "setDate", "setFullYear", "setHours",
-  "setMilliseconds", "setMinutes", "setMonth", "setSeconds", "setSelectionRange",
-  "setTime", "setUTCDate", "setUTCFullYear", "setUTCHours", "setUTCMilliseconds",
-  "setUTCMinutes", "setUTCMonth", "setUTCSeconds", "setYear", "shift",
-  "shiftKey", "sin", "size", "slice", "small", "some", "sort", "source", "speak",
-  "speakHeader", "speakNumeral", "speakPunctuation", "speechRate", "spellcheck",
-  "splice", "split", "sqrt", "src", "stack", "sticky", "stopPropagation",
-  "stress", "strike", "style", "sub", "substr", "substring", "sup", "tabIndex",
-  "tableLayout", "tagName", "tan", "target", "test", "textAlign", "textContent",
-  "textDecoration", "textIndent", "textLength", "textShadow", "textTransform",
-  "timeStamp", "title", "toDateString", "toExponential", "toFixed",
-  "toGMTString", "toLocaleDateString", "toLocaleFormat", "toLocaleLowerCase",
-  "toLocaleString", "toLocaleTimeString", "toLocaleUpperCase", "toLowerCase",
-  "toPrecision", "toSource", "toString", "toTimeString", "toUTCString",
-  "toUpperCase", "top", "trim", "trimLeft", "trimRight", "type", "unicodeBidi",
-  "unshift", "unwatch", "useMap", "value", "valueOf", "verticalAlign", "view",
-  "visibility", "voiceFamily", "volume", "watch", "which", "whiteSpace",
-  "widows", "width", "wordSpacing", "wordWrap", "wrap", "zIndex"
+  "removeEventListener", "replace", "replaceChild", "required", "reset",
+  "reverse", "richness", "right", "round", "rows", "screenX", "screenY",
+  "scrollHeight", "scrollIntoView", "scrollLeft", "scrollTop", "scrollWidth",
+  "seal", "search", "select", "setAttribute", "setAttributeNS",
+  "setAttributeNode", "setAttributeNodeNS", "setCapture", "setCustomValidity",
+  "setDate", "setFullYear", "setHours", "setMilliseconds", "setMinutes",
+  "setMonth", "setSeconds", "setSelectionRange", "setTime", "setUTCDate",
+  "setUTCFullYear", "setUTCHours", "setUTCMilliseconds", "setUTCMinutes",
+  "setUTCMonth", "setUTCSeconds", "setYear", "shift", "shiftKey", "sin", "size",
+  "slice", "small", "some", "sort", "source", "speak", "speakHeader",
+  "speakNumeral", "speakPunctuation", "speechRate", "spellcheck", "splice",
+  "split", "sqrt", "src", "stack", "standby", "step", "sticky",
+  "stopPropagation", "stress", "strike", "style", "sub", "submit", "substr",
+  "substring", "sup", "tabIndex", "tableLayout", "tagName", "tan", "target",
+  "test", "textAlign", "textContent", "textDecoration", "textIndent",
+  "textShadow", "textTransform", "timeStamp", "title", "toDateString",
+  "toExponential", "toFixed", "toGMTString", "toJSON", "toLocaleDateString",
+  "toLocaleFormat", "toLocaleLowerCase", "toLocaleString", "toLocaleTimeString",
+  "toLocaleUpperCase", "toLowerCase", "toPrecision", "toSource", "toString",
+  "toTimeString", "toUTCString", "toUpperCase", "top", "trim", "trimLeft",
+  "trimRight", "type", "unicodeBidi", "unshift", "unwatch", "usemap", "valueOf",
+  "verticalAlign", "view", "visibility", "voiceFamily", "volume", "watch",
+  "which", "whiteSpace", "widows", "width", "wordSpacing", "wordWrap", "wrap",
+  "zIndex"
 ]);
 

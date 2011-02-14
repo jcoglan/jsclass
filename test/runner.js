@@ -20,6 +20,7 @@ JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
                 'Test.AsyncStepsSpec',
                 'ModuleSpec',
                 'ClassSpec',
+                'MethodSpec',
                 'KernelSpec',
                 'SingletonSpec',
                 'InterfaceSpec',

@@ -13,10 +13,12 @@ packages:
     directory: core
     files:
       - utils
+      - method
       - module
+      - kernel
       - class
       - bootstrap
-      - kernel
+      - keywords
       - interface
       - singleton
   
@@ -108,5 +110,3 @@ packages:
   set:              set
   stack_trace:      stack_trace
   tsort:            tsort
-  ruby:             ruby
-

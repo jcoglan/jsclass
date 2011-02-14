@@ -37,10 +37,10 @@ JS.Test.Mocking.Stub.include({
   }
 });
 
-JS.Test.Mocking.Stub.include({
-  raising:    JS.Test.Mocking.Stub.instanceMethod('raises'),
-  returning:  JS.Test.Mocking.Stub.instanceMethod('returns'),
-  yielding:   JS.Test.Mocking.Stub.instanceMethod('yields')
+JS.Test.Mocking.Stub.alias({
+  raising:    'raises',
+  returning:  'returns',
+  yielding:   'yields'
 });
 
 JS.Test.Mocking.extend({      

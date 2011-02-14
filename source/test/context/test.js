@@ -21,14 +21,14 @@ JS.Test.Context.Test = new JS.Module({
     
     opts = opts || {};
     
-    if (JS.isFn(opts)) {
+    if (typeof opts === 'function') {
       block = opts;
     } else {     
       if (opts.before !== undefined)
         this.before_should_callbacks[testName] = opts.before;
     }
     
-    this.define(testName, JS.Ruby.selfless(block));
+    this.define(testName, JS.Test.selfless(block), false);
   },
   
   beforeTest: function(name, block) {
@@ -36,17 +36,13 @@ JS.Test.Context.Test = new JS.Module({
   }
 });
 
-(function() {
-  var m = JS.Test.Context.Test.method('instanceMethod');
+JS.Test.Context.Test.alias({
+  it:     'test',
+  should: 'test',
+  tests:  'test',
   
-  JS.Test.Context.Test.include({
-    it:     m('test'),
-    should: m('test'),
-    tests:  m('test'),
-    
-    beforeIt:     m('beforeTest'),
-    beforeShould: m('beforeTest'),
-    beforeTests:  m('beforeTest')
-  });
-})();
+  beforeIt:     'beforeTest',
+  beforeShould: 'beforeTest',
+  beforeTests:  'beforeTest'
+});
 
