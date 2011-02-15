@@ -15,7 +15,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
       push: function(name, object, args) {
         args = JS.Console.convert(args).replace(/^\[/, '(').replace(/\]$/, ')');
         var list = this._list, length = list.length;
-        if (length === 0 || list[length-1].leaf) this.puts('');
+        if (length === 0 || list[length-1].leaf) this.puts();
         this.consoleFormat('bgblack', 'white');
         this.print('TRACE');
         this.reset();
@@ -114,6 +114,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
       
       var C = JS.Console;
       C.consoleFormat('bgred', 'white');
+      C.puts();
       C.print('ERROR');
       C.consoleFormat('bold', 'red');
       C.print(' ' + C.convert(e));

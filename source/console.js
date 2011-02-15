@@ -117,7 +117,6 @@ JS.Console = new JS.Module('Console', {
       if (this.WINDOZE && !followon && this.__buffer__)
         string = this.__buffer__ + string;
       
-      string = (string && string.toString() || '');
       if (string === '' && !followon) this.writeToStdout(this.flushFormat() + '');
       
       while (string.length > 0) {
@@ -158,6 +157,7 @@ JS.Console = new JS.Module('Console', {
   },
   
   puts: function(string) {
+    string = (string || '').toString();
     var C = JS.Console;
     if (!C.NODE) return C.output(string, false);
     require('sys').puts(C.flushFormat() + string);
@@ -165,6 +165,7 @@ JS.Console = new JS.Module('Console', {
   },
   
   print: function(string) {
+    string = (string || '').toString();
     var C = JS.Console;
     if (!C.NODE) return C.output(string, true);
     require('sys').print(C.flushFormat() + string);
