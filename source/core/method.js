@@ -75,7 +75,7 @@ JS.extend(JS.Method.prototype, {
       return returnValue;
     };
     
-    if (JS.Method.__trace__) return JS.StackTrace.wrap(compiled, environment, method.name);
+    if (JS.Method.__trace__) return JS.StackTrace.wrap(compiled, method, environment);
     return compiled;
   },
   

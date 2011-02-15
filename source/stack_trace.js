@@ -74,10 +74,18 @@ JS.StackTrace = new JS.Module('StackTrace', {
       this.stack.backtrace();
     },
     
-    wrap: function(func, module, name) {
-      var self = JS.StackTrace, C = JS.Console;
+    wrap: function(func, method, env) {
+      var self     = JS.StackTrace,
+          C        = JS.Console,
+          name     = method.name,
+          module   = method.module,
+          
+          fullName = C.nameOf(env) +
+                     (module === env ? '' : '(' + C.nameOf(module) + ')') +
+                    '#' + name;
+      
       var wrapper = function() {
-        var result, fullName = JS.Console.nameOf(module) + '#' + name;
+        var result;
         self.stack.push(fullName, this, Array.prototype.slice.call(arguments));
         
         try { result = func.apply(this, arguments) }
