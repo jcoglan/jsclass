@@ -44,7 +44,8 @@ JS.Packages(function() { with(this) {
     
 
     module('console')       .provides('JS.Console')
-                            .requires('JS.Module');
+                            .requires('JS.Module',
+                                      'JS.Enumerable');
 
     module('benchmark')     .provides('JS.Benchmark')
                             .requires('JS.Module')
@@ -114,7 +115,8 @@ JS.Packages(function() { with(this) {
     
     module('stack_trace')   .provides('JS.StackTrace')
                             .requires('JS.Module',
-                                      'JS.Singleton');
+                                      'JS.Singleton',
+                                      'JS.Console');
     
     module('state')         .provides('JS.State')
                             .requires('JS.Module',

@@ -49,9 +49,12 @@ JS.Enumerable = new JS.Module('Enumerable', {
       return false;
     },
     
-    objectKeys: function(object) {
+    objectKeys: function(object, includeProto) {
       var keys = [];
-      for (var key in object) keys.push(key);
+      for (var key in object) {
+        if (object.hasOwnProperty(key) || includeProto !== false)
+          keys.push(key);
+      }
       return keys;
     },
     

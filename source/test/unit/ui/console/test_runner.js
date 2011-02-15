@@ -84,13 +84,13 @@ JS.Test.Unit.UI.extend({
                 parts     = message.split('\n'),
                 errorType = parts.shift(),
                 testName  = parts.shift(),
-                report    = parts.join('\n');
+                part;
             
             this.consoleFormat('bold', 'red');
             this._output((i + 1) + ') ' + errorType);
             this._output(testName);
             this.reset();
-            this._output(report);
+            while (part = parts.shift()) this.puts(part);
           }
           this._nl();
           this.consoleFormat('bold');

@@ -25,7 +25,7 @@ JS.Test.Mocking.extend({
     },
     
     toString: function() {
-      var name = JS.Test.Unit.AssertionMessage.convert(this._elements);
+      var name = JS.Console.convert(this._elements);
       return 'arrayIncluding' + name;
     }
   }),
@@ -45,7 +45,7 @@ JS.Test.Mocking.extend({
     },
     
     toString: function() {
-      var name = JS.Test.Unit.AssertionMessage.convert(this._elemets);
+      var name = JS.Console.convert(this._elemets);
       return 'objectIncluding' + name;
     }
   }),
@@ -60,7 +60,7 @@ JS.Test.Mocking.extend({
     },
     
     toString: function() {
-      var name = JS.Test.Unit.AssertionMessage.convert(this._type),
+      var name = JS.Console.convert(this._type),
           an   = /^[aeiou]/i.test(name) ? 'an' : 'a';
       return an + '(' + name + ')';
     }
@@ -76,7 +76,7 @@ JS.Test.Mocking.extend({
     },
     
     toString: function() {
-      var name = JS.Test.Unit.AssertionMessage.convert(this._type);
+      var name = JS.Console.convert(this._type);
       return 'matching(' + name + ')';
     }
   })

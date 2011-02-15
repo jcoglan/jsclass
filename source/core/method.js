@@ -43,9 +43,9 @@ JS.extend(JS.Method.prototype, {
       keyword = allWords[i];
       if (words[keyword.name]) keywords.push(keyword);
     }
-    if (keywords.length === 0) return callable;
+    if (keywords.length === 0 && !JS.Method.__trace__) return callable;
     
-    return function() {
+    var compiled = function() {
       var N = keywords.length, j = N, previous = {}, keyword, existing;
       
       while (j--) {
@@ -74,6 +74,9 @@ JS.extend(JS.Method.prototype, {
       }
       return returnValue;
     };
+    
+    if (JS.Method.__trace__) return JS.StackTrace.wrap(compiled, environment, method.name);
+    return compiled;
   },
   
   toString: function() {
@@ -122,3 +125,18 @@ JS.Method.keyword = function(name, filter) {
   this._keywords.push({name: name, filter: filter});
 };
 
+JS.Method.tracing = function(classes, block, context) {
+  JS.require('JS.StackTrace', function() {
+    classes = [].concat(classes);
+    
+    this.__trace__ = true;
+    var i = classes.length;
+    while (i--) classes[i].resolve();
+    
+    block.call(context);
+    
+    this.__trace__ = false;
+    var i = classes.length;
+    while (i--) classes[i].resolve();
+  }, this);
+};
