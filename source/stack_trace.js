@@ -12,25 +12,65 @@ JS.StackTrace = new JS.Module('StackTrace', {
         return indent;
       },
       
-      push: function(name, object, args) {
-        args = JS.Console.convert(args).replace(/^\[/, '(').replace(/\]$/, ')');
-        var list = this._list, length = list.length;
-        if (length === 0 || list[length-1].leaf) this.puts();
+      push: function(object, method, env, args) {
+        var list = this._list;
+        var newline = (list.length === 0 || list[list.length-1].leaf);
+        
+        if (list.length > 0) list[list.length - 1].leaf = false;
+        
+        var frame = {
+          object: object,
+          method: method,
+          env:    env,
+          args:   args,
+          leaf:   true
+        };
+        frame.name = this.fullName(frame);
+        this.logEnter(frame, newline);
+        list.push(frame);
+      },
+      
+      pop: function(result) {
+        var frame = this._list.pop();
+        frame.result = result;
+        this.logExit(frame);
+      },
+      
+      top: function() {
+        return this._list[this._list.length - 1] || {};
+      },
+      
+      fullName: function(frame) {
+        var C        = JS.Console,
+            method   = frame.method,
+            env      = frame.env,
+            name     = method.name,
+            module   = method.module;
+            
+        return C.nameOf(env) +
+                (module === env ? '' : '(' + C.nameOf(module) + ')') +
+                '#' + name;
+      },
+      
+      logEnter: function(frame, newline) {
+        var fullName = this.fullName(frame),
+            args = JS.Console.convert(frame.args).replace(/^\[/, '(').replace(/\]$/, ')');
+        
+        if (newline) this.puts();
         this.consoleFormat('bgblack', 'white');
         this.print('TRACE');
         this.reset();
         this.print(this.indent());
         this.blue();
-        this.print(name);
+        this.print(fullName);
         this.red();
         this.print(args);
         this.reset();
-        if (this._list.length > 0) this._list[this._list.length - 1].leaf = false;
-        this._list.push({name: name, object: object, args: args, leaf: true});
       },
       
-      pop: function(result) {
-        var frame = this._list.pop();
+      logExit: function(frame) {
+        var fullName = this.fullName(frame);
+        
         if (frame.leaf) {
           this.consoleFormat('red');
           this.print(' --> ');
@@ -40,65 +80,65 @@ JS.StackTrace = new JS.Module('StackTrace', {
           this.reset();
           this.print(this.indent());
           this.blue();
-          this.print(frame.name);
+          this.print(fullName);
           this.red();
           this.print(' --> ');
         }
         this.consoleFormat('bold', 'yellow');
-        this.puts(JS.Console.convert(result));
+        this.puts(JS.Console.convert(frame.result));
         this.reset();
         this.print('');
-        return frame.name;
       },
       
-      top: function() {
-        return this._list[this._list.length - 1] || {};
+      handleError: function(e) {
+        if (e.logged) throw e;
+        e.logged = true;
+        
+        this.consoleFormat('bgred', 'white');
+        this.puts();
+        this.print('ERROR');
+        this.consoleFormat('bold', 'red');
+        this.print(' ' + JS.Console.convert(e));
+        this.reset();
+        this.print(' thrown by ');
+        this.bold();
+        this.print(this._list[this._list.length - 1].name);
+        this.reset();
+        this.puts('. Backtrace:');
+        this.backtrace();
+        this._list = [];
+        throw e;
       },
       
       backtrace: function() {
-        var i = this._list.length, item;
+        var i = this._list.length, frame, args;
         while (i--) {
-          item = this._list[i];
+          frame = this._list[i];
+          args = JS.Console.convert(frame.args).replace(/^\[/, '(').replace(/\]$/, ')');
           this.print('      | ');
           this.consoleFormat('blue');
-          this.print(item.name);
+          this.print(frame.name);
           this.red();
-          this.print(item.args);
+          this.print(args);
           this.reset();
           this.puts(' in ');
           this.print('      |  ');
           this.bold();
-          this.puts(JS.Console.convert(item.object));
+          this.puts(JS.Console.convert(frame.object));
         }
         this.reset();
         this.puts();
       }
     }),
     
-    flush: function() {
-      this.stack._list = [];
-    },
-    
-    print: function() {
-      this.stack.backtrace();
-    },
-    
     wrap: function(func, method, env) {
-      var self     = JS.StackTrace,
-          C        = JS.Console,
-          name     = method.name,
-          module   = method.module,
-          
-          fullName = C.nameOf(env) +
-                     (module === env ? '' : '(' + C.nameOf(module) + ')') +
-                    '#' + name;
-      
+      var self = JS.StackTrace;
       var wrapper = function() {
         var result;
-        self.stack.push(fullName, this, Array.prototype.slice.call(arguments));
+        self.stack.push(this, method, env, Array.prototype.slice.call(arguments));
         
         try { result = func.apply(this, arguments) }
-        catch (e) { self.handleError(e) }
+        catch (e) { self.stack.handleError(e) }
         
         self.stack.pop(result);
         return result;
@@ -106,27 +146,6 @@ JS.StackTrace = new JS.Module('StackTrace', {
       wrapper.toString = function() { return func.toString() };
       wrapper.__traced__ = true;
       return wrapper;
-    },
-    
-    handleError: function(e) {
-      if (e.logged) throw e;
-      e.logged = true;
-      
-      var C = JS.Console;
-      C.consoleFormat('bgred', 'white');
-      C.puts();
-      C.print('ERROR');
-      C.consoleFormat('bold', 'red');
-      C.print(' ' + C.convert(e));
-      C.reset();
-      C.print(' thrown by ');
-      C.bold();
-      C.print(this.stack.top().name);
-      C.reset();
-      C.puts('. Backtrace:');
-      this.print();
-      this.flush();
-      throw e;
     }
   }
 });
