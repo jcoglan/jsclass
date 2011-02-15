@@ -19,10 +19,10 @@ JS.Console = new JS.Module('Console', {
       }
       if (typeof field == 'string') {
         field = field.replace(/\.prototype\./g, '#');
-        object.__nom__ = field;
-        if (object.__meta__) object.__meta__.__nom__ = field + '.__meta__';
+        object.displayName = field;
+        if (object.__meta__) object.__meta__.displayName = field + '.__meta__';
       }
-      return object.__nom__;
+      return object.displayName;
     },
     
     descend: function(list, needle) {
