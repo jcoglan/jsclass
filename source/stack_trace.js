@@ -8,12 +8,14 @@ JS.StackTrace = new JS.Module('StackTrace', {
         var indent = ' ',
             n      = this._list.length;
         
-        while (n--) indent += '|   ';
+        while (n--) indent += '|  ';
         return indent;
       },
       
       push: function(name, object, args) {
         args = JS.Console.convert(args).replace(/^\[/, '(').replace(/\]$/, ')');
+        var list = this._list, length = list.length;
+        if (length === 0 || list[length-1].leaf) this.puts('');
         this.consoleFormat('bgblack', 'white');
         this.print('TRACE');
         this.reset();
@@ -21,25 +23,32 @@ JS.StackTrace = new JS.Module('StackTrace', {
         this.blue();
         this.print(name);
         this.red();
-        this.puts(args);
+        this.print(args);
         this.reset();
-        this._list.push({name: name, object: object, args: args});
+        if (this._list.length > 0) this._list[this._list.length - 1].leaf = false;
+        this._list.push({name: name, object: object, args: args, leaf: true});
       },
       
       pop: function(result) {
-        var name = this._list.pop().name;
-        this.consoleFormat('bgblack', 'white');
-        this.print('TRACE');
-        this.reset();
-        this.print(this.indent());
-        this.blue();
-        this.print(name);
-        this.red();
-        this.print('() --> ');
+        var frame = this._list.pop();
+        if (frame.leaf) {
+          this.consoleFormat('red');
+          this.print(' --> ');
+        } else {
+          this.consoleFormat('bgblack', 'white');
+          this.print('TRACE');
+          this.reset();
+          this.print(this.indent());
+          this.blue();
+          this.print(frame.name);
+          this.red();
+          this.print(' --> ');
+        }
         this.consoleFormat('bold', 'yellow');
         this.puts(JS.Console.convert(result));
         this.reset();
-        return name;
+        this.print('');
+        return frame.name;
       },
       
       top: function() {
@@ -57,7 +66,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
           this.print(item.args);
           this.reset();
           this.puts(' in ');
-          this.print('      |     ');
+          this.print('      |  ');
           this.bold();
           this.puts(JS.Console.convert(item.object));
         }
@@ -106,7 +115,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
       var C = JS.Console;
       C.consoleFormat('bgred', 'white');
       C.print('ERROR');
-      C.consoleFormat('bold');
+      C.consoleFormat('bold', 'red');
       C.print(' ' + C.convert(e));
       C.reset();
       C.print(' thrown by ');
