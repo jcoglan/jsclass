@@ -116,6 +116,8 @@ JS.Packages(function() { with(this) {
     module('stack_trace')   .provides('JS.StackTrace')
                             .requires('JS.Module',
                                       'JS.Singleton',
+                                      'JS.Observable',
+                                      'JS.Enumerable',
                                       'JS.Console');
     
     module('state')         .provides('JS.State')
