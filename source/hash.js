@@ -4,6 +4,7 @@ JS.Hash = new JS.Class('Hash', {
   extend: {
     Pair: new JS.Class({
       include: JS.Comparable || {},
+      length: 2,
       
       setKey: function(key) {
         this[0] = this.key = key;

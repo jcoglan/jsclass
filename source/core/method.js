@@ -32,6 +32,7 @@ JS.extend(JS.Method.prototype, {
   
   compile: function(environment) {
     var method     = this,
+        trace      = method.module.__trace__ || environment.__trace__,
         callable   = method.callable,
         words      = method._words,
         allWords   = JS.Method._keywords,
@@ -43,7 +44,7 @@ JS.extend(JS.Method.prototype, {
       keyword = allWords[i];
       if (words[keyword.name]) keywords.push(keyword);
     }
-    if (keywords.length === 0 && !JS.Method.__trace__) return callable;
+    if (keywords.length === 0 && !trace) return callable;
     
     var compiled = function() {
       var N = keywords.length, j = N, previous = {}, keyword, existing;
@@ -75,7 +76,7 @@ JS.extend(JS.Method.prototype, {
       return returnValue;
     };
     
-    if (JS.Method.__trace__) return JS.StackTrace.wrap(compiled, method, environment);
+    if (trace) return JS.StackTrace.wrap(compiled, method, environment);
     return compiled;
   },
   
@@ -127,16 +128,31 @@ JS.Method.keyword = function(name, filter) {
 
 JS.Method.tracing = function(classes, block, context) {
   JS.require('JS.StackTrace', function() {
+    var logger = JS.StackTrace.logger,
+        active = logger.active;
+    
     classes = [].concat(classes);
-    
-    this.__trace__ = true;
-    var i = classes.length;
-    while (i--) classes[i].resolve();
-    
+    this.trace(classes);
+    logger.active = true;
     block.call(context);
     
-    this.__trace__ = false;
-    var i = classes.length;
-    while (i--) classes[i].resolve();
+    this.untrace(classes);
+    logger.active = active;
   }, this);
+};
+
+JS.Method.trace = function(classes) {
+  var i = classes.length;
+  while (i--) {
+    classes[i].__trace__ = true;
+    classes[i].resolve();
+  }
+};
+
+JS.Method.untrace = function(classes) {
+  var i = classes.length;
+  while (i--) {
+    classes[i].__trace__ = false;
+    classes[i].resolve();
+  }
 };

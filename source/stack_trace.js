@@ -2,8 +2,10 @@ JS.StackTrace = new JS.Module('StackTrace', {
   extend: {
     logger: new JS.Singleton({
       include: JS.Console,
+      active: false,
       
       update: function(event, data) {
+        if (!this.active) return;
         switch (event) {
           case 'call':    return this.logEnter(data);
           case 'return':  return this.logExit(data);

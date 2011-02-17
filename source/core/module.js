@@ -154,7 +154,7 @@ JS.extend(JS.Module.prototype, {
   
   lookup: function(name) {
     var cached = this.__mct__[name];
-    if (cached) return cached.slice();
+    if (cached && cached.slice) return cached.slice();
     
     var ancestors = this.ancestors(),
         methods   = [],

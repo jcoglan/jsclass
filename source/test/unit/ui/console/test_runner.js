@@ -95,6 +95,7 @@ JS.Test.Unit.UI.extend({
           this._nl();
           this.consoleFormat('bold');
           this._output(this._result, JS.Test.Unit.UI.PROGRESS_ONLY);
+          this.reset();
         },
         
         _testStarted: function(testCase) {

@@ -107,6 +107,17 @@ JS.Console = new JS.Module('Console', {
       return this.ANSI_CSI + string;
     },
     
+    repeat: function(string, n) {
+      var result = '';
+      while (n--) result += string;
+      return result;
+    },
+    
+    pad: function(string, width) {
+      string = (string === undefined ? '' : string).toString();
+      return string + this.repeat(' ', width - string.length);
+    },
+    
     flushFormat: function() {
       var format = this.__format__;
       this.__format__ = '';
@@ -157,7 +168,7 @@ JS.Console = new JS.Module('Console', {
   },
   
   puts: function(string) {
-    string = (string || '').toString();
+    string = (string === undefined ? '' : string).toString();
     var C = JS.Console;
     if (!C.NODE) return C.output(string, false);
     require('sys').puts(C.flushFormat() + string);
@@ -165,11 +176,58 @@ JS.Console = new JS.Module('Console', {
   },
   
   print: function(string) {
-    string = (string || '').toString();
+    string = (string === undefined ? '' : string).toString();
     var C = JS.Console;
     if (!C.NODE) return C.output(string, true);
     require('sys').print(C.flushFormat() + string);
     C.__print__ = true;
+  },
+  
+  printTable: function(table, formatter) {
+    var widths = [],
+        table  = [['Method', 'Calls']].concat(table),
+        C = JS.Console,
+        i = table.length,
+        j;
+    
+    while (i--) {
+      j = table[i].length;
+      while (j--) {
+        widths[j] = widths[j] || 0;
+        widths[j] = Math.max(C.convert(table[i][j]).length, widths[j]);
+      }
+    }
+    
+    var divider = '+', j = widths.length;
+    while (j--) divider = '+' + C.repeat('-', widths[j] + 2) + divider;
+    divider = '  ' + divider;
+    this.reset();
+    this.puts();
+    this.puts(divider);
+    
+    var printRow = function(row, format) {
+      var data = table[row];
+      this.reset();
+      this.print('  ');
+      for (var i = 0, n = data.length; i < n; i++) {
+        this.reset();
+        this.print('|');
+        this.consoleFormat.apply(this, format);
+        this.print(' ' + C.pad(data[i], widths[i]) + ' ');
+      }
+      this.reset();
+      this.puts('|');
+    };
+    printRow.call(this, 0, ['bold']);
+    this.reset();
+    this.puts(divider);
+    
+    for (var i = 1, n = table.length; i < n; i++) {
+      var format = formatter ? formatter(table[i], i) : [];
+      printRow.call(this, i, format);
+    }
+    this.reset();
+    this.puts(divider);
   }
 });
 

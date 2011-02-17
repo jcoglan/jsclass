@@ -45,6 +45,11 @@ JS.Test.Unit.UI.extend({
         
         this.notifyListeners(this.klass.FINISHED, elapsedTime);
         
+        var reports = JS.Test.Unit.TestCase.reports,
+            i = reports.length;
+        
+        while (i--) reports[i].report();
+        
         if (continuation) continuation.call(context || null, result);
       }, this);
       

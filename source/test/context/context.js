@@ -89,6 +89,21 @@ JS.Test.extend({
           JS.Test.selfless(block).call(klass);
           
           return klass;
+        },
+        
+        cover: function(module) {
+          var logger = new JS.Test.Coverage(module);
+          
+          this.before_all_callbacks.push(function() {
+            JS.StackTrace.addObserver(logger);
+            JS.Method.trace([module]);
+          });
+          
+          this.after_all_callbacks.push(function() {
+            JS.Method.untrace([module]);
+            JS.StackTrace.removeObserver(logger);
+          });
+          JS.Test.Unit.TestCase.reports.push(logger);
         }
       })
     }

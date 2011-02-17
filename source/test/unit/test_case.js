@@ -14,6 +14,7 @@ JS.Test.Unit.extend({
     
     extend: [JS.Enumerable, {
       testCases: [],
+      reports:   [],
       
       clear: function() {
         this.testCases = [];
