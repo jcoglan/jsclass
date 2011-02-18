@@ -190,8 +190,9 @@ JS.extend(JS.Module.prototype, {
         field;
     
     for (field in fns) {
-      if (JS.indexOf(methods, field) < 0)
-        methods.push(field);
+      if (!JS.isType(this.__fns__[field], JS.Method)) continue;
+      if (JS.indexOf(methods, field) >= 0) continue;
+      methods.push(field);
     }
     
     if (recursive !== false) {

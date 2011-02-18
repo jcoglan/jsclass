@@ -387,8 +387,8 @@ JS.ENV.ModuleSpec = JS.Test.describe(JS.Module, function() {
       
       describe("with some methods", function() {
         before(function() {
-          this.module.define("aMethod", function() {})
-          this.module.define("bMethod", function() {})
+          module.define("aMethod", function() {})
+          module.define("bMethod", function() {})
         })
         
         it("returns the inherited methods and the module's own methods", function() {
@@ -398,6 +398,16 @@ JS.ENV.ModuleSpec = JS.Test.describe(JS.Module, function() {
         
         it("returns only the module's own methods when called with false", function() {
           assertEqual( ["aMethod", "bMethod"], module.instanceMethods(false) )
+        })
+        
+        describe("with properties that are not methods", function() {
+          before(function() {
+            module.define("SOMETHING", "foo")
+          })
+          
+          it("does not include properties", function() {
+            assertEqual( ["aMethod", "bMethod"], module.instanceMethods(false) )
+          })
         })
       })
     })
