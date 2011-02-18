@@ -93,16 +93,8 @@ JS.Test.extend({
         
         cover: function(module) {
           var logger = new JS.Test.Coverage(module);
-          
-          this.before_all_callbacks.push(function() {
-            JS.StackTrace.addObserver(logger);
-            JS.Method.trace([module]);
-          });
-          
-          this.after_all_callbacks.push(function() {
-            JS.Method.untrace([module]);
-            JS.StackTrace.removeObserver(logger);
-          });
+          this.before_all_callbacks.push(logger.method('attach'));
+          this.after_all_callbacks.push(logger.method('detach'));
           JS.Test.Unit.TestCase.reports.push(logger);
         }
       })
