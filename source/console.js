@@ -188,13 +188,14 @@ JS.Console = new JS.Module('Console', {
         table  = [['Method', 'Calls']].concat(table),
         C = JS.Console,
         i = table.length,
-        j;
+        j, string;
     
     while (i--) {
       j = table[i].length;
       while (j--) {
         widths[j] = widths[j] || 0;
-        widths[j] = Math.max(C.convert(table[i][j]).length, widths[j]);
+        string = (table[i][j] === undefined ? '' : table[i][j]).toString();
+        widths[j] = Math.max(string.length, widths[j]);
       }
     }
     

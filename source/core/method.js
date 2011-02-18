@@ -81,7 +81,8 @@ JS.extend(JS.Method.prototype, {
   },
   
   toString: function() {
-    return '#<Method:' + this.module.toString() + '#' + this.name + '>';
+    var name = this.displayName || (this.module.toString() + '#' + this.name);
+    return '#<Method:' + name + '>';
   }
 });
 
