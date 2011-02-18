@@ -49,6 +49,7 @@ JS.Test.Unit.UI.extend({
             i = reports.length;
         
         while (i--) reports[i].report();
+        JS.Test.Unit.TestCase.reports = [];
         
         if (continuation) continuation.call(context || null, result);
       }, this);
