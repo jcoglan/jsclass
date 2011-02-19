@@ -1,3 +1,27 @@
+Version 3.0.0
+================================================================
+
+* JS.Class no longer supports subclassing the Class class.
+
+* Module#instanceMethod() returns a Method, not a Function.
+
+* Enumerable#grep() now supports selecting by type, e.g.
+  items.grep(Array). It does not support functional predicates
+  like items.grep(function(x) { return x == 0 }), you should use
+  Enumerable#select() for this.
+
+* Objects with the same properties are now considered equal when
+  used as Hash keys.
+
+* MethodChain#fire() is now called MethodChain#__exec__().
+
+* JS.Ruby has been removed.
+
+* JS.State now adds states() as a class method, rather than a
+  macro in the class body. All classes using 'inline' states
+  MUST call this method to declare and resolve their states.
+
+
 Version 2.1.5
 June 5 2010
 ================================================================

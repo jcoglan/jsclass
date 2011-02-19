@@ -157,10 +157,9 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() {
       })
     })
     
-    describe("subclass", function() {
+    sharedBehavior("inherited states", function() {
       before(function() {
-        this.StatefulChild = new JS.Class(Stateful)
-        StatefulChild.states({
+        this.theStates = {
           BOB: {
             setName: function() {
               this.callSuper()
@@ -170,8 +169,7 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() {
           EXTRA: {
             setName: function() { this.name = "extra" }
           }
-        })
-        this.subject = new StatefulChild()
+        }
       })
       
       it("inherits states and their behaviour from the superclass", function() {
@@ -195,6 +193,29 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() {
         assert( subject.inState("BOB") )
         subject.setName("the name")
         assertEqual( "the name (inherited)", subject.name )
+      })
+    })
+    
+    describe("subclass", function() {
+      behavesLike("inherited states")
+      
+      before(function() {
+        this.StatefulChild = new JS.Class(Stateful)
+        StatefulChild.states(theStates)
+        this.subject = new StatefulChild()
+      })
+    })
+    
+    describe("mixin", function() {
+      behavesLike("inherited states")
+      
+      before(function() {
+        var Mixin = new JS.Module({include: JS.State})
+        Mixin.states(theStates)
+        this.StatefulChild = new JS.Class(Stateful, {include: Mixin})
+        StatefulChild.states({})
+        
+        this.subject = new StatefulChild()
       })
     })
   })
