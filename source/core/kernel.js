@@ -47,7 +47,9 @@ JS.Kernel = new JS.Module('Kernel', {
   },
   
   toString: function() {
-    return '#<' + this.klass.toString() + ':' + this.hash() + '>';
+    if (this.displayName) return this.displayName;
+    var name = this.klass.displayName || this.klass.toString();
+    return '#<' + name + ':' + this.hash() + '>';
   }
 });
 

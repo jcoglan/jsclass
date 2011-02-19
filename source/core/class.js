@@ -14,7 +14,6 @@ JS.extend(JS.Class.prototype, {
       parent  = Object;
     }
     JS.Module.prototype.initialize.call(this, name);
-    
     options = options || {};
     
     var klass = JS.makeClass(parent);
@@ -24,6 +23,7 @@ JS.extend(JS.Class.prototype, {
     klass.prototype.klass = klass;
     
     klass.__eigen__().include(parent.__meta__, {_resolve: options._resolve});
+    klass.setName(name);
     
     klass.__tgt__ = klass.prototype;
     

@@ -91,6 +91,8 @@ JS.extend(JS.Module.prototype, {
         if (this.shouldIgnore(field, value)) continue;
         this.define(field, value, false);
       }
+      if (module.hasOwnProperty('toString'))
+        this.define('toString', module.toString, false);
     }
     
     if (resolve) this.resolve();
@@ -109,6 +111,7 @@ JS.extend(JS.Module.prototype, {
     var host   = host || this,
         target = host.__tgt__,
         inc    = this.__inc__,
+        fns    = this.__fns__,
         i, n, key, compiled;
     
     if (host === this) {
@@ -123,10 +126,12 @@ JS.extend(JS.Module.prototype, {
     for (i = 0, n = inc.length; i < n; i++)
       inc[i].resolve(host);
     
-    for (key in this.__fns__) {
-      compiled = JS.Method.compile(this.__fns__[key], host);
+    for (key in fns) {
+      compiled = JS.Method.compile(fns[key], host);
       if (target[key] !== compiled) target[key] = compiled;
     }
+    if (fns.hasOwnProperty('toString'))
+      target.toString = JS.Method.compile(fns.toString, host);
   },
   
   shouldIgnore: function(field, value) {
