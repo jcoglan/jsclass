@@ -27,8 +27,8 @@ JS.Test.Unit.extend({
         
         var ping = function() {
           calls += 1;
-          if (typeof setTimeout === 'undefined') loop();
-          else setTimeout(iterate, 1);
+          if (JS.Console.BROWSER) setTimeout(iterate, 1);
+          else loop();
         };
         
         var loop = function() {
