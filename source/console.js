@@ -83,6 +83,10 @@ JS.Console = new JS.Module('Console', {
     NODE:    (typeof process === 'object'),
     WINDOZE: (typeof window !== 'undefined' || typeof WScript !== 'undefined'),
     
+    coloring: function() {
+      return !(this.BROWSER && !window.runtime) && !this.WINDOZE;
+    },
+    
     __buffer__: '',
     __format__: '',
     
@@ -125,30 +129,33 @@ JS.Console = new JS.Module('Console', {
     },
     
     output: function(string, followon) {
-      if (this.WINDOZE && !followon && this.__buffer__)
-        string = this.__buffer__ + string;
-      
-      if (string === '' && !followon) this.writeToStdout(this.flushFormat() + '');
-      
       while (string.length > 0) {
         var length  = this.__buffer__.length,
             max     = this.BROWSER ? 1000 : this.MAX_BUFFER_LENGTH,
-            movable = (length > 0 && !this.WINDOZE),
+            movable = (length > 0 && this.coloring()),
             escape  = movable ? this.escape('1F') + this.escape((length + 1) + 'G') : '',
             line    = string.substr(0, max - length);
         
         this.__buffer__ += line;
-        if (this.__buffer__.length === max) {
-          if (this.WINDOZE && followon) this.writeToStdout(this.__buffer__);
+        
+        if (this.coloring()) {
+          this.writeToStdout(escape + this.flushFormat() + line);
+        } else if (this.__buffer__.length === max) {
+          this.writeToStdout(this.__buffer__);
           this.__buffer__ = '';
         }
         
-        if (!this.WINDOZE || !followon)
-          this.writeToStdout(escape + this.flushFormat() + line);
-        
         string = string.substr(max - length);
       }
-      if (!followon) this.__buffer__ = '';
+      if (!followon) {
+        if (string == '' && (this.coloring() || !this.__buffer__))
+          this.writeToStdout(this.flushFormat() + '');
+        
+        if (!this.coloring() && this.__buffer__)
+          this.writeToStdout(this.__buffer__);
+        
+        this.__buffer__ = '';
+      }
     },
     
     writeToStdout: function(string) {
@@ -162,6 +169,7 @@ JS.Console = new JS.Module('Console', {
   },
   
   consoleFormat: function() {
+    if (!JS.Console.coloring()) return;
     this.reset();
     var i = arguments.length;
     while (i--) this[arguments[i]]();
@@ -237,7 +245,7 @@ JS.Console = new JS.Module('Console', {
   
   for (var key in C.ESCAPE_CODES) (function(key) {
     C.define(key, function() {
-      if ((C.BROWSER && !window.runtime) || C.WINDOZE) return;
+      if (!JS.Console.coloring()) return;
       var escape = C.ESCAPE_CODES[key];
       C.__format__ += C.escape(escape + 'm');
     });
