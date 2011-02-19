@@ -138,17 +138,18 @@ JS.Console = new JS.Module('Console', {
         
         this.__buffer__ += line;
         
-        if (this.coloring()) {
+        if (this.coloring())
           this.writeToStdout(escape + this.flushFormat() + line);
-        } else if (this.__buffer__.length === max) {
+        else if (this.__buffer__.length === max)
           this.writeToStdout(this.__buffer__);
+        
+        if (this.__buffer__.length === max)
           this.__buffer__ = '';
-        }
         
         string = string.substr(max - length);
       }
       if (!followon) {
-        if (string == '' && (this.coloring() || !this.__buffer__))
+        if (string === '' && !this.__buffer__)
           this.writeToStdout(this.flushFormat() + '');
         
         if (!this.coloring() && this.__buffer__)
