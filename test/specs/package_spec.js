@@ -73,7 +73,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
           part;
       
       while (part = parts.shift()) env = env[part];
-      delete env[last];
+      env[last] = undefined;
     })
   })
   

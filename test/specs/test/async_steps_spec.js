@@ -80,7 +80,7 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() {
         })
         after(function(resume) {
           sync(function() {
-            delete JS.ENV.FakeMath
+            JS.ENV.FakeMath = undefined
             resume()
           })
         })

@@ -156,7 +156,7 @@
           after(function(resume) {
               // This waits for the async commands to complete
               sync(function() {
-                  delete JS.ENV.jQuery;
+                  JS.ENV.jQuery = undefined;
                   resume();
               });
           });</pre>
