@@ -37,6 +37,8 @@ JS.StackTrace = new JS.Module('StackTrace', {
         
         if (this._open) this.puts();
         
+        this.reset();
+        this.print(' ');
         this.consoleFormat('bgblack', 'white');
         this.print('TRACE');
         this.reset();
@@ -57,6 +59,8 @@ JS.StackTrace = new JS.Module('StackTrace', {
           this.consoleFormat('red');
           this.print(' --> ');
         } else {
+          this.reset();
+          this.print(' ');
           this.consoleFormat('bgblack', 'white');
           this.print('TRACE');
           this.reset();
@@ -75,6 +79,8 @@ JS.StackTrace = new JS.Module('StackTrace', {
       
       logError: function(e) {
         this.puts();
+        this.reset();
+        this.print(' ');
         this.consoleFormat('bgred', 'white');
         this.print('ERROR');
         this.consoleFormat('bold', 'red');

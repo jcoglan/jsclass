@@ -27,11 +27,13 @@ JS.Benchmark = new JS.Module('Benchmark', {
   
   printResult: function(name, times) {
     var average = this.average(times);
+    this.reset();
+    this.print(' ');
     this.consoleFormat('bgblack', 'white');
     this.print('BENCHMARK');
     this.reset();
     this.print(' [' + this.format(average) + ']');
-    this.consoleFormat('bold', 'yellow');
+    this.consoleFormat('cyan');
     this.puts(' ' + name);
     this.reset();
   },
