@@ -95,7 +95,7 @@ JS.MethodChain.addMethods = function(object) {
 JS.ENV.it = JS.ENV.its = function() { return new JS.MethodChain() };
 
 JS.Method.added(function(method) {
-  JS.MethodChain.addMethod(method.name);
+  if (method && method.name) JS.MethodChain.addMethod(method.name);
 });
 
 JS.Kernel.include({

@@ -47,10 +47,11 @@ JS.Test.Unit.extend({
         ping();
       },
       
+      // Fun fact: in IE, typeof setTimeout === 'object'
       setTimeout: (function() {
-        return (typeof setTimeout === 'function')
-               ? setTimeout
-               : undefined;
+        return (typeof setTimeout === 'undefined')
+               ? undefined
+               : setTimeout;
       })()
     },
     
