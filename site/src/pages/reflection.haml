@@ -1,25 +1,26 @@
 :textile
   h3. Reflection
   
-  Reflection is the process of inspecting the structure of a program at runtime, and
-  potentially modifying that structure dynamically. Ruby has some very useful
-  reflection features and @JS.Class@ incorporates a few of them.
+  Reflection is the process of inspecting the structure of a program at runtime,
+  and potentially modifying that structure dynamically. Ruby has some very
+  useful reflection features and @JS.Class@ incorporates a few of them.
   
   h3. Object properties
   
-  You sometimes want to find out which class an object belongs to, either to do type
-  checks or to call methods from that class. All objects created from @JS.Class@
-  have a @klass@ property that points to the class the object belongs to:
+  You sometimes want to find out which class an object belongs to, either to do
+  type checks or to call methods from that class. All objects created from
+  @JS.Class@ have a @klass@ property that points to the class the object belongs
+  to:
   
-  <pre class="prettyprint">    var Foo = new JS.Class();
-      var obj = new Foo();
-      
-      obj.klass === Foo
-      Foo.klass === JS.Class</pre>
+  <pre class="prettyprint">var Foo = new JS.Class();
+  var obj = new Foo();
   
-  All classes are instances of the class @JS.Class@, just like in Ruby. In addition,
-  all objects have an @isA()@ method. @obj.isA(Foo)@ returns @true@ if any of the
-  following are true:
+  obj.klass === Foo
+  Foo.klass === JS.Class</pre>
+  
+  All classes are instances of the class @JS.Class@, just like in Ruby. In
+  addition, all objects have an @isA()@ method. @obj.isA(Foo)@ returns @true@ if
+  any of the following are true:
   
   * @obj@ is an instance of class @Foo@, or of any subclass of @Foo@
   * @obj@ is an instance of a class that "includes":/modules.html the module @Foo@
@@ -30,86 +31,87 @@
   
   h3. Module and class reflection
   
-  Both modules and classes have set of methods that allow you to inspect the inheritance
-  tree, to inspect the method lookup process and to extract individual methods. Let's
-  set up a few modules to work with:
+  Both modules and classes have set of methods that allow you to inspect the
+  inheritance tree, to inspect the method lookup process and to extract
+  individual methods. Let's set up a few modules to work with:
   
-  <pre class="prettyprint">    var ModA = new JS.Module({
-          speak: function() {
-              return "speak() in ModA";
-          }
-      });
-      
-      var ModB = new JS.Module({
-          speak: function() {
-              return this.callSuper() + ", speak() in ModB";
-          }
-      });
-      
-      var ModC = new JS.Module({
-          include: ModB,
-          speak: function() {
-              return this.callSuper() + ", and in ModC";
-          }
-      });
-      
-      var Foo = new JS.Class({
-          include: [ModA, ModC],
-          speak: function() {
-              return this.callSuper() + ", and in class Foo";
-          }
-      });</pre>
+  <pre class="prettyprint">var ModA = new JS.Module({
+      speak: function() {
+          return "speak() in ModA";
+      }
+  });
   
-  The @ancestors()@ method returns a list of all the classes and modules that a module
-  inherits from, with more 'distant' ancestors at the start of the list. @JS.Class@ searches
-  this list in reverse order when doing method lookups.
+  var ModB = new JS.Module({
+      speak: function() {
+          return this.callSuper() + ", speak() in ModB";
+      }
+  });
   
-  <pre class="prettyprint">    Foo.ancestors()
-      // -> [JS.Kernel, ModA, ModB, ModC, Foo]</pre>
+  var ModC = new JS.Module({
+      include: ModB,
+      speak: function() {
+          return this.callSuper() + ", and in ModC";
+      }
+  });
   
-  If you're debugging using Firebug, it will just print @Object@ or @function()@ for
-  each of those:
+  var Foo = new JS.Class({
+      include: [ModA, ModC],
+      speak: function() {
+          return this.callSuper() + ", and in class Foo";
+      }
+  });</pre>
   
-  <pre class="prettyprint">    Foo.ancestors()
-      // -> [Object, Object, Object, Object, function()]</pre>
+  The @ancestors()@ method returns a list of all the classes and modules that a
+  module inherits from, with more 'distant' ancestors at the start of the list.
+  @JS.Class@ searches this list in reverse order when doing method lookups.
+  
+  <pre class="prettyprint">Foo.ancestors()
+  // -> [JS.Kernel, ModA, ModB, ModC, Foo]</pre>
+  
+  If you're debugging using Firebug, it will just print @Object@ or @function()@
+  for each of those:
+  
+  <pre class="prettyprint">Foo.ancestors()
+  // -> [Object, Object, Object, Object, function()]</pre>
   
   You might not find that very helpful, but if you use "@StackTrace@":/stacktrace.html
   you can find the names of the modules in the tree:
   
-  <pre class="prettyprint">    JS.StackTrace.nameOf(Foo.ancestors())
-      // -> ["JS.Kernel", "ModA", "ModB", "ModC", "Foo"]</pre>
+  <pre class="prettyprint">JS.StackTrace.nameOf(Foo.ancestors())
+  // -> ["JS.Kernel", "ModA", "ModB", "ModC", "Foo"]</pre>
   
-  If that's not enough information, you can ask @JS.Class@ to explicitly look up methods
-  for you so you can see the order that inherited methods will be called in. You can
-  call @toString()@ on any JavaScript function to read its source code. @lookup()@
-  returns functions in reverse order; the last function in the list will be the first
-  to be called, and if it uses @callSuper()@ the penultimate function will be called,
-  and so on.
+  If that's not enough information, you can ask @JS.Class@ to explicitly look up
+  methods for you so you can see the order that inherited methods will be called
+  in. You can call @toString()@ on any JavaScript function to read its source
+  code. @lookup()@ returns functions in reverse order; the last function in the
+  list will be the first to be called, and if it uses @callSuper()@ the
+  penultimate function will be called, and so on.
   
-  <pre class="prettyprint">    Foo.lookup('speak')
-      // -> [function(), function(), function(), function()]</pre>
+  <pre class="prettyprint">Foo.lookup('speak')
+  // -> [function(), function(), function(), function()]</pre>
   
-  Finally, you can extract a single named method from a module using @instanceMethod()@, and
-  get a list of all the instance methods in a class using @instanceMethods@. Calling
-  @instanceMethods(false)@ returns the methods from _only_ that class/module, ignoring
-  iherited methods. To get all the methods defined on a single object, use @methods()@.
+  Finally, you can extract a single named method from a module using
+  @instanceMethod()@, and get a list of all the instance methods in a class
+  using @instanceMethods@. Calling @instanceMethods(false)@ returns the methods
+  from _only_ that class/module, ignoring iherited methods. To get all the
+  methods defined on a single object, use @methods()@.
   
-  <pre class="prettyprint">    ModC.instanceMethod('speak')
-      // -> #<Method>
-      
-      Foo.instanceMethods()
-      // -> ["speak", "__eigen__", "equals", "extend", "hash",
-      //     "isA", "method", "methods", "tap", "wait", "_",
-      //     "enumFor", "toEnum"]
-      
-      Foo.instanceMethods(false)
-      // -> ["speak"]
-      
-      var f = new Foo();
-      f.methods()
-      // -> ["speak", "__eigen__", "equals", "extend", "hash",
-      //     "isA", "method", "methods", "tap", "wait", "_",
-      //     "enumFor", "toEnum"]</pre>
+  <pre class="prettyprint">ModC.instanceMethod('speak')
+  // -> #<Method>
+  
+  Foo.instanceMethods()
+  // -> ["speak", "__eigen__", "equals", "extend", "hash",
+  //     "isA", "method", "methods", "tap", "wait", "_",
+  //     "enumFor", "toEnum"]
+  
+  Foo.instanceMethods(false)
+  // -> ["speak"]
+  
+  var f = new Foo();
+  f.methods()
+  // -> ["speak", "__eigen__", "equals", "extend", "hash",
+  //     "isA", "method", "methods", "tap", "wait", "_",
+  //     "enumFor", "toEnum"]</pre>
   
   h3. Method objects
   
@@ -128,20 +130,21 @@
   So, for example you can get a method out of a class and find out if it actually
   came from another method by calling:
   
-  <pre class="prettyprint">    klass.instanceMethod('foo').module</pre>
+  <pre class="prettyprint">klass.instanceMethod('foo').module</pre>
   
   Like JavaScript functions, @Method@ objects respond to @call()@ and @apply@,
   so you can actually pass them to methods that expect callbacks to be passed in.
   
   h3. The eigenclass
   
-  All objects, modules and classes have what's called an eigenclass to store their
-  "singleton methods":/singletonmethods.html. In Ruby, the eigenclass is a real class
-  but in @JS.Class@ it's implemented as a module. (This distinction doesn't really
-  matter as you're unlikely to want to instantiate or subclass it.) You can access
-  the eigenclass of any object by calling its @__eigen__()@ method. For example,
-  you could inspect the call order of an inherited method using the eigenclass:
+  All objects, modules and classes have what's called an eigenclass to store
+  their "singleton methods":/singletonmethods.html. In Ruby, the eigenclass is a
+  real class but in @JS.Class@ it's implemented as a module. (This distinction
+  doesn't really matter as you're unlikely to want to instantiate or subclass
+  it.) You can access the eigenclass of any object by calling its @__eigen__()@
+  method. For example, you could inspect the call order of an inherited method
+  using the eigenclass:
   
-  <pre class="prettyprint">    var obj = new Foo();
-      obj.__eigen__().lookup('speak')
-      // -> [function(), function(), function(), function()]</pre>
+  <pre class="prettyprint">var obj = new Foo();
+  obj.__eigen__().lookup('speak')
+  // -> [function(), function(), function(), function()]</pre>

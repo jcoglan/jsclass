@@ -2,75 +2,76 @@
   h3. @JS.Decorator@
   
   The @JS.Decorator@ module gives you a means of implementing "the decorator pattern":http://en.wikipedia.org/wiki/Decorator_pattern
-  with minimal boilerplate and code duplication. When creating a decorator class, you
-  only need to define methods that differ in some way from the methods in the decorated
-  object (the _component_). This means you don't have to write lots of forwarding methods
-  by hand, which saves you time, filesize, and reduces code duplication.
+  with minimal boilerplate and code duplication. When creating a decorator class,
+  you only need to define methods that differ in some way from the methods in
+  the decorated object (the _component_). This means you don't have to write
+  lots of forwarding methods by hand, which saves you time, filesize, and
+  reduces code duplication.
   
   Let's take a quick example:
   
-  <pre class="prettyprint">    // Basic Bike class. Bikes cost $10 per gear.
-      
-      var Bike = new JS.Class({
-          initialize: function(model, gears) {
-              this.model = model;
-              this.gears = gears;
-          },
-          getModel: function() {
-              return this.model;
-          },
-          getPrice: function() {
-              return 10 * this.gears;
-          },
-          applyBrakes: function(force) {
-              // slow the bike down...
-          }
-      });
-      
-      // Disk brake decorator. Disk brakes add to the price,
-      // and make the bike's brakes more powerful.
-      
-      var DiskBrakeDecorator = new JS.Decorator(Bike, {
-          getPrice: function() {
-              return this.component.getPrice() + 50;
-          },
-          applyBrakes: function(force) {
-              this.component.applyBrakes(8 * force);
-          }
-      });</pre>
+  <pre class="prettyprint">// Basic Bike class. Bikes cost $10 per gear.
   
-  @DiskBrakeDecorator@ gets versions of all @Bike@'s instance methods that forward the
-  method call onto the component and return the result. e.g., @DiskBrakeDecorator@'s
-  @getModel()@ method looks like:
+  var Bike = new JS.Class({
+      initialize: function(model, gears) {
+          this.model = model;
+          this.gears = gears;
+      },
+      getModel: function() {
+          return this.model;
+      },
+      getPrice: function() {
+          return 10 * this.gears;
+      },
+      applyBrakes: function(force) {
+          // slow the bike down...
+      }
+  });
   
-  <pre class="prettyprint">    getModel: function() {
-          return this.component.getModel();
-      };</pre>
+  // Disk brake decorator. Disk brakes add to the price,
+  // and make the bike's brakes more powerful.
   
-  Any methods you don't redefine in the decorator class will look similar to this. Let's
-  try our new classes out:
+  var DiskBrakeDecorator = new JS.Decorator(Bike, {
+      getPrice: function() {
+          return this.component.getPrice() + 50;
+      },
+      applyBrakes: function(force) {
+          this.component.applyBrakes(8 * force);
+      }
+  });</pre>
   
-  <pre class="prettyprint">    var bike = new Bike('Specialized Rock Hopper', 21);
-      bike.getPrice()   // -> 210
-      
-      bike = new DiskBrakeDecorator(bike);
-      bike.getPrice()   // -> 260
-      bike.getModel()   // -> "Specialized Rock Hopper"</pre>
+  @DiskBrakeDecorator@ gets versions of all @Bike@'s instance methods that
+  forward the method call onto the component and return the result. e.g.,
+  @DiskBrakeDecorator@'s @getModel()@ method looks like:
   
-  Within your decorator methods, use @this.component@ to refer to the decorated object.
-  If a decorator defines new methods, they will be passed through by any other decorators
-  you wrap an object with.
+  <pre class="prettyprint">getModel: function() {
+      return this.component.getModel();
+  };</pre>
   
-  <pre class="prettyprint">    var HornDecorator = new JS.Decorator(Bike, {
-          beepHorn: function(noise) {
-              return noise.toUpperCase();
-          }
-      });
-      
-      var bike = new Bike('Specialized Rock Hopper', 21);
-      
-      // Let's wrap a HornDecorator with a DiskBrakeDecorator
-      bike = new HornDecorator(bike);
-      bike = new DiskBrakeDecorator(bike);
-      
-      bike.beepHorn('beep!')    // -> "BEEP!"</pre>
+  Any methods you don't redefine in the decorator class will look similar to
+  this. Let's try our new classes out:
+  
+  <pre class="prettyprint">var bike = new Bike('Specialized Rock Hopper', 21);
+  bike.getPrice()   // -> 210
+  
+  bike = new DiskBrakeDecorator(bike);
+  bike.getPrice()   // -> 260
+  bike.getModel()   // -> "Specialized Rock Hopper"</pre>
+  
+  Within your decorator methods, use @this.component@ to refer to the decorated
+  object. If a decorator defines new methods, they will be passed through by any
+  other decorators you wrap an object with.
+  
+  <pre class="prettyprint">var HornDecorator = new JS.Decorator(Bike, {
+      beepHorn: function(noise) {
+          return noise.toUpperCase();
+      }
+  });
+  
+  var bike = new Bike('Specialized Rock Hopper', 21);
+  
+  // Let's wrap a HornDecorator with a DiskBrakeDecorator
+  bike = new HornDecorator(bike);
+  bike = new DiskBrakeDecorator(bike);
+  
+  bike.beepHorn('beep!')    // -> "BEEP!"</pre>

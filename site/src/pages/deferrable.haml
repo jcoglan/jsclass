@@ -16,25 +16,25 @@
   to register callbacks, and our code just needs to call @this.succeed()@ with
   the result of the request when it completes.
   
-  <pre class="prettyprint">    var AjaxRequest = new JS.Class({
-          include: JS.Deferrable,
-          
-          initialize: function(url) {
-              var self = this;
-              jQuery.get(url, function(response) {
-                  self.succeed(response);
-              });
-          }
-      });</pre>
+  <pre class="prettyprint">var AjaxRequest = new JS.Class({
+      include: JS.Deferrable,
+      
+      initialize: function(url) {
+          var self = this;
+          jQuery.get(url, function(response) {
+              self.succeed(response);
+          });
+      }
+  });</pre>
   
   Clients can then use this class by instantiating it with a URL and then adding
   callbacks. The callbacks will be executed when the class calls its @succeed()@
   method.
   
-  <pre class="prettyprint">    var request = new AjaxRequest('/index.html');
-      request.callback(function(response) {
-          // handle response
-      });</pre>
+  <pre class="prettyprint">var request = new AjaxRequest('/index.html');
+  request.callback(function(response) {
+      // handle response
+  });</pre>
   
   Each callback added to a deferrable is only ever executed once, on the next
   @succeed()@ call. If the deferrable has already completed when you add a

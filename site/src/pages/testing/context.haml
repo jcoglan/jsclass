@@ -18,33 +18,33 @@
   
   For example, the following test run prints:
   
-  <pre>    outer before
-      outer test
-      outer after
-      
-      outer before
-      INNER before
-      INNER test
-      outer after
-      INNER after</pre>
+  <pre>outer before
+  outer test
+  outer after
   
-  <pre class="prettyprint">    ThingSpec = JS.Test.describe("thing", function() { with(this) {
-          before(function() { this.puts("outer before") });
-          after (function() { this.puts("outer after") });
+  outer before
+  INNER before
+  INNER test
+  outer after
+  INNER after</pre>
+  
+  <pre class="prettyprint">ThingSpec = JS.Test.describe("thing", function() { with(this) {
+      before(function() { this.puts("outer before") });
+      after (function() { this.puts("outer after") });
+      
+      it("has tests", function() { with(this) {
+          print("outer test");
+      }});
+      
+      describe("nested", function() { with(this) {
+          before(function() { this.puts("INNER before") });
+          after (function() { this.puts("INNER after") });
           
-          it("has tests", function() { with(this) {
-              print("outer test");
+          it("does something", function() { with(this) {
+              print("INNER test");
           }});
-          
-          describe("nested", function() { with(this) {
-              before(function() { this.puts("INNER before") });
-              after (function() { this.puts("INNER after") });
-              
-              it("does something", function() { with(this) {
-                  print("INNER test");
-              }});
-          }});
-      }});</pre>
+      }});
+  }});</pre>
   
   Your @before@ and @after@ blocks are run once for every @it@ block in your
   tests. @before@ blocks are typically used to create or modify the objects you

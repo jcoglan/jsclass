@@ -1,17 +1,18 @@
 :textile
   <p class="front-matter">
-    @JS.Class@ is a set of tools designed to make it easy to build robust object-oriented
-    programs in JavaScript. It's based on Ruby, and gives you access to Ruby's object,
-    "module":/modules.html and "class":/classes.html systems, some of its
-    "reflection":/reflection.html and "metaprogramming":/hooks.html facilities,
-    and a few of the packages from its standard library. It also provides a powerful
-    "package manager":/packages.html to help load your applications as efficiently as possible.
+    @JS.Class@ is a set of tools designed to make it easy to build robust
+    object-oriented programs in JavaScript. It's based on Ruby, and gives you
+    access to Ruby's object, "module":/modules.html and "class":/classes.html
+    systems, some of its "reflection":/reflection.html and "metaprogramming":/hooks.html
+    facilities, and a few of the packages from its standard library. It also
+    provides a powerful "package manager":/packages.html to help load your
+    applications as efficiently as possible.
   </p>
   
   <p class="front-matter">
-    It supports all the major web browsers and a growing number of server-side platforms,
-    including Rhino, Node.js and Narwhal. Wherever you're using JavaScript, @JS.Class@
-    makes building large programs a snap.
+    It supports all the major web browsers and a growing number of server-side
+    platforms, including Rhino, Node.js and Narwhal. Wherever you're using
+    JavaScript, @JS.Class@ makes building large programs a snap.
   </p>
   
   h3. Features
@@ -26,54 +27,62 @@
   * Conventions for object equality, comparison, iteration and hashing
   * Versions of various standard Ruby modules and data structures
   
-  Its object system has been designed to exactly mimick the behaviour of Ruby, giving
-  you a great deal of power when structuring large programs. It also provides a set
-  of well-integrated data structures, all of which implement the powerful
-  "@Enumerable@":/enumerable.html API. If you like Ruby, you'll feel right at home.
+  Its object system has been designed to exactly mimick the behaviour of Ruby,
+  giving you a great deal of power when structuring large programs. It also
+  provides a set of well-integrated data structures, all of which implement the
+  powerful "@Enumerable@":/enumerable.html API. If you like Ruby, you'll feel
+  right at home.
   
   h3. Download version 2.1
   
   Version 2.1 builds on the 2.0 core and adds several new core features and
   packages. A quick tour of the new features:
   
-  * New libraries: "@ConstantScope@":/constantscope.html, "@Hash@":/hash.html and
-    "@HashSet@":/set.html, a much faster @Set@ implementation.
-  * The "package manager":/packages.html has been improved with a new API, parallel downloading
-    of files, and support for server-side environments such as SpiderMonkey, Rhino and V8. It
-    also supports user-defined loader functions for transparent integration with Google and Yahoo!'s
-    packaging systems.
-  * The "@Enumerable@":/enumerable.html module has been updated with plenty of methods from
-    Ruby 1.9, and now supports "enumerators":/enumerator.html, and @Symbol#to_proc@-like
-    functionality whereby a string, "@MethodChain@":/methodchain.html or any object that implements
-    @toFunction()@ can be used as an iterator.
-  * The core object methods now live in "@Kernel@":/kernel.html, and we've added new methods:
-    @tap()@, @equals()@, @hash()@ and @enumFor()@.
+  * New libraries: "@ConstantScope@":/constantscope.html, "@Hash@":/hash.html
+    and "@HashSet@":/set.html, a much faster @Set@ implementation.
+  * The "package manager":/packages.html has been improved with a new API,
+    parallel downloading of files, and support for server-side environments such
+    as SpiderMonkey, Rhino and V8. It also supports user-defined loader
+    functions for transparent integration with Google and Yahoo!'s packaging
+    systems.
+  * The "@Enumerable@":/enumerable.html module has been updated with plenty of
+    methods from Ruby 1.9, and now supports "enumerators":/enumerator.html, and
+    @Symbol#to_proc@-like functionality whereby a string, "@MethodChain@":/methodchain.html
+    or any object that implements @toFunction()@ can be used as an iterator.
+  * The core object methods now live in "@Kernel@":/kernel.html, and we've added
+    new methods: @tap()@, @equals()@, @hash()@ and @enumFor()@.
   * The "double inclusion problem":http://eigenclass.org/hiki/The+double+inclusion+problem
     is now fixed; no current Ruby implementation seems to support this properly.
-  * Ancestor and method lookups are now cached so @callSuper@ runs about twice as fast.
-  * Classes can be named to generate @displayName@ on methods for
-    "use with the WebKit debugger":/debugging.html.
+  * Ancestor and method lookups are now cached so @callSuper@ runs about twice
+    as fast.
+  * Classes can be named to generate @displayName@ on methods for "use with the
+    WebKit debugger":/debugging.html.
   
   <a href="/assets/JS.Class.2-1-5.zip" onclick="trackDownload('2.1.5')">Download JS.Class 2.1.5</a>
   
-  Most code based on version 1.x will be compatible with this release, but there a few "issues
-  to be aware of":/upgrade.html. If you have code you cannot update to 2.x at present, 1.6 is
-  still available:
+  Most code based on version 1.x will be compatible with this release, but there
+  a few "issues to be aware of":/upgrade.html. If you have code you cannot
+  update to 2.x at present, 1.6 is still available:
   
   <a href="/assets/JS.Class.1-6-3.zip" onclick="trackDownload('1.6.3')">Download JS.Class 1.6.3</a>
   
   h3. Acknowledgements
   
-  @JS.Class@ was initially inspired by, and borrows ideas from, these open-source projects:
+  @JS.Class@ was initially inspired by, and borrows ideas from, these open-source
+  projects:
   
-  * The "Prototype":http://prototypejs.org framework, &copy; 2005-2010 Sam Stephenson
-  * Alex Arnell's "Inheritance":http://www.twologic.com/projects/inheritance/ library, &copy; 2006, Alex Arnell
-  * "Base":http://dean.edwards.name/weblog/2006/03/base/, &copy; 2006-9, Dean Edwards
+  * The "Prototype":http://prototypejs.org framework, &copy; 2005-2010 Sam
+    Stephenson
+  * Alex Arnell's "Inheritance":http://www.twologic.com/projects/inheritance/
+    library, &copy; 2006, Alex Arnell
+  * "Base":http://dean.edwards.name/weblog/2006/03/base/, &copy; 2006-9, Dean
+    Edwards
   
   The standard library has been influenced by techniques demonstrated in
-  "Pro JavaScript Design Patterns":http://www.apress.com/book/view/9781590599082, and contains
-  ports of a few standard Ruby modules.
+  "Pro JavaScript Design Patterns":http://www.apress.com/book/view/9781590599082,
+  and contains ports of a few standard Ruby modules.
   
-  @JS.Class@ is &copy; 2007&ndash;2010 James Coglan. You can find update announcements via
-  "my blog":http://blog.jcoglan.com/category/jsclass/. The source code is "hosted on
-  Github":http://github.com/jcoglan/js.class.
+  @JS.Class@ is &copy; 2007&ndash;2010 James Coglan. You can find update
+  announcements via "my blog":http://blog.jcoglan.com/category/jsclass/. The
+  source code is "hosted on Github":http://github.com/jcoglan/js.class.
+

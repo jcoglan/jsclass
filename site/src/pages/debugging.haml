@@ -2,48 +2,49 @@
   h3. Debugging support
   
   The 2.1 release introduced support for "WebKit's @displayName@":http://www.alertdebugging.com/2009/04/29/building-a-better-javascript-profiler-with-webkit/
-  property for profiling and debugging JavaScript. Essentially, it is a workaround for the
-  fact that JavaScript objects and functions do not have names directly attached to them,
-  and can be referenced by any number of variables, thus making objects and functions
-  basically anonymous.
+  property for profiling and debugging JavaScript. Essentially, it is a
+  workaround for the fact that JavaScript objects and functions do not have
+  names directly attached to them, and can be referenced by any number of
+  variables, thus making objects and functions basically anonymous.
   
-  WebKit's profiler and debugger improves the situation by using the @displayName@ assigned
-  to a @Function@ object if one has been assigned. JS.Class generates display names for methods
-  and inner classes, so long as you specify a name for the outermost class. Class (and module)
-  names are optional and are specified using the first argument to the @Class@ and @Module@
+  WebKit's profiler and debugger improves the situation by using the
+  @displayName@ assigned to a @Function@ object if one has been assigned.
+  JS.Class generates display names for methods and inner classes, so long as you
+  specify a name for the outermost class. Class (and module) names are optional
+  and are specified using the first argument to the @Class@ and @Module@
   constructors. For example:
   
-  <pre class="prettyprint">    Foo = new JS.Module('Foo', {
-          sleep: function() { /* ... */ },
+  <pre class="prettyprint">Foo = new JS.Module('Foo', {
+      sleep: function() { /* ... */ },
+      
+      extend: {
+          eatFood: function() { /* ... */ },
           
-          extend: {
-              eatFood: function() { /* ... */ },
-              
-              InnerClass: new JS.Class({
-                  haveVisions: function() { /* ... */ }
-              })
-          }
-      });</pre>
+          InnerClass: new JS.Class({
+              haveVisions: function() { /* ... */ }
+          })
+      }
+  });</pre>
   
-  The name does not have to be the same as the variable you assign the module to, although
-  it will probably be more helpful if the names _are_ the same. The name given is not used
-  for variable assignment, though.
+  The name does not have to be the same as the variable you assign the module to,
+  although it will probably be more helpful if the names _are_ the same. The
+  name given is not used for variable assignment, though.
   
-  Given the above definition, we now find @displayName@ set on the methods and the inner
-  class:
+  Given the above definition, we now find @displayName@ set on the methods and
+  the inner class:
   
-  <pre class="prettyprint">    Foo.instanceMethod('sleep').displayName
-      // -> "Foo#sleep"
-      
-      Foo.eatFood.displayName
-      // -> "Foo.eatFood"
-      
-      Foo.InnerClass.displayName
-      // -> "Foo.InnerClass"
-      
-      Foo.InnerClass.instanceMethod('haveVisions').displayName
-      // -> "Foo.InnerClass#haveVisions"</pre>
+  <pre class="prettyprint">Foo.instanceMethod('sleep').displayName
+  // -> "Foo#sleep"
   
-  Further debugging support, including autodetection of object names, is provided by the
-  "@StackTrace@":/stacktrace.html module.
+  Foo.eatFood.displayName
+  // -> "Foo.eatFood"
+  
+  Foo.InnerClass.displayName
+  // -> "Foo.InnerClass"
+  
+  Foo.InnerClass.instanceMethod('haveVisions').displayName
+  // -> "Foo.InnerClass#haveVisions"</pre>
+  
+  Further debugging support, including autodetection of object names, is
+  provided by the "@StackTrace@":/stacktrace.html module.
 

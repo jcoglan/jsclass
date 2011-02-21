@@ -1,116 +1,121 @@
 :textile
   h3. @JS.Enumerable@
   
-  @JS.Enumerable@ is essentially a straight port of Ruby's "@Enumerable@":http://ruby-doc.org/core/classes/Enumerable.html module to JavaScript. Some
-  of the methods have slightly different names in keeping with JavaScript conventions, but the
-  underlying idea is this: the module provides methods usable by any class that represents
-  collections or lists of things. The only stipulation is that your class must have a @forEach@
-  method that calls a given function with each member of the collection in turn. The @forEach@
-  method should return an "@Enumerator@":/enumerator.html if called without an iterator
-  function - see the example below.
+  @JS.Enumerable@ is essentially a straight port of Ruby's "@Enumerable@":http://ruby-doc.org/core/classes/Enumerable.html
+  module to JavaScript. Some of the methods have slightly different names in
+  keeping with JavaScript conventions, but the underlying idea is this: the
+  module provides methods usable by any class that represents collections or
+  lists of things. The only stipulation is that your class must have a @forEach@
+  method that calls a given function with each member of the collection in turn.
+  The @forEach@  method should return an "@Enumerator@":/enumerator.html if
+  called without an iterator function - see the example below.
   
-  As a basic example, here's a simple class that stores some of its instance data in a list.
-  A class may store collections in any way it chooses, and does not necessarily have to guarantee
-  any particular iteration order; the purpose of the @forEach@ method is to hide the storage
-  mechanism from the users of the class.
+  As a basic example, here's a simple class that stores some of its instance
+  data in a list.  A class may store collections in any way it chooses, and does
+  not necessarily have to guarantee any particular iteration order; the purpose
+  of the @forEach@ method is to hide the storage mechanism from the users of the
+  class.
     
-  <pre class="prettyprint">    var Collection = new JS.Class({
-          include: JS.Enumerable,
+  <pre class="prettyprint">var Collection = new JS.Class({
+      include: JS.Enumerable,
+      
+      initialize: function() {
+          this._list = [];
+          for (var i = 0, n = arguments.length; i < n; i++)
+              this._list.push(arguments[i]);
+      },
+      
+      forEach: function(block, context) {
+          if (!block) return this.enumFor('forEach');
           
-          initialize: function() {
-              this._list = [];
-              for (var i = 0, n = arguments.length; i < n; i++)
-                  this._list.push(arguments[i]);
-          },
+          for (var i = 0, n = this._list.length; i < n; i++)
+              block.call(context || null, this._list[i]);
           
-          forEach: function(block, context) {
-              if (!block) return this.enumFor('forEach');
-              
-              for (var i = 0, n = this._list.length; i < n; i++)
-                  block.call(context || null, this._list[i]);
-              
-              return this;
-          }
-      });</pre>
+          return this;
+      }
+  });</pre>
   
   Let's create an instance and see what it does:
   
-  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
-      list.forEach(function(x) {
-          console.log(x);
-      });
-      
-      // prints:
-      //    3,  7,  4,  8,  2</pre>
+  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  list.forEach(function(x) {
+      console.log(x);
+  });
   
-  The API provided by the @Enumerable@ module to the @Collection@ class is listed below. In
-  the argument list of each method, @block@ is a function and @context@ is an optional argument
-  that sets the meaning of the keyword @this@ inside @block@. For many methods, @block@ may be
-  a @String@, emulating Ruby's "@Symbol#to_proc@":http://ruby-doc.org/core-1.9/classes/Symbol.html#M002518
+  // prints:
+  //    3,  7,  4,  8,  2</pre>
+  
+  The API provided by the @Enumerable@ module to the @Collection@ class is
+  listed below. In the argument list of each method, @block@ is a function and
+  @context@ is an optional argument that sets the meaning of the keyword @this@
+  inside @block@. For many methods, @block@ may be a @String@, emulating Ruby's
+  "@Symbol#to_proc@":http://ruby-doc.org/core-1.9/classes/Symbol.html#M002518
   functionality. Some examples:
   
-  <pre class="prettyprint">    var strings = new Collection('iguana', 'labrador', 'albatross');
-      
-      strings.map('length')
-      // -> [6, 8, 9]
-      
-      strings.map('toUpperCase')
-      // -> ["IGUANA", "LABRADOR", "ALBATROSS"]</pre>
+  <pre class="prettyprint">var strings = new Collection('iguana', 'labrador', 'albatross');
   
-  The string may refer to a method or a property of the objects in the collection, and is
-  converted to a function that calls the named method on the first argument, passing the
-  remaining arguments as parameters to the call. In other words:
+  strings.map('length')
+  // -> [6, 8, 9]
   
-  <pre class="prettyprint">    strings.map('toUpperCase')
-      // is converted to:
-      
-      strings.map(function(a, b, ...) { return a.toUpperCase(b, ...) })</pre>
+  strings.map('toUpperCase')
+  // -> ["IGUANA", "LABRADOR", "ALBATROSS"]</pre>
   
-  Most of JavaScript's binary operators are supported, so you can use them with between items
-  in @inject@ loops, for example:
+  The string may refer to a method or a property of the objects in the
+  collection, and is converted to a function that calls the named method on the
+  first argument, passing the remaining arguments as parameters to the call. In
+  other words:
   
-  <pre class="prettyprint">    new Collection(1,2,3,4).inject('+')
-      // -> 10
-      
-      var tree = {A: {B: {C: 87}}};
-      new Collection('A','B','C').inject(tree, '[]')
-      // -> 87</pre>
+  <pre class="prettyprint">strings.map('toUpperCase')
+  // is converted to:
   
+  strings.map(function(a, b, ...) { return a.toUpperCase(b, ...) })</pre>
+  
+  Most of JavaScript's binary operators are supported, so you can use them with
+  between items in @inject@ loops, for example:
+  
+  <pre class="prettyprint">new Collection(1,2,3,4).inject('+')
+  // -> 10
+  
+  var tree = {A: {B: {C: 87}}};
+  new Collection('A','B','C').inject(tree, '[]')
+  // -> 87</pre>
   
   h3. @all(block, context)@
   
-  Returns @true@ iff @block@ returns @true@ for every member of the collection. If called without
-  a block, returns @true@ iff all the members of the collection have truthy values. Aliased as @every()@.
+  Returns @true@ iff @block@ returns @true@ for every member of the collection.
+  If called without a block, returns @true@ iff all the members of the
+  collection have truthy values. Aliased as @every()@.
   
-  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
-      
-      list.all(function(x) { return x > 5 });
-      // -> false
-      
-      list.all(function(x) { return typeof x == 'number' });
-      // -> true
-      
-      new Collection(3,0,5).all();
-      // -> false</pre>
+  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  
+  list.all(function(x) { return x > 5 });
+  // -> false
+  
+  list.all(function(x) { return typeof x == 'number' });
+  // -> true
+  
+  new Collection(3,0,5).all();
+  // -> false</pre>
   
   h3. @any(block, context)@
   
-  Returns @true@ iff @block@ returns @true@ for one or more members of the collection. If called
-  without a block, returns @true@ iff one or more members has a truthy value. Aliased as @some()@.
+  Returns @true@ iff @block@ returns @true@ for one or more members of the
+  collection. If called without a block, returns @true@ iff one or more members
+  has a truthy value. Aliased as @some()@.
   
-  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
-      
-      list.any(function(x) { return x > 5 });
-      // -> true
-      
-      list.any(function(x) { return typeof x == 'object' });
-      // -> false
-      
-      list.any();
-      // -> true
-      
-      new Collection(0, false, null).any();
-      // -> false</pre>
+  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  
+  list.any(function(x) { return x > 5 });
+  // -> true
+  
+  list.any(function(x) { return typeof x == 'object' });
+  // -> false
+  
+  list.any();
+  // -> true
+  
+  new Collection(0, false, null).any();
+  // -> false</pre>
   
   h3. @collect(block, context)@
   
@@ -118,23 +123,24 @@
   
   h3. @count(needle, context)@
   
-  If called without arguments, returns the number of items in the collection. If called with
-  arguments, returns the number of members that are equal to @needle@ using the @===@ operator,
-  or for which @needle@ returns @true@ if @needle@ is a function.
+  If called without arguments, returns the number of items in the collection. If
+  called with arguments, returns the number of members that are equal to
+  @needle@ using the @===@ operator, or for which @needle@ returns @true@ if
+  @needle@ is a function.
   
-  <pre class="prettyprint">    new Collection(3,7,4,8,2).count();
-      // -> 5
-      
-      new Collection(3,7,4,8,2).count(2);
-      // -> 1
-      
-      new Collection(3,7,4,8,2).count(function(x) { return x % 2 == 0 });
-      // -> 3</pre>
+  <pre class="prettyprint">new Collection(3,7,4,8,2).count();
+  // -> 5
+  
+  new Collection(3,7,4,8,2).count(2);
+  // -> 1
+  
+  new Collection(3,7,4,8,2).count(function(x) { return x % 2 == 0 });
+  // -> 3</pre>
   
   h3. @cycle(n, block, context)@
   
-  Loops over the collection @n@ times, calling @block@ with each member. Equivalent to calling
-  @forEach(block, context)@ @n@ times.
+  Loops over the collection @n@ times, calling @block@ with each member.
+  Equivalent to calling @forEach(block, context)@ @n@ times.
   
   h3. @detect(block, context)@
   
@@ -146,8 +152,8 @@
   
   h3. @dropWhile(block, context)@
   
-  Returns the collection as a new @Array@, removing items from the front of the list up to
-  but not including the first item for which @block@ returns @false@.
+  Returns the collection as a new @Array@, removing items from the front of the
+  list up to but not including the first item for which @block@ returns @false@.
   
   h3. @entries()@
   
@@ -163,10 +169,11 @@
   
   h3. @find(block, context)@
   
-  Returns the first member of the collection for which @block@ returns @true@. Aliased as @detect()@.
+  Returns the first member of the collection for which @block@ returns @true@.
+  Aliased as @detect()@.
   
-  <pre class="prettyprint">    new Collection(3,7,4,8,2).find(function(x) { return x > 5 });
-      // -> 7</pre>
+  <pre class="prettyprint">new Collection(3,7,4,8,2).find(function(x) { return x > 5 });
+  // -> 7</pre>
   
   h3. @findAll(block, context)@
   
@@ -174,142 +181,148 @@
   
   h3. @findIndex(needle, context)@
   
-  Returns the index of the first member of the collection equal to @needle@, or for which
-  @needle@ returns @true@ if @needle@ is a function. Returns @null@ if no match is found.
+  Returns the index of the first member of the collection equal to @needle@, or
+  for which @needle@ returns @true@ if @needle@ is a function. Returns @null@ if
+  no match is found.
   
   h3. @first(n)@
   
-  Returns an @Array@ containing the first @n@ members, or returns just the first member
-  if @n@ is not specified.
+  Returns an @Array@ containing the first @n@ members, or returns just the first
+  member if @n@ is not specified.
   
   h3. @forEachCons(n, block, context)@
   
   Calls @block@ with every set of @n@ consecutive members of the collection.
   
-  <pre class="prettyprint">    new Collection(3,7,4,8,2).forEachCons(3, function(list) {
-          console.log(list);
-      });
-      
-      // prints
-      //    [3, 7, 4]
-      //    [7, 4, 8]
-      //    [4, 8, 2]</pre>
+  <pre class="prettyprint">new Collection(3,7,4,8,2).forEachCons(3, function(list) {
+      console.log(list);
+  });
+  
+  // prints
+  //    [3, 7, 4]
+  //    [7, 4, 8]
+  //    [4, 8, 2]</pre>
   
   h3. @forEachSlice(n, block, context)@
   
   Splits the collection up into pieces of length @n@, and call @block@ with each
   piece in turn.
   
-  <pre class="prettyprint">    new Collection(3,7,4,8,2).forEachSlice(2, function(list) {
-          console.log(list);
-      });
-      
-      // prints
-      //    [3, 7]
-      //    [4, 8]
-      //    [2]</pre>
+  <pre class="prettyprint">new Collection(3,7,4,8,2).forEachSlice(2, function(list) {
+      console.log(list);
+  });
+  
+  // prints
+  //    [3, 7]
+  //    [4, 8]
+  //    [2]</pre>
   
   h3. @forEachWithIndex(block, context)@
   
-  Calls the @block@ with each member of the collection in turn, passing the member and its
-  index to the @block@.
+  Calls the @block@ with each member of the collection in turn, passing the
+  member and its index to the @block@.
   
-  <pre class="prettyprint">    new Collection(3,7,4,8,2).forEachWithIndex(function(x,i) {
-          console.log(x, i);
-      });
-      // prints
-      //    3, 0
-      //    7, 1
-      //    4, 2
-      //    8, 3
-      //    2, 4</pre>
+  <pre class="prettyprint">new Collection(3,7,4,8,2).forEachWithIndex(function(x,i) {
+      console.log(x, i);
+  });
+  // prints
+  //    3, 0
+  //    7, 1
+  //    4, 2
+  //    8, 3
+  //    2, 4</pre>
   
   h3. @forEachWithObject(object, block, context)@
   
-  Calls @block@ with each member of the collection, passing @object@ and the current member
-  with each call, and returns the current object.
+  Calls @block@ with each member of the collection, passing @object@ and the
+  current member with each call, and returns the current object.
   
-  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
-      
-      list.forEachWithObject([], function(ary, item) {
-          ary.unshift(item * item);
-      });
-      // -> [4, 64, 16, 49, 9]</pre>
+  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  
+  list.forEachWithObject([], function(ary, item) {
+      ary.unshift(item * item);
+  });
+  // -> [4, 64, 16, 49, 9]</pre>
   
   h3. @grep(pattern, block, context)@
   
-  Returns an @Array@ of all the members of the collection that match @pattern@ according to
-  the method @pattern.match()@. @pattern@ may be a @RegExp@, a @Module@, @Class@, @Range@,
-  or any other object with a @match()@ method that returns @true@ or @false@. If @block@ is
-  given, each match is transformed by passing it to @block@.
+  Returns an @Array@ of all the members of the collection that match @pattern@
+  according to the method @pattern.match()@. @pattern@ may be a @RegExp@, a
+  @Module@, @Class@, @Range@, or any other object with a @match()@ method that
+  returns @true@ or @false@. If @block@ is given, each match is transformed by
+  passing it to @block@.
   
-  <pre class="prettyprint">    var strings = new Collection('iguana', 'labrador', 'albatross');
-      
-      strings.grep(/[aeiou]a/);
-      // -> ["iguana"]
-      
-      strings.grep(/[aeiou]a/, function(s) { return s.toUpperCase() });
-      // -> ["IGUANA"]</pre>
+  <pre class="prettyprint">var strings = new Collection('iguana', 'labrador', 'albatross');
+  
+  strings.grep(/[aeiou]a/);
+  // -> ["iguana"]
+  
+  strings.grep(/[aeiou]a/, function(s) { return s.toUpperCase() });
+  // -> ["IGUANA"]</pre>
   
   h3. @groupBy(block, context)@
   
-  Groups the members according to their return value when passed to @block@, and returns a
-  "@Hash@":/hash.html, where in each pair the key is a return value for @block@ and the value
-  is an @Array@ of items that produced that value.
+  Groups the members according to their return value when passed to @block@, and
+  returns a "@Hash@":/hash.html, where in each pair the key is a return value
+  for @block@ and the value is an @Array@ of items that produced that value.
   
-  <pre class="prettyprint">    var list   = new Collection(1,2,3,4,5,6);
-      var groups = list.groupBy(function(x) { return x % 3 });
-      
-      groups.keys()   // -> [1, 2, 0]
-      groups.get(1)   // -> [1, 4]
-      groups.get(2)   // -> [2, 5]
-      groups.get(0)   // -> [3, 6]</pre>
+  <pre class="prettyprint">var list   = new Collection(1,2,3,4,5,6);
+  var groups = list.groupBy(function(x) { return x % 3 });
+  
+  groups.keys()   // -> [1, 2, 0]
+  groups.get(1)   // -> [1, 4]
+  groups.get(2)   // -> [2, 5]
+  groups.get(0)   // -> [3, 6]</pre>
 
   
   h3. @inject(memo, block, context)@
   
-  Returns the result of reducing the collection down to a single value using a callback
-  function. The first time your @block@ is called, it is passed the value of @memo@ you
-  specified. The return value of @block@ becomes the next value of @memo@.
+  Returns the result of reducing the collection down to a single value using a
+  callback function. The first time your @block@ is called, it is passed the
+  value of @memo@ you specified. The return value of @block@ becomes the next
+  value of @memo@.
   
-  <pre class="prettyprint">    // sum the values
-      new Collection(3,7,4,8,2).inject(0, function(memo, x) { return memo + x });
-      // -> 24</pre>
+  <pre class="prettyprint">// sum the values
+  new Collection(3,7,4,8,2).inject(0, function(memo, x) { return memo + x });
+  // -> 24</pre>
   
   h3. @map(block, context)@
   
-  Returns an @Array@ formed by calling @block@ on each member of the collection. Aliased as @collect()@.
+  Returns an @Array@ formed by calling @block@ on each member of the collection.
+  Aliased as @collect()@.
   
-  <pre class="prettyprint">    // square the numbers
-      new Collection(3,7,4,8,2).map(function(x) { return x * x });
-      // -> [9, 49, 16, 64, 4]</pre>
+  <pre class="prettyprint">// square the numbers
+  new Collection(3,7,4,8,2).map(function(x) { return x * x });
+  // -> [9, 49, 16, 64, 4]</pre>
   
   h3. @max(block, context)@
   
-  Returns the member of the collection with the maximum value. Members must use "@Comparable@":/comparable.html
-  or be comparable using JavaScript's standard comparison operators. If a block is passed,
-  it is used to sort the members. If no block is passed, a sensible default sort method
-  is used.
+  Returns the member of the collection with the maximum value. Members must use
+  "@Comparable@":/comparable.html or be comparable using JavaScript's standard
+  comparison operators. If a block is passed, it is used to sort the members. If
+  no block is passed, a sensible default sort method is used.
   
-  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
-      
-      list.max()   // -> 8
+  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
   
-      list.max(function(a,b) { return (a%7) - (b%7) });
-      // -> 4</pre>
+  list.max()   // -> 8
+
+  list.max(function(a,b) { return (a%7) - (b%7) });
+  // -> 4</pre>
   
   h3. @maxBy(block, context)@
   
-  Returns the member of the collection that gives the maximum value when passed to @block@.
+  Returns the member of the collection that gives the maximum value when passed
+  to @block@.
   
   h3. @member(needle)@
   
-  Returns @true@ iff the collection contains any members equal to @needle@. Items are checked for
-  identity (@===@), or using the @equals()@ method if the objects implement it.
+  Returns @true@ iff the collection contains any members equal to @needle@.
+  Items are checked for identity (@===@), or using the @equals()@ method if the
+  objects implement it.
   
-  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
-      list.member('7')   // -> false
-      list.member(7)     // -> true</pre>
+  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  list.member('7')   // -> false
+  list.member(7)     // -> true</pre>
   
   h3. @min(block, context)@
   
@@ -333,35 +346,38 @@
   
   h3. @one(block, context)@
   
-  Returns @true@ iff @block@ returns @true@ for exactly one member of the collection. If @block@
-  is not given, returns @true@ iff exactly one member has a truthy value.
+  Returns @true@ iff @block@ returns @true@ for exactly one member of the
+  collection. If @block@ is not given, returns @true@ iff exactly one member has
+  a truthy value.
   
   h3. @partition(block, context)@
   
-  Returns two arrays, one containing members for which @block@ returns @true@, the other
-  containing those for which it returns @false@.
+  Returns two arrays, one containing members for which @block@ returns @true@,
+  the other containing those for which it returns @false@.
   
-  <pre class="prettyprint">    new Collection(3,7,4,8,2).partition(function(x) { return x > 5 });
-      // -> [ [7, 8], [3, 4, 2] ]</pre>
+  <pre class="prettyprint">new Collection(3,7,4,8,2).partition(function(x) { return x > 5 });
+  // -> [ [7, 8], [3, 4, 2] ]</pre>
   
   h3. @reverseForEach(block, context)@
   
-  Calls @block@ with each member of the collection, in the opposite order given by @forEach()@.
+  Calls @block@ with each member of the collection, in the opposite order given
+  by @forEach()@.
   
   h3. @reject(block, context)@
   
-  Returns a new @Array@ containing the members of the collection for which @block@ returns @false@.
+  Returns a new @Array@ containing the members of the collection for which
+  @block@ returns @false@.
   
-  <pre class="prettyprint">    new Collection(3,7,4,8,2).reject(function(x) { return x > 5 });
-      // -> [3, 4, 2]</pre>
+  <pre class="prettyprint">new Collection(3,7,4,8,2).reject(function(x) { return x > 5 });
+  // -> [3, 4, 2]</pre>
   
   h3. @select(block, context)@
   
-  Returns a new @Array@ containing the members of the collection for which @block@ returns @true@.
-  Aliased as @filter()@ and @findAll()@.
+  Returns a new @Array@ containing the members of the collection for which
+  @block@ returns @true@. Aliased as @filter()@ and @findAll()@.
   
-  <pre class="prettyprint">    new Collection(3,7,4,8,2).select(function(x) { return x > 5 });
-      // -> [7, 8]</pre>
+  <pre class="prettyprint">new Collection(3,7,4,8,2).select(function(x) { return x > 5 });
+  // -> [7, 8]</pre>
   
   h3. @some(block, context)@
   
@@ -369,28 +385,29 @@
   
   h3. @sort(block, context)@
   
-  Returns a new @Array@ containing the members of the collection in sort order. The members
-  must either use "@Comparable@":/comparable.html or be comparable using JavaScript's
-  standard comparison operators. If no @block@ is passed, a sensible default sort method
-  is used, otherwise the block itself is used to perform sorting.
+  Returns a new @Array@ containing the members of the collection in sort order.
+  The members must either use "@Comparable@":/comparable.html or be comparable
+  using JavaScript's standard comparison operators. If no @block@ is passed, a
+  sensible default sort method is used, otherwise the block itself is used to
+  perform sorting.
   
-  <pre class="prettyprint">    var list = new Collection(3,7,4,8,2);
-          
-      list.sort()
-      // -> [2, 3, 4, 7, 8]
+  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
       
-      // sort by comparing values modulo 7
-      list.sort(function(a,b) { return (a%7) - (b%7) });
-      // -> [7, 8, 2, 3, 4]</pre>
+  list.sort()
+  // -> [2, 3, 4, 7, 8]
+  
+  // sort by comparing values modulo 7
+  list.sort(function(a,b) { return (a%7) - (b%7) });
+  // -> [7, 8, 2, 3, 4]</pre>
   
   h3. @sortBy(block, context)@
   
-  Returns a new @Array@ containing the members of the collection sorted according to the
-  value that @block@ returns for them.
+  Returns a new @Array@ containing the members of the collection sorted
+  according to the value that @block@ returns for them.
   
-  <pre class="prettyprint">    // sort values modulo 7
-      new Collection(3,7,4,8,2).sortBy(function(x) { return x % 7 });
-      // -> [7, 8, 2, 3, 4]</pre>
+  <pre class="prettyprint">// sort values modulo 7
+  new Collection(3,7,4,8,2).sortBy(function(x) { return x % 7 });
+  // -> [7, 8, 2, 3, 4]</pre>
   
   h3. @take(n)@
   
@@ -398,37 +415,40 @@
   
   h3. @takeWhile(block, context)@
   
-  Returns items from the start of the collection, up to but not including the first item for
-  which @block@ returns @false@.
+  Returns items from the start of the collection, up to but not including the
+  first item for which @block@ returns @false@.
   
   h3. @toArray()@
   
-  Returns a new @Array@ containing the members of the collection. Aliased as @entries()@.
+  Returns a new @Array@ containing the members of the collection. Aliased as
+  @entries()@.
   
   h3. @zip(args, block, context)@
   
-  This one is rather tricky to explain in words, so I'll just let the Ruby docs explain:
+  This one is rather tricky to explain in words, so I'll just let the Ruby docs
+  explain:
   
-  Converts any arguments to arrays, then merges elements of collection with corresponding elements
-  from each argument. This generates a sequence of n-element arrays, where n is one
-  more that the count of arguments. If the size of any argument is less than the size of the
-  collection, @null@ values are supplied. If a block is given, it is invoked for each output array,
-  otherwise an array of arrays is returned.
+  Converts any arguments to arrays, then merges elements of collection with
+  corresponding elements from each argument. This generates a sequence of
+  n-element arrays, where n is one more that the count of arguments. If the size
+  of any argument is less than the size of the collection, @null@ values are
+  supplied. If a block is given, it is invoked for each output array, otherwise
+  an array of arrays is returned.
   
   What this translates to in practise:
   
-  <pre class="prettyprint">    new Collection(3,7,4,8,2).zip([1,9,3,6,4], [6,3,3]);
-      // -> [ [3,1,6], [7,9,3], [4,3,3],
-      //        [8,6,null], [2,4,null] ]
-      
-      new Collection(3,7,4,8,2).zip([1,9,3,6,4], function(list) {
-          console.log(list)
-      });
-      
-      // prints...
-      //    [3, 1]
-      //    [7, 9]
-      //    [4, 3]
-      //    [8, 6]
-      //    [2, 4]</pre>
+  <pre class="prettyprint">new Collection(3,7,4,8,2).zip([1,9,3,6,4], [6,3,3]);
+  // -> [ [3,1,6], [7,9,3], [4,3,3],
+  //        [8,6,null], [2,4,null] ]
+  
+  new Collection(3,7,4,8,2).zip([1,9,3,6,4], function(list) {
+      console.log(list)
+  });
+  
+  // prints...
+  //    [3, 1]
+  //    [7, 9]
+  //    [4, 3]
+  //    [8, 6]
+  //    [2, 4]</pre>
 

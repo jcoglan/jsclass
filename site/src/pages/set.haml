@@ -1,86 +1,95 @@
 :textile
   h3. @JS.Set@
   
-  The @JS.Set@ class can be used to model collections of unique objects. A set makes sure
-  that there are no duplicates among its members, and it allows you to use custom equality
-  methods for comparison as well as JavaScript's @===@ operator.
+  The @JS.Set@ class can be used to model collections of unique objects. A set
+  makes sure that there are no duplicates among its members, and it allows you
+  to use custom equality methods for comparison as well as JavaScript's @===@
+  operator.
   
-  There are actuall three set classes available; all have the same API but have different
-  storage mechanisms. They are:
+  There are actuall three set classes available; all have the same API but have
+  different storage mechanisms. They are:
   
-  * *@JS.Set@* - This is the base class; other set classes inherit most of their methods
-    from here. Uses a "@Hash@":/hash.html to store its members, so search performance is
-    constant time assuming a good hash distribution. No particular iteration order is
-    specified for this class.
-  * *@JS.OrderedSet@*  - This class uses an "@OrderedHash@":/hash.html to store its members,
-    and iterates over them in insertion order. Search time is constant, though insertion
-    time may be slower because of the higher overhead of keeping the hash ordered correctly.
-  * *@JS.SortedSet@* - This class keeps all its members in sort order as long as they are
-    mutually comparable, either using JavaScript's @<@, @<=@, @==@, @>@, @>=@ operators or
-    using the "@Comparable@":/comparable.html module. Iteration visits the elements in sort
-    order, and search performance is logarithmic with the number of elements.
+  * *@JS.Set@* - This is the base class; other set classes inherit most of their
+    methods from here. Uses a "@Hash@":/hash.html to store its members, so
+    search performance is constant time assuming a good hash distribution. No
+    particular iteration order is specified for this class.
+  * *@JS.OrderedSet@*  - This class uses an "@OrderedHash@":/hash.html to store
+    its members, and iterates over them in insertion order. Search time is
+    constant, though insertion time may be slower because of the higher overhead
+    of keeping the hash ordered correctly.
+  * *@JS.SortedSet@* - This class keeps all its members in sort order as long as
+    they are mutually comparable, either using JavaScript's @<@, @<=@, @==@, @>@,
+    @>=@ operators or using the "@Comparable@":/comparable.html module. Iteration
+    visits the elements in sort order, and search performance is logarithmic
+    with the number of elements.
   
-  If you try to add an object that has an "@equals()@ method":/equality.html to a set, that
-  method will be used to compare the object to the set's members. @equals()@ should accept one
-  argument and return a boolean to indicate whether the two objects are to be considered equal.
-  If no @equals()@ method exists on the object, the @===@ operator is used instead. An example
-  class might look like:
+  If you try to add an object that has an "@equals()@ method":/equality.html to
+  a set, that method will be used to compare the object to the set's members.
+  @equals()@ should accept one argument and return a boolean to indicate whether
+  the two objects are to be considered equal. If no @equals()@ method exists on
+  the object, the @===@ operator is used instead. An example class might look
+  like:
   
-  <pre class="prettyprint">    Widget = new JS.Class({
-          initialize: function(name) {
-              this.name = name;
-          },
-          equals: function(object) {
-              return (object instanceof this.klass)
-                  && object.name == this.name;
-          }
-      });</pre>
+  <pre class="prettyprint">Widget = new JS.Class({
+      initialize: function(name) {
+          this.name = name;
+      },
+      equals: function(object) {
+          return (object instanceof this.klass)
+              && object.name == this.name;
+      }
+  });</pre>
   
-  Although JavaScript's built-in @Array@ and @Object@ classes do not have an @equals()@
-  method, the @Set@ classes can detect when two such objects are equal. So, you cannot
-  put two arrays with the same elements into a set together.
+  Although JavaScript's built-in @Array@ and @Object@ classes do not have an
+  @equals()@ method, the @Set@ classes can detect when two such objects are
+  equal. So, you cannot put two arrays with the same elements into a set
+  together.
   
-  Bear in mind that uniqueness (and sort order for @SortedSet@) is only maintained when new
-  objects are added to the set. Objects can be changed such that two objects that are
-  unequal can be made to be equal; if those two objects are members of a set the set is
-  then corrupted. To get around this, all sets have a @rebuild()@ method that throws out
-  any duplicates and fixes sort order.
+  Bear in mind that uniqueness (and sort order for @SortedSet@) is only
+  maintained when new objects are added to the set. Objects can be changed such
+  that two objects that are unequal can be made to be equal; if those two
+  objects are members of a set the set is then corrupted. To get around this,
+  all sets have a @rebuild()@ method that throws out any duplicates and fixes
+  sort order.
   
-  Creating a set is simple: simply pass an array (or some other enumerable object) with the
-  data to put in the set:
+  Creating a set is simple: simply pass an array (or some other enumerable
+  object) with the data to put in the set:
   
-  <pre class="prettyprint">    var evensUnderTen = new JS.Set([2,4,6,8]);</pre>
+  <pre class="prettyprint">var evensUnderTen = new JS.Set([2,4,6,8]);</pre>
   
-  @Set@ and @SortedSet@ include the "@Enumerable@":/enumerable.html module as long as you
-  load said module before the @Set@ file. The iteration order for @Set@ is arbitrary and is
-  not guaranteed, whereas for @SortedSet@ iteration takes place in sort order. The rest of
-  the API is as follows. As a general rule, any method that returns a new set will return
-  a set of the same type as the receiver, i.e. if @set@ is a @Set@ then @set.union(other)@
-  returns a new @Set@, if @set@ is a @SortedSet@ the same call returns a @SortedSet@.
+  @Set@ and @SortedSet@ include the "@Enumerable@":/enumerable.html module as
+  long as you load said module before the @Set@ file. The iteration order for
+  @Set@ is arbitrary and is not guaranteed, whereas for @SortedSet@ iteration
+  takes place in sort order. The rest of the API is as follows. As a general
+  rule, any method that returns a new set will return a set of the same type as
+  the receiver, i.e. if @set@ is a @Set@ then @set.union(other)@ returns a new
+  @Set@, if @set@ is a @SortedSet@ the same call returns a @SortedSet@.
   
   h3. @add(item)@
   
-  Adds a new item to the set as long as the set does not already contain the item. If
-  @item@ has an @equals()@ method, @item.equals()@ is used for comparison to other set
-  members (see above). Returns a boolean to indicate whether or not the item was added.
+  Adds a new item to the set as long as the set does not already contain the
+  item. If @item@ has an @equals()@ method, @item.equals()@ is used for
+  comparison to other set members (see above). Returns a boolean to indicate
+  whether or not the item was added.
   
-  <pre class="prettyprint">    var evensUnderTen = new JS.Set([2,4,6,8]);
-      evensUnderTen.add(6)    // -> false
-      evensUnderTen.add(0)    // -> true</pre>
+  <pre class="prettyprint">var evensUnderTen = new JS.Set([2,4,6,8]);
+  evensUnderTen.add(6)    // -> false
+  evensUnderTen.add(0)    // -> true</pre>
   
   h3. @classify(block, context)@
   
-  Splits the set into several sets based on the return value of @block@ for each member,
-  returning a "@Hash@":/hash.html whose keys are the distinct return values.
+  Splits the set into several sets based on the return value of @block@ for each
+  member, returning a "@Hash@":/hash.html whose keys are the distinct return
+  values.
   
-  <pre class="prettyprint">    // Classify by remainder when divided by 3
-      
-      var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
-      var c = s.classify(function(x) { return x % 3 });
-      
-      // c.get(0) == Set{3,6,9}
-      // c.get(1) == Set{1,4,7}
-      // c.get(2) == Set{2,5,8}</pre>
+  <pre class="prettyprint">// Classify by remainder when divided by 3
+  
+  var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
+  var c = s.classify(function(x) { return x % 3 });
+  
+  // c.get(0) == Set{3,6,9}
+  // c.get(1) == Set{1,4,7}
+  // c.get(2) == Set{2,5,8}</pre>
   
   h3. @clear()@
   
@@ -88,7 +97,8 @@
   
   h3. @complement(other)@
   
-  Returns a new set containing all the members of @other@ that are not in the receiver.
+  Returns a new set containing all the members of @other@ that are not in the
+  receiver.
   
   h3. @contains(item)@
   
@@ -96,46 +106,47 @@
   
   h3. @difference(other)@
   
-  Returns a new set containing all the members of the receiver that are not in the set
-  @other@.
+  Returns a new set containing all the members of the receiver that are not in
+  the set @other@.
   
-  <pre class="prettyprint">    var a = new JS.Set([1,2,3,4,5,6,7,8,9]);
-      var b = new JS.Set([2,4,6,8]);
-      
-      a.difference(b)
-      // -> Set{1,3,5,7,9}</pre>
+  <pre class="prettyprint">var a = new JS.Set([1,2,3,4,5,6,7,8,9]);
+  var b = new JS.Set([2,4,6,8]);
+  
+  a.difference(b)
+  // -> Set{1,3,5,7,9}</pre>
   
   h3. @divide(block, context)@
   
-  Similar to @classify(block, context)@ except that the result is given as a set of sets,
-  rather than as key/value pairs.
+  Similar to @classify(block, context)@ except that the result is given as a set
+  of sets, rather than as key/value pairs.
   
-  <pre class="prettyprint">    // Classify by remainder when divided by 3
-      
-      var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
-      var c = s.divide(function(x) {
-        return x % 3;
-      });
-      
-      // c == Set { Set{3,6,9}, Set{1,4,7}, Set{2,5,8} }</pre>
+  <pre class="prettyprint">// Classify by remainder when divided by 3
+  
+  var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
+  var c = s.divide(function(x) {
+    return x % 3;
+  });
+  
+  // c == Set { Set{3,6,9}, Set{1,4,7}, Set{2,5,8} }</pre>
   
   h3. @equals(set)@
   
-  Returns @true@ iff @set@ is a @Set@ or a @SortedSet@ with the same members as the receiver.
+  Returns @true@ iff @set@ is a @Set@ or a @SortedSet@ with the same members as
+  the receiver.
   
   h3. @flatten()@
   
-  Flattens the set in place, such that any sets nested within the receiver are merged and their
-  members become the receiver's members.
+  Flattens the set in place, such that any sets nested within the receiver are
+  merged and their members become the receiver's members.
   
-  <pre class="prettyprint">    var s = new JS.Set([ new JS.Set([3,9,4]),
-          new JS.Set([1,7,3,5]), 3, 7 ]);
-      
-      // s == Set{ Set{3,9,4}, Set{1,7,3,5}, 3, 7}
-      
-      s.flatten();
-      
-      // s == Set{3,9,4,1,7,5}</pre>
+  <pre class="prettyprint">var s = new JS.Set([ new JS.Set([3,9,4]),
+      new JS.Set([1,7,3,5]), 3, 7 ]);
+  
+  // s == Set{ Set{3,9,4}, Set{1,7,3,5}, 3, 7}
+  
+  s.flatten();
+  
+  // s == Set{3,9,4,1,7,5}</pre>
   
   h3. @intersection(set)@
   
@@ -147,23 +158,25 @@
   
   h3. @isProperSubset(other)@
   
-  Returns @true@ iff the receiver is a proper subset of the set @other@, that is if all the members
-  of the receiver are also in @other@, and the receiver is a smaller set than @other@.
+  Returns @true@ iff the receiver is a proper subset of the set @other@, that is
+  if all the members of the receiver are also in @other@, and the receiver is a
+  smaller set than @other@.
   
   h3. @isProperSuperset(other)@
   
-  Returns @true@ iff the receiver is a proper superset of the set @other@, that is if all the members
-  of @other@ are also in the receiver, and the receiver is a larger set than @other@.
+  Returns @true@ iff the receiver is a proper superset of the set @other@, that
+  is if all the members of @other@ are also in the receiver, and the receiver is
+  a larger set than @other@.
   
   h3. @isSubset(other)@
   
-  Returns @true@ iff the receiver is a subset of the set @other@, that is if all the members of
-  the receiver are also members of @other@.
+  Returns @true@ iff the receiver is a subset of the set @other@, that is if all
+  the members of the receiver are also members of @other@.
   
   h3. @isSuperset(other)@
   
-  Returns @true@ iff the receiver is a superset of the set @other@, that is if all the members of
-  @other@ are also members of the receiver.
+  Returns @true@ iff the receiver is a superset of the set @other@, that is if
+  all the members of @other@ are also members of the receiver.
   
   h3. @merge(set)@
   
@@ -171,44 +184,47 @@
   
   h3. @product(set)@
   
-  Returns a new (always non-sorted) set of all possible ordered pairs whose first member is
-  in the receiver and whose second member is in @set@.
+  Returns a new (always non-sorted) set of all possible ordered pairs whose
+  first member is in the receiver and whose second member is in @set@.
   
-  <pre class="prettyprint">    var a = new JS.Set([1,2]), b = new JS.Set([3,4]);
-      var prod = a.product(b);
-      
-      // prod == Set{ [1,3], [1,4], [2,3], [2,4] }</pre>
+  <pre class="prettyprint">var a = new JS.Set([1,2]), b = new JS.Set([3,4]);
+  var prod = a.product(b);
+  
+  // prod == Set{ [1,3], [1,4], [2,3], [2,4] }</pre>
     
   h3. @rebuild()@
   
-  Acts as an integrity check on the receiver. If some of the objects in the set have changed
-  such that they are now equal then any duplicates are discarded. For @SortedSet@ instances,
-  this also sorts the set if any objects have changed such that they are now in the wrong
-  position.
+  Acts as an integrity check on the receiver. If some of the objects in the set
+  have changed such that they are now equal then any duplicates are discarded.
+  For @SortedSet@ instances, this also sorts the set if any objects have changed
+  such that they are now in the wrong position.
   
   h3. @remove(item)@
   
-  Removes the member @item@ (i.e. whichever member is equal to @item@) from the receiver.
+  Removes the member @item@ (i.e. whichever member is equal to @item@) from the
+  receiver.
   
   h3. @removeIf(predicate, context)@
   
   Removes all the members of the set for which @predicate@ returns @true@.
   
-  <pre class="prettyprint">    var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
-      
-      // Remove multiples of 3
-      s.removeIf(function(x) { return x % 3 == 0 });
-      
-      // s == Set{1,2,4,5,7,8}</pre>
+  <pre class="prettyprint">var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
+  
+  // Remove multiples of 3
+  s.removeIf(function(x) { return x % 3 == 0 });
+  
+  // s == Set{1,2,4,5,7,8}</pre>
   
   h3. @replace(other)@
   
-  Removes all the members from the receiver and replaces them with those of the set @other@.
+  Removes all the members from the receiver and replaces them with those of the
+  set @other@.
   
   h3. @subtract(list)@
   
-  Removes all the members of @list@ from the receiver. This is similar to @difference@, except
-  that it modifies the receiving set in place rather than returning a new set.
+  Removes all the members of @list@ from the receiver. This is similar to
+  @difference@, except that it modifies the receiving set in place rather than
+  returning a new set.
   
   h3. @union(set)@
   
@@ -216,8 +232,9 @@
   
   h3. @xor(other)@
   
-  Returns a new set containing members that are either in @other@ or in the receiver, but
-  not in both. This is equivalent to:
+  Returns a new set containing members that are either in @other@ or in the
+  receiver, but not in both. This is equivalent to:
   
-  <pre class="prettyprint">    // a.xor(b) ->
-      (a.union(b)).difference(a.intersection(b))</pre>
+  <pre class="prettyprint">// a.xor(b) ->
+  (a.union(b)).difference(a.intersection(b))</pre>
+

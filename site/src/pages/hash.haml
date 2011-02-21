@@ -1,249 +1,254 @@
 :textile
   h3. @JS.Hash@
   
-  A @Hash@ is an unordered collection of key-value pairs. It can be thought of as a table that
-  maps 'key' objects (of which there are no duplicates within a @Hash@) to 'value' objects (of
-  which there may be duplicates). This implementation is close to Ruby's @Hash@ class, though
-  you may be familiar with the data structure in some other form; Java's @HashMap@, Python
-  dictionaries, JavaScript objects, PHP's associative arrays and Scheme's alists all perform
-  a similar function.
+  A @Hash@ is an unordered collection of key-value pairs. It can be thought of
+  as a table that maps 'key' objects (of which there are no duplicates within a
+  @Hash@) to 'value' objects (of which there may be duplicates). This
+  implementation is close to Ruby's @Hash@ class, though you may be familiar
+  with the data structure in some other form; Java's @HashMap@, Python
+  dictionaries, JavaScript objects, PHP's associative arrays and Scheme's alists
+  all perform a similar function.
   
-  JavaScript's native @Object@ class could be considered a basic kind of hashtable in which
-  the keys must be strings. This class provides a more general-purpose implementation with
-  many helpful methods not provided by JavaScript. The keys in a @Hash@ may be numbers,
-  strings, or any object that implements the "@equals()@ and @hash()@ methods":/equality.html.
+  JavaScript's native @Object@ class could be considered a basic kind of
+  hashtable in which the keys must be strings. This class provides a more
+  general-purpose implementation with many helpful methods not provided by
+  JavaScript. The keys in a @Hash@ may be numbers, strings, or any object that
+  implements the "@equals()@ and @hash()@ methods":/equality.html.
   
-  For our examples we're going to use two classes with pretty trivial equality operations. Note
-  how @hash()@ uses the same data as @equals()@ ensuring correct behaviour:
+  For our examples we're going to use two classes with pretty trivial equality
+  operations. Note how @hash()@ uses the same data as @equals()@ ensuring
+  correct behaviour:
   
-  <pre class="prettyprint">    State = new JS.Class({
-          initialize: function(name, code) {
-              this.name = name;
-              this.code = code;
-          },
-          equals: function(other) {
-              return (other instanceof this.klass) &&
-                     other.code === this.code;
-          },
-          hash: function() {
-              return this.code;
-          }
-      });
-      
-      Senator = new JS.Class({
-          initialize: function(name) {
-              this.name = name;
-          },
-          equals: function(other) {
-              return (other instanceof this.klass) &&
-                     other.name === this.name;
-          },
-          hash: function() {
-              return this.name;
-          }
-      });</pre>
+  <pre class="prettyprint">State = new JS.Class({
+      initialize: function(name, code) {
+          this.name = name;
+          this.code = code;
+      },
+      equals: function(other) {
+          return (other instanceof this.klass) &&
+                 other.code === this.code;
+      },
+      hash: function() {
+          return this.code;
+      }
+  });
+  
+  Senator = new JS.Class({
+      initialize: function(name) {
+          this.name = name;
+      },
+      equals: function(other) {
+          return (other instanceof this.klass) &&
+                 other.name === this.name;
+      },
+      hash: function() {
+          return this.name;
+      }
+  });</pre>
       
   And we'll instantiate a few pieces of data to put in a @Hash@:
   
-  <pre class="prettyprint">    var NY = new State('New York', 'NY'),
-          CA = new State('California', 'CA'),
-          IL = new State('Illinois', 'IL'),
-          TX = new State('Texas', 'TX'),
-          VA = new State('Virginia', 'VA'),
-          
-          hutchinson = new Senator('Kay Bailey Hutchison'),
-          burris     = new Senator('Roland Burris'),
-          feinstein  = new Senator('Dianne Feinstein'),
-          gillibrand = new Senator('Kirsten Gillibrand'),
-          hancock    = new Senator('John Hancock');</pre>
+  <pre class="prettyprint">var NY = new State('New York', 'NY'),
+      CA = new State('California', 'CA'),
+      IL = new State('Illinois', 'IL'),
+      TX = new State('Texas', 'TX'),
+      VA = new State('Virginia', 'VA'),
+      
+      hutchinson = new Senator('Kay Bailey Hutchison'),
+      burris     = new Senator('Roland Burris'),
+      feinstein  = new Senator('Dianne Feinstein'),
+      gillibrand = new Senator('Kirsten Gillibrand'),
+      hancock    = new Senator('John Hancock');</pre>
   
   h3. Instantiating a @Hash@
   
-  There are three ways to instantiate a @Hash@. The first is to simply list the key-value
-  pairs as an array. Retrieving a key will then return the corresponding value:
+  There are three ways to instantiate a @Hash@. The first is to simply list the
+  key-value pairs as an array. Retrieving a key will then return the
+  corresponding value:
   
-  <pre class="prettyprint">    var senators = new JS.Hash([
-          NY,   gillibrand,
-          CA,   feinstein,
-          IL,   burris,
-          TX,   hutchinson
-      ]);
-      
-      senators.get(IL).name   // -> "Roland Burris"</pre>
+  <pre class="prettyprint">var senators = new JS.Hash([
+      NY,   gillibrand,
+      CA,   feinstein,
+      IL,   burris,
+      TX,   hutchinson
+  ]);
   
-  One important function of a @Hash@ is that you don't need the original key object to
-  retrieve its associated value, you just need some object equal to the key. States are
-  compared using their @code@, so we could create another object to represent Texas to get
-  its senator:
+  senators.get(IL).name   // -> "Roland Burris"</pre>
   
-  <pre class="prettyprint">    senators.get(new State('Lone Star State', 'TX'))
-      // -> #<Senator name="Kay Bailey Hutchison"></pre>
+  One important function of a @Hash@ is that you don't need the original key
+  object to retrieve its associated value, you just need some object equal to
+  the key. States are compared using their @code@, so we could create another
+  object to represent Texas to get its senator:
   
-  The second way is to instantiate the @Hash@ using a single default value; this value will
-  then be returned when you ask for a key the hash doesn't have:
+  <pre class="prettyprint">senators.get(new State('Lone Star State', 'TX'))
+  // -> #<Senator name="Kay Bailey Hutchison"></pre>
   
-  <pre class="prettyprint">    var senators = new JS.Hash(hancock);
-      senators.get(NY).name   // -> "John Hancock"</pre>
+  The second way is to instantiate the @Hash@ using a single default value; this
+  value will then be returned when you ask for a key the hash doesn't have:
   
-  The third and final way is to instantiate using a function, which will be called when a
-  nonexistent key is accessed. The function is passed the hash and the requested key, so
-  you can store the result in the hash if required:
+  <pre class="prettyprint">var senators = new JS.Hash(hancock);
+  senators.get(NY).name   // -> "John Hancock"</pre>
   
-  <pre class="prettyprint">    var senators = new JS.Hash(function(hash, key) {
-          var result = new Senator('The senator for ' + key.name
-                                                      + ' (' + key.code + ')');
-          hash.store(key, result);
-          return result;
-      });
-      
-      senators.size           // -> 0
-      senators.get(CA).name   // -> "The senator for California (CA)"
-      senators.size           // -> 1</pre>
+  The third and final way is to instantiate using a function, which will be
+  called when a nonexistent key is accessed. The function is passed the hash and
+  the requested key, so you can store the result in the hash if required:
+  
+  <pre class="prettyprint">var senators = new JS.Hash(function(hash, key) {
+      var result = new Senator('The senator for ' + key.name
+                                                  + ' (' + key.code + ')');
+      hash.store(key, result);
+      return result;
+  });
+  
+  senators.size           // -> 0
+  senators.get(CA).name   // -> "The senator for California (CA)"
+  senators.size           // -> 1</pre>
   
   h3. Enumeration
   
-  Hashes are "@Enumerable@":/enumerable.html, and their @forEach()@ method yields a @Hash.Pair@
-  object with each iteration. Each pair has a @key@ and a @value@. Iteration order is not
-  guaranteed, though on many JavaScript implementations you may find insertion order is
-  preserved. *Do not rely on order when using a @Hash@.* For example:
+  Hashes are "@Enumerable@":/enumerable.html, and their @forEach()@ method
+  yields a @Hash.Pair@ object with each iteration. Each pair has a @key@ and a
+  @value@. Iteration order is not guaranteed, though on many JavaScript
+  implementations you may find insertion order is preserved. *Do not rely on
+  order when using a @Hash@.* For example:
   
-  <pre class="prettyprint">    var senators = new JS.Hash([
-          NY,   gillibrand,
-          CA,   feinstein,
-          IL,   burris,
-          TX,   hutchinson
-      ]);
-      
-      senators.forEach(function(pair) {
-          console.log(pair.key.code + ': ' + pair.value.name);
-      });
-      
-      // Prints:
-      // NY: Kirsten Gillibrand
-      // CA: Dianne Feinstein
-      // IL: Roland Burris
-      // TX: Kay Bailey Hutchison</pre>
+  <pre class="prettyprint">var senators = new JS.Hash([
+      NY,   gillibrand,
+      CA,   feinstein,
+      IL,   burris,
+      TX,   hutchinson
+  ]);
   
-  The hash package also contains a class called @JS.OrderedHash@. It has the same API as @JS.Hash@
-  but keeps its keys in insertion order at all times.
+  senators.forEach(function(pair) {
+      console.log(pair.key.code + ': ' + pair.value.name);
+  });
+  
+  // Prints:
+  // NY: Kirsten Gillibrand
+  // CA: Dianne Feinstein
+  // IL: Roland Burris
+  // TX: Kay Bailey Hutchison</pre>
+  
+  The hash package also contains a class called @JS.OrderedHash@. It has the
+  same API as @JS.Hash@ but keeps its keys in insertion order at all times.
   
   The instance methods of @Hash@ are as follows:
   
   h3. @assoc(key)@
   
-  Returns the @Hash.Pair@ object corresponding to the given @key@, or @null@ if so such key
-  is found.
+  Returns the @Hash.Pair@ object corresponding to the given @key@, or @null@ if
+  so such key is found.
   
-  <pre class="prettyprint">    senators.assoc(NY).key.code     // -> "NY"
-      senators.assoc(IL).value.name   // -> "Roland Burris"
-      senators.assoc(VA)              // -> null</pre>
+  <pre class="prettyprint">senators.assoc(NY).key.code     // -> "NY"
+  senators.assoc(IL).value.name   // -> "Roland Burris"
+  senators.assoc(VA)              // -> null</pre>
   
   h3. @rassoc(value)@
   
-  Returns the first matching @Hash.Pair@ object for to the given @value@, or @null@ if so
-  such value is found.
+  Returns the first matching @Hash.Pair@ object for to the given @value@, or
+  @null@ if so such value is found.
   
-  <pre class="prettyprint">    senators.rassoc(feinstein).key.code   // -> "CA"
-      senators.rassoc(burris).value.name    // -> "Roland Burris"
-      senators.rassoc(hancock)              // -> null</pre>
+  <pre class="prettyprint">senators.rassoc(feinstein).key.code   // -> "CA"
+  senators.rassoc(burris).value.name    // -> "Roland Burris"
+  senators.rassoc(hancock)              // -> null</pre>
   
   h3. @clear()@
   
   Removes all the key-value pairs from the hash.
   
-  <pre class="prettyprint">    senators.clear();
-      senators.size       // -> 0
-      senators.get(TX)    // -> null</pre>
+  <pre class="prettyprint">senators.clear();
+  senators.size       // -> 0
+  senators.get(TX)    // -> null</pre>
   
   h3. @compareByIdentity()@
   
-  Instructs the hash to use the @===@ identity operator instead of the @equals()@ method
-  to compare keys. Values must then be retrieved using _the same key object_ as was used
-  to store the value initially.
+  Instructs the hash to use the @===@ identity operator instead of the @equals()@
+  method to compare keys. Values must then be retrieved using _the same key
+  object_ as was used to store the value initially.
   
   h3. @comparesByIdentity()@
   
-  Returns @true@ iff the hash is using the @===@ operator rather than the @equals()@ method
-  to compare keys.
+  Returns @true@ iff the hash is using the @===@ operator rather than the
+  @equals()@ method to compare keys.
   
   h3. @setDefault(value)@
   
-  Sets the default value for the hash to the given @value@. The default value is returned
-  whenever a nonexistent key is accessed using @get()@, @remove()@ or @shift()@. The value
-  may be a function, in which case it is called with the hash and the accessed key and the
-  resulting value is returned.
+  Sets the default value for the hash to the given @value@. The default value is
+  returned whenever a nonexistent key is accessed using @get()@, @remove()@ or
+  @shift()@. The value may be a function, in which case it is called with the
+  hash and the accessed key and the resulting value is returned.
   
-  <pre class="prettyprint">    senators.get('foo');    // -> null
-      
-      senators.setDefault(hancock);
-      senators.get('foo')     // -> #<Senator name="John Hancock">
-      
-      senators.setDefault(function(hash, key) {
-          return new Senator('Senator for ' + key.code);
-      });
-      senators.get(VA)        // -> #<Senator name="Senator for VA"></pre>
+  <pre class="prettyprint">senators.get('foo');    // -> null
+  
+  senators.setDefault(hancock);
+  senators.get('foo')     // -> #<Senator name="John Hancock">
+  
+  senators.setDefault(function(hash, key) {
+      return new Senator('Senator for ' + key.code);
+  });
+  senators.get(VA)        // -> #<Senator name="Senator for VA"></pre>
   
   h3. @getDefault(key)@
   
-  Returns the default value for the hash, or @null@ if none is set. The @key@ is only used
-  if the default value is a function (see @setDefault()@).
+  Returns the default value for the hash, or @null@ if none is set. The @key@ is
+  only used if the default value is a function (see @setDefault()@).
   
   h3. @equals(other)@
   
-  Returns @true@ iff @other@ is a hash containing the same data (or equivalent data according
-  to @equals()@) as the receiver.
+  Returns @true@ iff @other@ is a hash containing the same data (or equivalent
+  data according to @equals()@) as the receiver.
   
   h3. @fetch(key, defaultValue)@
   
-  This is similar to @get(key)@, but allows you to override the default value of the hash
-  using @defaultValue@. If @defaultValue@ is a function it is called with only the key
-  as an argument. The the key is not found and no @defaultValue@ is given, an error is
-  thrown.
+  This is similar to @get(key)@, but allows you to override the default value of
+  the hash using @defaultValue@. If @defaultValue@ is a function it is called
+  with only the key as an argument. The the key is not found and no
+  @defaultValue@ is given, an error is thrown.
   
-  <pre class="prettyprint">    // Assume no default value
-      
-      senators.fetch(CA)        // -> #<Senator name="Dianne Feinstein">
-      senators.fetch('foo')     // -> Error: key not found
-      
-      senators.fetch('foo', hancock)  // -> #<Senator name="John Hancock">
-      
-      senators.fetch('foo', function(key) {
-          return new Senator(key.toUpperCase());
-      });
-      // -> #<Senator name="FOO"></pre>
+  <pre class="prettyprint">// Assume no default value
+  
+  senators.fetch(CA)        // -> #<Senator name="Dianne Feinstein">
+  senators.fetch('foo')     // -> Error: key not found
+  
+  senators.fetch('foo', hancock)  // -> #<Senator name="John Hancock">
+  
+  senators.fetch('foo', function(key) {
+      return new Senator(key.toUpperCase());
+  });
+  // -> #<Senator name="FOO"></pre>
   
   h3. @forEachKey(block, context)@
   
-  Iterates over the keys in the hash, yielding the key each time. The optional parameter
-  @context@ sets the binding of @this@ within the block.
+  Iterates over the keys in the hash, yielding the key each time. The optional
+  parameter @context@ sets the binding of @this@ within the block.
   
-  <pre class="prettyprint">    senators.forEachKey(function(key) {
-          // key is a State
-      });</pre>
+  <pre class="prettyprint">senators.forEachKey(function(key) {
+      // key is a State
+  });</pre>
   
   h3. @forEachPair(block, context)@
   
-  Iterates over the pair in the hash, yielding the key and value each time. The optional
-  parameter @context@ sets the binding of @this@ within the block.
+  Iterates over the pair in the hash, yielding the key and value each time. The
+  optional parameter @context@ sets the binding of @this@ within the block.
   
-  <pre class="prettyprint">    senators.forEachPair(function(key, value) {
-          // key is a State, value is a Senator
-      });</pre>
+  <pre class="prettyprint">senators.forEachPair(function(key, value) {
+      // key is a State, value is a Senator
+  });</pre>
   
   h3. @forEachValue(block, context)@
   
-  Iterates over the values in the hash, yielding the value each time. The optional parameter
-  @context@ sets the binding of @this@ within the block.
+  Iterates over the values in the hash, yielding the value each time. The
+  optional parameter @context@ sets the binding of @this@ within the block.
   
-  <pre class="prettyprint">    senators.forEachValue(function(value) {
-          // value is a Senator
-      });</pre>
+  <pre class="prettyprint">senators.forEachValue(function(value) {
+      // value is a Senator
+  });</pre>
   
   h3. @get(key)@
   
-  Returns the value corresponding to the given @key@. If the key is not found, the default
-  value for the key is returned (see @setDefault()@). If no default value exists, @null@
-  is returned.
+  Returns the value corresponding to the given @key@. If the key is not found,
+  the default value for the key is returned (see @setDefault()@). If no default
+  value exists, @null@ is returned.
   
   h3. @hasKey(key)@
   
@@ -263,7 +268,8 @@
   
   h3. @invert()@
   
-  Returns a new hash created by using the hash's values as keys, and the keys as values.
+  Returns a new hash created by using the hash's values as keys, and the keys as
+  values.
   
   h3. @isEmpty()@
   
@@ -271,10 +277,11 @@
   
   h3. @key(value)@
   
-  Returns the first key from the hash whose corresponding value is @value@. Aliased as @index()@.
+  Returns the first key from the hash whose corresponding value is @value@.
+  Aliased as @index()@.
   
-  <pre class="prettyprint">    senators.key(gillibrand);
-      // -> #<State code="NY" name="New York"></pre>
+  <pre class="prettyprint">senators.key(gillibrand);
+  // -> #<State code="NY" name="New York"></pre>
   
   h3. @keys()@
   
@@ -282,10 +289,10 @@
   
   h3. @merge(other, block, context)@
   
-  Returns a new hash containing all the key-value pairs from both the receiver and @other@.
-  If a key exists in both hashes, the optional @block@ parameter is used to pick which value
-  to keep. If no block is given, values from @other@ overwrite values from the receiver.
-  See @Hash#update()@ for more information.
+  Returns a new hash containing all the key-value pairs from both the receiver
+  and @other@. If a key exists in both hashes, the optional @block@ parameter is
+  used to pick which value to keep. If no block is given, values from @other@
+  overwrite values from the receiver. See @Hash#update()@ for more information.
   
   h3. @put(key, value)@
   
@@ -293,73 +300,74 @@
   
   h3. @rehash()@
   
-  Call this if the state of any key changes such that its hashcode changes. This reindexes
-  the hash and makes sure all pairs are in the correct buckets.
+  Call this if the state of any key changes such that its hashcode changes. This
+  reindexes the hash and makes sure all pairs are in the correct buckets.
   
   h3. @remove(key, block)@
   
-  Deletes the given key from the hash and returns the corresponding value. If the key is
-  not found, the default value (see @setDefault()@) is returned. If the key is not found
-  and the optional function @block@ is passed, the result of calling @block@ with the
-  key is returned.
+  Deletes the given key from the hash and returns the corresponding value. If
+  the key is not found, the default value (see @setDefault()@) is returned. If
+  the key is not found and the optional function @block@ is passed, the result
+  of calling @block@ with the key is returned.
   
-  <pre class="prettyprint">    var h = new JS.Hash([ 'a',100, 'b',200 ]);
-      h.remove('a')   // -> 100
-      h.remove('z')   // -> null
-      
-      h.remove('z', function(el) { return el + ' not found' })
-      // -> "z not found"</pre>
+  <pre class="prettyprint">var h = new JS.Hash([ 'a',100, 'b',200 ]);
+  h.remove('a')   // -> 100
+  h.remove('z')   // -> null
+  
+  h.remove('z', function(el) { return el + ' not found' })
+  // -> "z not found"</pre>
   
   h3. @removeIf(predicate, context)@
   
-  Deletes all the pairs that satisfy the @predicate@ from the hash. @context@ sets the
-  binding of @this@ within the predicate function. For example:
+  Deletes all the pairs that satisfy the @predicate@ from the hash. @context@
+  sets the binding of @this@ within the predicate function. For example:
   
-  <pre class="prettyprint">    // Remove pairs for California and Illinois
-      senators.removeIf(function(pair) { return pair.key.code < 'M' });
-      
-      // senators is now:
-      // { NY => gillibrand, TX => hutchinson }</pre>
+  <pre class="prettyprint">// Remove pairs for California and Illinois
+  senators.removeIf(function(pair) { return pair.key.code < 'M' });
+  
+  // senators is now:
+  // { NY => gillibrand, TX => hutchinson }</pre>
   
   h3. @replace(other)@
   
-  Removes all existing key-value pairs from the receiver and replaces them with the contents
-  of the hash @other@.
+  Removes all existing key-value pairs from the receiver and replaces them with
+  the contents of the hash @other@.
   
   h3. @shift()@
   
-  Removes a single key-value pair from the hash and returns it, or returns the hash's
-  default value if it is already empty.
+  Removes a single key-value pair from the hash and returns it, or returns the
+  hash's default value if it is already empty.
   
-  <pre class="prettyprint">    var h = new JS.Hash(50);
-      h.store('a', 100);
-      h.store('b', 200);
-      
-      h.shift()   // -> #<Pair key="a" value=100>
-      h.shift()   // -> #<Pair key="b" value=200>
-      h.shift()   // -> 50</pre>
+  <pre class="prettyprint">var h = new JS.Hash(50);
+  h.store('a', 100);
+  h.store('b', 200);
+  
+  h.shift()   // -> #<Pair key="a" value=100>
+  h.shift()   // -> #<Pair key="b" value=200>
+  h.shift()   // -> 50</pre>
   
   h3. @store(key, value)@
   
-  Associates the given @key@ with the given @value@ in the receiving hash. If the state of
-  @key@ changes causing a change to its hashcode, call @rehash()@ on the hash to reindex it.
-  Aliased as @put()@.
+  Associates the given @key@ with the given @value@ in the receiving hash. If
+  the state of @key@ changes causing a change to its hashcode, call @rehash()@
+  on the hash to reindex it. Aliased as @put()@.
   
   h3. @update(other, block, context)@
   
-  Modifies the hash using the key-value pairs from the @other@ hash, overwriting pairs with
-  duplicate keys with the values from @other@. If the optional @block@ is passed, it can be
-  used to decide which value to keep for duplicate keys. The optional @context@ parameter
-  sets the binding of @this@ within @block@.
+  Modifies the hash using the key-value pairs from the @other@ hash, overwriting
+  pairs with duplicate keys with the values from @other@. If the optional
+  @block@ is passed, it can be used to decide which value to keep for duplicate
+  keys. The optional @context@ parameter sets the binding of @this@ within
+  @block@.
   
-  <pre class="prettyprint">    var h = new JS.Hash([ 'a',1, 'b',2, 'c',3 ]),
-          g = new JS.Hash([ 'a',5, 'b',0 ]);
-      
-      h.update(g, function(key, oldVal, newVal) {
-          return oldVal > newVal ? oldVal : newVal;
-      });
-      
-      // h is now { 'a' => 5, 'b' => 2, 'c' => 3 }</pre>
+  <pre class="prettyprint">var h = new JS.Hash([ 'a',1, 'b',2, 'c',3 ]),
+      g = new JS.Hash([ 'a',5, 'b',0 ]);
+  
+  h.update(g, function(key, oldVal, newVal) {
+      return oldVal > newVal ? oldVal : newVal;
+  });
+  
+  // h is now { 'a' => 5, 'b' => 2, 'c' => 3 }</pre>
   
   h3. @values()@
   

@@ -1,46 +1,50 @@
 :textile
   h3. @JS.MethodChain@
   
-  @MethodChain@ provides a mechanism for storing a sequence of method calls and then executing
-  that sequence on any object you like. Here's a quick example:
+  @MethodChain@ provides a mechanism for storing a sequence of method calls and
+  then executing that sequence on any object you like. Here's a quick example:
   
-  <pre class="prettyprint">    var chain = new JS.MethodChain();
-      
-      chain.map(function(s) { return s.toUpperCase() })
-           .join(', ').replace(/[aeiou]/ig, '_');
-      
-      chain.__exec__(['foo', 'bar'])    // -> "F__, B_R"</pre>
+  <pre class="prettyprint">var chain = new JS.MethodChain();
   
-  Here, we create a new @MethodChain@ object called @chain@. We then call three methods on it,
-  @map()@, @join()@ and @replace()@. @chain@ remembers the names of these methods and the arguments
-  you used, then calls the stored chain on any object you pass to its @__exec__()@ method.
+  chain.map(function(s) { return s.toUpperCase() })
+       .join(', ').replace(/[aeiou]/ig, '_');
+  
+  chain.__exec__(['foo', 'bar'])    // -> "F__, B_R"</pre>
+  
+  Here, we create a new @MethodChain@ object called @chain@. We then call three
+  methods on it, @map()@, @join()@ and @replace()@. @chain@ remembers the names
+  of these methods and the arguments you used, then calls the stored chain on
+  any object you pass to its @__exec__()@ method.
   
   If you call further methods on @chain@, they get added to the list:
   
-  <pre class="prettyprint">    chain.split(/_+/);
-      
-      chain.__exec__(['foo', 'bar'])    // -> ["F", ", B", "R"]</pre>
+  <pre class="prettyprint">chain.split(/_+/);
+  
+  chain.__exec__(['foo', 'bar'])    // -> ["F", ", B", "R"]</pre>
   
   h3. How it works
   
-  When you call a method like @map()@ on a @MethodChain@ instance, the instance stores the
-  name of the method and any arguments you pass to it. All of @chain@'s methods return @chain@
-  again, allowing you to chain methods together as shown above.
+  When you call a method like @map()@ on a @MethodChain@ instance, the instance
+  stores the name of the method and any arguments you pass to it. All of @chain@'s
+  methods return @chain@ again, allowing you to chain methods together as shown
+  above.
   
-  Any method you want to store in a chain has to exist in @MethodChain@'s list of method names
-  in advance (my kingdom for a @method_missing@ feature in JavaScript!), or you will get an
-  error. @MethodChain@ comes with over 400 method names in place from the JavaScript core API
-  to get you started. If you find that a method is missing, you can add it like so:
+  Any method you want to store in a chain has to exist in @MethodChain@'s list
+  of method names in advance (my kingdom for a @method_missing@ feature in
+  JavaScript!), or you will get an error. @MethodChain@ comes with over 400
+  method names in place from the JavaScript core API to get you started. If you
+  find that a method is missing, you can add it like so:
   
-  <pre class="prettyprint">    // Add all methods from a class or object
-      JS.MethodChain.addMethods(jQuery);
-      
-      // Add methods by name
-      JS.MethodChain.addMethods(['methodName1', 'someOtherMethod']);</pre>
+  <pre class="prettyprint">// Add all methods from a class or object
+  JS.MethodChain.addMethods(jQuery);
+  
+  // Add methods by name
+  JS.MethodChain.addMethods(['methodName1', 'someOtherMethod']);</pre>
   
   All @MethodChain@ instances will then have the methods you've added.
   
-  There are a few reserved methods on @MethodChain@ objects that you cannot use for chaining:
+  There are a few reserved methods on @MethodChain@ objects that you cannot use
+  for chaining:
   
   * @_()@ - one underscore - more on this in a second
   * @____()@ - four underscores, used for storing method calls
@@ -49,42 +53,44 @@
   
   h3. Changing scope using @_()@
   
-  All chains have a method called @_()@ (that's one underscore) that you can use to change
-  the scope of the chain. By default, each method in the chain is called on the return value
-  of the previous method, but @_()@ lets you insert objects into the chain so that subsequent
-  methods get called on said object.
+  All chains have a method called @_()@ (that's one underscore) that you can use
+  to change the scope of the chain. By default, each method in the chain is
+  called on the return value of the previous method, but @_()@ lets you insert
+  objects into the chain so that subsequent methods get called on said object.
   
-  @_()@ also lets you insert anonymous functions into the chain. Within each function, @this@
-  refers to the return value of the previous method. Putting all this together, you could do:
+  @_()@ also lets you insert anonymous functions into the chain. Within each
+  function, @this@ refers to the return value of the previous method. Putting
+  all this together, you could do:
   
-  <pre class="prettyprint">    var chain = new JS.MethodChain();
-      
-      chain._(document).getElementsByTagName('p')
-           ._(function() { console.log(this) });</pre>
+  <pre class="prettyprint">var chain = new JS.MethodChain();
+  
+  chain._(document).getElementsByTagName('p')
+       ._(function() { console.log(this) });</pre>
   
   When we execute @chain@, the net effect is the same as:
   
-  <pre class="prettyprint">    console.log(document.getElementsByTagName('p'));</pre>
+  <pre class="prettyprint">console.log(document.getElementsByTagName('p'));</pre>
   
-  If you insert a function into the chain, its return value will be used as the receiving
-  object for the next method call in the chain.
+  If you insert a function into the chain, its return value will be used as the
+  receiving object for the next method call in the chain.
   
   h3. @it()@ and @its()@
   
-  @it()@ and @its()@ are two global functions created by @MethodChain@ that just act as
-  shorthand for returning new @MethodChain@ objects. You could use them to improve syntax
-  in conjunction with @toFunction()@ for methods in your code that take functions as arguments.
-  For example, many "@Enumerable@":/enumerable.html methods accept any object with a
-  @toFunction()@ method as an argument, allowing expressions like:
+  @it()@ and @its()@ are two global functions created by @MethodChain@ that just
+  act as shorthand for returning new @MethodChain@ objects. You could use them
+  to improve syntax in conjunction with @toFunction()@ for methods in your code
+  that take functions as arguments. For example, many "@Enumerable@":/enumerable.html
+  methods accept any object with a @toFunction()@ method as an argument,
+  allowing expressions like:
   
-  <pre class="prettyprint">    [some, bunch, of, elements].forEach(it().addClass('foo'));</pre>
+  <pre class="prettyprint">[some, bunch, of, elements].forEach(it().addClass('foo'));</pre>
   
-  @forEach@ converts its argument to an iterator function before using it. The more long-winded
-  way to write the above would be:
+  @forEach@ converts its argument to an iterator function before using it. The
+  more long-winded way to write the above would be:
   
-  <pre class="prettyprint">    [some, bunch, of, elements].forEach(function(element) {
-          element.addClass('foo');
-      });</pre>
+  <pre class="prettyprint">[some, bunch, of, elements].forEach(function(element) {
+      element.addClass('foo');
+  });</pre>
   
   These functions (and indeed the whole idea of @MethodChain@) were inspired by
   "Methodphitamine":http://jicksta.com/articles/2007/08/04/the-methodphitamine,
@@ -93,34 +99,35 @@
   
   h3. @toFunction()@
   
-  The @toFunction@ method returns a function that executes the chain against
-  its argument. For example, taking the first chain we created at the top of
-  this page:
+  The @toFunction@ method returns a function that executes the chain against its
+  argument. For example, taking the first chain we created at the top of this
+  page:
   
-  <pre class="prettyprint">    var func = chain.toFunction();
-      func(['foo', 'bar'])    // -> "F__, B_R"</pre>
+  <pre class="prettyprint">var func = chain.toFunction();
+  func(['foo', 'bar'])    // -> "F__, B_R"</pre>
   
   h3. The @wait()@ method
   
-  @JS.MethodChain@ adds a method called @wait()@ as an instance method and a class method
-  to all classes and objects created with @JS.Class@. This method allows you to delay execution
-  of a chain against an object for a given about of time.
+  @JS.MethodChain@ adds a method called @wait()@ as an instance method and a
+  class method to all classes and objects created with @JS.Class@. This method
+  allows you to delay execution of a chain against an object for a given about
+  of time.
   
-  <pre class="prettyprint">    var Fiddle = new JS.Class({
-          initialize: function(quantity) {
-              this.size = quantity;
-          },
-          
-          proclaim: function(thing) {
-              console.log('I have ' + this.size + ' ' + thing + 's!');
-          }
-      });
+  <pre class="prettyprint">var Fiddle = new JS.Class({
+      initialize: function(quantity) {
+          this.size = quantity;
+      },
       
-      var fid = new Fiddle(99);
-      
-      // Call proclaim() after 5 seconds
-      // prints "I have 99 problems!"
-      fid.wait(5).proclaim('problem');</pre>
+      proclaim: function(thing) {
+          console.log('I have ' + this.size + ' ' + thing + 's!');
+      }
+  });
+  
+  var fid = new Fiddle(99);
+  
+  // Call proclaim() after 5 seconds
+  // prints "I have 99 problems!"
+  fid.wait(5).proclaim('problem');</pre>
   
   h3. Further reading
   

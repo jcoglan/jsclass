@@ -28,8 +28,8 @@
   a little simpler. To stub out a method on an object we use the @stub()@
   function.
   
-  <pre class="prettyprint">    stub(object, 'methodName');
-      object.methodName() // -> undefined</pre>
+  <pre class="prettyprint">stub(object, 'methodName');
+  object.methodName() // -> undefined</pre>
   
   This is the simplest stub you can make, it means that any call to
   @object.methodName()@ with any arguments will return @undefined@ and have no
@@ -37,39 +37,39 @@
   you provide multiple return values they will each be used in turn, looping
   back to the start when you reach the end of the list.
   
-  <pre class="prettyprint">    stub(object, 'methodName').returns('hello');
-      object.methodName() // -> 'hello'
-      
-      stub(object, 'methodName').returns('many', 'return', 'values');
-      object.methodName() // -> 'many'
-      object.methodName() // -> 'return'
-      object.methodName() // -> 'values'
-      object.methodName() // -> 'many'</pre>
+  <pre class="prettyprint">stub(object, 'methodName').returns('hello');
+  object.methodName() // -> 'hello'
+  
+  stub(object, 'methodName').returns('many', 'return', 'values');
+  object.methodName() // -> 'many'
+  object.methodName() // -> 'return'
+  object.methodName() // -> 'values'
+  object.methodName() // -> 'many'</pre>
   
   Many JavaScript methods accept callback functions instead of returning a value
   directly; you can stub this sort of API using the @yields@ modifier. @yields@
   takes the argument list that the callback should be called with. As with
   @returns@, you can specify multiple argument lists to cycle through.
   
-  <pre class="prettyprint">    stub(object, 'methodName').yields(['some', 'args']);
-      
-      object.methodName(function(a, b) {
-          // a == 'some'
-          // b == 'args
-      });
-    
-      stub(object, 'methodName').yields(['some', 'args'],
-                                        ['more', 'data']);
-      
-      object.methodName(function(a, b) {
-          // a == 'some'
-          // b == 'args'
-      });
-      
-      object.methodName(function(a, b) {
-          // a == 'more'
-          // b == 'data'
-      });</pre>
+  <pre class="prettyprint">stub(object, 'methodName').yields(['some', 'args']);
+  
+  object.methodName(function(a, b) {
+      // a == 'some'
+      // b == 'args
+  });
+
+  stub(object, 'methodName').yields(['some', 'args'],
+                                    ['more', 'data']);
+  
+  object.methodName(function(a, b) {
+      // a == 'some'
+      // b == 'args'
+  });
+  
+  object.methodName(function(a, b) {
+      // a == 'more'
+      // b == 'data'
+  });</pre>
   
   Methods stubbed using @yields@ invoke the callback passed to them
   synchronously, and expect a callback function as the final or the penultimate
@@ -81,7 +81,7 @@
   Finally, you can specify that the method should throw an error when called;
   this is done using the @raises@ modifier:
   
-  <pre class="prettyprint">    stub(object, 'methodName').raises(new TypeError());</pre>
+  <pre class="prettyprint">stub(object, 'methodName').raises(new TypeError());</pre>
   
   h3. Reacting to input arguments
   
@@ -90,13 +90,13 @@
   You can do using the @given@ modifier before a @returns@, @yields@ or @raises@
   modifier. For example we can specify a different return value for each input:
   
-  <pre class="prettyprint">    stub(object, 'methodName').given(2,2).returns(4);
-      stub(object, 'methodName').given(1,2,3).returns(6);
-      
-      object.methodName(2,2)    // -> 4
-      object.methodName(1,2,3)  // -> 6
-      
-      object.methodName()       // -> error</pre>
+  <pre class="prettyprint">stub(object, 'methodName').given(2,2).returns(4);
+  stub(object, 'methodName').given(1,2,3).returns(6);
+  
+  object.methodName(2,2)    // -> 4
+  object.methodName(1,2,3)  // -> 6
+  
+  object.methodName()       // -> error</pre>
   
   Now our stubbed method will react to the input arguments as specified. If the
   method receives a call with arguments we haven't specified, an error is thrown.
@@ -106,16 +106,16 @@
   When using @yields@, @given@ is used to match the arguments before the
   callback function. For example we could stub jQuery's Ajax interface like so:
   
-  <pre class="prettyprint">    stub(jQuery, 'get').given('/foo.html').yields(['foo']);
-      stub(jQuery, 'get').given('/bar.html').yields(['bar']);
-      
-      jQuery.get('/foo.html', function(response) {
-          // response == 'foo'
-      });
-      
-      jQuery.get('/bar.html', function(response) {
-          // response == 'bar'
-      });</pre>
+  <pre class="prettyprint">stub(jQuery, 'get').given('/foo.html').yields(['foo']);
+  stub(jQuery, 'get').given('/bar.html').yields(['bar']);
+  
+  jQuery.get('/foo.html', function(response) {
+      // response == 'foo'
+  });
+  
+  jQuery.get('/bar.html', function(response) {
+      // response == 'bar'
+  });</pre>
   
   h3. Argument matchers
   
@@ -126,10 +126,10 @@
   a stub that reacts to an array containing the string @'test'@ followed by any
   number of arguments like this:
   
-  <pre class="prettyprint">    stub(object, 'methodName').given(arrayIncluding('test'), anyArgs()).returns(true);
-      
-      object.methodName(['foo', 'test', 'bar'], 'something')  // -> true
-      object.methodName(['foo', 'bar'], 'something')          // -> error</pre>
+  <pre class="prettyprint">stub(object, 'methodName').given(arrayIncluding('test'), anyArgs()).returns(true);
+  
+  object.methodName(['foo', 'test', 'bar'], 'something')  // -> true
+  object.methodName(['foo', 'bar'], 'something')          // -> error</pre>
   
   The full set of matchers is as follows:
   
@@ -152,7 +152,7 @@
   explicitly checking that they are called. To set up a mock expectation for a
   method call, we use the @expect()@ function instead of @stub()@.
   
-  <pre class="prettyprint">    expect(object, 'methodName');</pre>
+  <pre class="prettyprint">expect(object, 'methodName');</pre>
   
   This mock states that @object.methodName()@ should be called at least once
   with any arguments; if it's not been called by the end of the test then a
@@ -164,7 +164,7 @@
   @jQuery.get('/foo.html', function() { ... })@ must be made during the current
   test, and the given callback will be called with the response @'Hello, Wolrd'@:
   
-  <pre class="prettyprint">    expect(jQuery, 'get').given('/foo.html').yielding(['Hello, World']);</pre>
+  <pre class="prettyprint">expect(jQuery, 'get').given('/foo.html').yielding(['Hello, World']);</pre>
   
   (@returns@, @yields@ and @raises@ are aliased as @returning@, @yielding@ and
   @raising@ since these read a little better when setting mock expectations.)
@@ -174,4 +174,4 @@
   modifier if one is used. For example, this tests that exactly 2 calls to
   @User.create('jcoglan')@ are made during the test, returning @true@ each time:
   
-  <pre class="prettyprint">    expect(User, 'create').given('jcoglan').exactly(2).returning(true);</pre>
+  <pre class="prettyprint">expect(User, 'create').given('jcoglan').exactly(2).returning(true);</pre>

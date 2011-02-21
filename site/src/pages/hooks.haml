@@ -1,64 +1,66 @@
 :textile
   h3. Metaprogramming hooks
   
-  Ruby defines a few hook methods that you can use to detect when a class is subclassed
-  or when a module is mixed in. These hooks are called @inherited()@, @included()@ and @extended()@.
+  Ruby defines a few hook methods that you can use to detect when a class is
+  subclassed or when a module is mixed in. These hooks are called @inherited()@,
+  @included()@ and @extended()@.
   
-  If a class has a class method called @inherited()@ it will be called whenever you create
-  a subclass of it:
+  If a class has a class method called @inherited()@ it will be called whenever
+  you create a subclass of it:
   
-  <pre class="prettyprint">    var ChildDetector = new JS.Class({
-          extend: {
-              inherited: function(klass) {
-                  // Do stuff with child class
-              }
+  <pre class="prettyprint">var ChildDetector = new JS.Class({
+      extend: {
+          inherited: function(klass) {
+              // Do stuff with child class
           }
-      });</pre>
+      }
+  });</pre>
   
-  The hook receives the new child class as an argument. Note that @class@ is a reserved word
-  in JavaScript and should not be used as a variable name. The child class will have all its methods
-  in place when @inherited()@ gets called, so you can use them within your callback function.
+  The hook receives the new child class as an argument. Note that @class@ is a
+  reserved word in JavaScript and should not be used as a variable name. The
+  child class will have all its methods in place when @inherited()@ gets called,
+  so you can use them within your callback function.
   
-  In the same vein, if you @include()@ a module that has a singleton method called @included@,
-  that method will be called. This effectively allows you to redefine the meaning of @include@
-  for individual modules. A good example of this is the @StackTrace@ module, which doesn't
-  add any methods to the class but changes the inner workings of the class instead:
+  In the same vein, if you @include()@ a module that has a singleton method
+  called @included@, that method will be called. This effectively allows you to
+  redefine the meaning of @include@ for individual modules. A good example of
+  this is the @StackTrace@ module, which doesn't add any methods to the class
+  but changes the inner workings of the class instead:
   
-  
-  <pre class="prettyprint">    JS.StackTrace = new JS.Module({
-          extend: {
-              included: function(base) {
-                  var module = base.__mod__ || base, self = this;
-                  
-                  // Change the working of define() in the including class
-                  module.extend({define: function(name, func) {
-                      if (!JS.isFn(func)) return this.callSuper();
-                      var wrapper = self.wrap(func, module, name);
-                      return this.callSuper(name, wrapper);
-                  } });
-                  
-                  // Wrap existing methods
-                  for (var method in module.__fns__)
-                      module.define(method, module.__fns__[method]);
-                  
-                  // Find out the name of the class
-                  if (!module.__name__) setTimeout(function() {
-                      module.__name__ = self.nameOf(base);
-                  }, 1);
-              }
+  <pre class="prettyprint">JS.StackTrace = new JS.Module({
+      extend: {
+          included: function(base) {
+              var module = base.__mod__ || base, self = this;
               
-              // more methods (elided)
-            
-          } // end extend: block
+              // Change the working of define() in the including class
+              module.extend({define: function(name, func) {
+                  if (!JS.isFn(func)) return this.callSuper();
+                  var wrapper = self.wrap(func, module, name);
+                  return this.callSuper(name, wrapper);
+              } });
+              
+              // Wrap existing methods
+              for (var method in module.__fns__)
+                  module.define(method, module.__fns__[method]);
+              
+              // Find out the name of the class
+              if (!module.__name__) setTimeout(function() {
+                  module.__name__ = self.nameOf(base);
+              }, 1);
+          }
           
-          // no instance methods
-      });</pre>
+          // more methods (elided)
+        
+      } // end extend: block
+      
+      // no instance methods
+  });</pre>
   
-  The @extended()@ hook works in much the same way as @included()@, except that it will be
-  called when the module is used to @extend()@ an object.
+  The @extended()@ hook works in much the same way as @included()@, except that
+  it will be called when the module is used to @extend()@ an object.
   
-  <pre class="prettyprint">    // This will call MyMod.extended(obj)
-      obj.extend(MyMod);</pre>
+  <pre class="prettyprint">// This will call MyMod.extended(obj)
+  obj.extend(MyMod);</pre>
   
-  Again, you can use this to redefine how @extend()@ works with individual modules, so
-  they can change the behaviour of the objects they extend.
+  Again, you can use this to redefine how @extend()@ works with individual
+  modules, so they can change the behaviour of the objects they extend.

@@ -3,110 +3,118 @@
   
   @JS.Observable@ is a JavaScript implementation of the "observer pattern":http://en.wikipedia.org/wiki/Observer_pattern
   (also known as 'publish/subscribe'), modelled on Ruby's "@Observable@ module":http://ruby-doc.org/core/classes/Observable.html.
-  In JavaScript, this pattern can be made more flexible due to the fact that functions are first-class
-  objects, and are easier to work with than lambdas and procs in Ruby. In this implementation,
-  the listeners/observers are functions, rather than objects.
+  In JavaScript, this pattern can be made more flexible due to the fact that
+  functions are first-class objects, and are easier to work with than lambdas
+  and procs in Ruby. In this implementation, the listeners/observers are
+  functions, rather than objects.
   
-  This module is similar to the 'custom events' found in other JS libraries. Most browser scripting is
-  based on the observer pattern, and this module attempts to make the pattern as general-purpose as
-  possible by making any object capable of being observed by others, not just special 'event' objects.
+  This module is similar to the 'custom events' found in other JS libraries.
+  Most browser scripting is based on the observer pattern, and this module
+  attempts to make the pattern as general-purpose as possible by making any
+  object capable of being observed by others, not just special 'event' objects.
   
   h3. Setting up a publisher
   
-  A publisher (or 'observable') is any object that needs to be able to tell the world when something
-  interesting happens to it, so that other objects can listen for such announcements and respond
-  however they see fit. Let's imagine we're running a magazine:
+  A publisher (or 'observable') is any object that needs to be able to tell the
+  world when something interesting happens to it, so that other objects can
+  listen for such announcements and respond however they see fit. Let's imagine
+  we're running a magazine:
   
-  <pre class="prettyprint">    var Magazine = new JS.Class({
-          include: JS.Observable,
-          
-          initialize: function(name) {
-              this.name = name;
-              this.issues = [];
-          },
-          
-          publishIssue: function() {
-              var issue = new Issue(this);
-              this.issues.push(issue);
-              this.notifyObservers(issue);
-          }
-      });
+  <pre class="prettyprint">var Magazine = new JS.Class({
+      include: JS.Observable,
       
-      var Issue = new JS.Class({
-          initialize: function(publisher) {
-              this.publisher = publisher;
-          }
-      });</pre>
+      initialize: function(name) {
+          this.name = name;
+          this.issues = [];
+      },
+      
+      publishIssue: function() {
+          var issue = new Issue(this);
+          this.issues.push(issue);
+          this.notifyObservers(issue);
+      }
+  });
+  
+  var Issue = new JS.Class({
+      initialize: function(publisher) {
+          this.publisher = publisher;
+      }
+  });</pre>
   
   And, let's create an object to represent our magazine:
   
-  <pre class="prettyprint">    var mag = new Magazine('JavaScript Monthly');</pre>
+  <pre class="prettyprint">var mag = new Magazine('JavaScript Monthly');</pre>
   
-  So, we have a magazine that can publish issues. Whenever it does so, it calls @this.notifyObservers(issue)@,
-  which will send the @issue@ object to any object that's subscribed to the magazine.
+  So, we have a magazine that can publish issues. Whenever it does so, it calls
+  @this.notifyObservers(issue)@, which will send the @issue@ object to any
+  object that's subscribed to the magazine.
   
   h3. Setting up subscribers
   
-  A 'subscriber' is simply a callback function that is assigned to observe an object and fire
-  when the observed object notifies its observers. A simple example might be:
+  A 'subscriber' is simply a callback function that is assigned to observe an
+  object and fire when the observed object notifies its observers. A simple
+  example might be:
   
-  <pre class="prettyprint">    mag.addObserver(function(issue) {
-          // do something with the new issue
-      });</pre>
+  <pre class="prettyprint">mag.addObserver(function(issue) {
+      // do something with the new issue
+  });</pre>
   
-  This function will be called whenever @mag@ publishes a new issue. A more complex example
-  could involve objects attaching their methods to observe an object:
+  This function will be called whenever @mag@ publishes a new issue. A more
+  complex example could involve objects attaching their methods to observe an
+  object:
   
-  <pre class="prettyprint">    var Reader = new JS.Class({
-          receiveIssue: function(issue) {
-              if (this.likes(issue.publisher))
-                  this.read(issue);
-              else
-                  this.throwIssueInTrash(issue);
-          },
-          likes: function(magazine) {
-              return /javascript/i.test(magazine.name);
-          },
-          read: function(issue) {},
-          throwIssueInTrash: function(issue) {}
-      });
-      
-      var person = new Reader();
-      mag.addObserver(person.method('receiveIssue'));</pre>
+  <pre class="prettyprint">var Reader = new JS.Class({
+      receiveIssue: function(issue) {
+          if (this.likes(issue.publisher))
+              this.read(issue);
+          else
+              this.throwIssueInTrash(issue);
+      },
+      likes: function(magazine) {
+          return /javascript/i.test(magazine.name);
+      },
+      read: function(issue) {},
+      throwIssueInTrash: function(issue) {}
+  });
+  
+  var person = new Reader();
+  mag.addObserver(person.method('receiveIssue'));</pre>
   
   So now @person@ will be notified when a new magazine is out.
   
-  An optional second argument to @addObserver()@ specifies the execution context for the
-  listener function. For example, the above could be restated as:
+  An optional second argument to @addObserver()@ specifies the execution context
+  for the listener function. For example, the above could be restated as:
   
-  <pre class="prettyprint">    mag.addObserver(person.receiveIssue, person);</pre>
+  <pre class="prettyprint">mag.addObserver(person.receiveIssue, person);</pre>
   
-  Observers can be removed, so long as you specify _the exact same function and context_
-  used to set up the observer:
+  Observers can be removed, so long as you specify _the exact same function and
+  context_ used to set up the observer:
   
-  <pre class="prettyprint">    // Works...
-      mag.addObserver(person.method('receiveIssue'));
-      mag.removeObserver(person.method('receiveIssue'));
-      
-      // Works...
-      mag.addObserver(person.receiveIssue, person);
-      mag.removeObserver(person.receiveIssue, person);
-      
-      // Does not work - functions are different objects
-      mag.addObserver(person.receiveIssue, person);
-      mag.removeObserver(person.method('receiveIssue'));
-      
-      // Does not work - context missing
-      mag.addObserver(person.receiveIssue, person);
-      mag.removeObserver(person.receiveIssue);</pre>
+  <pre class="prettyprint">// Works...
+  mag.addObserver(person.method('receiveIssue'));
+  mag.removeObserver(person.method('receiveIssue'));
   
-  This may seem like an annoyance, but JavaScript has no way of telling that two different
-  function objects (or the same function in different contexts) might be somehow related, which
-  is why this scheme is so strict.
+  // Works...
+  mag.addObserver(person.receiveIssue, person);
+  mag.removeObserver(person.receiveIssue, person);
+  
+  // Does not work - functions are different objects
+  mag.addObserver(person.receiveIssue, person);
+  mag.removeObserver(person.method('receiveIssue'));
+  
+  // Does not work - context missing
+  mag.addObserver(person.receiveIssue, person);
+  mag.removeObserver(person.receiveIssue);</pre>
+  
+  This may seem like an annoyance, but JavaScript has no way of telling that two
+  different function objects (or the same function in different contexts) might
+  be somehow related, which is why this scheme is so strict.
   
   h3. And finally
   
   A couple of points worth knowing:
   
-  * @addObserver()@ is aliased as @subscribe()@. @removeObserver()@ is aliased as @unsubscribe()@.
+  * @addObserver()@ is aliased as @subscribe()@. @removeObserver()@ is aliased
+    as @unsubscribe()@.
   * Calling @mag.removeObservers()@ removes all observers from the object.
+
