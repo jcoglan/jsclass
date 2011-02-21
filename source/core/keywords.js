@@ -1,9 +1,9 @@
-JS.Method.keyword('callSuper', function(env, receiver, args) {
-  var methods    = env.lookup(this.name),
+JS.Method.keyword('callSuper', function(method, env, receiver, args) {
+  var methods    = env.lookup(method.name),
       stackIndex = methods.length - 1,
       params     = JS.array(args);
   
-  receiver.callSuper = function() {
+  return function() {
     var i = arguments.length;
     while (i--) params[i] = arguments[i];
     
@@ -15,17 +15,18 @@ JS.Method.keyword('callSuper', function(env, receiver, args) {
   };
 });
 
-JS.Method.keyword('blockGiven', function(env, receiver, args) {
-  var block = Array.prototype.slice.call(args, this.arity),
+JS.Method.keyword('blockGiven', function(method, env, receiver, args) {
+  var block = Array.prototype.slice.call(args, method.arity),
       hasBlock = (typeof block[0] === 'function');
   
-  receiver.blockGiven = function() { return hasBlock };
+  return function() { return hasBlock };
 });
 
-JS.Method.keyword('yieldWith', function(env, receiver, args) {
-  var block = Array.prototype.slice.call(args, this.arity);
+JS.Method.keyword('yieldWith', function(method, env, receiver, args) {
+  var block = Array.prototype.slice.call(args, method.arity);
   
-  receiver.yieldWith = function() {
+  return function() {
+    if (typeof block[0] !== 'function') return;
     return block[0].apply(block[1] || null, arguments);
   };
 });

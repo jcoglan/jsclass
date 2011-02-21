@@ -670,6 +670,9 @@ JS.ENV.ClassSpec = JS.Test.describe(JS.Class, function() { with(this) {
       object.twoArgs("o", "hai", function() { result = [JS.array(arguments), this] }, context)
       assertEqual( [["hai"], context], result )
     }})
+    
+    it("does nothing if no block is given", function() { with(this) {
+      assertNothingThrown(function() { object.twoArgs("some", "words") })
+    }})
   }})
 }})
-
