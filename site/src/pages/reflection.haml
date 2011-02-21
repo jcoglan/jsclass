@@ -95,7 +95,7 @@
   iherited methods. To get all the methods defined on a single object, use @methods()@.
   
   <pre class="prettyprint">    ModC.instanceMethod('speak')
-      // -> function()
+      // -> #<Method>
       
       Foo.instanceMethods()
       // -> ["speak", "__eigen__", "equals", "extend", "hash",
@@ -110,6 +110,28 @@
       // -> ["speak", "__eigen__", "equals", "extend", "hash",
       //     "isA", "method", "methods", "tap", "wait", "_",
       //     "enumFor", "toEnum"]</pre>
+  
+  h3. Method objects
+  
+  The @Module#instanceMethod()@ method does not return a bare function; instead
+  it returns a @Method@ object. This is a class that @JS.Class@ uses internally
+  to represent methods stored in modules, and it provides a lot more contextual
+  information about a method than a bare function would.
+  
+  A @Method@ object has the following properties:
+  
+  * @module@ - the @Module@ or @Class@ that the method is defined in
+  * @name@ - the name of the method
+  * @arity@ - the number of arguments the method explicitly accepts
+  * @callable@ - the function that provides the method's implementation
+  
+  So, for example you can get a method out of a class and find out if it actually
+  came from another method by calling:
+  
+  <pre class="prettyprint">    klass.instanceMethod('foo').module</pre>
+  
+  Like JavaScript functions, @Method@ objects respond to @call()@ and @apply@,
+  so you can actually pass them to methods that expect callbacks to be passed in.
   
   h3. The eigenclass
   

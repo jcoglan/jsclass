@@ -30,6 +30,10 @@ JS.extend(JS.Method.prototype, {
     return this.callable.call.apply(this.callable, arguments);
   },
   
+  apply: function(receiver, args) {
+    return this.callable.apply(receiver, args);
+  },
+  
   compile: function(environment) {
     var method     = this,
         trace      = method.module.__trace__ || environment.__trace__,

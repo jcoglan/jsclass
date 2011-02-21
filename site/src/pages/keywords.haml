@@ -1,0 +1,143 @@
+:textile
+  h3. Keyword methods
+  
+  Most methods you'll define using @JS.Class@ are listed explicitly in your
+  source code. For example you might have a @BlogPost@ class that has a
+  @publish()@ method, that you define by listing the method in the class body:
+  
+  <pre class="prettyprint">    BlogPost = new JS.Class({
+          publish: function() { /* ... * / }
+      });</pre>
+  
+  Keyword methods are different: they are methods that are generated on the fly
+  and whose action depends on the context of the current method call. @JS.Class@
+  provides a few built-in keywords that you can use in any method you write.
+  
+  h3. @callSuper()@
+  
+  This is used to invoke the current method in the next module up the inheritance
+  stack. (See "Inheritance":/inheritance.html for more information on how methods
+  are looked up in @JS.Class@.)
+  
+  @callSuper()@ automatically passes all the arguments to the current method up
+  to the parent method, unless you override them.
+  
+  <pre class="prettyprint">    Parent = new JS.Class({
+          say: function(something) {
+              JS.Console.puts(something);
+          }
+      });
+      
+      // Outputs "hello"
+      new Parent().say('hello');
+      
+      Child = new JS.Class(Parent, {
+          say: function(something) {
+              // Outputs value of `something`
+              this.callSuper();
+              
+              // Outputs uppercase version of `something`
+              this.callSuper(something.toUpperCase());
+          }
+      });</pre>
+  
+  h3. @blockGiven()@
+  
+  Returns @true@ if the current method was called with a callback function after
+  the explicit arguments to the method.
+  
+  <pre class="prettyprint">    Foo = new JS.Class({
+          say: function(a,b) {
+              return this.blockGiven();
+          }
+      });
+      
+      var foo = new Foo();
+      foo.say('some', 'words') // -> false
+      foo.say('some', 'words', function() {}) // -> true</pre>
+  
+  h3. @yieldWith()@
+  
+  If the current method was called with a callback function after its explicit
+  arguments (as defined by @blockGiven()@) @yieldWith()@ invokes the callback
+  with the given arguments. If no callback was given, @yieldWith()@ silently
+  does nothing.
+  
+  @yieldWith()@ will use the argument after the callback (if one is given) as
+  the @this@ context for the callback.
+  
+  <pre class="prettyprint">    Foo = new JS.Class({
+          say: function(a,b) {
+              this.yieldWith(a + b);
+          }
+      });
+      
+      var foo = new Foo(), object = {};
+      
+      foo.say('some', 'words', function(result) {
+          // result == 'somewords'
+          // this   == object
+      }, object);</pre>
+  
+  h3. Writing your own keywords
+  
+  You can use the same APIs that @JS.Class@ uses to create its built-in keywords
+  to create your own. Remember, a keyword is a function that uses implicit
+  contextual information from the current method call; if it looks like you can
+  get the behaviour you want from a normal method, you should use one.
+  
+  As a (very) simple example, let's say we want a keyword method to return the
+  number of arguments passed to the current method. Implementing this goes as
+  follows.
+  
+  <pre class="prettyprint">    JS.Method.keyword('numArgs', function(method, env, receiver, args) {
+          return function() {
+              return args.length;
+          };
+      });</pre>
+  
+  This keyword is then available inside all your methods:
+  
+  <pre class="prettyprint">    Foo = new JS.Class({
+          say: function(a,b) {
+              return this.numArgs();
+          }
+      });
+      
+      var foo = new Foo();
+      fii.say('some')             // -> 1
+      foo.say('some', 'words')    // -> 2</pre>
+  
+  Obviously this is a very basic example. The general pattern for using
+  @JS.Method.keyword()@ is that you should provide a name for the keyword, and
+  a generator function for it. This function should accept the following
+  arguments and return another function that implements the keyword:
+  
+  * @method@ - the @Method@ object representing the method currently being called;
+    see the "reflection":/reflection.html docs for more info
+  * @env@ - the module or class in which the method is currently being invoked;
+    because of "inheritance":/inheritance.html this may not be the same module
+    the method is defined in
+  * @receiver@ - the object on which the method was invoked
+  * @args@ - the @arguments@ object for the current method call
+  
+  Using this contextual information you can generate functions that do all sorts
+  of useful things with the current method call. As a more complex example, here
+  is the @JS.Class@ implementation of @callSuper@:
+  
+  <pre class="prettyprint">    JS.Method.keyword('callSuper', function(method, env, receiver, args) {
+          var methods    = env.lookup(method.name),
+              stackIndex = methods.length - 1,
+              params     = Array.prototype.slice.call(args);
+          
+          return function() {
+              var i = arguments.length;
+              while (i--) params[i] = arguments[i];
+              
+              stackIndex -= 1;
+              var returnValue = methods[stackIndex].apply(receiver, params);
+              stackIndex += 1;
+              
+              return returnValue;
+          };
+      });</pre>

@@ -8,7 +8,7 @@ JS.Method.keyword('callSuper', function(method, env, receiver, args) {
     while (i--) params[i] = arguments[i];
     
     stackIndex -= 1;
-    var returnValue = methods[stackIndex].callable.apply(receiver, params);
+    var returnValue = methods[stackIndex].apply(receiver, params);
     stackIndex += 1;
     
     return returnValue;
