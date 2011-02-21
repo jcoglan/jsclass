@@ -6,7 +6,7 @@ JS.Test.Context.extend({
     extend: {
       createFromBehavior: function(beh) {
         var mod = new this();
-        mod._behavior = JS.Test.selfless(beh);
+        mod._behavior = beh;
         return mod;
       },
       

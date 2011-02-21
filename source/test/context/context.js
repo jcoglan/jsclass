@@ -86,8 +86,7 @@ JS.Test.extend({
           klass.setContextName(name.toString());
           klass.setName(klass.getContextName());
           
-          JS.Test.selfless(block).call(klass);
-          
+          block.call(klass);
           return klass;
         },
         
@@ -106,29 +105,9 @@ JS.Test.extend({
     klass.include(JS.Test.Context, {_resolve: false});
     klass.__eigen__().resolve();
     
-    JS.Test.selfless(block).call(klass);
-    
+    block.call(klass);
     return klass;
-  },
-  
-  selfless: function(block) {
-    if (typeof block !== 'function') return block;
-    
-    var source = block.toString(),
-        args   = source.match(/^[^\(]*\(([^\(]*)\)/)[1].split(/\s*,\s*/),
-        body   = source.match(/^[^\{]*{((.*\n*)*)}/m)[1];
-    
-    body = 'with(this) { ' + body + ' }';
-    
-    if (args.length === 3)
-      return new Function(args[0], args[1], args[2], body);
-    else if (args.length === 2)
-      return new Function(args[0], args[1], body);
-    else if (args.length === 1)
-      return new Function(args[0], body);
-    else if (args.length === 0)
-      return new Function(body);
-   }
+  }
 });
 
 JS.Test.Context.Context.alias({describe: 'context'});

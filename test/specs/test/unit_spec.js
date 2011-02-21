@@ -1,22 +1,20 @@
 JS.ENV.Test = this.Test || {}
 
-Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
+Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
   include(JS.Test.Helpers)
   include(TestSpecHelpers)
-  before(function() { createTestEnvironment() })
+  before(function() { this.createTestEnvironment() })
   
-  describe("empty TestCase", function() {
-    before(function(resume) {
-      this.runTests({}, resume)
-    })
+  describe("empty TestCase", function() { with(this) {
+    before(function(resume) { this.runTests({}, resume) })
     
-    it("passes with no assertions, failures or errors", function() {
+    it("passes with no assertions, failures or errors", function() { with(this) {
       assertTestResult( 0, 0, 0, 0 )
-    })
-  })
+    }})
+  }})
   
-  describe("when an error is thrown", function() {
-    it("catches and reports the error", function(resume) {
+  describe("when an error is thrown", function() { with(this) {
+    it("catches and reports the error", function(resume) { with(this) {
       runTests({
         testError: function() { throw new TypeError("derp") }
       }, function() { resume(function() {
@@ -25,11 +23,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                           "testError(TestedSuite):\n" +
                           "TypeError: derp" )
       })})
-    })
-  })
+    }})
+  }})
   
-  describe("#assertBlock", function() {
-    it("passes when the block returns true", function(resume) {
+  describe("#assertBlock", function() { with(this) {
+    it("passes when the block returns true", function(resume) { with(this) {
       runTests({
         testAssertBlock: function() { with(this) {
           assertBlock("some message", function() { return true })
@@ -37,9 +35,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       }, function() { resume(function() {
         assertTestResult( 1, 1, 0, 0 )
       })})
-    })
+    }})
     
-    it("fails with the given message when the block returns false", function(resume) {
+    it("fails with the given message when the block returns false", function(resume) { with(this) {
       runTests({
         testAssertBlock: function() { with(this) {
           assertBlock("some message", function() { return false })
@@ -50,9 +48,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                        "testAssertBlock(TestedSuite):\n" +
                        "some message." )
       })})
-    })
+    }})
     
-    it("fails with a default message when the block returns false", function(resume) {
+    it("fails with a default message when the block returns false", function(resume) { with(this) {
       runTests({
         testAssertBlock: function() { with(this) {
           assertBlock(function() { return false })
@@ -63,11 +61,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                        "testAssertBlock(TestedSuite):\n" +
                        "assertBlock failed." )
       })})
-    })
-  })
+    }})
+  }})
   
-  describe("#flunk", function() {
-    it("fails with the given message", function(resume) {
+  describe("#flunk", function() { with(this) {
+    it("fails with the given message", function(resume) { with(this) {
       runTests({
         testFlunk: function() { with(this) {
           flunk("some message")
@@ -78,9 +76,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                        "testFlunk(TestedSuite):\n" +
                        "some message." )
       })})
-    })
+    }})
     
-    it("fails with a default message", function(resume) {
+    it("fails with a default message", function(resume) { with(this) {
       runTests({
         testFlunk: function() { with(this) {
           flunk()
@@ -91,11 +89,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                        "testFlunk(TestedSuite):\n" +
                        "Flunked." )
       })})
-    })
-  })
+    }})
+  }})
   
-  describe("#assert", function() {
-    it("passes when passed truthy values", function(resume) {
+  describe("#assert", function() { with(this) {
+    it("passes when passed truthy values", function(resume) { with(this) {
       runTests({
         testAssert: function() { with(this) {
           assert( true )
@@ -108,9 +106,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       }, function() { resume(function() {
         assertTestResult( 1, 6, 0, 0 )
       })})
-    })
+    }})
     
-    it("fails when passed false", function(resume) {
+    it("fails when passed false", function(resume) { with(this) {
       runTests({
         testAssert: function() { with(this) {
           assert( false, "It's not true" )
@@ -122,11 +120,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                        "It's not true.\n" +
                        "<false> is not true." )
       })})
-    })
-  })
+    }})
+  }})
   
-  describe("#assertEqual", function() {
-    it("passes when given equal values", function(resume) {
+  describe("#assertEqual", function() { with(this) {
+    it("passes when given equal values", function(resume) { with(this) {
       runTests({
         testAssertEqual: function() { with(this) {
           assertEqual( true, true )
@@ -158,10 +156,10 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       }, function() { resume(function() {
         assertTestResult( 1, 24, 0, 0 )
       })})
-    })
+    }})
     
-    describe("with booleans", function() {
-      it("fails when given different values", function(resume) {
+    describe("with booleans", function() { with(this) {
+      it("fails when given different values", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( true, false )
@@ -184,11 +182,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<false> expected but was\n" +
                             "<null>." )
         })})
-      })
-    })
+      }})
+    }})
     
-    describe("with numbers", function() {
-      it("fails when given unequal numbers", function(resume) {
+    describe("with numbers", function() { with(this) {
+      it("fails when given unequal numbers", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( 3, 4 )
@@ -211,11 +209,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<4> expected not to be equal to\n" +
                             "<4>." )
         })})
-      })
-    })
+      }})
+    }})
     
-    describe("with strings", function() {
-      it("fails when given unequal strings", function(resume) {
+    describe("with strings", function() { with(this) {
+      it("fails when given unequal strings", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( "foo", "bar" )
@@ -237,11 +235,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<\"foo\"> expected not to be equal to\n" +
                             "<\"foo\">." )
         })})
-      })
-    })
+      }})
+    }})
     
-    describe("with arrays", function() {
-      it("fails when given unequal arrays", function(resume) {
+    describe("with arrays", function() { with(this) {
+      it("fails when given unequal arrays", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( [1,2], [2,1] )
@@ -263,11 +261,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<[9]> expected not to be equal to\n" +
                             "<[9]>." )
         })})
-      })
-    })
+      }})
+    }})
     
-    describe("with objects", function() {
-      it("fails when given unequal objects", function(resume) {
+    describe("with objects", function() { with(this) {
+      it("fails when given unequal objects", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( {foo: 2}, {foo: 2, bar: 3} )
@@ -289,10 +287,10 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<{\"foo\":[3,4]}> expected not to be equal to\n" +
                             "<{\"foo\":[3,4]}>." )
         })})
-      })
+      }})
       
-      describe("with custom equality methods", function() {
-        it("fails when given unequal objects", function(resume) {
+      describe("with custom equality methods", function() { with(this) {
+        it("fails when given unequal objects", function(resume) { with(this) {
           runTests({
             test1: function() { with(this) {
               assertEqual( new JS.SortedSet([1,2]), new JS.SortedSet([3,2]) )
@@ -315,12 +313,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                               "<SortedSet:{1,2}> expected not to be equal to\n" +
                               "<SortedSet:{1,2}>." )
           })})
-        })
-      })
-    })
+        }})
+      }})
+    }})
     
-    describe("with functions", function() {
-      it("fails when passed non-identical functions", function(resume) {
+    describe("with functions", function() { with(this) {
+      it("fails when passed non-identical functions", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertEqual( function() {}, function() {} )
@@ -342,12 +340,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<SortedSet> expected not to be equal to\n" +
                             "<SortedSet>." )
         })})
-      })
-    })
-  })
+      }})
+    }})
+  }})
   
-  describe("#assertNull", function() {
-    it("passes when given null", function(resume) {
+  describe("#assertNull", function() { with(this) {
+    it("passes when given null", function(resume) { with(this) {
       runTests({
         testAssertNull: function() { with(this) {
           assertNull( null )
@@ -356,9 +354,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       }, function() { resume(function() {
         assertTestResult( 1, 2, 0, 0 )
       })})
-    })
+    }})
     
-    it("fails when not given null", function(resume) {
+    it("fails when not given null", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertNull( false )
@@ -380,12 +378,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                           "it's null.\n" +
                           "<null> expected not to be null." )
       })})
-    })
-  })
+    }})
+  }})
   
-  describe("#assertKindOf", function() {
-    describe("with string types", function() {
-      it("passes when the object is of the named type", function(resume) {
+  describe("#assertKindOf", function() { with(this) {
+    describe("with string types", function() { with(this) {
+      it("passes when the object is of the named type", function(resume) { with(this) {
         runTests({
           testAssertKindOf: function() { with(this) {
             assertKindOf( "string", "foo" )
@@ -400,9 +398,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }, function() { resume(function() {
           assertTestResult( 1, 8, 0, 0 )
         })})
-      })
+      }})
       
-      it("fails when the object is not of the named type", function(resume) {
+      it("fails when the object is not of the named type", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) { assertKindOf( "string",    67 )        }},
           test2: function() { with(this) { assertKindOf( "number",    "four" )    }},
@@ -449,11 +447,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<\"array\"> but was\n" +
                             "<\"object\">." )
         })})
-      })
-    })
+      }})
+    }})
     
-    describe("with functional types", function() {
-      it("passes when the object is of the referenced type", function(resume) {
+    describe("with functional types", function() { with(this) {
+      it("passes when the object is of the referenced type", function(resume) { with(this) {
         runTests({
           testAssertKindOf: function() { with(this) {
             assertKindOf( Object, {} )
@@ -468,9 +466,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }, function() { resume(function() {
           assertTestResult( 1, 8, 0, 0 )
         })})
-      })
+      }})
       
-      it("fails when the object is not of the referenced type", function(resume) {
+      it("fails when the object is not of the referenced type", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) { assertKindOf( Object,    "foo" )     }},
           test2: function() { with(this) { assertKindOf( Array,     {} )        }},
@@ -510,11 +508,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<Array> but was\n" +
                             "<\"undefined\">." )
         })})
-      })
-    })
+      }})
+    }})
     
-    describe("with modular types", function() {
-      it("passes when the object's inheritance chain includes the given module", function(resume) {
+    describe("with modular types", function() { with(this) {
+      it("passes when the object's inheritance chain includes the given module", function(resume) { with(this) {
         runTests({
           testAssertKindOf: function() { with(this) {
             var set = new JS.SortedSet([1,2])
@@ -534,9 +532,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }, function() { resume(function() {
           assertTestResult( 1, 8, 0, 0 )
         })})
-      })
+      }})
       
-      it("fails when the object's inheritance chain does not include the given module", function(resume) {
+      it("fails when the object's inheritance chain does not include the given module", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) { assertKindOf( Array,         JS.SortedSet ) }},
           test2: function() { with(this) { assertKindOf( JS.Enumerable, JS.SortedSet ) }},
@@ -583,12 +581,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<Observable> but was\n" +
                             "<SortedSet>." )
         })})
-      })
-    })
-  })
+      }})
+    }})
+  }})
   
-  describe("#assertRespondTo", function() {
-    it("passes when the object responds to the named message", function(resume) {
+  describe("#assertRespondTo", function() { with(this) {
+    it("passes when the object responds to the named message", function(resume) { with(this) {
       runTests({
         testAssertRespondTo: function() { with(this) {
           assertRespondTo( Object, "prototype" )
@@ -598,9 +596,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       }, function() { resume(function() {
         assertTestResult( 1, 3, 0, 0 )
       })})
-    })
+    }})
     
-    it("fails when the object does not respond to the named message", function(resume) {
+    it("fails when the object does not respond to the named message", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertRespondTo( Object, "foo" )
@@ -644,12 +642,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                           "of type <Class>\n" +
                           "expected to respond to <\"nomethod\">." )
       })})
-    })
-  })
+    }})
+  }})
   
-  describe("#assertMatch", function() {
-    describe("with regular expressions", function() {
-      it("passes if the string matches the pattern", function(resume) {
+  describe("#assertMatch", function() { with(this) {
+    describe("with regular expressions", function() { with(this) {
+      it("passes if the string matches the pattern", function(resume) { with(this) {
         runTests({
           testAssertMatch: function() { with(this) {
             assertMatch( /Foo/i, "food" )
@@ -658,9 +656,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }, function() { resume(function() {
           assertTestResult( 1, 2, 0, 0 )
         })})
-      })
+      }})
       
-      it("fails if the string does not match the pattern", function(resume) {
+      it("fails if the string does not match the pattern", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertMatch( /Foo/, "food" )
@@ -682,9 +680,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<\"food\"> expected not to match\n" +
                             "</Foo/i>." )
         })})
-      })
+      }})
       
-      it("fails if the string is undefined", function(resume) {
+      it("fails if the string is undefined", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertMatch( /[a-z]+/, undefined )
@@ -696,11 +694,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<undefined> expected to match\n" +
                             "</[a-z]+/>." )
         })})
-      })
-    })
+      }})
+    }})
     
-    describe("with modules", function() {
-      it("passes if the object is of the given type", function(resume) {
+    describe("with modules", function() { with(this) {
+      it("passes if the object is of the given type", function(resume) { with(this) {
         runTests({
           testAssertMatch: function() { with(this) {
             assertMatch( JS.Module, JS.Enumerable )
@@ -709,9 +707,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }, function() { resume(function() {
           assertTestResult( 1, 2, 0, 0 )
         })})
-      })
+      }})
       
-      it("fails if the object is not of the given type", function(resume) {
+      it("fails if the object is not of the given type", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertMatch( JS.Class, new JS.SortedSet([1,2]) )
@@ -733,11 +731,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<Enumerable> expected not to match\n" +
                             "<Module>." )
         })})
-      })
-    })
+      }})
+    }})
     
-    describe("with ranges", function() {
-      it("passes if the object is in the given range", function(resume) {
+    describe("with ranges", function() { with(this) {
+      it("passes if the object is in the given range", function(resume) { with(this) {
         runTests({
           testAssertMatch: function() { with(this) {
             assertMatch( new JS.Range(1,10), 10 )
@@ -746,9 +744,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }, function() { resume(function() {
           assertTestResult( 1, 2, 0, 0 )
         })})
-      })
+      }})
       
-      it("fails if the object is not in the given range", function(resume) {
+      it("fails if the object is not in the given range", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertMatch( new JS.Range(1,10,true), 10 )
@@ -770,12 +768,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<10> expected not to match\n" +
                             "<1..10>." )
         })})
-      })
-    })
-  })
+      }})
+    }})
+  }})
   
-  describe("#assertSame", function() {
-    it("passes when the objects are identical", function(resume) {
+  describe("#assertSame", function() { with(this) {
+    it("passes when the objects are identical", function(resume) { with(this) {
       runTests({
         testAssertSame: function() { with(this) {
           var obj = {}, arr = [], fn = function() {}, set = new JS.SortedSet([1,2])
@@ -793,9 +791,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       }, function() { resume(function() {
         assertTestResult( 1, 8, 0, 0 )
       })})
-    })
+    }})
     
-    it("fails when the objects are not identical", function(resume) {
+    it("fails when the objects are not identical", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertSame( {}, {} )
@@ -833,11 +831,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                           "<SortedSet:{1,2}> expected to be the same as\n" +
                           "<SortedSet:{1,2}>." )
       })})
-    })
-  })
+    }})
+  }})
   
-  describe("#assertInDelta", function() {
-    it("passes when the value is within delta of the expected result", function(resume) {
+  describe("#assertInDelta", function() { with(this) {
+    it("passes when the value is within delta of the expected result", function(resume) { with(this) {
       runTests({
         testAssertInDelta: function() { with(this) {
           assertInDelta(5, 4, 1)
@@ -847,9 +845,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       }, function() { resume(function() {
         assertTestResult( 1, 3, 0, 0 )
       })})
-    })
+    }})
     
-    it("fails when the value differs from the expected result by more than delta", function(resume) {
+    it("fails when the value differs from the expected result by more than delta", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertInDelta(5, 3.9, 1, "out by 0.1")
@@ -882,11 +880,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                           "<5> expected to be within\n" +
                           "<7> of each other." )
       })})
-    })
-  })
+    }})
+  }})
   
-  describe("#assertSend", function() {
-    it("passes when the constructed method call returns true", function(resume) {
+  describe("#assertSend", function() { with(this) {
+    it("passes when the constructed method call returns true", function(resume) { with(this) {
       runTests({
         testAssertSend: function() { with(this) {
           assertSend( [JS.SortedSet, 'includes', JS.Enumerable] )
@@ -895,9 +893,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       }, function() { resume(function() {
         assertTestResult( 1, 2, 0, 0 )
       })})
-    })
+    }})
     
-    it("fails when the constructed method call returns false", function(resume) {
+    it("fails when the constructed method call returns false", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertSend( [JS.SortedSet, 'isA', JS.Enumerable], "classes are not enumerable" )
@@ -919,19 +917,19 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                           "<SortedSet> expected to respond to\n" +
                           "<includes(Class)> with a true value." )
       })})
-    })
-  })
+    }})
+  }})
   
-  describe("#assertThrow", function() {
-    before(function() {
+  describe("#assertThrow", function() { with(this) {
+    before(function() { with(this) {
       var isOpera = (typeof MemoryError !== "undefined")
       forEach($w("TypeError RangeError ReferenceError SyntaxError"), function(type) {
         this["__" + type] = isOpera ? "MemoryError" : type
       }, this)
-    })
+    }})
     
-    describe("with one exception type", function() {
-      it("passes when the block throws the referenced exception type", function(resume) {
+    describe("with one exception type", function() { with(this) {
+      it("passes when the block throws the referenced exception type", function(resume) { with(this) {
         runTests({
           testAssertThrow: function() { with(this) {
             assertThrow(TypeError,  function() { throw new TypeError() })
@@ -940,9 +938,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }, function() { resume(function() {
           assertTestResult( 1, 2, 0, 0 )
         })})
-      })
+      }})
       
-      it("fails when the block does not throw any exceptions", function(resume) {
+      it("fails when the block does not throw any exceptions", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertThrow(TypeError,  function() {  })
@@ -961,9 +959,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "test2(TestedSuite):\n" +
                             "<[String]> exception expected but none was thrown." )
         })})
-      })
+      }})
       
-      it("fails when the block throws the wrong type of exception", function(resume) {
+      it("fails when the block throws the wrong type of exception", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertThrow(TypeError,  function() { throw new RangeError("this is the wrong type") })
@@ -992,11 +990,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<["+__TypeError+"]> exception expected but was\n" +
                             "\"string error\"." )
         })})
-      })
-    })
+      }})
+    }})
     
-    describe("with several exception types", function() {
-      it("passes when the block throws one of the referenced exception types", function(resume) {
+    describe("with several exception types", function() { with(this) {
+      it("passes when the block throws one of the referenced exception types", function(resume) { with(this) {
         runTests({
           testAssertThrow: function() { with(this) {
             assertThrow(TypeError, RangeError, function() { throw new RangeError() })
@@ -1005,9 +1003,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
         }, function() { resume(function() {
           assertTestResult( 1, 2, 0, 0 )
         })})
-      })
+      }})
       
-      it("fails when the block does not throw an exception", function(resume) {
+      it("fails when the block does not throw an exception", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertThrow(TypeError, RangeError, function() {  })
@@ -1033,9 +1031,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "test3(TestedSuite):\n" +
                             "<["+__SyntaxError+",String]> exception expected but none was thrown." )
         })})
-      })
+      }})
       
-      it("fails when the block throws the wrong type of exception", function(resume) {
+      it("fails when the block throws the wrong type of exception", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
             assertThrow(TypeError, RangeError, function() { throw "a string" })
@@ -1064,12 +1062,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<["+__SyntaxError+",String]> exception expected but was\n" +
                             "TypeError: a type error." )
         })})
-      })
-    })
-  })
+      }})
+    }})
+  }})
   
-  describe("#assertNothingThrown", function() {
-    it("passes when the block throws no exceptions", function(resume) {
+  describe("#assertNothingThrown", function() { with(this) {
+    it("passes when the block throws no exceptions", function(resume) { with(this) {
       runTests({
         testAssertNothingThrown: function() { with(this) {
           assertNothingThrown(function() {})
@@ -1077,9 +1075,9 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
       }, function() { resume(function() {
         assertTestResult( 1, 1, 0, 0 )
       })})
-    })
+    }})
     
-    it("fails and reports the exception when the block throws an exception", function(resume) {
+    it("fails and reports the exception when the block throws an exception", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
           assertNothingThrown("but there was an error", function() { throw new TypeError("the wrong type") })
@@ -1092,16 +1090,16 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                           "Exception thrown:\n" +
                           "TypeError: the wrong type." )
       })})
-    })
-  })
+    }})
+  }})
   
-  describe("async tests", function() {
+  describe("async tests", function() { with(this) {
     include(JS.Test.FakeClock)
-    before(function() { clock.stub() })
-    after(function() { clock.reset() })
+    before(function() { this.clock.stub() })
+    after(function() { this.clock.reset() })
 
-    sharedBehavior("asynchronous test", function() {
-      it("picks up assertions run on resume", function(resume) {
+    sharedBehavior("asynchronous test", function() { with(this) {
+      it("picks up assertions run on resume", function(resume) { with(this) {
         runTests({testAsync: asyncTest}, function() { resume(function() {
           assertTestResult( 1, 1, 1, 0 )
           assertMessage( 1, "Failure:\n" +
@@ -1109,11 +1107,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
                             "<2> expected but was\n" +
                             "<3>." )
         })})
-      })
-    })
+      }})
+    }})
 
-    describe("when resume() is used asynchronously", function() {
-      before(function() {
+    describe("when resume() is used asynchronously", function() { with(this) {
+      before(function() { with(this) {
         this.asyncTest = function(resume) { with(this) {
             JS.ENV.setTimeout(function() {
               resume(function() { assertEqual( 2, 3 ) })
@@ -1121,17 +1119,18 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() {
 
             clock.tick(1000)
           }}
-      })
+      }})
       behavesLike("asynchronous test")
-    })
+    }})
 
-    describe("when resume() is used synchronously", function() {
-      before(function() {
+    describe("when resume() is used synchronously", function() { with(this) {
+      before(function() { with(this) {
         this.asyncTest = function(resume) { with(this) {
             resume(function() { assertEqual( 2, 3 ) })
           }}
-      })
+      }})
       behavesLike("asynchronous test")
-    })
-  })
-})
+    }})
+  }})
+}})
+

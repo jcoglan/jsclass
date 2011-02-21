@@ -2,7 +2,7 @@ JS.Test.extend({
   AsyncSteps: new JS.Class(JS.Module, {
     define: function(name, method) {
       this.callSuper(name, function() {
-        var args = [name, JS.Test.selfless(method)].concat(JS.array(arguments));
+        var args = [name, method].concat(JS.array(arguments));
         this.__enqueue__(args);
       });
     },
@@ -10,7 +10,7 @@ JS.Test.extend({
     included: function(klass) {
       klass.include(JS.Test.AsyncSteps.Sync);
       if (klass.includes(JS.Test.Context))
-        klass.after(function(resume) { sync(resume) });
+        klass.after(function(resume) { this.sync(resume) });
     },
     
     extend: {
@@ -61,3 +61,4 @@ JS.Test.extend({
     return new this.AsyncSteps(methods);
   }
 });
+

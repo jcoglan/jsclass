@@ -1,5 +1,5 @@
-JS.ENV.TSortSpec = JS.Test.describe(JS.TSort, function() {
-  before(function() {
+JS.ENV.TSortSpec = JS.Test.describe(JS.TSort, function() { with(this) {
+  before(function() { with(this) {
     this.Hash = new JS.Class(JS.Hash, {
       include: JS.TSort,
       
@@ -13,48 +13,48 @@ JS.ENV.TSortSpec = JS.Test.describe(JS.TSort, function() {
           block.call(context, list[i]);
       }
     })
-  })
+  }})
   
-  describe("with primitive data", function() {
-    describe("with no cycles", function() {
-      before(function() {
+  describe("with primitive data", function() { with(this) {
+    describe("with no cycles", function() { with(this) {
+      before(function() { with(this) {
         this.hash = new Hash([ 1, [2,3],
           2, [3],
           3, [],
           4, [] ])
-        })
+      }})
         
-      it("sorts the elements topologically", function() {
+      it("sorts the elements topologically", function() { with(this) {
         assertEqual( [3,2,1,4], hash.tsort() )
-      })
+      }})
       
-      it("identifies strongly connected nodes", function() {
+      it("identifies strongly connected nodes", function() { with(this) {
         assertEqual( [[3],[2],[1],[4]], hash.stronglyConnectedComponents() )
-      })
-    })
+      }})
+    }})
     
-    describe("when there are cycles", function() {
-      before(function() {
+    describe("when there are cycles", function() { with(this) {
+      before(function() { with(this) {
         this.hash = new Hash([ 1, [2,3,4],
           2, [3],
           3, [2],
           4, [1] ])
-        })
+      }})
         
-      it("raises an error", function() {
+      it("raises an error", function() { with(this) {
         assertThrows(JS.TSort.Cyclic, function() { hash.tsort() })
-      })
+      }})
       
-      it("identifies strongly connected nodes", function() {
+      it("identifies strongly connected nodes", function() { with(this) {
         assertEqual( [[2,3],[1,4]], hash.stronglyConnectedComponents() )
-      })
-    })
-  })
+      }})
+    }})
+  }})
   
-  describe("with object data", function() {
+  describe("with object data", function() { with(this) {
     include(JS.Test.Helpers)
     
-    before(function() {
+    before(function() { with(this) {
       this.TodoItem = new JS.Class("TodoItem", {
         initialize: function(priority) {
           this.priority = priority
@@ -66,25 +66,25 @@ JS.ENV.TSortSpec = JS.Test.describe(JS.TSort, function() {
           return this.priority
         }
       })
-    })
+    }})
     
-    describe("with no cycles", function() {
-      before(function() {
+    describe("with no cycles", function() { with(this) {
+      before(function() { with(this) {
         this.hash = new Hash([ new TodoItem(1), [new TodoItem(2),new TodoItem(3)],
           new TodoItem(2), [new TodoItem(3)],
           new TodoItem(3), [],
           new TodoItem(4), [] ])
-        })
+      }})
         
-      it("sorts the elements topologically", function() {
+      it("sorts the elements topologically", function() { with(this) {
         assertEqual( [3,2,1,4], map(hash.tsort(), "priority") )
-      })
+      }})
       
-      it("identifies strongly connected nodes", function() {
+      it("identifies strongly connected nodes", function() { with(this) {
         assertEqual( [[new TodoItem(3)],[new TodoItem(2)],[new TodoItem(1)],[new TodoItem(4)]],
                      hash.stronglyConnectedComponents() )
-      })
-    })
-  })
-})
+      }})
+    }})
+  }})
+}})
 

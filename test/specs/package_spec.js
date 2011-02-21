@@ -1,9 +1,9 @@
-JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
+JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
   include(JS.Test.Helpers)
   include(JS.Test.FakeClock)
   
-  before(function() { clock.stub() })
-  after(function() { clock.reset() })
+  before(function() { this.clock.stub() })
+  after(function() { this.clock.reset() })
   
   var PackageSpecHelper = new JS.Module({
     store: function(name) {
@@ -56,15 +56,15 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
   
   include(PackageSpecHelper)
   
-  before(function() {
+  before(function() { with(this) {
     JS.Package.onerror = this.method('addError')
     
     this._objectNames = []
     this._undefined   = []
     this._loaded      = []
-  })
+  }})
   
-  after(function() {
+  after(function() { with(this) {
     forEach(_objectNames, JS.Package.remove, JS.Package)
     forEach(_undefined, function(name) {
       var env   = JS.Package.ENV,
@@ -75,44 +75,44 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
       while (part = parts.shift()) env = env[part];
       env[last] = undefined;
     })
-  })
+  }})
   
-  describe("loading a CommonJS module", function() {
-    before(function() {
+  describe("loading a CommonJS module", function() { with(this) {
+    before(function() { with(this) {
       JS.Packages(function() { with(this) {
         file(CWD + "/test/fixtures/common.js").provides("Common", "HTTP")
       }})
-    })
+    }})
     after(function() { JS.Package.remove("Common") })
     
-    it("does not exist initially", function() {
+    it("does not exist initially", function() { with(this) {
       assertEqual( "undefined", typeof Common )
-    })
+    }})
     
-    it("yields the required objects to the callback", function(resume) {
+    it("yields the required objects to the callback", function(resume) { with(this) {
       JS.require("Common", "HTTP", function(Common, HTTP) {
         resume(function() {
           assertEqual( "CommonJS module", Common.name )
           assertEqual( "CommonJS HTTP lib", HTTP.name )
         })
       })
-    })
-  })
+    }})
+  }})
   
-  describe("loading a package for an undefined object", function() {
-    before(function() {
+  describe("loading a package for an undefined object", function() { with(this) {
+    before(function() { with(this) {
       declare("Standalone", 500)
       assertEqual( "undefined", typeof Standalone )
-    })
+    }})
     
-    it("loads the object", function() {
+    it("loads the object", function() { with(this) {
       JS.require("Standalone")
       clock.tick(500)
       assertKindOf( Object, Standalone )
       assertEqual( "Standalone", Standalone.name )
-    })
+    }})
     
-    it("loads the object once and runs every waiting block", function() {
+    it("loads the object once and runs every waiting block", function() { with(this) {
       var done1 = false, done2 = false, doneAsync = false
       
       JS.require("Standalone", function() { done1 = true })
@@ -134,29 +134,29 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
       assert( done2 )
       assert( doneAsync )
       assertEqual( ["Standalone"], _loaded )
-    })
+    }})
     
-    describe("when the object is namespaced", function() {
-      before(function() {
+    describe("when the object is namespaced", function() { with(this) {
+      before(function() { with(this) {
         declare("Object.In.A.Namespace", 100)
         assertEqual( undefined, Object.In )
-      })
+      }})
       
-      it("loads the object", function() {
+      it("loads the object", function() { with(this) {
         JS.require("Object.In.A.Namespace")
         clock.tick(100)
         assertKindOf( Object, Object.In.A.Namespace )
-      })
-    })
-  })
+      }})
+    }})
+  }})
   
-  describe("loading two undefined objects", function() {
-    before(function() {
+  describe("loading two undefined objects", function() { with(this) {
+    before(function() { with(this) {
       declare("Foo", 200)
       declare("Bar", 300)
-    })
+    }})
     
-    it("runs the block once both objects are loaded", function() {
+    it("runs the block once both objects are loaded", function() { with(this) {
       assert( "undefined", typeof Foo )
       assert( "undefined", typeof Bar )
       
@@ -172,16 +172,16 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
       assertKindOf( Object, Bar )
       assert( bothLoaded )
       assertEqual( ["Bar", "Foo"], _loaded )
-    })
-  })
+    }})
+  }})
   
-  describe("loading an object with a dependency", function() {
-    before(function() {
+  describe("loading an object with a dependency", function() { with(this) {
+    before(function() { with(this) {
       declare("Base", 100)
       declare("Dependent", 200, ["Base"])
-    })
+    }})
     
-    it("loads the packages in order when one is required", function() {
+    it("loads the packages in order when one is required", function() { with(this) {
       var done = false
       JS.require("Dependent", function() { done = true })
       
@@ -214,15 +214,15 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
       assertKindOf( Object, Base )
       assertKindOf( Object, Dependent )
       assert( done )
-    })
+    }})
     
-    describe("when the dependency is already defined", function() {
-      before(function() {
+    describe("when the dependency is already defined", function() { with(this) {
+      before(function() { with(this) {
         JS.Package.ENV.Base = {}
         assertEqual( "undefined", typeof Dependent )
-      })
+      }})
       
-      it("just loads the dependent object", function() {
+      it("just loads the dependent object", function() { with(this) {
         var done = false
         JS.require("Dependent", function() { done = true })
         
@@ -237,16 +237,16 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
         assertEqual( ["Dependent"], _loaded )
         assertKindOf( Object, Dependent )
         assert( done )
-      })
-    })
+      }})
+    }})
     
-    describe("when the required object is already defined", function() {
-      before(function() {
+    describe("when the required object is already defined", function() { with(this) {
+      before(function() { with(this) {
         JS.Package.ENV.Dependent = {}
         assertEqual( "undefined", typeof Base )
-      })
+      }})
       
-      it("loads the dependency and waits", function() {
+      it("loads the dependency and waits", function() { with(this) {
         var done = false
         JS.require("Dependent", function() { done = true })
         
@@ -261,12 +261,12 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
         assertEqual( ["Base"], _loaded )
         assertKindOf( Object, Base )
         assert( done )
-      })
-    })
-  })
+      }})
+    }})
+  }})
   
-  describe("loading a tree of dependencies", function() {
-    before(function() {
+  describe("loading a tree of dependencies", function() { with(this) {
+    before(function() { with(this) {
       // based on JS.Class own library
       declare("Enumerable", 100)
       declare("Comparable", 100)
@@ -277,9 +277,9 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
       assertEqual( "undefined", typeof Comparable )
       assertEqual( "undefined", typeof Hash )
       assertEqual( "undefined", typeof TreeSet )
-    })
+    }})
     
-    it("loads all the objects, parallelizing where possible", function() {
+    it("loads all the objects, parallelizing where possible", function() { with(this) {
       var done = false
       JS.require("TreeSet", function() { done = true })
       
@@ -316,16 +316,16 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
       assertKindOf( Object, TreeSet )
       assertKindOf( Object, Hash )
       assert( done )
-    })
-  })
+    }})
+  }})
   
-  describe("loading an object with a soft dependency", function() {
-    before(function() {
+  describe("loading an object with a soft dependency", function() { with(this) {
+    before(function() { with(this) {
       declare("Helper", 500)
       declare("Application", 100, [], ["Helper"])
-    })
+    }})
     
-    it("loads the packages in parallel but waits until both are loaded", function() {
+    it("loads the packages in parallel but waits until both are loaded", function() { with(this) {
       var done = false
       JS.require("Application", function() { done = true })
       
@@ -352,15 +352,15 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
       assertKindOf( Object, Helper )
       assertKindOf( Object, Application )
       assert( done )
-    })
+    }})
     
-    describe("when the required object is defined but the dependency is missing", function() {
-      before(function() {
+    describe("when the required object is defined but the dependency is missing", function() { with(this) {
+      before(function() { with(this) {
         JS.Package.ENV.Application = {}
         assertEqual( "undefined", typeof Helper )
-      })
+      }})
       
-      it("loads the dependency and waits", function() {
+      it("loads the dependency and waits", function() { with(this) {
         var done = false
         JS.require("Application", function() { done = true })
         
@@ -375,16 +375,16 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
         assertEqual( ["Helper"], _loaded )
         assertKindOf( Object, Helper )
         assert( done )
-      })
-    })
+      }})
+    }})
     
-    describe("when the dependency is defined but the required is not", function() {
-      before(function() {
+    describe("when the dependency is defined but the required is not", function() { with(this) {
+      before(function() { with(this) {
         JS.Package.ENV.Helper = {}
         assertEqual( "undefined", typeof Application )
-      })
+      }})
       
-      it("loads the required object and waits", function() {
+      it("loads the required object and waits", function() { with(this) {
         var done = false
         JS.require("Application", function() { done = true })
         
@@ -399,18 +399,18 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() {
         assertEqual( ["Application"], _loaded )
         assertKindOf( Object, Application )
         assert( done )
-      })
-    })
-  })
+      }})
+    }})
+  }})
   
-  describe("when the required object already exists", function() {
-    it("runs the block immediately without loading anything", function() {
+  describe("when the required object already exists", function() { with(this) {
+    it("runs the block immediately without loading anything", function() { with(this) {
       var done = false
       assertKindOf( Object, JS.Test )
       JS.require("JS.Test", function() { done = true })
       assert( done )
       assertEqual( [], _loaded )
-    })
-  })
-})
+    }})
+  }})
+}})
 

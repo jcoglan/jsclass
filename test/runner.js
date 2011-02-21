@@ -41,6 +41,6 @@ JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
                 'SetSpec',
                 'StateSpec',
                 'TSortSpec',
-            
+    
     Test.method('autorun'))
 })
