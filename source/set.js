@@ -341,5 +341,5 @@ JS.Enumerable.include({
     klass = klass || JS.Set;
     return new klass(this, block, context);
   }
-}, true);
+});
 

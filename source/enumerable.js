@@ -557,7 +557,7 @@ JS.Enumerable.Enumerator.alias({
   withObject: 'forEachWithObject'
 });
 
-JS.Enumerable.Collection.include(JS.Enumerable, true);
+JS.Enumerable.Collection.include(JS.Enumerable);
 
 JS.Kernel.include({
   enumFor: function(method) {
@@ -565,7 +565,7 @@ JS.Kernel.include({
         method = args.shift();
     return new JS.Enumerable.Enumerator(this, method, args);
   }
-}, false);
+}, {_resolve: false});
 
 JS.Kernel.alias({toEnum: 'enumFor'});
 

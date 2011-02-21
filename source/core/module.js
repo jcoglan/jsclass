@@ -45,8 +45,10 @@ JS.extend(JS.Module.prototype, {
     if (typeof object === 'function') object.displayName = name;
   },
   
-  define: function(name, callable, resolve) {
-    var method = JS.Method.create(this, name, callable);
+  define: function(name, callable, options) {
+    var method  = JS.Method.create(this, name, callable),
+        resolve = (options || {})._resolve;
+    
     this.__fns__[name] = method;
     this.__name__(name);
     if (resolve !== false) this.resolve();
@@ -89,10 +91,10 @@ JS.extend(JS.Module.prototype, {
         if (!module.hasOwnProperty(field)) continue;
         value = module[field];
         if (this.shouldIgnore(field, value)) continue;
-        this.define(field, value, false);
+        this.define(field, value, {_resolve: false});
       }
       if (module.hasOwnProperty('toString'))
-        this.define('toString', module.toString, false);
+        this.define('toString', module.toString, {_resolve: false});
     }
     
     if (resolve) this.resolve();
@@ -102,7 +104,7 @@ JS.extend(JS.Module.prototype, {
   alias: function(aliases) {
     for (var method in aliases) {
       if (!aliases.hasOwnProperty(method)) continue;
-      this.define(method, this.instanceMethod(aliases[method]), false);
+      this.define(method, this.instanceMethod(aliases[method]), {_resolve: false});
     }
     this.resolve();
   },

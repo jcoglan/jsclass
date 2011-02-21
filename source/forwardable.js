@@ -8,7 +8,7 @@ JS.Forwardable = new JS.Module('Forwardable', {
       return (typeof property === 'function')
           ? property.apply(object, arguments)
           : property;
-    }, resolve !== false);
+    }, {_resolve: resolve !== false});
   },
   
   defineDelegators: function() {

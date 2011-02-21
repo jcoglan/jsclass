@@ -28,10 +28,10 @@ JS.Proxy = new JS.Module('Proxy', {
           },
           klass: klass,
           constructor: klass
-        }, false);
+        }, {_resolve: false});
         
-        proxy.include(new JS.Module(delegators), false);
-        proxy.include(this.klass.InstanceMethods, true);
+        proxy.include(new JS.Module(delegators), {_resolve: false});
+        proxy.include(this.klass.InstanceMethods);
         return proxy;
       },
       

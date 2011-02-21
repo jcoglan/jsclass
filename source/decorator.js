@@ -10,9 +10,9 @@ JS.Decorator = new JS.Class('Decorator', {
       delegators[method] = func;
     }
     
-    decorator.include(new JS.Module(delegators), false);
-    decorator.include(this.klass.InstanceMethods, false);
-    decorator.include(methods, true);
+    decorator.include(new JS.Module(delegators), {_resolve: false});
+    decorator.include(this.klass.InstanceMethods, {_resolve: false});
+    decorator.include(methods);
     return decorator;
   },
   

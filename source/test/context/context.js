@@ -31,9 +31,9 @@ JS.Test.extend({
   Context: new JS.Module({
     extend: {
       included: function(base) {
-        base.extend(JS.Test.Context.Context, false);
+        base.extend(JS.Test.Context.Context, {_resolve: false});
         base.include(JS.Test.Context.LifeCycle, {_resolve: false});
-        base.extend(JS.Test.Context.Test, false);
+        base.extend(JS.Test.Context.Test, {_resolve: false});
         base.include(JS.Console);
       },
       

@@ -28,7 +28,7 @@ JS.Test.Context.Test = new JS.Module({
         this.before_should_callbacks[testName] = opts.before;
     }
     
-    this.define(testName, block, false);
+    this.define(testName, block, {_resolve: false});
   },
   
   beforeTest: function(name, block) {
