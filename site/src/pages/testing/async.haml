@@ -5,11 +5,11 @@
   continuation-passing style. Test suites are organised using "contexts":/testing/context.html
   with each test delimited by an @it@ block. For example:
   
-  <pre class="prettyprint">    JS.ENV.AjaxSpec = JS.Test.describe('Ajax', function() {
-          it('adds numbers', function() {
+  <pre class="prettyprint">    JS.ENV.AjaxSpec = JS.Test.describe('Ajax', function() { with(this) {
+          it('adds numbers', function() { with(this) {
               assertEqual(2, 1 + 1);
-          });
-      });</pre>
+          }});
+      }});</pre>
   
   The test runner assumes that your tests are synchronous by default; that is
   when we reach the end of the @it@ block that test has finished and we can move
@@ -23,15 +23,15 @@
   
   For example, here's a quick test using jQuery to make an Ajax call to a server:
   
-  <pre class="prettyprint">    JS.ENV.AjaxSpec = JS.Test.describe('Ajax', function() {
-          it('fetches a page', function(resume) {
+  <pre class="prettyprint">    JS.ENV.AjaxSpec = JS.Test.describe('Ajax', function() { with(this) {
+          it('fetches a page', function(resume) { with(this) {
               jQuery.get('/foo.html', function(response) {
                   resume(function() {
                       assertEqual('Hello, World', response);
                   });
               });
-          });
-      });</pre>
+          }});
+      }});</pre>
   
   If you add the @resume@ parameter to the @it@ block, the test runner will not
   consider the test complete until the @resume@ function is invoked. If you do
@@ -57,15 +57,15 @@
   We're going to test all of this from the outside by making requests. A test
   for these steps might look like this:
   
-  <pre class="prettyprint">    JS.ENV.BlogPostSpec = JS.Test.describe('blog post API', function() {
-          it('creates a blog post on the server', function() {
+  <pre class="prettyprint">    JS.ENV.BlogPostSpec = JS.Test.describe('blog post API', function() { with(this) {
+          it('creates a blog post on the server', function() { with(this) {
               create_blog_post({title: 'JavaScript testing'});
               assert_json_response();
               assert_response_has_field('id');
               get_blog_post_by_id();
               assert_response_has_field('title', 'JavaScript testing');
-          });
-      });</pre>
+          }});
+      }});</pre>
   
   This test has a few properties worth noting:
   
@@ -81,31 +81,31 @@
   the @asyncSteps()@ function:
   
   <pre class="prettyprint">    JS.ENV.BlogPostSteps = JS.Test.asyncSteps({
-          create_blog_post: function(attributes, resume) {
+          create_blog_post: function(attributes, resume) { with(this) {
               var testCase = this;
               jQuery.post('/blog_posts', attributes, function(response) {
                   testCase.response = response;
                   resume();
               });
-          },
-          assert_json_response: function(resume) {
+          }},
+          assert_json_response: function(resume) { with(this) {
               assertNothingThrown(function() { JSON.parse(response) });
               resume();
-          },
-          assert_response_has_field: function(field, value, resume) {
+          }},
+          assert_response_has_field: function(field, value, resume) { with(this) {
               var data = JSON.parse(response);
               assert(data.hasOwnProperty(field));
               if (value) assertEqual(value, data[field]);
               resume();
-          },
-          get_blog_post_by_id: function(resume) {
+          }},
+          get_blog_post_by_id: function(resume) { with(this) {
               var testCase = this;
               var id = JSON.parse(response).id;
               jQuery.get('/blog_posts/' + id, function(response) {
                   testCase.response = response;
                   resume();
               });
-          }
+          }}
       });</pre>
   
   Note how all functions used as test steps must take a @resume@ callback after
@@ -120,18 +120,18 @@
   Once you've made all your test steps, you just need to add them to your test
   using the @include()@ function:
   
-  <pre class="prettyprint">    JS.ENV.BlogPostSpec = JS.Test.describe('blog post API', function() {
+  <pre class="prettyprint">    JS.ENV.BlogPostSpec = JS.Test.describe('blog post API', function() { with(this) {
           // Make the step functions available in this test
           include(BlogPostSteps);
           
-          it('creates a blog post on the server', function() {
+          it('creates a blog post on the server', function() { with(this) {
               create_blog_post({title: 'JavaScript testing'});
               assert_json_response();
               assert_response_has_field('id');
               get_blog_post_by_id();
               assert_response_has_field('title', 'JavaScript testing');
-          });
-      });</pre>
+          }});
+      }});</pre>
   
   Note that when you write a test like this, @JS.Test@ does not make the steps
   blocking; the purpose of the code in the @it@ block is to queue up a set of
@@ -144,22 +144,23 @@
   to complete, use the @sync()@ function; for example if we were stubbing out
   @jQuery@ in our test above:
   
-  <pre class="prettyprint">    JS.ENV.BlogPostSpec = JS.Test.describe('blog post API', function() {
+  <pre class="prettyprint">    JS.ENV.BlogPostSpec = JS.Test.describe('blog post API', function() { with(this) {
           include(BlogPostSteps);
           
-          before(function() {
+          before(function() { with(this) {
               JS.ENV.jQuery = {};
               stub(jQuery, 'post').yields(['{"id":1}']);
               stub(jQuery, 'get').yields(['{"title":"JavaScript testing"}']);
-          });
+          }});
           
-          after(function(resume) {
+          after(function(resume) { with(this) {
               // This waits for the async commands to complete
               sync(function() {
                   JS.ENV.jQuery = undefined;
                   resume();
               });
-          });</pre>
+          }});
+      }});</pre>
   
   It is also good practise to confine the steps themselves to one asynchronous
   action at most per step. The purpose of this pattern is to break a large async

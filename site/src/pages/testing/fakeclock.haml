@@ -12,14 +12,14 @@
   @JS.Test.FakeClock@ lets you stub out JavaScript's clock and move time forward
   yourself. To use it, you need to add the following hooks to your tests:
   
-  <pre class="prettyprint">    JS.ENV.TimerSpec = JS.Test.describe('Timers', function() {
+  <pre class="prettyprint">    JS.ENV.TimerSpec = JS.Test.describe('Timers', function() { with(this) {
           include(JS.Test.FakeClock);
           
-          before(function() { clock.stub() });
-          after(function() { clock.reset() });
+          before(function() { this.clock.stub() });
+          after(function() { this.clock.reset() });
           
           // Your tests here
-      });</pre>
+      }});</pre>
   
   Calling @clock.stub()@ replaces the global time functions - @Date()@,
   @setTimeout()@, @clearTimeout()@, @setInterval()@ and @clearInterval()@ - with
@@ -31,28 +31,28 @@
   To make time tick forward, use the @clock.tick()@ method:
   
   <pre class="prettyprint">    // Advances time 1000 milliseconds
-      clock.tick(1000);</pre>
+      this.clock.tick(1000);</pre>
   
   Let's take a quick example. This test sets a timeout to change the value of a
   string, and we use @FakeClock@ to test it:
   
-  <pre class="prettyprint">    JS.ENV.TimerSpec = JS.Test.describe('Timers', function() {
+  <pre class="prettyprint">    JS.ENV.TimerSpec = JS.Test.describe('Timers', function() { with(this) {
           include(JS.Test.FakeClock);
           
-          before(function() { clock.stub() });
-          after(function() { clock.reset() });
+          before(function() { this.clock.stub() });
+          after(function() { this.clock.reset() });
           
-          before(function() {
+          before(function() { with(this) {
               this.string = 'foo';
               JS.ENV.setTimeout(function() { string = 'bar' }, 100)
-          });
+          }});
           
-          it('changes a string', function() {
+          it('changes a string', function() { with(this) {
               assertEqual('foo', string);
               clock.tick(100);
               assertEqual('bar', string);
-          });
-      });</pre>
+          }});
+      }});</pre>
   
   Note that we're calling @setTimeout()@ on @JS.ENV@, a reference to the global
   object - otherwise known as @window@ in web browsers. This is because the

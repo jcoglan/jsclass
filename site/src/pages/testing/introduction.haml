@@ -72,15 +72,15 @@
   
   <pre class="prettyprint">    // test/specs/user_spec.js
       
-      JS.ENV.UserSpec = JS.Test.describe('User', function() {
-          before(function() {
+      JS.ENV.UserSpec = JS.Test.describe('User', function() { with(this) {
+          before(function() { with(this) {
               this.user = new User('James');
-          });
+          }});
 
-          it('has a name', function() {
+          it('has a name', function() { with(this) {
               assertEqual('James', user.getName());
-          });
-      });</pre>
+          })};
+      }});</pre>
   
   We need to make @UserSpec@ a global variable so that @JS.Packages@ can find
   it. Accessing the global scope requires different code on different platforms,
