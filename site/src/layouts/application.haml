@@ -2,107 +2,124 @@
 %html
   %head
     %meta{'http-equiv' => 'content-type', :content => 'text/html; charset=utf-8'}
-    %title JS.Class - Ruby-style JavaScript
+    %title JS.Class v3.0
     =stylesheets 'application', 'prettify'
     :plain
+      <script type="text/javascript" src="http://use.typekit.com/iqy6orq.js"></script>
+      <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
       <script type="text/javascript">JSCLASS_PATH = '/javascripts/js.class/';</script>
     =javascripts 'prettify', 'js.class/loader'
   %body{:onload => 'prettyPrint()'}
-    #header
-      .sub
-        %h1
-          =link 'JS.Class', '/'
-          %span Ruby-style JavaScript
-        #download
-          %a{:href => '/assets/JS.Class.2-1-5.zip', :onclick => "trackDownload('2.1.5')"}
-            Download v2.1
-    .sub
-      #content
-        = yield
-      #sidebar
-        %h4 Core reference
-        %ul
-          %li
-            =link 'Creating classes', '/classes.html'
-          %li
-            =link 'Using Modules', '/modules.html'
-          %li
-            =link 'Modifying classes/modules', '/modifyingmodules.html'
-          %li
-            =link 'Singleton methods', '/singletonmethods.html'
-          %li
-            =link 'Class methods', '/classmethods.html'
-          %li
-            =link 'Keyword methods', '/keywords.html'
-          %li
-            =link 'Inheritance', '/inheritance.html'
-          %li
-            =link 'Method binding', '/binding.html'
-          %li
-            =link 'Metaprogramming hooks', '/hooks.html'
-          %li
-            =link 'Reflection'
-          %li
-            =link 'Debugging support', '/debugging.html'
-          %li
-            =link 'The Kernel module', '/kernel.html'
-          %li
-            =link 'Equality and hashing', '/equality.html'
-          %li
-            =link 'Interfaces'
-          %li
-            =link 'Singletons'
-        %h4 Standard library
-        %ul
-          %li
-            =link 'Package manager', '/packages.html'
-          %li
-            =link 'Testing tools', '/testing.html'
-          %li
-            =link 'Benchmarking', '/benchmark.html'
-          %li
-            =link 'Command'
-          %li
-            =link 'Comparable'
-          %li
-            =link 'Console'
-          %li
-            =link 'ConstantScope'
-          %li
-            =link 'Decorator'
-          %li
-            =link 'Deferrable'
-          %li
-            =link 'Enumerable'
-          %li
-            =link 'Enumerator'
-          %li
-            =link 'Forwardable'
-          %li
-            =link 'Hash'
-          %li
-            =link 'LinkedList', '/linkedlist.html'
-          %li
-            =link 'MethodChain'
-          %li
-            =link 'Observable'
-          %li
-            =link 'Proxy', '/proxies.html'
-          %li
-            =link 'Range'
-          %li
-            =link 'Set, OrderedSet, SortedSet', '/set.html'
-          %li
-            =link 'StackTrace'
-          %li
-            =link 'State'
-          %li
-            =link 'TSort'
-      %div{:style => 'clear: both;'}
-    #footer
-      .sub
-        :textile
-          @JS.Class@, &copy; 2007&ndash;2010 James Coglan. Released under the MIT license.
+    #sidebar
+      %h1
+        =link 'JS.Class', '/'
+      #download
+        %a{:href => '/assets/JS.Class.3-0-0.zip', :onclick => "trackDownload('3.0.0')"}
+          Download v3.0
+      
+      %h4 Introduction
+      %ul
+        %li
+          =link 'Supported platforms', '/platforms.html'
+      
+      %h4 Community
+      %ul
+        %li
+          =link 'Mailing list', 'http://groups.google.com/group/jsclass-users'
+        %li
+          =link 'GitHub repository', 'http://github.com/jcoglan/js.class'
+      
+      %h4 Core reference
+      %ul
+        %li
+          =link 'Creating classes', '/classes.html'
+        %li
+          =link 'Using Modules', '/modules.html'
+        %li
+          =link 'Modifying classes/modules', '/modifyingmodules.html'
+        %li
+          =link 'Singleton methods', '/singletonmethods.html'
+        %li
+          =link 'Class methods', '/classmethods.html'
+        %li
+          =link 'Keyword methods', '/keywords.html'
+        %li
+          =link 'Inheritance', '/inheritance.html'
+        %li
+          =link 'Method binding', '/binding.html'
+        %li
+          =link 'Metaprogramming hooks', '/hooks.html'
+        %li
+          =link 'Reflection'
+        %li
+          =link 'Debugging support', '/debugging.html'
+        %li
+          =link 'The Kernel module', '/kernel.html'
+        %li
+          =link 'Equality and hashing', '/equality.html'
+        %li
+          =link 'Interfaces'
+        %li
+          =link 'Singletons'
+      
+      %h4 Standard library
+      %ul
+        %li
+          =link 'Package manager', '/packages.html'
+        %li
+          =link 'Testing tools', '/testing.html'
+        %li
+          =link 'Benchmarking', '/benchmark.html'
+        %li
+          =link 'Command'
+        %li
+          =link 'Comparable'
+        %li
+          =link 'Console'
+        %li
+          =link 'ConstantScope'
+        %li
+          =link 'Decorator'
+        %li
+          =link 'Deferrable'
+        %li
+          =link 'Enumerable'
+        %li
+          =link 'Enumerator'
+        %li
+          =link 'Forwardable'
+        %li
+          =link 'Hash'
+        %li
+          =link 'LinkedList', '/linkedlist.html'
+        %li
+          =link 'MethodChain'
+        %li
+          =link 'Observable'
+        %li
+          =link 'Proxy', '/proxies.html'
+        %li
+          =link 'Range'
+        %li
+          =link 'Set, OrderedSet, SortedSet', '/set.html'
+        %li
+          =link 'StackTrace'
+        %li
+          =link 'State'
+        %li
+          =link 'TSort'
+    
+    #content
+      = yield
+      
+      #footer
+        .sub
+          :textile
+            @JS.Class@, &copy; 2007&ndash;2011 "James Coglan":http://jcoglan.com.
+            Released under the MIT license.
+      
+    %div.clear
+    
   %script{:type => 'text/javascript'}
     :plain
       var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -119,3 +136,4 @@
         if (!isLocal) pageTracker._trackPageview('/download/' + version + '/');
         return true;
       };
+

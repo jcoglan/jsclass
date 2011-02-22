@@ -1,147 +1,122 @@
-!white        = #fff
-!dark_grey    = #333
-!light_grey   = #eee
-!red          = #d11f1f
-!dark_red     = #961919
-!blue         = #76a0d0
-!font_size    = 14px
-!line_height  = 1.5
-
-!column_width = 170px
-!gutter_width = 32px
+$light_blue = #f6f9ff
+$mid_blue   = #494f5a
+$dark_blue  = #1f232b
+$white      = #ffffff
+$red        = #e41c20
+$grey       = #848a95
 
 body
-  :background       = !white
-  :color            = !dark_grey
-  :margin           = 0 0 0 0
-  :padding          = 0 0 0 0
-  :font
-    :size           = !font_size
-    :family         FreeSans, Helvetica, Arial, sans-serif
-  :line-height      = !line_height
-
-.sub
-  :margin           0 auto
-  :width            = 4 * !column_width + 3 * !gutter_width
-
-#header
-  :background       url(header.gif) center top repeat-x
-  :height           97px
-  :padding          19px 0 0
-  
-  .sub
-    :position       relative
-  
-  h1
-    :background     url(title.gif) left top no-repeat
-    :width          374px
-    :margin         0
-    
-    a
-      :display      block
-      :height       0
-      :padding      66px 0 0
-      :overflow     hidden
-    
-    span
-      :display      none
-  
-  #download
-    a
-      :background   = !dark_red
-      :border-bottom = 1px solid !light_grey
-      :color        = !white
-      :font
-        :family     Trebuchet MS, Verdana, sans-serif
-        :size       = 16px
-        :style      italic
-        :weight     bold
-      :text-decoration none
-      :position     absolute
-      :right        0
-      :top          24px
-      :display      block
-      :padding      4px 8px
-
-.front-matter
-  :font-size        120%
-  :color            #666
-  :margin           1.5em
-
-#footer
-  :border-top       = 2px solid !dark_grey
-  :background       = !dark_red
-  :margin           2.0em 0 0
-  
-  p
-    :color          = !white
-    :margin         0 0
-    :padding        = 1.0em 0
-
-#content
-  :float            right
-  :width            = 3 * !column_width + 2 * !gutter_width
-  
-  blockquote
-    :border-left    = 4px solid !blue
-    :margin         1.5em 0
-    :padding        0 1.5em
-
-  pre
-    :font-size      = 0.85 * !font_size
-    :border-top     1px solid #ddd
-    :border-bottom  1px solid #ddd
-    :padding        1em 0
-
-  p code, li code
-    :background     = !light_grey
-
-  a code
-    :background     transparent
-
-#sidebar
-  :float            left
-  :width            = !column_width
-  
-  h4
-    :color          = !red
-    :font
-      :size         = !font_size
-      :family       FreeSans, Helvetica, Arial, Trebuchet MS, Verdana, sans-serif
-    :margin         1.5em 0
-  
-  ul, li
-    :margin         0 0 1.5em 0
-    :padding        0 0 0 0
-    :list-style     none
-  
-  li
-    :border-top     = 1px solid #ccc
-    :margin-bottom  0
-    
-    a
-      :display      block
-      :padding      2px 4px
-      :width        = !column_width - 8px
-      :font-size    0.85em
-      :text-decoration  none
-      :color        = !dark_grey
-    
-    a:hover
-      :background   = !light_grey
-
-h3
-  :border-top       = 2px solid !light_grey
-  :color            = !red
-  :font
-    :size           = 2 * !font_size
-    :family         FreeSans, Helvetica, Arial, Trebuchet MS, Verdana, sans-serif
-    :weight         normal
-  :margin           0.5em 0
-
-p, ul, pre
-  :margin           = 1.5em 0
+  :margin 0
+  :padding 0
+  :color $dark_blue
+  :background $light_blue url(/stylesheets/sidebar.gif) left top repeat-y
 
 a
-  :color            = !blue
-  :font-weight      bold
+  :color $red
+  :font-weight bold
+  :text-decoration none
+
+a:hover
+  :color $dark_blue
+
+.clear
+  :clear both
+  :height 0
+  :overflow hidden
+
+#sidebar
+  :float left
+  :margin-right 64px
+  :width 256px
+  :font-family FreeSans
+  
+  h1
+    :margin 0
+    :padding 0
+    :width 240px
+    :background url(/stylesheets/logo.gif)
+    
+    a
+      :display block
+      :height 0
+      :overflow hidden
+      :padding-top 240px
+  
+  #download
+    :background url(/stylesheets/download.gif)
+    a
+      :display block
+      :padding 8px 24px
+      :font-size 24px
+      :font-weight bold
+      :text-decoration none
+      :color $white
+  
+  h4
+    :margin 24px 16px 24px 24px
+    :border-bottom 1px solid $mid_blue
+    :color $light_blue
+  
+  ul, li
+    :list-style none
+    :margin 0
+    :padding 0
+  
+  ul
+    :margin 0 24px 24px
+  
+  a
+    :color $grey
+    :display block
+    :padding 2px 0
+    :font-weight normal
+    :font-size 90%
+    
+  a:hover
+    :color $light_blue
+
+#content
+  :float left
+  :width 640px
+  
+  h2
+    :font-size 48px
+    :margin 1em 0 24px
+    :border-bottom 2px solid $mid_blue
+  
+  h3
+    :margin 24px 0
+    :padding 0.5em 0 0
+    :border-top 1px solid $grey
+    :font-size 20px
+    :font-weight bold
+  
+  blockquote
+    :margin 0
+    :padding-left 24px
+    :border-left 2px solid $red
+  
+  p, ul, li
+    :font-size 16px
+    :line-height 1.5em
+  
+  p, ul
+    :margin 1.5em 0
+  
+  code
+    :font-family Courier New, monospace
+    :font-weight bold
+
+  pre
+    :font-family Courier New, monospace
+    :font-size 12px
+    :line-height 1.5em
+    :border 1px solid $grey
+    :background $white
+    :padding 1em 2em
+    :margin 1.5em 0
+  
+  #footer
+    :border-top 1px solid $mid_blue
+    :margin 48px 0 24px
+
