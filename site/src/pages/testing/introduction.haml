@@ -46,15 +46,12 @@
   
   Let's try running it:
   
-  <pre>~/project $ node test/run.js
-  Error: Cannot find module 'test/specs/user_spec'</pre>
+  <img src="/images/test1.png">
   
   We've not created the spec file yet, so Node is complaining. Create a
   blank file at that path, then run the tests again:
   
-  <pre>~/project $ touch test/specs/user_spec.js
-  ~/project $ node test/run.js
-  Error: Expected package at test/specs/user_spec.js to define UserSpec</pre>
+  <img src="/images/test2.png">
   
   This error happens because @test/specs/user_spec.js@ doesn't contain any
   code yet: the next step is to start writing this spec.
@@ -79,7 +76,7 @@
 
       it('has a name', function() { with(this) {
           assertEqual('James', user.getName());
-      })};
+      }});
   }});</pre>
   
   We need to make @UserSpec@ a global variable so that @JS.Packages@ can find
@@ -88,23 +85,9 @@
   
   If we run the test again we start to get meaningful output:
   
-  <pre>~/project $ node test/run.js 
-  Loaded suite User
-  Started
-  EE
-  Finished in 0.032 seconds.
-
-  1) Error:
-  test: User has a name:
-  ReferenceError: User is not defined
-
-  2) Error:
-  test: User has a name:
-  ReferenceError: user is not defined
-
-  1 tests, 0 assertions, 0 failures, 2 errors</pre>
+  <img src="/images/test3.png">
   
-  We've got two errors, one from the before block because the @User@ class
+  We've got two errors, one from the @before@ block because the @User@ class
   doesn't exist, and one from the test because the @user@ variable was never
   created. To fix this, we need to create the class, and tell @JS.Packages@
   where to find it. Add this code to @source/user.js@:
@@ -127,17 +110,7 @@
   
   Let's run our tests again:
   
-  <pre>~/project $ node test/run.js
-  Loaded suite User
-  Started
-  E
-  Finished in 0.035 seconds.
-
-  1) Error:
-  test: User has a name:
-  TypeError: Object #<User:4d28a88f> has no method 'getName'
-
-  1 tests, 0 assertions, 0 failures, 1 errors</pre>
+  <img src="/images/test4.png">
   
   Just one error this time: our class doesn't have the method we're testing.
   Let's finish writing our class so it passes the tests:
@@ -156,13 +129,7 @@
   
   One last test run:
   
-  <pre>~/project $ node test/run.js 
-  Loaded suite User
-  Started
-  .
-  Finished in 0.038 seconds.
-
-  1 tests, 1 assertions, 0 failures, 0 errors</pre>
+  <img src="/images/test5.png">
   
   Finally we've got a passing test. We can continue adding tests like this to
   build up our project. See the list of assertions below; they offer a rich set
@@ -178,8 +145,8 @@
   ReferenceError: "require" is not defined.</pre>
   
   Rhino (and other shells like V8 and SpiderMonkey) don't support the @require()@
-  function to load files, they use @load()@. Let's change @test/run.js@ to
-  accommodate this:
+  function to load files, they use @load()@. Let's change the @require()@ call
+  in @test/run.js@ to accommodate this:
   
   <pre class="prettyprint">// test/run.js
   
@@ -212,6 +179,9 @@
   
   <pre class="prettyprint">// test/run.js
   
+  //================================================================
+  // Set up load() function for Windows Script Host
+  
   if (this.ActiveXObject)
       load = function(path) {
           var fso = new ActiveXObject('Scripting.FileSystemObject'),
@@ -225,23 +195,35 @@
               try { if (file) file.Close() } catch (e) {}
           }
       };
-
+  
+  //================================================================
+  // Set up JSCLASS_PATH variable
+  
   (function() {
       var $ = (typeof this.global === 'object') ? this.global : this;
       $.JSCLASS_PATH = 'vendor/jsclass';
   })();
-
+  
+  //================================================================
+  // Load the JS.Class package manager
+  
   if (typeof require === 'function') {
       require('../' + JSCLASS_PATH + '/loader');
   } else {
       load(JSCLASS_PATH + '/loader.js');
   }
-
+  
+  //================================================================
+  // Set up your specs and source files
+  
   JS.Packages(function() { with(this) {
       autoload(/^(.*)Spec$/, {from: 'test/specs', require: '$1'});
       file('source/user.js').provides('User');
   }});
-
+  
+  //================================================================
+  // Run your tests
+  
   JS.require('JS.Test', function() {
       JS.require('UserSpec', JS.Test.method('autorun'));
   });</pre>
