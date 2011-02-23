@@ -4,7 +4,7 @@
 
 # The location of the TestSwarm that you're going to run against.
 
-my $SWARM = "http://testswarm.local";
+my $SWARM = "http://swarm.jcoglan.com";
 my $SWARM_INJECT = "/js/inject.js";
 
 # Your TestSwarm username.
@@ -13,7 +13,7 @@ my $USER = "jsclass";
 
 # Your authorization token.
 
-my $AUTH_TOKEN = "96a844c8a3ec643b249dabfedb505238db43e512";
+my $AUTH_TOKEN = "c986c98e2f75fed91a158a2591545d7a33a3e210";
 
 # The maximum number of times you want the tests to be run.
 
@@ -30,7 +30,7 @@ my $RCS_URL = "git://github.com/jcoglan/js.class.git";
 
 # The directory in which the checkouts will occur.
 
-my $BASE_DIR = "/var/www/testswarm/changeset/$USER";
+my $BASE_DIR = "/home/jcoglan/www/swarm.jcoglan.com/app/changeset/$USER";
 
 # A script tag loading in the TestSwarm injection script will
 # be added at the bottom of the <head> in the following file.
