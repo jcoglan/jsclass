@@ -17,6 +17,7 @@ JS.Test.Unit.UI.extend({
          **/
         initialize: function(suite, outputLevel) {
           this._suite = (typeof suite.suite === 'function') ? suite.suite() : suite;
+          this._faults = [];
           this._getDisplay();
         },
         
@@ -53,7 +54,7 @@ JS.Test.Unit.UI.extend({
           
           if (!window.TestSwarm) return;
           
-          TestSwarm.serialize = function() { return 'HTML' };
+          TestSwarm.serialize = this.method('toHTML');
           this._mediator.addListener(JS.Test.Unit.TestCase.FINISHED, TestSwarm.heartbeat);
           
           this._mediator.addListener(JS.Test.Unit.UI.TestRunnerMediator.FINISHED,
@@ -78,6 +79,7 @@ JS.Test.Unit.UI.extend({
         },
         
         _addFault: function(fault) {
+          this._faults.push(fault);
           this._getDisplay().addFault(this._currentTest, fault);
         },
         
@@ -96,6 +98,19 @@ JS.Test.Unit.UI.extend({
         
         _testFinished: function(testCase) {
           this._getDisplay().finishTestCase(testCase);
+        },
+        
+        toHTML: function() {
+          var html = '<h4>' + navigator.userAgent + '</h4>';
+          if (this._faults.length > 0) {
+            html += '<ul>';
+            for (var i = 0, n = this._faults.length; i < n; i++) {
+              html += '<li>' + this._faults[i].longDisplay().replace(/[\r\n]/, '<br>') + '</li>';
+            }
+            html += '</ul>';
+          }
+          html += this._result.toString();
+          return html;
         }
       })
     }
