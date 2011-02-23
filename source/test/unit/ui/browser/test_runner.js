@@ -105,11 +105,11 @@ JS.Test.Unit.UI.extend({
           if (this._faults.length > 0) {
             html += '<ul>';
             for (var i = 0, n = this._faults.length; i < n; i++) {
-              html += '<li>' + this._faults[i].longDisplay().replace(/[\r\n]/, '<br>') + '</li>';
+              html += '<li>' + this._faults[i].longDisplay().replace(/[\r\n]/g, '<br>') + '</li>';
             }
             html += '</ul>';
           }
-          html += this._result.toString();
+          html += '<p>' + this._result.toString() + '</p>';
           return html;
         }
       })
