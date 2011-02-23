@@ -17,7 +17,7 @@ my $AUTH_TOKEN = "c986c98e2f75fed91a158a2591545d7a33a3e210";
 
 # The maximum number of times you want the tests to be run.
 
-my $MAX_RUNS = 1;
+my $MAX_RUNS = 5;
 
 # The type of revision control system being used.
 # Currently "svn" or "git" are supported.
