@@ -46,12 +46,12 @@
   
   Let's try running it:
   
-  <img src="/images/test1.png">
+  !/images/test1.png!
   
   We've not created the spec file yet, so Node is complaining. Create a
   blank file at that path, then run the tests again:
   
-  <img src="/images/test2.png">
+  !/images/test2.png!
   
   This error happens because @test/specs/user_spec.js@ doesn't contain any
   code yet: the next step is to start writing this spec.
@@ -85,7 +85,7 @@
   
   If we run the test again we start to get meaningful output:
   
-  <img src="/images/test3.png">
+  !/images/test3.png!
   
   We've got two errors, one from the @before@ block because the @User@ class
   doesn't exist, and one from the test because the @user@ variable was never
@@ -110,7 +110,7 @@
   
   Let's run our tests again:
   
-  <img src="/images/test4.png">
+  !/images/test4.png!
   
   Just one error this time: our class doesn't have the method we're testing.
   Let's finish writing our class so it passes the tests:
@@ -129,7 +129,7 @@
   
   One last test run:
   
-  <img src="/images/test5.png">
+  !/images/test5.png!
   
   Finally we've got a passing test. We can continue adding tests like this to
   build up our project. See the list of assertions below; they offer a rich set
