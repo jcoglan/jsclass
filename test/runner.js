@@ -5,6 +5,7 @@ JS.Packages(function() { with(this) {
     
     pkg('Test.UnitSpec').requires('JS.Set', 'JS.Observable', 'JS.Range')
     pkg('ClassSpec').requires('ModuleSpec')
+    pkg('EnumerableSpec').requires('JS.Range')
     pkg('SetSpec').requires('JS.Range')
     
     file(CWD + '/test/specs/test/test_spec_helpers.js').provides('TestSpecHelpers')
