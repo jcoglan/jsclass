@@ -37,7 +37,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
       
       JS.Packages(function() { with(this) {
         var block = function(callback) {
-          setTimeout(function() {
+          JS.ENV.setTimeout(function() {
             defineObject(name);
             callback();
           }, delay);
@@ -118,7 +118,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
       JS.require("Standalone", function() { done1 = true })
       JS.require("Standalone", function() { done2 = true })
       
-      setTimeout(function() {
+      JS.ENV.setTimeout(function() {
         JS.require("Standalone", function() { doneAsync = true })
       }, 300)
       
