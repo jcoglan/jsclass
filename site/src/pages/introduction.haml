@@ -17,7 +17,7 @@
   On server-side platforms, you load the library like this:
   
   <pre class="prettyprint">(function() {
-      var $ = (typeof this.global === 'object') ? this.global : this;
+      var $ = (typeof global === 'object') ? global : this;
       $.JSCLASS_PATH = 'path/to/jsclass/src';
   })();
   

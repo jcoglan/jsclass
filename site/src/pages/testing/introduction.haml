@@ -245,7 +245,7 @@
   // ... WSH load() function if necessary ...
   
   (function() {
-      var $ = (typeof this.global === 'object') ? this.global : this;
+      var $ = (typeof global === 'object') ? global : this;
       $.JSCLASS_PATH = 'vendor/jsclass';
   })();
 
