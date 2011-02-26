@@ -93,7 +93,8 @@ JS.Test.extend({
           if (this._ownProperty)
             this._object[this._methodName] = this._original;
           else
-            delete this._object[this._methodName];
+            try { delete this._object[this._methodName] }
+            catch (e) { this._object[this._methodName] = undefined }
         },
         
         expected: function() {
