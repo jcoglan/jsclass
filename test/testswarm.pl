@@ -63,39 +63,39 @@ my $BROWSERS = "all";
 # (can be any number of suites)
 
 my %SUITES = ();
-my @SPECS = (     'Test.UnitSpec',
-                  'Test.ContextSpec',
-                  'Test.MockingSpec',
-                  'Test.FakeClockSpec',
-                  'Test.AsyncStepsSpec',
-                  'ModuleSpec',
-                  'ClassSpec',
-                  'MethodSpec',
-                  'KernelSpec',
-                  'SingletonSpec',
-                  'InterfaceSpec',
-                  'CommandSpec',
-                  'ComparableSpec',
-                  'ConstantScopeSpec',
-                  'DecoratorSpec',
-                  'EnumerableSpec',
-                  'ForwardableSpec',
-                  'HashSpec',
-                  'LinkedListSpec',
-                  'MethodChainSpec',
-                  'DeferrableSpec',
-                  'ObservableSpec',
-                  'PackageSpec',
-                  'ProxySpec',
-                  'RangeSpec',
-                  'SetSpec',
-                  'StateSpec',
-                  'TSortSpec' );
+my @SPECS = (     'Test.Unit',
+                  'Test.Context',
+                  'Test.Mocking',
+                  'Test.FakeClock',
+                  'Test.AsyncSteps',
+                  'Module',
+                  'Class',
+                  'Method',
+                  'Kernel',
+                  'Singleton',
+                  'Interface',
+                  'Command',
+                  'Comparable',
+                  'ConstantScope',
+                  'Decorator',
+                  'Enumerable',
+                  'Forwardable',
+                  'Hash',
+                  'LinkedList',
+                  'MethodChain',
+                  'Deferrable',
+                  'Observable',
+                  'Package',
+                  'Proxy',
+                  'Range',
+                  'Set',
+                  'State',
+                  'TSort' );
 
 # Comment these out if you wish to define a custom set of SUITES above
 my $SUITE = "$SWARM/changeset/$USER/{REV}";
 sub BUILD_SUITES {
-	%SUITES = map { $_ => "$SUITE/test/browser.html?spec=$_"; } @SPECS;
+	%SUITES = map { $_ => "$SUITE/test/browser.html?spec=$_"."Spec"; } @SPECS;
 }
 
 ########### NO NEED TO CONFIGURE BELOW HERE ############
