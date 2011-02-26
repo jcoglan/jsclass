@@ -63,11 +63,39 @@ my $BROWSERS = "all";
 # (can be any number of suites)
 
 my %SUITES = ();
+my @SPECS = (     'Test.UnitSpec',
+                  'Test.ContextSpec',
+                  'Test.MockingSpec',
+                  'Test.FakeClockSpec',
+                  'Test.AsyncStepsSpec',
+                  'ModuleSpec',
+                  'ClassSpec',
+                  'MethodSpec',
+                  'KernelSpec',
+                  'SingletonSpec',
+                  'InterfaceSpec',
+                  'CommandSpec',
+                  'ComparableSpec',
+                  'ConstantScopeSpec',
+                  'DecoratorSpec',
+                  'EnumerableSpec',
+                  'ForwardableSpec',
+                  'HashSpec',
+                  'LinkedListSpec',
+                  'MethodChainSpec',
+                  'DeferrableSpec',
+                  'ObservableSpec',
+                  'PackageSpec',
+                  'ProxySpec',
+                  'RangeSpec',
+                  'SetSpec',
+                  'StateSpec',
+                  'TSortSpec' );
 
 # Comment these out if you wish to define a custom set of SUITES above
 my $SUITE = "$SWARM/changeset/$USER/{REV}";
 sub BUILD_SUITES {
-	%SUITES = map { /(\w+).html/; $1 => "$SUITE/$_"; } glob($INJECT_FILE);
+	%SUITES = map { $_ => "$SUITE/test/browser.html#$_"; } @SPECS;
 }
 
 ########### NO NEED TO CONFIGURE BELOW HERE ############

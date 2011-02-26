@@ -13,34 +13,39 @@ JS.Packages(function() { with(this) {
 }})
 
 JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
-    JS.require( 'Test.UnitSpec',
-                'Test.ContextSpec',
-                'Test.MockingSpec',
-                'Test.FakeClockSpec',
-                'Test.AsyncStepsSpec',
-                'ModuleSpec',
-                'ClassSpec',
-                'MethodSpec',
-                'KernelSpec',
-                'SingletonSpec',
-                'InterfaceSpec',
-                'CommandSpec',
-                'ComparableSpec',
-                'ConstantScopeSpec',
-                'DecoratorSpec',
-                'EnumerableSpec',
-                'ForwardableSpec',
-                'HashSpec',
-                'LinkedListSpec',
-                'MethodChainSpec',
-                'DeferrableSpec',
-                'ObservableSpec',
-                'PackageSpec',
-                'ProxySpec',
-                'RangeSpec',
-                'SetSpec',
-                'StateSpec',
-                'TSortSpec',
+    var specs = [ 'Test.UnitSpec',
+                  'Test.ContextSpec',
+                  'Test.MockingSpec',
+                  'Test.FakeClockSpec',
+                  'Test.AsyncStepsSpec',
+                  'ModuleSpec',
+                  'ClassSpec',
+                  'MethodSpec',
+                  'KernelSpec',
+                  'SingletonSpec',
+                  'InterfaceSpec',
+                  'CommandSpec',
+                  'ComparableSpec',
+                  'ConstantScopeSpec',
+                  'DecoratorSpec',
+                  'EnumerableSpec',
+                  'ForwardableSpec',
+                  'HashSpec',
+                  'LinkedListSpec',
+                  'MethodChainSpec',
+                  'DeferrableSpec',
+                  'ObservableSpec',
+                  'PackageSpec',
+                  'ProxySpec',
+                  'RangeSpec',
+                  'SetSpec',
+                  'StateSpec',
+                  'TSortSpec' ]
     
-    Test.method('autorun'))
+    if (JS.ENV.location && location.hash)
+        specs = location.hash.split(/[#,]/);
+    
+    specs.push(Test.method('autorun'))
+    JS.require.apply(JS, specs)
 })
+
