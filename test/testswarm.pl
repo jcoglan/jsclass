@@ -95,7 +95,7 @@ my @SPECS = (     'Test.UnitSpec',
 # Comment these out if you wish to define a custom set of SUITES above
 my $SUITE = "$SWARM/changeset/$USER/{REV}";
 sub BUILD_SUITES {
-	%SUITES = map { $_ => "$SUITE/test/browser.html#$_"; } @SPECS;
+	%SUITES = map { $_ => "$SUITE/test/browser.html?spec=$_"; } @SPECS;
 }
 
 ########### NO NEED TO CONFIGURE BELOW HERE ############

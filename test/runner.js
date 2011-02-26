@@ -42,8 +42,8 @@ JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
                   'StateSpec',
                   'TSortSpec' ]
     
-    if (JS.ENV.location && location.hash)
-        specs = location.hash.split(/[#,]/);
+    if (JS.ENV.location && /\bspec=/.test(location.search))
+        specs = [location.search.match(/\bspec=([^&]+)/)[1]]
     
     specs.push(Test.method('autorun'))
     JS.require.apply(JS, specs)
