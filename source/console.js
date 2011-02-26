@@ -49,8 +49,11 @@ JS.Console = new JS.Module('Console', {
       var E = JS.Enumerable;
       if (!object) return String(object);
       
-      if (object instanceof Error)
-        return object.name + (object.message ? ': ' + object.message : '');
+      if (object instanceof Error) {
+        return (typeof object.message === 'string' && !object.message)
+             ? object.name
+             : object.name + (object.message ? ': ' + object.message : '');
+      }
       
       if (object instanceof Array)
       return '[' + new E.Collection(object).map(function(item) {
