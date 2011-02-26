@@ -4,14 +4,13 @@ JS.Test.extend({
       API: {
         stub: function() {
           var mocking = JS.Test.Mocking,
-              env     = JS.ENV,
               methods = ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
               i       = methods.length;
           
           JS.Test.FakeClock.reset();
           
           while (i--)
-            mocking.stub(env, methods[i], JS.Test.FakeClock.method(methods[i]));
+            mocking.stub(methods[i], JS.Test.FakeClock.method(methods[i]));
         },
         
         reset: function() {
