@@ -11,7 +11,7 @@ JS.Test.Mocking.extend({
   
   ArrayIncluding: new JS.Class({
     initialize: function(elements) {
-      this._elements = elements;
+      this._elements = Array.prototype.slice.call(elements);
     },
     
     equals: function(array) {
@@ -26,7 +26,7 @@ JS.Test.Mocking.extend({
     
     toString: function() {
       var name = JS.Console.convert(this._elements);
-      return 'arrayIncluding' + name;
+      return 'arrayIncluding(' + name + ')';
     }
   }),
   
@@ -46,7 +46,7 @@ JS.Test.Mocking.extend({
     
     toString: function() {
       var name = JS.Console.convert(this._elemets);
-      return 'objectIncluding' + name;
+      return 'objectIncluding(' + name + ')';
     }
   }),
   

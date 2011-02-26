@@ -12,6 +12,12 @@ JS.Test.extend({
       __activeStubs__: [],
       
       stub: function(object, methodName, implementation) {
+        if (JS.isType(object, 'string')) {
+          implementation = methodName;
+          methodName     = object;
+          object         = JS.ENV;
+        }
+        
         var stubs = this.__activeStubs__,
             i     = stubs.length;
         
@@ -63,6 +69,11 @@ JS.Test.extend({
         },
         
         defaultMatcher: function(implementation) {
+          if (implementation !== undefined && typeof implementation !== 'function') {
+            this._object[this._methodName] = implementation;
+            return this;
+          }
+          
           this._activeLastMatcher();
           this._currentMatcher = this._anyArgs;
           if (typeof implementation === 'function')

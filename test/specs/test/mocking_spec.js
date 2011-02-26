@@ -107,6 +107,28 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
       }})
     }})
     
+    describe("with a fake object", function() { with(this) {
+      before(function() { with(this) {
+        stub("jQuery", {version: "1.5"})
+        stub(jQuery, "get").yields(["hello"])
+      }})
+      
+      it("creates the fake object", function() { with(this) {
+        assertEqual( objectIncluding({version: "1.5"}), jQuery )
+      }})
+      
+      it("applies stub functions to the fake object", function() { with(this) {
+        jQuery.get("/index.html", function(response) {
+          assertEqual( "hello", response )
+        })
+      }})
+      
+      it("removes the fake object", function() { with(this) {
+        JS.Test.Mocking.removeStubs()
+        assertEqual( "undefined", typeof jQuery )
+      }})
+    }})
+    
     describe("with a matcher argument", function() { with(this) {
       before(function() { with(this) {
         stub(object, "getName").given(arrayIncluding("foo")).returns(true)
