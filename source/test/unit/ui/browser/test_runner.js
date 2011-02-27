@@ -1,20 +1,9 @@
 JS.Test.Unit.UI.extend({
   Browser: new JS.Module({
     extend: {
-      /** section: test
-       * class JS.Test.Unit.UI.Browser.TestRunner
-       * 
-       * Runs a `JS.Test.Unit.TestSuite` in the browser.
-       **/
       TestRunner: new JS.Class({
         extend: JS.Test.Unit.UI.TestRunnerUtilities,
         
-        /**
-         * new JS.Test.Unit.UI.Browser.TestRunner(suite, outputLevel)
-         * 
-         * Creates a new `JS.Test.Unit.UI.Browser.TestRunner`
-         * for running the passed `suite`.
-         **/
         initialize: function(suite, outputLevel) {
           this._suite = (typeof suite.suite === 'function') ? suite.suite() : suite;
           this._faults = [];
@@ -25,11 +14,6 @@ JS.Test.Unit.UI.extend({
           return this._display = this._display || this.klass.Display.getInstance();
         },
         
-        /**
-         * JS.Test.Unit.UI.Browser.TestRunner#start() -> undefined
-         * 
-         * Begins the test run.
-         **/
         start: function() {
           this._setupMediator();
           this._attachToMediator();

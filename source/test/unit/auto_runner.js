@@ -1,12 +1,6 @@
 JS.Test.Unit.extend({
-  /** section: test
-   * class JS.Test.Unit.AutoRunner
-   **/
   AutoRunner: new JS.Class({
     extend: {
-      /**
-       * JS.Test.Unit.AutoRunner.run() -> JS.Test.Unit.TestResult
-       **/
       run: function(outputLevel) {
         var runner = this.getRunner(),
             names  = [],

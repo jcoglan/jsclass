@@ -1,7 +1,4 @@
 JS.Test.Context.extend({
-  /** section: test
-   * class JS.Test.Context.SharedBehavior
-   **/
   SharedBehavior: new JS.Class(JS.Module, {
     extend: {
       createFromBehavior: function(beh) {
@@ -25,55 +22,11 @@ JS.Test.Context.extend({
 });
 
 JS.Test.Unit.TestCase.extend({
-  /**
-   * JS.Test.Unit.TestCase.shared(name, block) -> undefined
-   * 
-   * Share behavior among different contexts.  This creates a module (actually, a Module subclass)
-   * that is included using the `use` method (or one of its aliases) provided by context or `include` 
-   * if you know the module's constant name.
-   *
-   * ==== Examples
-   *   
-   *   shared("other things", function() { with(this) {
-   *     it("should do things but not some things", function() { with(this) {
-   *       // behavior is fun
-   *     }})
-   *   }})
-   *   
-   *   use("other things")
-   *   // or...
-   *   itShouldBehaveLike("other things")
-   *   uses("other things")
-   *   behavesLike("other things")
-   *
-   */
   shared: function(name, block) {
     name = JS.Test.Context.SharedBehavior.moduleName(name);
     JS.ENV[name] = JS.Test.Context.SharedBehavior.createFromBehavior(block);
   },
   
-  /**
-   * JS.Test.Unit.TestCase.use(name) -> undefined
-   * 
-   * Pull in behavior shared by `shared` or a module.  
-   *
-   * ==== Examples
-   *   
-   *   shared("other things", function() { with(this) {
-   *     it("should do things but not some things", function() { with(this) {
-   *       // behavior is fun
-   *     }})
-   *   }})
-   *   
-   *   use("other things")
-   *   // or...
-   *   itShouldBehaveLike("other things")
-   *   
-   *   Things = new JS.Module()
-   *   
-   *   uses(Things)
-   *
-   */
   use: function(sharedName) {
     if (JS.isType(sharedName, JS.Test.Context.SharedBehavior) ||
         JS.isType(sharedName, JS.Module))

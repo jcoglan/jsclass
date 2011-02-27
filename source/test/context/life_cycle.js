@@ -1,6 +1,3 @@
-/** section: test
- * mixin JS.Test.Context.LifeCycle
- **/
 JS.Test.Context.LifeCycle = new JS.Module({
   extend: {
     included: function(base) {

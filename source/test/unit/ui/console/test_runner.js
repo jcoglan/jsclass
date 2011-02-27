@@ -1,21 +1,10 @@
 JS.Test.Unit.UI.extend({
   Console: new JS.Module({
     extend: {
-      /** section: test
-       * class JS.Test.Unit.UI.Console.TestRunner
-       * 
-       * Runs a `JS.Test.Unit.TestSuite` on the console.
-       **/
       TestRunner: new JS.Class({
         extend: JS.Test.Unit.UI.TestRunnerUtilities,
         include: JS.Console,
         
-        /**
-         * new JS.Test.Unit.UI.Console.TestRunner(suite, outputLevel)
-         * 
-         * Creates a new `JS.Test.Unit.UI.Console.TestRunner`
-         * for running the passed `suite`.
-         **/
         initialize: function(suite, outputLevel) {
           this._suite = (typeof suite.suite === 'function') ? suite.suite() : suite;
           this._outputLevel = outputLevel || JS.Test.Unit.UI.NORMAL;
@@ -23,11 +12,6 @@ JS.Test.Unit.UI.extend({
           this._faults = [];
         },
         
-        /**
-         * JS.Test.Unit.UI.Console.TestRunner#start() -> undefined
-         * 
-         * Begins the test run.
-         **/
         start: function() {
           this._setupMediator();
           this._attachToMediator();

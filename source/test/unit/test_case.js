@@ -1,14 +1,4 @@
 JS.Test.Unit.extend({
-  /** section: test
-   * class JS.Test.Unit.TestCase
-   * includes JS.Test.Unit.Assertions
-   *
-   * Ties everything together. If you subclass and add your own
-   * test methods, it takes care of making them into tests and
-   * wrapping those tests into a suite. It also does the
-   * nitty-gritty of actually running an individual test and
-   * collecting its results into a `JS.Test.Unit.TestResult` object.
-   **/
   TestCase: new JS.Class({
     include: JS.Test.Unit.Assertions,
     
@@ -32,13 +22,6 @@ JS.Test.Unit.extend({
       STARTED:  'Test.Unit.TestCase.STARTED',
       FINISHED: 'Test.Unit.TestCase.FINISHED',
       
-      /**
-       * JS.Test.Unit.TestCase.suite() -> JS.Test.Unit.TestSuite
-       * 
-       * Rolls up all of the `test*` methods in the fixture into
-       * one suite, creating a new instance of the fixture for
-       * each method.
-       **/
       suite: function() {
         var methodNames = new JS.Enumerable.Collection(this.instanceMethods()),
             tests = methodNames.select(function(name) { return /^test./.test(name) }).sort(),
@@ -54,25 +37,12 @@ JS.Test.Unit.extend({
       }
     }],
     
-    /**
-     * new JS.Test.Unit.TestCase(testMethodName)
-     * 
-     * Creates a new instance of the fixture for running the
-     * test represented by `testMethodName`.
-     **/
     initialize: function(testMethodName) {
       if (typeof this[testMethodName] !== 'function') throw 'invalid_test';
       this._methodName = testMethodName;
       this._testPassed = true;
     },
     
-    /**
-     * JS.Test.Unit.TestCase#run(result, continuation, callback, context) -> undefined
-     * 
-     * Runs the individual test method represented by this
-     * instance of the fixture, collecting statistics, failures
-     * and errors in `result`.
-     **/
     run: function(result, continuation, callback, context) {
       callback.call(context || null, this.klass.STARTED, this);
       this._result = result;
@@ -138,33 +108,14 @@ JS.Test.Unit.extend({
       }
     },
     
-    /**
-     * JS.Test.Unit.TestCase#setup(resume) -> undefined
-     * 
-     * Called before every test method runs. Can be used
-     * to set up fixture information.
-     **/
     setup: function(resume) { resume() },
     
-    /**
-     * JS.Test.Unit.TestCase#teardown(resume) -> undefined
-     * 
-     * Called after every test method runs. Can be used to tear
-     * down fixture information.
-     **/
     teardown: function(resume) { resume() },
     
     defaultTest: function() {
       return this.flunk('No tests were specified');
     },
     
-    /**
-     * JS.Test.Unit.TestCase#passed() -> Boolean
-     * 
-     * Returns whether this individual test passed or
-     * not. Primarily for use in `JS.Test.Unit.TestCase#teardown`
-     * so that artifacts can be left behind if the test fails.
-     **/
     passed: function() {
       return this._testPassed;
     },
@@ -187,25 +138,14 @@ JS.Test.Unit.extend({
       this._result.addError(new JS.Test.Unit.Error(this.name(), exception));
     },
     
-    /**
-     * JS.Test.Unit.TestCase#name() -> String
-     * 
-     * Returns a human-readable name for the specific test that
-     * this instance of `JS.Test.Unit.TestCase` represents.
-     **/
     name: function() {
-      var short = this._methodName.replace(/^test\W*/ig, '');
-      if (short.replace(this.klass.displayName, '') === short)
+      var shortName = this._methodName.replace(/^test\W*/ig, '');
+      if (shortName.replace(this.klass.displayName, '') === shortName)
         return this._methodName + '(' + this.klass.displayName + ')';
       else
-        return short;
+        return shortName;
     },
     
-    /**
-     * JS.Test.Unit.TestCase#toString() -> String
-     * 
-     * Overridden to return `name`.
-     **/
     toString: function() {
       return this.name();
     }

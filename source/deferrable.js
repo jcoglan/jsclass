@@ -1,12 +1,3 @@
-/**
- * This library is based on EventMachine::Deferrable, originally
- * written in Ruby by Francis Cianfrocca
- * 
- * Copyright (C) 2006-07 by Francis Cianfrocca.
- * Originally released under the Ruby License
- * http://www.ruby-lang.org/en/LICENSE.txt
- **/
-
 JS.Deferrable = new JS.Module('Deferrable', {
   extend: {
     Timeout: new JS.Class(Error)
