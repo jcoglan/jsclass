@@ -32,7 +32,7 @@ JS.Hash = new JS.Class('Hash', {
         var key   = JS.Hash.codeFor(this.key),
             value = JS.Hash.codeFor(this.value);
         
-        return [key, value].sort().join('');
+        return [key, value].sort().join('/');
       }
     }),
     
