@@ -1,8 +1,6 @@
 JS.Class: Ruby-style JavaScript
-Copyright (c) 2007-2010 James Coglan
-
 http://jsclass.jcoglan.com
-http://github.com/jcoglan/js.class
+Copyright (c) 2007-2011 James Coglan and contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -14,6 +12,22 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
+Parts of the Software build on techniques from the following open-source
+projects:
+
+* The Prototype framework, (c) 2005-2010 Sam Stephenson (MIT license)
+* Alex Arnell's Inheritance library, (c) 2006 Alex Arnell (MIT license)
+* Base, (c) 2006-2010 Dean Edwards (MIT license)
+
+The Software contains direct translations to JavaScript of these open-source
+Ruby libraries:
+
+* Ruby standard library modules, (c) Yukihiro Matsumoto and contributors (Ruby license)
+* Test::Unit, (c) 2000-2003 Nathaniel Talbott (Ruby license)
+* Context, (c) 2008 Jeremy McAnally (MIT license)
+* EventMachine::Deferrable, (c) 2006-07 Francis Cianfrocca (Ruby license)
+
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,9 +36,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-Parts of this software are derived from the following open-source projects:
-
-    - The Prototype framework, (c) 2005-2010 Sam Stephenson
-    - Alex Arnell's Inheritance library, (c) 2006, Alex Arnell
-    - Base, (c) 2006-9, Dean Edwards
 
