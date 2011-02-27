@@ -1,23 +1,23 @@
 :textile
   h2. Keyword methods
   
-  Most methods you'll define using @JS.Class@ are listed explicitly in your
+  Most methods you'll define using JS.Class are listed explicitly in your
   source code. For example you might have a @BlogPost@ class that has a
   @publish()@ method, that you define by listing the method in the class body:
   
   <pre class="prettyprint">BlogPost = new JS.Class({
-      publish: function() { /* ... * / }
+      publish: function() { /* ... */ }
   });</pre>
   
   Keyword methods are different: they are methods that are generated on the fly
-  and whose action depends on the context of the current method call. @JS.Class@
+  and whose action depends on the context of the current method call. JS.Class
   provides a few built-in keywords that you can use in any method you write.
   
   h3. @callSuper()@
   
   This is used to invoke the current method in the next module up the inheritance
   stack. (See "Inheritance":/inheritance.html for more information on how methods
-  are looked up in @JS.Class@.)
+  are looked up in JS.Class.)
   
   @callSuper()@ automatically passes all the arguments to the current method up
   to the parent method, unless you override them.
@@ -81,7 +81,7 @@
   
   h3. Writing your own keywords
   
-  You can use the same APIs that @JS.Class@ uses to create its built-in keywords
+  You can use the same APIs that JS.Class uses to create its built-in keywords
   to create your own. Remember, a keyword is a function that uses implicit
   contextual information from the current method call; if it looks like you can
   get the behaviour you want from a normal method, you should use one.
@@ -123,7 +123,7 @@
   
   Using this contextual information you can generate functions that do all sorts
   of useful things with the current method call. As a more complex example, here
-  is the @JS.Class@ implementation of @callSuper@:
+  is the JS.Class implementation of @callSuper@:
   
   <pre class="prettyprint">JS.Method.keyword('callSuper', function(method, env, receiver, args) {
       var methods    = env.lookup(method.name),

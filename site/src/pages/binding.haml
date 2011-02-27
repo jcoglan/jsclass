@@ -13,7 +13,7 @@
   
   Where did Rex's name go? The thing is, we've not called @spk@ through the
   object @rex@, so @this@ inside the function no longer refers to the right
-  thing. @JS.Class@ gives each object a @method()@ method, that returns a method
+  thing. JS.Class gives each object a @method()@ method, that returns a method
   by name, bound to its source object. This method is simply a JavaScript
   function that you can call on its own and maintain the binding of @this@:
   

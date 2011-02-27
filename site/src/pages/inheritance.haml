@@ -31,7 +31,7 @@
   
   h3. Parent-child class inheritance
   
-  We'll start with class-based inheritance, and this is the most widely
+  We'll start with class-based inheritance, as this is the most widely
   understood. If class @Child@ inherits from class @Parent@, @Child@'s methods
   can call methods from @Parent@ using @callSuper()@. @Child@ inherits all the
   methods of @Parent@ and can override them if necessary:
@@ -61,7 +61,7 @@
   This style of inheritance is commonly supported by object-oriented languages
   and is pretty simple to understand: a class can only have one parent class,
   and can call methods from it. It is worth mentioning here that, in common with
-  Ruby, @JS.Class@ makes arguments to @callSuper()@ optional. By default, it
+  Ruby, JS.Class makes arguments to @callSuper()@ optional. By default, it
   passes the same parameters to the parent method as were used to call the child
   method. More information can be found under "Creating classes":/classes.html.
   
@@ -156,7 +156,7 @@
   eigenclass stores methods you add to the object. Methods tied to an object
   (rather than defined in a class or a module) are known as singleton methods,
   as they're defined on a single object. This class is the first place
-  @JS.Class@ looks when you call a method on an object.
+  JS.Class looks when you call a method on an object.
   
   <pre class="prettyprint">obj.extend({
       run: function() {

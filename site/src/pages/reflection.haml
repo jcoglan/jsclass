@@ -3,7 +3,7 @@
   
   Reflection is the process of inspecting the structure of a program at runtime,
   and potentially modifying that structure dynamically. Ruby has some very
-  useful reflection features and @JS.Class@ incorporates a few of them.
+  useful reflection features and JS.Class incorporates a few of them.
   
   h3. Object properties
   
@@ -68,28 +68,6 @@
   <pre class="prettyprint">Foo.ancestors()
   // -> [JS.Kernel, ModA, ModB, ModC, Foo]</pre>
   
-  If you're debugging using Firebug, it will just print @Object@ or @function()@
-  for each of those:
-  
-  <pre class="prettyprint">Foo.ancestors()
-  // -> [Object, Object, Object, Object, function()]</pre>
-  
-  You might not find that very helpful, but if you use "@StackTrace@":/stacktrace.html
-  you can find the names of the modules in the tree:
-  
-  <pre class="prettyprint">JS.StackTrace.nameOf(Foo.ancestors())
-  // -> ["JS.Kernel", "ModA", "ModB", "ModC", "Foo"]</pre>
-  
-  If that's not enough information, you can ask @JS.Class@ to explicitly look up
-  methods for you so you can see the order that inherited methods will be called
-  in. You can call @toString()@ on any JavaScript function to read its source
-  code. @lookup()@ returns functions in reverse order; the last function in the
-  list will be the first to be called, and if it uses @callSuper()@ the
-  penultimate function will be called, and so on.
-  
-  <pre class="prettyprint">Foo.lookup('speak')
-  // -> [function(), function(), function(), function()]</pre>
-  
   Finally, you can extract a single named method from a module using
   @instanceMethod()@, and get a list of all the instance methods in a class
   using @instanceMethods@. Calling @instanceMethods(false)@ returns the methods
@@ -116,7 +94,7 @@
   h3. Method objects
   
   The @Module#instanceMethod()@ method does not return a bare function; instead
-  it returns a @Method@ object. This is a class that @JS.Class@ uses internally
+  it returns a @Method@ object. This is a class that JS.Class uses internally
   to represent methods stored in modules, and it provides a lot more contextual
   information about a method than a bare function would.
   
@@ -132,14 +110,14 @@
   
   <pre class="prettyprint">klass.instanceMethod('foo').module</pre>
   
-  Like JavaScript functions, @Method@ objects respond to @call()@ and @apply@,
+  Like JavaScript functions, @Method@ objects respond to @call()@ and @apply()@,
   so you can actually pass them to methods that expect callbacks to be passed in.
   
   h3. The eigenclass
   
   All objects, modules and classes have what's called an eigenclass to store
   their "singleton methods":/singletonmethods.html. In Ruby, the eigenclass is a
-  real class but in @JS.Class@ it's implemented as a module. (This distinction
+  real class but in JS.Class it's implemented as a module. (This distinction
   doesn't really matter as you're unlikely to want to instantiate or subclass
   it.) You can access the eigenclass of any object by calling its @__eigen__()@
   method. For example, you could inspect the call order of an inherited method
@@ -147,4 +125,4 @@
   
   <pre class="prettyprint">var obj = new Foo();
   obj.__eigen__().lookup('speak')
-  // -> [function(), function(), function(), function()]</pre>
+  // -> [#<Method>, #<Method>, #<Method>, #<Method>]</pre>

@@ -23,38 +23,7 @@
   
   In the same vein, if you @include()@ a module that has a singleton method
   called @included@, that method will be called. This effectively allows you to
-  redefine the meaning of @include@ for individual modules. A good example of
-  this is the @StackTrace@ module, which doesn't add any methods to the class
-  but changes the inner workings of the class instead:
-  
-  <pre class="prettyprint">JS.StackTrace = new JS.Module({
-      extend: {
-          included: function(base) {
-              var module = base.__mod__ || base, self = this;
-              
-              // Change the working of define() in the including class
-              module.extend({define: function(name, func) {
-                  if (!JS.isFn(func)) return this.callSuper();
-                  var wrapper = self.wrap(func, module, name);
-                  return this.callSuper(name, wrapper);
-              } });
-              
-              // Wrap existing methods
-              for (var method in module.__fns__)
-                  module.define(method, module.__fns__[method]);
-              
-              // Find out the name of the class
-              if (!module.__name__) setTimeout(function() {
-                  module.__name__ = self.nameOf(base);
-              }, 1);
-          }
-          
-          // more methods (elided)
-        
-      } // end extend: block
-      
-      // no instance methods
-  });</pre>
+  redefine the meaning of @include@ for individual modules.
   
   The @extended()@ hook works in much the same way as @included()@, except that
   it will be called when the module is used to @extend()@ an object.
