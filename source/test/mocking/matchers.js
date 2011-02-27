@@ -16,7 +16,7 @@ JS.Test.Mocking.extend({
     
     equals: function(array) {
       if (!JS.isType(array, Array)) return false;
-      var i = this._elements.length;
+      var i = this._elements.length, j;
       loop: while (i--) {
         j = array.length;
         while (j--) {
