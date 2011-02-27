@@ -146,6 +146,22 @@
     a @RegExp@ or any object that responds to @match()@, like a @Module@ or a
     @Range@.
   
+  h3. Stubbing global objects
+  
+  Oftentimes you'll need to stub out a global function or object to make your
+  code unit-testable. To stub globals, just omit the object argument to @stub()@.
+  
+  <pre class="prettyprint">// Stubs out alert()
+  stub('alert').given(instanceOf('string')).returns(undefined);</pre>
+  
+  To stub a global object, just pass in a fake object you want to use in its
+  place. For example, suppose you have some code that relies on jQuery's Ajax
+  API; you can create a fake object and add stub functions to it. @JS.Test@
+  will clean up the stubs you've created after each test.
+  
+  <pre class="prettyprint">stub('jQuery', {});
+  stub(jQuery, 'get').given('/foo.html').yields(['foo']);</pre>
+  
   h3. Mocking methods
   
   Mocking is very similar to stubbing, in fact it involves creating stubs and

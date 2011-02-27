@@ -25,15 +25,15 @@
   outer before
   INNER before
   INNER test
-  outer after
-  INNER after</pre>
+  INNER after
+  outer after</pre>
   
   <pre class="prettyprint">ThingSpec = JS.Test.describe("thing", function() { with(this) {
       before(function() { this.puts("outer before") });
       after (function() { this.puts("outer after") });
       
       it("has tests", function() { with(this) {
-          print("outer test");
+          puts("outer test");
       }});
       
       describe("nested", function() { with(this) {
@@ -41,7 +41,7 @@
           after (function() { this.puts("INNER after") });
           
           it("does something", function() { with(this) {
-              print("INNER test");
+              puts("INNER test");
           }});
       }});
   }});</pre>
