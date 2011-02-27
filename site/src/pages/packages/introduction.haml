@@ -1,0 +1,86 @@
+:textile
+  h2. Setting up
+  
+  Before you can use the @require@ statement, you need the following loaded into
+  the page:
+  
+  * @JS.Packages@, the dependency manager
+  * A list of dependencies
+  
+  You can get @JS.Packages@ either by loading the @pacakge.js@ or @loader.js@
+  into your environment. (@loader.js@ is @pacakge.js@ plus dependency data for
+  JS.Class itself; if you just want to use @JS.Packages@ to manage your code
+  without using the rest of the JS.Class library, use @package.js@.)
+  
+  After loading the package manager, you need to tell it where to find your code.
+  
+  h3. The package listing
+  
+  To describe your packages, you list the external script files used by your
+  application, stating which JavaScript objects are provided by the file and
+  which objects it depends on. For example, here are a few modules from the
+  JS.Class library:
+  
+  <pre class="prettyprint">JS.Packages(function() { with(this) {
+      file(JSCLASS_PATH + '/core.js')
+          .provides('JS.Module',
+                    'JS.Class',
+                    'JS.Kernel');
+      
+      file(JSCLASS_PATH + '/comparable.js')
+          .provides('JS.Comparable')
+          .requires('JS.Module');
+      
+      file(JSCLASS_PATH + '/enumerable.js')
+          .provides('JS.Enumerable')
+          .requires('JS.Module',
+                    'JS.Class');
+      
+      file(JSCLASS_PATH + '/hash.js')
+          .provides('JS.Hash',
+                    'JS.OrderedHash')
+          .requires('JS.Class',
+                    'JS.Enumerable',
+                    'JS.Comparable');
+  }});</pre>
+  
+  Notice how @Enumerable@ depends on @Class@ and @Module@, which are both
+  provided by the same file, @core.js@. Similarly, @Hash@ requires @Enumerable@
+  and @Comparable@, which both have a dependency on @Module@. The package manager
+  resolves all this and only loads each file once. Object detection is used to
+  figure out whether each file has been loaded and a file is not requested
+  unless some of its objects appear to be missing.
+  
+  Where possible, the package system will attempt to load scripts in parallel
+  where it spots that execution order doesn't matter. For example, @Enumerable@
+  and @Comparable@ do not depend on each other, so when we want to load @Hash@
+  we can load these dependencies in parallel. If the load order of a set of
+  scripts is important, you must *make sure you make this clear using the
+  @requires()@ statement*. A file will not be loaded until all the objects it
+  @requires@ are present.
+  
+  In addition to @requires()@, there is a statement called @uses()@ that
+  specifies a 'soft dependency', i.e. an object the package needs but that does
+  not necessarily need to be loaded first. For example, "@Set@":/set.html uses a
+  "@Hash@":/hash.html for storage but you could load @Hash@ after the @Set@
+  package just fine. On the other hand, @Set@ mixes in "@Enumerable@":/enumerable.html
+  and this must be loaded before @Set@ is defined. And, @Hash@ is itself based
+  on @Enumerable@. So the package config for this looks like:
+  
+  <pre class="prettyprint">JS.Packages(function() { with(this) {
+      file(JSCLASS_PATH + '/enumerable.js')
+          .provides('JS.Enumerable');
+      
+      file(JSCLASS_PATH + '/hash.js')
+          .provides('JS.Hash')
+          .requires('JS.Enumerable');
+      
+      file(JSCLASS_PATH + '/set.js')
+          .provides('JS.Set')
+          .requires('JS.Enumerable')
+          .uses('JS.Hash');
+  });</pre>
+  
+  The advantage of using @uses()@ is that it helps the package system optimise
+  the downloading of packages, since if the load order does not matter the
+  packages can be downloaded in parallel.

@@ -1,20 +1,20 @@
 :textile
-  h2. @JS.Packages@
+  h2. Package management
   
-  @JS.Class@ comes with a package manager that makes it really easy to load
-  libraries into your application on demand. You can tell it which file each
-  module in your application lives in, and what other modules it depends on, and
-  it takes care of resolving dependencies and loading your code for you. This
-  means your application code only needs to specify which objects it needs,
-  rather than which scripts to download in order to run.
+  JS.Class comes with a package manager that makes it really easy to load
+  libraries into your application on demand on all JS.Class's "supported platforms":/platforms.html.
+  You can tell it which file each module in your application lives in, and what
+  other modules it depends on, and it takes care of resolving dependencies and
+  loading your code for you. This means your application code only needs to
+  specify which objects it needs, rather than which scripts to download in order
+  to run.
   
-  For example, say I want to do something with "YUI's CSS selector":http://developer.yahoo.com/yui/selector/.
-  I just need to @require@ it, and supply a function to run once all the
+  For example, say I want to do something with the "@Console@":/console.html
+  module. I just need to @require@ it, and supply a function to run once all the
   requisite code has loaded:
   
-  <pre class="prettyprint">JS.require('YAHOO.util.Selector', function() {
-      var myDivs = YAHOO.util.Selector.query('div.mine');
-      // .. more code (elided)
+  <pre class="prettyprint">JS.require('JS.Console', function() {
+      JS.Console.puts('Hello, world!');
   });</pre>
   
   The package system only loads what is needed to get the objects you want, and
@@ -22,237 +22,13 @@
   are downloaded in parallel to improve performance, but it makes sure
   interdependent scripts run in the right order.
   
-  As well as making it easy to improve the load time of your web applications,
-  @JS.Packages@ works great as a dependency manager for server-side JavaScript
-  projects. It currently works unmodified on all of JS.Class's
-  "supported platforms":/platforms.html.
+  It is designed to be able to load any code from any domain, including from
+  libraries that have their own package systems. While CommonJS is in some ways
+  a better solution, it requires source code to follow certain conventions.
+  @JS.Packages@ lets you use a uniform interface to load any code you need,
+  without requiring modifications to the source. This is particularly important
+  on the web where you frequently use code you don't have editing access to.
   
-  h3. Setting up
-  
-  Before you can use the @require@ statement, you need the following loaded into
-  the page:
-  
-  * @JS.Package@, the dependency manager (@package.js@)
-  * A list of dependencies
-  
-  The first two are dealt with with a couple of @script@ tags (or @load()@ calls
-  if using a server-side platform). The third needs to be written out to describe
-  all the other files in your application and how they relate to each other.
-  
-  Alternatively, use the @loader.js@ file, described in more detail below.
-  
-  h3. The package listing
-  
-  To describe your packages, you list the external script files used by your
-  application, stating which JavaScript objects are provided by the file and
-  which objects it depends on. For example, here's a typical package definition
-  for "YUI":http://developer.yahoo.com/yui/:
-  
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
-      var cdn  = 'http://yui.yahooapis.com/';
-      var yui  = cdn + '2.7.0/build/';
-      
-      file(yui + 'yahoo-dom-event/yahoo-dom-event.js')
-          .provides('YAHOO',
-                    'YAHOO.lang',
-                    'YAHOO.util.Dom',
-                    'YAHOO.util.Event');
-      
-      file(yui + 'selector/selector-min.js')
-          .provides('YAHOO.util.Selector')
-          .requires('YAHOO');
-      
-      file(yui + 'animation/animation-min.js')
-          .provides('YAHOO.util.Anim',
-                    'YAHOO.util.ColorAnim')
-          .requires('YAHOO');
-      
-      file(yui + 'dragdrop/dragdrop-min.js')
-          .provides('YAHOO.util.DD')
-          .requires('YAHOO',
-                    'YAHOO.util.Dom');
-      
-      file(yui + 'slider/slider-min.js')
-          .provides('YAHOO.widget.Slider')
-          .requires('YAHOO',
-                    'YAHOO.util.Anim',
-                    'YAHOO.util.DD');
-  }});</pre>
-  
-  (Yes, YUI has its own loader utility, I'm just using this as a well-known
-  example.)
-  
-  Notice how two of the stated dependencies for @YAHOO.util.DD@ are provided by
-  the same file - @YAHOO@ and @YAHOO.util.Dom@. The package system will spot
-  this and only loads each file once. Object detection is used to figure out
-  whether each file has been loaded and a file is not requested unless some of
-  its objects appear to be missing.
-  
-  Where possible, the package system will attempt to load scripts in parallel
-  where it spots that execution order doesn't matter. If the load order of a set
-  of scripts is important, you must *make sure you make this clear using the
-  @requires()@ statement*. A file will not be requested until all the objects it
-  @requires@ are present.
-  
-  In addition to @requires()@, there is a statement called @uses()@ that
-  specifies a 'soft dependency', i.e. an object the package needs but that does
-  not necessarily need to be loaded first. For example, "@Set@":/set.html uses a
-  "@Hash@":/hash.html for storage but you could load @Hash@ after the @Set@
-  package just fine. On the other hand, @Set@ mixes in "@Enumerable@":/enumerable.html
-  and this must be loaded before @Set@ is defined. And, @Hash@ is itself based
-  on @Enumerable@. So the package config for this might look like:
-  
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
-      
-      file('/js-class/enumerable.js') .provides('JS.Enumerable');
-      
-      file('/js-class/hash.js')       .provides('JS.Hash')
-                                      .requires('JS.Enumerable');
-      
-      file('/js-class/set.js')        .provides('JS.Set',
-                                                'JS.OrderedSet',
-                                                'JS.SortedSet')
-                                      .requires('JS.Enumerable')
-                                      .uses(    'JS.Hash');
-  });</pre>
-  
-  The advantage of using @uses()@ is that it helps the package system optimise
-  the downloading of packages, since if the load order does not matter the
-  packages can be downloaded in parallel.
-  
-  h3. Short-hand setup using @autoload@
-  
-  As your application grows you may find that your package configuration becomes
-  repetitive. For example, you may have a set of test scripts that mirror the
-  set of classes in your application:
-  
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
-      
-      file('tests/widget_spec.js')        .provides('WidgetSpec')
-                                          .requires('MyApp.Widget');
-      
-      file('tests/blog_post_spec.js')     .provides('BlogPostSpec')
-                                          .requires('MyApp.BlogPost');
-      
-      file('tests/users/profile_spec.js') .provides('Users.ProfileSpec')
-                                          .requires('MyApp.Users.Profile');
-  });</pre>
-  
-  If you run into this situation you can use the @autoload()@ function to set up
-  packages for objects whose name matches a certain pattern. For example you
-  could compress the above configuration like this:
-  
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
-      autoload(/^(.*)Spec$/, {from: 'tests', require: 'MyApp.$1'});
-  });</pre>
-  
-  @autoload()@ expects three parameters. The first is a regex that is used to
-  match package names. The @from@ option is a directory path where packages with
-  that name pattern live, for example this rule would make the package loader
-  look in @tests/users/profile_spec.js@ to find the @Users.ProfileSpec@ module.
-  The @require@ option lets you specify an object the package depends on, using
-  match results from the regex. The above rule would mean that @Users.ProfileSpec@
-  has a dependency on @MyApp.Users.Profile@.
-  
-  If you @require()@ a package that doesn't have an explicit configuration, the
-  autoloader will try to figure out where to load it from by matching its name
-  against the set of patterns it knows about. A naming convention is adopted for
-  converting object names to paths: dots convert to path separators, and
-  camelcase names are converted to underscored style. Thus @Users.ProfileSpec@
-  becomes @users/profile_spec.js@.
-  
-  h3. Custom loader functions
-  
-  Some libraries, such as the "Google Ajax APIs":http://code.google.com/apis/ajax/,
-  have their own systems for loading code on demand that involve more than
-  simply knowing the path to a script file. Our package system allows you to
-  specify packages that use a loader function rather than a path to load
-  themselves; the function should take a callback and call it when the library
-  in question is done loading. For example, here's how you'd incorporate Google
-  Maps into your library:
-  
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
-  
-      file('http://www.google.com/jsapi?key=MY_GOOGLE_KEY')
-          .provides('google.load');
-      
-      loader(function(cb) { google.load('maps', '2.x', {callback: cb}) })
-          .provides('GMap2', 'GClientGeocoder')
-          .requires('google.load');
-  }});</pre>
-  
-  The callback (@cb@) is a function generated by the package system that
-  continues to load and run dependent code once the custom loader has finished
-  its work. If you don't call @cb@ (or pass it to a function that will call it
-  for you as above), code that depends on this library will not run.
-  
-  @JS.Packages@ also provides post-load setup hooks that let you run some code
-  after a file loads. For example, a strategy for loading "YUI3":http://developer.yahoo.com/yui/3/
-  might involve loading the seed file, creating a new global instance of the
-  library, then using YUI's own loader functions to load further modules. Some
-  sample code:
-  
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
-  
-      file('http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js')
-          .setup(function() { window.yui3 = YUI() })
-          .provides('YUI', 'yui3');
-      
-      loader(function(cb) { yui3.use('node', cb) })
-          .provides('yui3.Node')
-          .requires('yui3');
-  }});</pre>
-  
-  Loader functions can also be used to generate library objects that are
-  expensive to create without necessarily loading code from external files. Just
-  remember to call @cb@ yourself when the generated object is ready:
-  
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
-  
-      loader(function(cb) {
-          window.ChocolateFactory = new WonkaVenture();
-          // Perform other expensive setup operations
-          cb();
-      })
-      .provides('ChocolateFactory');
-  }});</pre>
-  
-  h3. The JS.Class @loader.js@ file
-  
-  The @JS.Class@ distribution comes with a file called @loader.js@. This
-  contains the package system and dependency information for all @JS.Class@
-  components. This lets you load a small file initially and download the rest of
-  JS.Class into your app on demand. You must host the library on your servers,
-  but it can figure out where it's being served from automatically to load other
-  packages. (Note: keep all the JS.Class files in one directory, as they appear
-  in the download, otherwise the loader will not be able to find them.) A simple
-  example:
-  
-  <pre class="prettyprint"><!-- In HEAD -->
-  <script src="http://example.com/js-class/loader.js" type="text/javascript">
-  </script>
-  
-  <!-- Elsewhere in your app -->
-  <script type="text/javascript">
-      JS.require('JS.SortedSet', function() {
-          // ...
-      });
-  </script></pre>
-  
-  You can also use this file on server-side platforms (see the list of supported
-  platforms above) but you must tell the library the path where it is stored as
-  this information cannot be determined automatically on these platforms. You do
-  this using the @JSCLASS_PATH@ variable, for example:
-  
-  <pre class="prettyprint">JSCLASS_PATH = 'path/to/js.class/';
-  load(JSCLASS_PATH + 'loader.js');
-  
-  JS.require('JS.SortedSet', function() {
-      // do something with SortedSet
-  });</pre>
-  
-  Note that as of version 2.1.4, @loader.js@ does not contain the JS.Class core.
-  If you need @JS.Class@, @JS.Module@, @JS.Singleton@ or @JS.Interface@ you must
-  specify these as requirements using the @JS.require()@ function or by adding
-  them as dependencies in your @JS.Packages@ configuration.
-  
+  * "Basic usage examples":/packages/introduction.html
+  * "Pattern-based loading with @autoload@":/packages/autoload.html
+  * "Custom loader functions":/packages/customloaders.html
