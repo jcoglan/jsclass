@@ -1,149 +1,89 @@
 :textile
-  h2. @JS.StackTrace@
+  h2. StackTrace
   
-  The @StackTrace@ module can be mixed into any class or module and helps with
-  debugging programs using Firebug. When it is mixed into a class, it makes the
-  class log all its method calls to the console, along with arguments passed in
-  and values returned. Firebug will let you inspect the arguments and return
-  values, making this a powerful tool for seeing what your program is doing.
+  @JS.StackTrace@ is a module you can use to inspec what an application is doing
+  internally while it runs. It provides an interface for monitoring method calls,
+  which you can use to build monitoring and debugging tools.
   
-  Let's take a reasonably complex example as it demonstrates the full
-  capabilities of @StackTrace@. This shows how you can mix it in when defining a
-  class or a module, how to add it to existing modules, and shows some complex
-  output.
+  The @StackTrace@ module supports the "@Observable@":/observable.html interface
+  for monitoring what the stack is doing:
   
-  <pre class="prettyprint">// Parent class. run() calls getString()
-  Parent = new JS.Class({
-      include: JS.StackTrace,
-      run: function() {
-          return this.getString();
-      },
-      getString: function() {
-          return 'Running';
+  <pre class="prettyprint">JS.StackTrace.addObserver(monitor);</pre>
+  
+  @monitor@ should be an object that responds to the @update()@ method. This
+  method takes two arguments: an event name, and an event object. So, the
+  object should look something like this:
+  
+  <pre class="prettyprint">monitor = {
+      update: function(event, data) {
+          if (event === 'call') // ...
       }
-  });
+  };</pre>
   
-  // Mixin module. run() calls the super method
-  Mixin = new JS.Module({
-      include: JS.StackTrace,
-      run: function() {
-          return this.callSuper().toUpperCase();
-      }
-  });
+  There are three types of event, which tell you when a function is called, when
+  a function returns, and when an error is thrown.
   
-  // Augment Observable module with StackTrace
-  JS.Observable.include(JS.StackTrace);
+  h3. @call@ event
   
-  // Child class, inherits from Parent, includes Mixin and Observable
-  // run() calls fire(), which calls Observable#notifyObservers()
-  Child = new JS.Class(Parent, {
-      include: [Mixin, JS.Observable, JS.StackTrace],
-      run: function() {
-          this.fire();
-          return this.callSuper() + '!!!';
-      },
-      fire: function() {
-          this.notifyObservers();
-      }
+  The @call@ event fires when a function is called. The @data@ object in this
+  case represents the data surrounding the method call. It has the following
+  properties:
+  
+  * @object@ - The object receiving the method call
+  * @method@ - The @Method@ object for the current method call
+  * @env@ - The @Class@ or @Module@ where the method is being executed
+  * @args@ - An @Array@ of the arguments to the method call
+  * @leaf@ - Boolean indicating whether the call is a leaf; it's a leaf if no
+    other method calls are logged while it is running. This is always @true@
+    when a method is first called.
+  
+  h3. @return@ event
+  
+  The @return@ event fires when a function returns. The @data@ object is the
+  same object that's passed to the @call@ event, with one extra property:
+  
+  * @result@ - The return value of the method call
+  
+  h3. @error@ event
+  
+  This event fires when an exception is thrown. The @data@ object is just the
+  error that was raised.
+  
+  h3. Enabling tracing
+  
+  Since tracing incurs a performance cost, JS.Class does not trace anything
+  by default. When you want to trace a module or class, you pass a list of the
+  modules you want to trace to @Method.trace()@, and use @Method.untrace()@ to
+  stop tracing them.
+  
+  <pre class="prettyprint">JS.Method.trace([JS.Hash, JS.Range]);</pre>
+  
+  h3. Call stack logging
+  
+  There is a logger you can use to print the call stack to the "@Console@":/console.html.
+  To use it, just pass a list of modules to trace and a function to @JS.Method.tracing()@.
+  This enables tracing for the given modules, runs the function, then disables
+  tracing again.
+  
+  <pre class="prettyprint">JS.Method.tracing([JS.Hash], function() {
+      var hash = new JS.OrderedHash(['foo', 4, 'bar', 5]);
+      hash.hasKey('foo');
   });</pre>
   
-  Suppose that somewhere else in your code you have this:
+  !/images/tracing.png!
   
-  <pre class="prettyprint">var child = new Child, parent = new Parent;
-  child.addObserver(parent.method('run'));
-  child.run('something')</pre>
+  h3. Coverage analysis
   
-  @StackTrace@ will print the following to the console. Every method call in
-  traced classes is logged, with indentation to show how deep in the call stack
-  you are. Vertical lines connect the beginning and end of a single method call.
+  The other built-in tracing tool that JS.Class comes with is a code coverage
+  reporter that you can use while testing. You can tell the "testing framework":/testing.html
+  to 'cover' a class, and it will print a report at the end showing how many
+  times each method was used during the test, highlighting ones that weren't used
+  at all.
   
-  <pre>JS.Observable#addObserver( [function()] )
-  JS.Observable#addObserver() --> undefined
-  Child#run( ["something"] )
-  |  Child#fire( [] )
-  |  |  JS.Observable#notifyObservers( [] )
-  |  |  |  JS.Observable#isChanged( [] )
-  |  |  |  JS.Observable#isChanged() --> true
-  |  |  |  JS.Observable#countObservers( [] )
-  |  |  |  JS.Observable#countObservers() --> 1
-  |  |  |  Parent#run( [] )
-  |  |  |  |  Parent#getString( [] )
-  |  |  |  |  Parent#getString() --> Running
-  |  |  |  Parent#run() --> Running
-  |  |  JS.Observable#notifyObservers() --> undefined
-  |  Child#fire() --> undefined
-  |  Mixin#run( ["something"] )
-  |  |  Parent#run( ["something"] )
-  |  |  |  Parent#getString( [] )
-  |  |  |  Parent#getString() --> Running
-  |  |  Parent#run() --> Running
-  |  Mixin#run() --> RUNNING
-  Child#run() --> RUNNING!!!</pre>
+  <pre class="prettyprint">JS.ENV.RangeSpec = JS.Test.describe('Range', function() { with(this) {
+      cover(JS.Range)
+      
+      // tests etc.
+  }});</pre>
   
-  h3. Tracing modes
-  
-  @StackTrace@ has a couple of different modes that control its output. The
-  default mode is @full@, which logs all method calls and shows stack level
-  using indentation. The other mode is @errors@, which only prints out the call
-  stack when an exception is thrown and is not caught. The method that threw the
-  exception is printed at the top, the method that called _that_ next, and so on
-  until we reach the outermost method. Suppose we make the following changes to
-  our program:
-  
-  <pre class="prettyprint">Parent.define('getString', function() {
-      throw new TypeError;
-  });
-  
-  JS.StackTrace.logLevel = 'errors';</pre>
-  
-  Then running the program again produces:
-  
-  <pre>TypeError thrown by Parent#getString. Backtrace:
-  Parent#getString( [] )
-  Parent#run( [] )
-  JS.Observable#notifyObservers( [] )
-  Child#fire( [] )
-  Child#run( ["something"] )</pre>
-  
-  This output has been condensed slightly for clarity. In practise, @StackTrace@
-  also logs the object that each method is called on so you can inspect it with
-  Firebug.
-  
-  h3. Caveats
-  
-  It is important to know the limitations of this module as the limitations of
-  JavaScript mean it can cause serious problems if abused. The first and most
-  important caveat is, do not use this module in production code. It wraps all
-  the functions in your classes with extra calls, at least trippling the number
-  of function calls and causing a large performance hit. Only use it in
-  development.
-  
-  The other caveats relate to consequences of JavaScript's naming system. When
-  you create a class like @Parent = new JS.Class()@, the class stored in the
-  variable @Parent@ has no way of knowing the name of the variable(s) that
-  reference it. Therefore, @StackTrace@ has an autodiscovery system to find out
-  the names of classes and methods at runtime. It works using a breadth-first
-  search of all global objects in the program, continuing until it finds an
-  object matching the class to trace. This lookup is expensive, and the cost
-  grows exponentially with how deeply nested your namespace is. For example,
-  finding a class @Parent@ is much faster than finding @MyApp.utils.Parent@, as
-  the latter is two levels of nesting deeper.
-  
-  One obvious side-effect of the above is that your class _must_ be globally
-  accessible so that @StackTrace@ can figure out its name. Classes defined
-  inside closures will never be found.
-  
-  Finally, note that @StackTrace@ cannot find names for classes immediately,
-  there is some delay in naming a class after you include @StackTrace@ into it.
-  Consider this:
-  
-  <pre class="prettyprint">var Foo = new JS.Class({
-      include: JS.StackTrace
-  });</pre>
-  
-  This creates a new class, mixes @StackTrace@ into it, _then_ assigns the
-  finished class to the variable @Foo@. So at the point that @StackTrace@ is
-  mixed in, the class has not been bound to a name. To get around this, names
-  are looked up asynchronously using a @setTimeout()@ call. Code that runs
-  synchronously with the class definition will not be correctly traced.
-
+  !/images/coverage.png!
