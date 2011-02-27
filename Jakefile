@@ -1,13 +1,13 @@
 # Reads the license file and returns its contents formatted as
 # a multiline JavaScript comment for embedding in source code
 jake_helper :license do
-  "/**\n" + File.read('MIT-LICENSE').split(/\n/).map { |line|
+  "/**\n" + File.read('LICENSE').split(/\n/).map { |line|
     " * #{ line }"
   }.join("\n") + "\n */"
 end
 
 jake_hook :build_complete do |build|
-  %w[CHANGELOG MIT-LICENSE].each do |doc|
+  %w[CHANGELOG LICENSE].each do |doc|
     FileUtils.cp doc, "#{build.build_directory}/#{doc}"
   end
   

@@ -1,3 +1,5 @@
+<%= license %>
+
 (function() {
   var $ = (typeof this.global === 'object') ? this.global : this;
   $.JS = $.JS || {};
