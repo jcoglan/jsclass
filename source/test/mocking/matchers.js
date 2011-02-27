@@ -17,9 +17,13 @@ JS.Test.Mocking.extend({
     equals: function(array) {
       if (!JS.isType(array, Array)) return false;
       var i = this._elements.length;
-      while (i--) {
-        if (JS.indexOf(array, this._elements[i]) === -1)
-          return false;
+      loop: while (i--) {
+        j = array.length;
+        while (j--) {
+          if (JS.Enumerable.areEqual(this._elements[i], array[j]))
+            continue loop;
+        }
+        return false;
       }
       return true;
     },

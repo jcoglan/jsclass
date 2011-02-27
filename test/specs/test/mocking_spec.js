@@ -586,6 +586,12 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
         assertEqual( arrayIncluding("foo", "bar"), ["bar", "hi", "foo", "there"] )
       }})
       
+      it("can include other matchers", function() { with(this) {
+        var matcher = arrayIncluding(instanceOf(Function))
+        assertEqual( matcher, [function() {}] )
+        assertNotEqual( matcher, [true] )
+      }})
+      
       it("does not match other data types", function() { with(this) {
         assertNotEqual( arrayIncluding("foo"), {foo: true} )
         assertNotEqual( arrayIncluding("foo"), true )
@@ -605,6 +611,12 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
         assertEqual( objectIncluding({foo: true}), {hi: true, foo: true, there: true} )
         assertEqual( objectIncluding(), {hi: true, foo: true, there: true} )
         assertEqual( objectIncluding({bar: true, foo: true}), {bar: true, hi: true, foo: true, there: true} )
+      }})
+      
+      it("can include other matchers", function() { with(this) {
+        var matcher = objectIncluding({foo: instanceOf(Function)})
+        assertEqual( matcher, {foo: function() {}} )
+        assertNotEqual( matcher, {foo: true} )
       }})
       
       it("does not match other data types", function() { with(this) {
