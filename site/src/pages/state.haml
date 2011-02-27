@@ -1,5 +1,5 @@
 :textile
-  h2. @JS.State@
+  h2. State
   
   @JS.State@ is an implementation of the "State pattern":http://en.wikipedia.org/wiki/State_pattern in JavaScript.
   Simply put, the State pattern is a way of making the behaviour of an object
@@ -91,25 +91,24 @@
       
       initialize: function() {
           this.setState('Pen');
+      }
+  });
+  DrawingController.states({
+      Pen: {
+          mouseDown: function() {
+              return 'Starting to draw';
+          },
+          mouseUp: function() {
+              return 'Finished drawing';
+          }
       },
       
-      states: {
-          Pen: {
-              mouseDown: function() {
-                  return 'Starting to draw';
-              },
-              mouseUp: function() {
-                  return 'Finished drawing';
-              }
+      Selection: {
+          mouseDown: function() {
+              return 'Making selection';
           },
-          
-          Selection: {
-              mouseDown: function() {
-                  return 'Making selection';
-              },
-              mouseUp: function() {
-                  return 'Completing selection';
-              }
+          mouseUp: function() {
+              return 'Completing selection';
           }
       }
   });
@@ -137,24 +136,23 @@
       initialize: function() {
           this.name = 'Twiddle';
           this.setState('Incomplete');
-      },
-      
-      states: {
-          Complete: {
-              getName: function() {
-                  return this.name;
-              }
-          },
-          Incomplete: {
-              
+      }
+  });
+  Twiddle.states({
+      Complete: {
+          getName: function() {
+              return this.name;
           }
+      },
+      Incomplete: {
+          
       }
   });
   
   var twid = new Twiddle();
   twid.getName() === twid     // -> true
   twid.setState('Complete');
-  twid.getName()      // -> "Twiddler"</pre>
+  twid.getName()      // -> "Twiddle"</pre>
   
   Notice that inside @Complete.getName@, the @this@ keyword refers to the object
   calling the method, just as for regular 'stateless' methods.
@@ -176,18 +174,17 @@
   only need to specify the ways in which it differs from its parent. Let's take
   an example implementation of @ChildController@.
   
-  <pre class="prettyprint">var ChildController = new JS.Class(DrawingController, {
-      states: {
-          Selection: {
-              mouseDown: function() {
-                  return this.callSuper().toUpperCase();
-              }
-          },
-          
-          Eraser: {
-              mouseMove: function() {
-                  return 'Removing stuff';
-              }
+  <pre class="prettyprint">var ChildController = new JS.Class(DrawingController);
+  ChildController.states({
+      Selection: {
+          mouseDown: function() {
+              return this.callSuper().toUpperCase();
+          }
+      },
+      
+      Eraser: {
+          mouseMove: function() {
+              return 'Removing stuff';
           }
       }
   });</pre>

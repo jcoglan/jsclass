@@ -1,5 +1,5 @@
 :textile
-  h2. @JS.Proxy@
+  h2. Proxy
   
   In general, a proxy is an object that controls access to another object
   (referred to as the _real subject_). It has exactly the same interface as the
@@ -15,7 +15,7 @@
   subject is not initialized until it is really needed, allowing for 'lazy
   instantiation' of objects that are expensive to create.
   
-  @JS.Class@ provides a module called @JS.Proxy.Virtual@. This allows you create
+  JS.Class provides a module called @JS.Proxy.Virtual@. This allows you create
   proxies for classes without needing to write all the forwarding and
   instantiation methods yourself. @JS.Proxy.Virtual@ inspects the proxied class
   and automatically creates proxies for all its instance methods. This saves you

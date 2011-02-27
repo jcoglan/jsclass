@@ -1,5 +1,5 @@
 :textile
-  h2. @JS.Console@
+  h2. Console
   
   Most JavaScript environments have some sort of console that allows running
   programs to print output, log messages and the like. In many web browsers,
@@ -18,8 +18,8 @@
     afterward, so that subsequent messages appear on the next line.
   * @JS.Console.print(string)@ - prints @string@ without applying line breaks,
     allowing multiple @print()@ calls to write output to the same line if the
-    console supports this. In web browsers, this method is equivalent to
-    @puts()@.
+    console supports this. In environments that don't support this, the output
+    is buffered until the next @puts()@ call.
   
   The output devices used are as follows:
   

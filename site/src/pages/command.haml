@@ -1,5 +1,5 @@
 :textile
-  h2. @JS.Command@
+  h2. Command
   
   @JS.Command@ is an implementation of the "command pattern":http://en.wikipedia.org/wiki/Command_pattern,
   in which objects are used to represent actions. A command object typically has
@@ -139,7 +139,7 @@
   number. @stepTo(0)@ undoes the whole stack, and commands are numbered
   sequentially from @1@ upwards.
   
-  @push()@ lets you push a command onto the stack yourself - this is the method
+  @push()@ lets you push a command onto the stack yourself -- this is the method
   @JS.Command@ uses internally if you tell a command to associate itself with
   a stack. When you push a command onto the stack, it is added at whichever
   point in the stack you happen to be, and any previously undone commands after
@@ -271,8 +271,7 @@
   h3. They're @Observable@ and @Enumerable@
   
   @JS.Command.Stack@ mixes in the "@Observable@":/observable.html and "@Enumerable@":/enumerable.html
-  modules if they are included in your code _before_ you include the @Command@
-  code. This means you can implement a Photoshop-style action history with
+  modules. This means you can implement a Photoshop-style action history with
   barely any code at all by observing the stack:
   
   <pre class="prettyprint"><ul id="drawHistory"></ul>
