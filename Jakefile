@@ -8,10 +8,10 @@ end
 
 jake_hook :build_complete do |build|
   %w[CHANGELOG LICENSE].each do |doc|
-    FileUtils.cp doc, "#{build.build_directory}/#{doc}"
+    FileUtils.cp doc, "#{build.build_directory}/#{doc}.txt"
   end
   
-  FileUtils.cp 'README.markdown', "#{build.build_directory}/README"
+  FileUtils.cp 'README.markdown', "#{build.build_directory}/README.txt"
   
   build.packages.each do |doc|
     FileUtils.cp build.package(doc).build_path(:min), "site/site/javascripts/js.class/#{doc}.js"

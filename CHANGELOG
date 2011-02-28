@@ -1,25 +1,46 @@
 Version 3.0.0
+TestSwarm build: http://swarm.jcoglan.com/job/19/
+February 28 2011
 ================================================================
 
-* JS.Class no longer supports subclassing the Class class.
+* All components now run on a much wider array of platforms,
+  see http://jsclass.jcoglan.com/platforms.html
 
-* Module#instanceMethod() returns a Method, not a Function.
+* JS.Class is now tested using its own test framework, JS.Test.
+  See http://jsclass.jcoglan.com/testing.html
+
+* New libraries: Benchmark, Console, Deferrable, OrderedHash,
+  Range, OrderedSet, TSort
+
+* HashSet has become the base Set implementation, and the
+  original Set implementation has been removed
+
+* StackTrace has been totally overhauled to support extensible
+  user-defined tracing functionality
+
+* New core method Module#alias() for aliasing methods
+
+* User-defined keyword methods using Method.keyword()
+
+* JS.Class no longer supports subclassing the Class class
+
+* Module#instanceMethod() returns a Method, not a Function
 
 * Enumerable#grep() now supports selecting by type, e.g.
   items.grep(Array). It does not support functional predicates
   like items.grep(function(x) { return x == 0 }), you should use
-  Enumerable#select() for this.
+  Enumerable#select() for this
 
-* Objects with the same properties are now considered equal when
-  used as Hash keys.
+* Objects with the same properties, and Arrays with the same
+  elements are now considered equal when used as Hash keys
 
-* MethodChain#fire() is now called MethodChain#__exec__().
+* MethodChain#fire() is now called MethodChain#__exec__()
 
-* JS.Ruby has been removed.
+* JS.Ruby has been removed
 
 * JS.State now adds states() as a class method, rather than a
   macro in the class body. All classes using 'inline' states
-  MUST call this method to declare and resolve their states.
+  MUST call this method to declare and resolve their states
 
 
 Version 2.1.5

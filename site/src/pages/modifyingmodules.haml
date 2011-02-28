@@ -3,7 +3,7 @@
   
   Just like in Ruby, classes and modules are open for modification at any time,
   so you can add and change methods in existing classes. All classes and modules
-  in JS.Class have two special methods for modifying the methods they contain.
+  in JS.Class have some special methods for modifying the methods they contain.
   The following is written to apply to modifying classes, but it applies equally
   to modifying modules -- classes are just modules that can be instantiated.
   
@@ -21,6 +21,15 @@
   Note that if the class already has a method with the same name as the one
   you're defining, the old method will be overwritten. Methods in parent classes
   and in mixins can be accessed using @callSuper()@.
+  
+  If you want to create aliases for methods that already exist, use the @alias()@
+  method. The new alias goes on the left-hand-side, the existing method name on
+  the right.
+  
+  <pre class="prettyprint">Animal.alias({
+      talk:   'speak',
+      rest:   'sleep'
+  });</pre>
   
   The other option available to you is to use @include()@. This method has a
   couple of roles; if you supply a "@Module@":/modules.html, the module is mixed
