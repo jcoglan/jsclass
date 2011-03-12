@@ -354,6 +354,16 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
         })})
       }})
       
+      it("passes if the method was not called", function(resume) { with(this) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").exactly(0)
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 0, 0 )
+        })})
+      }})
+      
       it("fails if the method was not supposed to be called", function(resume) { with(this) {
         runTests({
           testExpectMethod: function() { with(this) {

@@ -84,7 +84,7 @@ JS.Test.Mocking.extend({
       
       var okay = true, extraMessage;
       
-      if (this._callsMade === 0 && this._maximumCalls === undefined) {
+      if (this._callsMade === 0 && this._maximumCalls === undefined && this._expectedCalls === undefined) {
         okay = false;
       } else if (this._expectedCalls !== undefined && this._callsMade !== this._expectedCalls) {
         extraMessage = this._createMessage('exactly');
