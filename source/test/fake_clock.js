@@ -41,6 +41,12 @@ JS.Test.extend({
         
         compareTo: function(other) {
           return this.time - other.time;
+        },
+        
+        toString: function() {
+          return (this.repeat ? 'Interval' : 'Timeout') +
+                '(' + this.interval + ')' +
+                ':' + this.time;
         }
       }),
       
