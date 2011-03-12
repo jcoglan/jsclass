@@ -55,6 +55,7 @@ JS.Test.extend({
         var timeout;
         while (timeout = this._schedule.nextScheduledAt(this._currentTime))
           this._run(timeout);
+        this._callTime = this._currentTime;
       },
       
       _run: function(timeout) {

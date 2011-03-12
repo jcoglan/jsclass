@@ -89,6 +89,23 @@ JS.ENV.Test.FakeClockSpec = JS.Test.describe(JS.Test.FakeClock, function() { wit
       assertEqual( ["ping", "first", "second", "ping", "ping", "third"], calls )
     }})
   }})
+  
+  describe("cancelling and resetting a timeout", function() { with(this) {
+    before(function() { with(this) {
+      this.calls = []
+      this.timer = JS.ENV.setTimeout(function() { calls.push("done") }, 1000)
+    }})
+    
+    it("prolongs the delay before the timeout", function() { with(this) {
+      clock.tick(500)
+      JS.ENV.clearTimeout(timer)
+      JS.ENV.setTimeout(function() { calls.push("done") }, 1000)
+      clock.tick(500)
+      assertEqual( [], calls )
+      clock.tick(500)
+      assertEqual( ["done"], calls )
+    }})
+  }})
 
   describe(Date, function() { with(this) {
     before(function() { with(this) {
