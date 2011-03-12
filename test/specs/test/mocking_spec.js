@@ -354,6 +354,24 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
         })})
       }})
       
+      it("fails if the method was not supposed to be called", function(resume) { with(this) {
+        runTests({
+          testExpectMethod: function() { with(this) {
+            expect(object, "getName").exactly(0)
+            object.getName()
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0 )
+          assertMessage( 1, "Failure:\n" +
+                            "testExpectMethod(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<[OBJECT]> expected to receive call\n" +
+                            "getName(*arguments)\n" +
+                            "exactly 0 times\n" +
+                            "but 1 call was made." )
+        })})
+      }})
+      
       it("fails if the method was called too many times", function(resume) { with(this) {
         runTests({
           testExpectMethod: function() { with(this) {

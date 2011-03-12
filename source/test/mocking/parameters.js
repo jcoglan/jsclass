@@ -84,15 +84,15 @@ JS.Test.Mocking.extend({
       
       var okay = true, extraMessage;
       
-      if (this._callsMade === 0 && !this._maximumCalls) {
+      if (this._callsMade === 0 && this._maximumCalls === undefined) {
         okay = false;
-      } else if (this._expectedCalls && this._callsMade !== this._expectedCalls) {
+      } else if (this._expectedCalls !== undefined && this._callsMade !== this._expectedCalls) {
         extraMessage = this._createMessage('exactly');
         okay = false;
-      } else if (this._maximumCalls && this._callsMade > this._maximumCalls) {
+      } else if (this._maximumCalls !== undefined && this._callsMade > this._maximumCalls) {
         extraMessage = this._createMessage('at most');
         okay = false;
-      } else if (this._minimumCalls && this._callsMade < this._minimumCalls) {
+      } else if (this._minimumCalls !== undefined && this._callsMade < this._minimumCalls) {
         extraMessage = this._createMessage('at least');
         okay = false;
       }
