@@ -20,7 +20,7 @@ JS.Test.extend({
           this.__stepQueue__.push(args);
           if (this.__runningSteps__) return;
           this.__runningSteps__ = true;
-          JS.ENV.setTimeout(this.method('__runNextStep__'), 1);
+          JS.Test.Unit.TestSuite.setTimeout(this.method('__runNextStep__'), 1);
         },
         
         __runNextStep__: function() {

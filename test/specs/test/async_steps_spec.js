@@ -47,7 +47,6 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
       before(function() { this.steps.multiply(7,8) })
       
       it("waits for the step to complete", function(resume) { with(this) {
-        var result
         assertEqual( undefined, steps.result )
         steps.sync(function() {
           resume(function() { assertEqual( 56, steps.result ) })
@@ -62,11 +61,22 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
       }})
       
       it("waits for all the steps to complete", function(resume) { with(this) {
-        var result
         assertEqual( undefined, steps.result )
         steps.sync(function() {
           resume(function() { assertEqual( 51, steps.result ) })
         })
+      }})
+    }})
+    
+    describe("with FakeClock activated", function() { with(this) {
+      include(JS.Test.FakeClock)
+      before(function() { this.clock.stub() })
+      after(function() { this.clock.reset() })
+      
+      it("waits for all the steps to complete", function(resume) { with(this) {
+        steps.result = 11
+        steps.checkResult(11)
+        steps.sync(resume)
       }})
     }})
   }})
