@@ -1,7 +1,7 @@
 JS.Test.extend({
   FakeClock: new JS.Module({
     extend: {
-      API: {
+      API: new JS.Singleton({
         stub: function() {
           var mocking = JS.Test.Mocking,
               methods = ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
@@ -20,7 +20,7 @@ JS.Test.extend({
         tick: function(milliseconds) {
           return JS.Test.FakeClock.tick(milliseconds);
         }
-      },
+      }),
       
       JSDate: Date,
       

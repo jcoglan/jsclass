@@ -71,7 +71,7 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
     describe("with FakeClock activated", function() { with(this) {
       include(JS.Test.FakeClock)
       before(function() { this.clock.stub() })
-      after(function() { this.clock.reset() })
+      after(function() { this.steps.sync(this.clock.method('reset')) })
       
       it("waits for all the steps to complete", function(resume) { with(this) {
         steps.result = 11
