@@ -26,13 +26,13 @@ JS.Package = function(loader) {
   //================================================================
   // Ordered list of unique elements, for storing dependencies
   
-  var Set = klass.OrderedSet = function(list, transform) {
+  var Set = klass.OrderedSet = function(list) {
     this._members = this.list = [];
     this._index = {};
     if (!list) return;
     
     for (var i = 0, n = list.length; i < n; i++)
-      this.push(transform ? transform(list[i]) : list[i]);
+      this.push(list[i]);
   };
 
   Set.prototype.push = function(item) {
@@ -86,7 +86,7 @@ JS.Package = function(loader) {
     var n = arguments.length, i;
     for (i = 0; i < n; i++) {
       this._names.push(arguments[i]);
-      klass.getFromCache(arguments[i]).pkg = this;
+      klass._getFromCache(arguments[i]).pkg = this;
     }
     return this;
   };
@@ -99,14 +99,14 @@ JS.Package = function(loader) {
   //================================================================
   // Event dispatchers, for communication between packages
   
-  instance.on = function(eventType, block, scope) {
+  instance._on = function(eventType, block, scope) {
     if (this._events[eventType]) return block.call(scope);
     var list = this._observers[eventType] = this._observers[eventType] || [];
     list.push([block, scope]);
-    this.load();
+    this._load();
   };
   
-  instance.fire = function(eventType) {
+  instance._fire = function(eventType) {
     if (this._events[eventType]) return false;
     this._events[eventType] = true;
     
@@ -123,26 +123,26 @@ JS.Package = function(loader) {
   //================================================================
   // Loading frontend and other miscellany
   
-  instance.isLoaded = function(withExceptions) {
-    if (!withExceptions && this._isLoaded !== undefined) return this._isLoaded;
+  instance._isLoaded = function(withExceptions) {
+    if (!withExceptions && this.__isLoaded !== undefined) return this.__isLoaded;
     
     var names = this._names.list,
         i     = names.length,
         name, object;
     
     while (i--) { name = names[i];
-      object = klass.getObject(name, this._exports);
+      object = klass._getObject(name, this._exports);
       if (object !== undefined) continue;
       if (withExceptions)
         return klass._throw('Expected package at ' + this._loader + ' to define ' + name);
       else
-        return this._isLoaded = false;
+        return this.__isLoaded = false;
     }
-    return this._isLoaded = true;
+    return this.__isLoaded = true;
   };
   
-  instance.load = function() {
-    if (!this.fire('request')) return;
+  instance._load = function() {
+    if (!this._fire('request')) return;
     
     var allDeps = this._deps.list.concat(this._uses.list),
         i = allDeps.length;
@@ -151,27 +151,27 @@ JS.Package = function(loader) {
     
     klass.when({complete: this._deps.list}, function() {
       klass.when({complete: allDeps, load: [this]}, function() {
-        this.fire('complete');
+        this._fire('complete');
       }, this);
       
-      var self = this, fireOnLoad = function(exports) {
+      var self = this, _fireOnLoad = function(exports) {
         self._exports = exports;
         if (self._onload) self._onload();
-        self.isLoaded(true);
-        self.fire('load');
+        self._isLoaded(true);
+        self._fire('load');
       };
       
-      if (this.isLoaded()) {
-        this.fire('download');
-        return this.fire('load');
+      if (this._isLoaded()) {
+        this._fire('download');
+        return this._fire('load');
       }
       
       if (this._loader === undefined)
         return klass._throw('No load path found for ' + this._names.list[0]);
       
       typeof this._loader === 'function'
-            ? this._loader(fireOnLoad)
-            : klass.Loader.loadFile(this._loader, fireOnLoad);
+            ? this._loader(_fireOnLoad)
+            : klass.Loader.loadFile(this._loader, _fireOnLoad);
       
       if (!klass.Loader.loadStyle) return;
       
@@ -180,7 +180,7 @@ JS.Package = function(loader) {
       
       while (i--) klass.Loader.loadStyle(styles[i]);
       
-      this.fire('download');
+      this._fire('download');
     }, this);
   };
   
@@ -206,9 +206,9 @@ JS.Package = function(loader) {
     
     while (i--)
       (function(event) {
-        var pkg = klass.getByName(event[1]);
-        pkg.on(event[0], function() {
-          objects[event[0]][event[2]] = klass.getObject(event[1], pkg._exports);
+        var pkg = klass._getByName(event[1]);
+        pkg._on(event[0], function() {
+          objects[event[0]][event[2]] = klass._getObject(event[1], pkg._exports);
           waiting -= 1;
           if (waiting === 0 && block) block.call(scope, objects);
         });
@@ -228,14 +228,14 @@ JS.Package = function(loader) {
     this._autoIncrement += 1;
   };
   
-  klass.getByPath = function(loader) {
+  klass._getByPath = function(loader) {
     var path = loader.toString();
     return this._indexByPath[path] = this._indexByPath[path] || new this(loader);
   };
   
-  klass.getByName = function(name) {
+  klass._getByName = function(name) {
     if (typeof name !== 'string') return name;
-    var cached = this.getFromCache(name);
+    var cached = this._getFromCache(name);
     if (cached.pkg) return cached.pkg;
     
     var autoloaded = this._manufacture(name);
@@ -247,7 +247,7 @@ JS.Package = function(loader) {
   };
   
   klass.remove = function(name) {
-    var pkg = this.getByName(name);
+    var pkg = this._getByName(name);
     delete this._indexByName[name];
     delete this._indexByPath[pkg._loader];
   };
@@ -255,7 +255,7 @@ JS.Package = function(loader) {
   //================================================================
   // Auotloading API, generates packages from naming patterns
   
-  klass.autoload = function(pattern, options) {
+  klass._autoload = function(pattern, options) {
     this._autoloaders.push([pattern, options]);
   };
   
@@ -287,14 +287,14 @@ JS.Package = function(loader) {
   //================================================================
   // Cache for named packages and runtime objects
   
-  klass.getFromCache = function(name) {
+  klass._getFromCache = function(name) {
     return this._indexByName[name] = this._indexByName[name] || {};
   };
   
-  klass.getObject = function(name, rootObject) {
+  klass._getObject = function(name, rootObject) {
     if (typeof name !== 'string') return undefined;
     
-    var cached = rootObject ? {} : this.getFromCache(name);
+    var cached = rootObject ? {} : this._getFromCache(name);
     if (cached.obj !== undefined) return cached.obj;
     
     var object = rootObject || this.ENV,
@@ -303,7 +303,7 @@ JS.Package = function(loader) {
     while (part = parts.shift()) object = object && object[part];
     
     if (rootObject && object === undefined)
-      return this.getObject(name);
+      return this._getObject(name);
     
     return cached.obj = object;
   };

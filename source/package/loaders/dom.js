@@ -1,6 +1,6 @@
 JS.Package.DomLoader = {
   usable: function() {
-    return !!JS.Package.getObject('window.document.getElementsByTagName');
+    return !!JS.Package._getObject('window.document.getElementsByTagName');
   },
   
   __FILE__: function() {

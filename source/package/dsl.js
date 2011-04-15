@@ -5,14 +5,14 @@ JS.Package.DSL = {
   
   pkg: function(name, path) {
     var pkg = path
-        ? JS.Package.getByPath(path)
-        : JS.Package.getByName(name);
+        ? JS.Package._getByPath(path)
+        : JS.Package._getByName(name);
     pkg.provides(name);
     return pkg;
   },
   
   file: function(path) {
-    return JS.Package.getByPath(path);
+    return JS.Package._getByPath(path);
   },
   
   load: function(path, fireCallbacks) {
@@ -20,7 +20,7 @@ JS.Package.DSL = {
   },
   
   autoload: function(pattern, options) {
-    JS.Package.autoload(pattern, options);
+    JS.Package._autoload(pattern, options);
   }
 };
 
