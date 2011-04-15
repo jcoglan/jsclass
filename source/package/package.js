@@ -64,27 +64,36 @@ JS.Package = function(loader) {
   //================================================================
   // Configuration methods, called by the DSL
   
-  var instance = klass.prototype;
+  var instance = klass.prototype,
+      
+      methods = [['requires', '_deps'],
+                 ['uses',     '_uses'],
+                 ['styling',  '_styles']],
+      
+      i = methods.length;
   
-  instance.addDependency = function(pkg) {
-    this._deps.push(pkg);
+  while (i--)
+    (function(pair) {
+      var method = pair[0], list = pair[1];
+      instance[method] = function() {
+        var n = arguments.length, i;
+        for (i = 0; i < n; i++) this[list].push(arguments[i]);
+        return this;
+      };
+    })(methods[i]);
+  
+  instance.provides = function() {
+    var n = arguments.length, i;
+    for (i = 0; i < n; i++) {
+      this._names.push(arguments[i]);
+      klass.getFromCache(arguments[i]).pkg = this;
+    }
+    return this;
   };
   
-  instance.addSoftDependency = function(pkg) {
-    this._uses.push(pkg);
-  };
-  
-  instance.addStylesheet = function(path) {
-    this._styles.push(path);
-  };
-  
-  instance.addName = function(name) {
-    this._names.push(name);
-    klass.getFromCache(name).pkg = this;
-  };
-  
-  instance.onload = function(block) {
+  instance.setup = function(block) {
     this._onload = block;
+    return this;
   };
   
   //================================================================
@@ -233,7 +242,7 @@ JS.Package = function(loader) {
     if (autoloaded) return autoloaded;
     
     var placeholder = new this();
-    placeholder.addName(name);
+    placeholder.provides(name);
     return placeholder;
   };
   
@@ -265,10 +274,10 @@ JS.Package = function(loader) {
                  .toLowerCase() + '.js';
       
       var pkg = new this(path);
-      pkg.addName(name);
+      pkg.provides(name);
       
       if (path = autoloader[1].require)
-        pkg.addDependency(name.replace(autoloader[0], path));
+        pkg.requires(name.replace(autoloader[0], path));
       
       return pkg;
     }

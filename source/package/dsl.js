@@ -7,13 +7,12 @@ JS.Package.DSL = {
     var pkg = path
         ? JS.Package.getByPath(path)
         : JS.Package.getByName(name);
-    pkg.addName(name);
-    return new JS.Package.Description(pkg);
+    pkg.provides(name);
+    return pkg;
   },
   
   file: function(path) {
-    var pkg = JS.Package.getByPath(path);
-    return new JS.Package.Description(pkg);
+    return JS.Package.getByPath(path);
   },
   
   load: function(path, fireCallbacks) {
@@ -24,41 +23,6 @@ JS.Package.DSL = {
     JS.Package.autoload(pattern, options);
   }
 };
-
-JS.Package.Description = function(pkg) {
-  this._pkg = pkg;
-};
-
-(function(klass) {
-  
-  klass._batch = function(method, args) {
-    var n = args.length, method = this._pkg[method], i;
-    for (i = 0; i < n; i++) method.call(this._pkg, args[i]);
-    return this;
-  };
-  
-  klass.provides = function() {
-    return this._batch('addName', arguments);
-  };
-  
-  klass.requires = function() {
-    return this._batch('addDependency', arguments);
-  };
-  
-  klass.uses = function() {
-    return this._batch('addSoftDependency', arguments);
-  };
-  
-  klass.styling = function() {
-    return this._batch('addStylesheet', arguments);
-  };
-  
-  klass.setup = function(block) {
-    this._pkg.onload(block);
-    return this;
-  };
-  
-})(JS.Package.Description.prototype);
 
 JS.Package.DSL.loader = JS.Package.DSL.file;
 
