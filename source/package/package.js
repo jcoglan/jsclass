@@ -23,6 +23,12 @@ JS.Package = function(loader) {
   klass.displayName = 'Package';
   klass.toString = function() { return klass.displayName };
   
+  klass.log = function(message) {
+    if (typeof window === 'undefined') return;
+    if (typeof window.runtime === 'object') window.runtime.trace(message);
+    if (window.console && console.info) console.info(message);
+  };
+  
   //================================================================
   // Ordered list of unique elements, for storing dependencies
   
@@ -42,6 +48,28 @@ JS.Package = function(loader) {
     if (index.hasOwnProperty(key)) return;
     index[key] = this._members.length;
     this._members.push(item);
+  };
+  
+  //================================================================
+  // Wrapper for deferred values
+  
+  var Deferred = klass.Deferred = function() {
+    this._status    = 'deferred';
+    this._value     = null;
+    this._callbacks = [];
+  };
+  
+  Deferred.prototype.callback = function(callback, context) {
+    if (this._status === 'succeeded') callback.call(context, this._value);
+    else this._callbacks.push([callback, context]);
+  };
+  
+  Deferred.prototype.succeed = function(value) {
+    this._status = 'succeeded';
+    this._value  = value;
+    var callback;
+    while (callback = this._callbacks.shift())
+      callback[0].call(callback[1], value);
   };
   
   //================================================================
@@ -143,6 +171,7 @@ JS.Package = function(loader) {
   
   instance._load = function() {
     if (!this._fire('request')) return;
+    this._prefetch();
     
     var allDeps = this._deps.list.concat(this._uses.list),
         i = allDeps.length;
@@ -154,7 +183,7 @@ JS.Package = function(loader) {
         this._fire('complete');
       }, this);
       
-      var self = this, _fireOnLoad = function(exports) {
+      var self = this, fireOnLoad = function(exports) {
         self._exports = exports;
         if (self._onload) self._onload();
         self._isLoaded(true);
@@ -170,8 +199,8 @@ JS.Package = function(loader) {
         return klass._throw('No load path found for ' + this._names.list[0]);
       
       typeof this._loader === 'function'
-            ? this._loader(_fireOnLoad)
-            : klass.Loader.loadFile(this._loader, _fireOnLoad);
+            ? this._loader(fireOnLoad)
+            : klass.Loader.loadFile(this._loader, fireOnLoad, this._source);
       
       if (!klass.Loader.loadStyle) return;
       
@@ -182,6 +211,12 @@ JS.Package = function(loader) {
       
       this._fire('download');
     }, this);
+  };
+  
+  instance._prefetch = function() {
+    if (typeof this._loader !== 'string' ||!klass.Loader.fetch) return;
+    this._source = this._source ||
+                   klass.Loader.fetch(this._loader);
   };
   
   instance.toString = function() {
