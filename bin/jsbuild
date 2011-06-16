@@ -24,14 +24,14 @@ var fs      = require('fs'),
     include = params.argv.remain.slice()
 
 if (include.length === 0) {
-  console.info('\nUsage: jsbuild --manifest MANIFEST --root ROOT [OPTIONS] module1 [module2 ...]')
+  console.error('\nUsage: jsbuild --manifest MANIFEST --root ROOT [OPTIONS] module1 [module2 ...]')
   
-  console.info('\nOptions:  --manifest,    -m : path to JS.Packages manifest script')
-  console.info('          --root,        -r : directory containing your JavaScripts')
-  console.info('          --external,    -e : include external scripts from the web')
-  console.info('          --no-packages, -P : don\'t include JS.Package system in build')
+  console.error('\nOptions:  --manifest,    -m : path to JS.Packages manifest script')
+  console.error('          --root,        -r : directory containing your JavaScripts')
+  console.error('          --external,    -e : include external scripts from the web')
+  console.error('          --no-packages, -P : don\'t include JS.Package system in build')
   
-  console.info('\ne.g. jsbuild -m path/to/js/manifest.js -r path/to/ -eP jQuery JS.Set\n')
+  console.error('\ne.g. jsbuild -m path/to/js/manifest.js -r path/to/js/ -eP jQuery JS.Set\n')
   
   process.exit()
 }
@@ -100,7 +100,10 @@ var bundleLocal = function(loader, i) {
 }
 
 var bundleRemote = function(loader, i) {
-  if (!params.external) return bundle(i + 1)
+  if (!params.external) {
+    console.error('Warning: skipping ' + loader + ', pass --external to include it')
+    return bundle(i + 1)
+  }
   
   var uri     = url.parse(loader),
       client  = http.createClient(80, uri.hostname),
