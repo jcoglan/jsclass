@@ -1,3 +1,25 @@
+Version 3.0.1
+TestSwarm build: http://swarm.jcoglan.com/job/31/
+June 17 2011
+================================================================
+
+* Adds NPM package and jsbuild command-line program for bundling
+  required modules for deployment, see
+  http://jsclass.jcoglan.com/packages/bundling.html
+
+* When using JS.require(), scripts from the same domain are
+  prefetched over XHR to maximize parallel downloading
+
+* Fixes support for negative mock expectations, e.g.
+  expect(object, 'm').exactly(0)
+
+* Fixes scheduling bugs in FakeClock so that current time remains
+  correct when removing and restoring timers
+
+* Avoids stubbing of setTimeout() inside AsyncSteps, otherwise
+  it becomes very hard to use with FakeClock
+
+
 Version 3.0.0
 TestSwarm build: http://swarm.jcoglan.com/job/19/
 February 28 2011
