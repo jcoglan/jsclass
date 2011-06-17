@@ -12,7 +12,7 @@ JS.Package.CommonJSLoader = {
     var cwd    = process.cwd(),
         module = path.replace(/\.[^\.]+$/g, ''),
         path   = require('path'),
-        file   = path.join(cwd, module);
+        file   = path.resolve(module);
     
     this._currentPath = file + '.js';
     fireCallbacks(require(file));

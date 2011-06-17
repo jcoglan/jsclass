@@ -38,7 +38,7 @@ if (include.length === 0) {
 
 HTTP_REGEX = /^http:\/\//
 
-JSCLASS_PATH = path.dirname(__filename) + '/../build/src'
+JSCLASS_PATH = path.dirname(__filename) + '/../src'
 require(JSCLASS_PATH + '/loader')
 
 JS.Package.DSL.file = function(filename) {

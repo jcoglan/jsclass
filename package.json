@@ -1,0 +1,29 @@
+{ "name"          : "js-class"
+, "description"   : "Portable class library for JavaScript"
+, "keywords"      : ["oop", "data-structures", "framework", "ruby"]
+, "author"        : "James Coglan <jcoglan@gmail.com>"
+
+, "version"       : "3.0.1"
+, "engines"       : {"node": ">=0.1.0"}
+, "main"          : "./index"
+, "bin"           : {"jsbuild": "./bin/jsbuild"}
+, "dependencies"  : {"nopt": ""}
+
+, "bugs"          : "http://github.com/jcoglan/js.class/issues"
+
+, "maintainers"   : [ { "name"    : "James Coglan"
+                      , "email"   : "jcoglan@gmail.com"
+                      , "web"     : "http://jcoglan.com"
+                      }
+                    ]
+
+, "licenses"      : [ { "type"    : "MIT"
+                      , "url"     : "http://www.opensource.org/licenses/mit-license.php"
+                      }
+                    ]
+
+, "repositories"  : [ { "type"    : "git"
+                      , "url"     : "git://github.com/jcoglan/js.class.git"
+                      }
+                    ]
+}
