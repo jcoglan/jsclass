@@ -1,5 +1,5 @@
 JS.Packages(function() { with(this) {
-  file('http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js')
+  file('https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js')
     .provides('jQuery')
   
   file('/common.js')
