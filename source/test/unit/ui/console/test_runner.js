@@ -81,6 +81,10 @@ JS.Test.Unit.UI.extend({
           this._output(this._result, JS.Test.Unit.UI.PROGRESS_ONLY);
           this.reset();
           this.puts('');
+          
+          var status = this._result.passed() ? 0 : 1;
+          if (typeof process === 'object') setTimeout(function() { process.exit(status) }, 500);
+          if (typeof quit == 'function') quit(status);
         },
         
         _testStarted: function(testCase) {
