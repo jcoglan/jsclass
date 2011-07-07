@@ -83,7 +83,7 @@ JS.Test.Unit.UI.extend({
           this.puts('');
           
           var status = this._result.passed() ? 0 : 1;
-          if (typeof process === 'object') setTimeout(function() { process.exit(status) }, 500);
+          if (typeof process === 'object') process.exit(status);
           if (typeof quit == 'function') quit(status);
         },
         

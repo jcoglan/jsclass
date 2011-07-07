@@ -164,9 +164,9 @@ JS.Console = new JS.Module('Console', {
     
     writeToStdout: function(string) {
       if (this.BROWSER && window.runtime) return window.runtime.trace(string);
+      if (this.NODE)                      return console.warn(string);
       if (typeof console !== 'undefined') return console.log(string);
       if (typeof alert === 'function')    return alert(string);
-      if (typeof process === 'object')    return require('sys').puts(string);
       if (typeof WScript !== 'undefined') return WScript.Echo(string);
       if (typeof print === 'function')    return print(string);
     }
@@ -183,7 +183,7 @@ JS.Console = new JS.Module('Console', {
     string = (string === undefined ? '' : string).toString();
     var C = JS.Console;
     if (!C.NODE) return C.output(string, false);
-    require('sys').puts(C.flushFormat() + string);
+    console.warn(C.flushFormat() + string);
     C.__print__ = false;
   },
   
