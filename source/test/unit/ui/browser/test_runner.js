@@ -43,12 +43,16 @@ JS.Test.Unit.UI.extend({
           
           this._mediator.addListener(JS.Test.Unit.UI.TestRunnerMediator.FINISHED,
           function() {
-            TestSwarm.submit({
-              fail:   this._result.failureCount(),
-              error:  this._result.errorCount(),
-              total:  this._result.runCount()
-            });
+            TestSwarm.submit(this._resultSummary());
           }, this);
+        },
+        
+        _resultSummary: function() {
+          return {
+            fail:   this._result.failureCount(),
+            error:  this._result.errorCount(),
+            total:  this._result.runCount()
+          };
         },
         
         _startMediator: function() {
@@ -64,6 +68,7 @@ JS.Test.Unit.UI.extend({
         
         _addFault: function(fault) {
           this._faults.push(fault);
+          this._status = 'failed';
           this._getDisplay().addFault(this._currentTest, fault);
         },
         
@@ -73,15 +78,20 @@ JS.Test.Unit.UI.extend({
         
         _finished: function(elapsedTime) {
           this._getDisplay().printSummary(elapsedTime);
+          if (window.console && window.JSON)
+            console.log(JSON.stringify({jstest: this._resultSummary()}));
         },
         
         _testStarted: function(testCase) {
           this._currentTest = testCase;
+          this._status = 'passed';
           this._getDisplay().addTestCase(testCase);
         },
         
         _testFinished: function(testCase) {
           this._getDisplay().finishTestCase(testCase);
+          if (window.console && window.JSON)
+            console.log(JSON.stringify({jstest: {test: testCase.toString(), status: this._status}}));
         },
         
         toHTML: function() {
