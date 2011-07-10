@@ -84,6 +84,7 @@ JS.Test.Unit.UI.extend({
           
           var status = this._result.passed() ? 0 : 1;
           if (typeof process === 'object') process.exit(status);
+          if (typeof system === 'object') system.exit(status);
           if (typeof quit == 'function') quit(status);
         },
         
