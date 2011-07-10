@@ -58,12 +58,7 @@ JS.Test.Unit.UI.extend({
         },
         
         _finished: function(elapsedTime) {
-          this._nl();
-          this.reset();
-          this._output('Finished in ' + elapsedTime + ' seconds.');
           for (var i = 0, n = this._faults.length; i < n; i++) {
-            this._nl();
-            
             var message   = this._faults[i].longDisplay(),
                 parts     = message.split('\n'),
                 errorType = parts.shift(),
@@ -71,20 +66,24 @@ JS.Test.Unit.UI.extend({
                 part;
             
             this.consoleFormat('bold', 'red');
-            this._output((i + 1) + ') ' + errorType);
+            this._nl();
+            this._output('\n' + (i + 1) + ') ' + errorType);
             this._output(testName);
             this.reset();
             while (part = parts.shift()) this.puts(part);
           }
+          this.reset();
           this._nl();
-          this.consoleFormat('bold');
+          this._output('Finished in ' + elapsedTime + ' seconds');
+          var color = this._result.passed() ? 'green' : 'red';
+          this.consoleFormat(color);
           this._output(this._result, JS.Test.Unit.UI.PROGRESS_ONLY);
           this.reset();
           this.puts('');
           
           var status = this._result.passed() ? 0 : 1;
           if (typeof process === 'object') process.exit(status);
-          if (typeof system === 'object') system.exit(status);
+          if (typeof system === 'object' && system.exit) system.exit(status);
           if (typeof quit == 'function') quit(status);
         },
         
@@ -93,7 +92,7 @@ JS.Test.Unit.UI.extend({
         },
         
         _testFinished: function(testCase) {
-          this.consoleFormat('bold', 'green');
+          this.consoleFormat('green');
           if (!this._alreadyOutputted) this._outputSingle('.', JS.Test.Unit.UI.PROGRESS_ONLY);
           this.reset();
           this._nl(JS.Test.Unit.UI.VERBOSE);
