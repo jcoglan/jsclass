@@ -82,9 +82,11 @@ JS.Test.Unit.UI.extend({
           this.puts('');
           
           var status = this._result.passed() ? 0 : 1;
-          if (typeof process === 'object') process.exit(status);
+          
+          if (typeof WScript !== 'undefined')            WScript.Quit(status);
+          if (typeof process === 'object')               process.exit(status);
           if (typeof system === 'object' && system.exit) system.exit(status);
-          if (typeof quit == 'function') quit(status);
+          if (typeof quit == 'function')                 quit(status);
         },
         
         _testStarted: function(testCase) {
