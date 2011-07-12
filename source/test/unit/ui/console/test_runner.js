@@ -57,7 +57,7 @@ JS.Test.Unit.UI.extend({
           this._output('Started');
         },
         
-        _finished: function(elapsedTime) {
+        _finished: function(elapsedTime, reportStatus) {
           for (var i = 0, n = this._faults.length; i < n; i++) {
             var message   = this._faults[i].longDisplay(),
                 parts     = message.split('\n'),
@@ -75,13 +75,16 @@ JS.Test.Unit.UI.extend({
           this.reset();
           this._nl();
           this._output('Finished in ' + elapsedTime + ' seconds');
-          var color = this._result.passed() ? 'green' : 'red';
+          
+          var passed = (reportStatus && this._result.passed()),
+              color  = passed ? 'green' : 'red';
+          
           this.consoleFormat(color);
           this._output(this._result, JS.Test.Unit.UI.PROGRESS_ONLY);
           this.reset();
           this.puts('');
           
-          var status = this._result.passed() ? 0 : 1;
+          var status = passed ? 0 : 1;
           
           if (typeof WScript !== 'undefined')            WScript.Quit(status);
           if (typeof process === 'object')               process.exit(status);

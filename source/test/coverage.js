@@ -35,10 +35,13 @@ JS.Test.extend({
       var methods = this._methods.entries().sort(function(a,b) {
         return b.value - a.value;
       });
+      var covered = this._methods.all(function(pair) { return pair.value > 0 });
+      
       JS.Console.printTable(methods, function(row, i) {
         if (row[1] === 0) return ['bgred', 'white'];
         return (i % 2 === 0) ? ['bold'] : [];
       });
+      return covered;
     }
   })
 });

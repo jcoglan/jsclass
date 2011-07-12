@@ -22,16 +22,20 @@ JS.Test.Unit.UI.extend({
         result.removeListener(JS.Test.Unit.TestResult.FAULT, faultListener);
         result.removeListener(JS.Test.Unit.TestResult.CHANGED, resultListener);
         
-        var endTime     = new Date().getTime(),
-            elapsedTime = (endTime - beginTime) / 1000;
-        
-        this.notifyListeners(this.klass.FINISHED, elapsedTime);
+        var endTime      = new Date().getTime(),
+            elapsedTime  = (endTime - beginTime) / 1000,
+            reportStatus = true;
         
         var reports = JS.Test.Unit.TestCase.reports,
             i = reports.length;
         
-        while (i--) reports[i].report();
+        while (i--) {
+          JS.Console.output('');
+          reportStatus = reportStatus && reports[i].report();
+        }
         JS.Test.Unit.TestCase.reports = [];
+        
+        this.notifyListeners(this.klass.FINISHED, elapsedTime, reportStatus);
         
         if (continuation) continuation.call(context || null, result);
       }, this);
