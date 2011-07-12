@@ -84,7 +84,9 @@ JS.Console = new JS.Module('Console', {
     
     BROWSER: (typeof window !== 'undefined'),
     NODE:    (typeof process === 'object'),
+    RHINO:   (typeof java !== 'undefined' && typeof java.lang !== 'undefined'),
     WINDOZE: (typeof window !== 'undefined' || typeof WScript !== 'undefined'),
+    WSH:     (typeof WScript !== 'undefined'),
     
     coloring: function() {
       return !(this.BROWSER && !window.runtime) && !this.WINDOZE;
@@ -165,9 +167,10 @@ JS.Console = new JS.Module('Console', {
     writeToStdout: function(string) {
       if (this.BROWSER && window.runtime) return window.runtime.trace(string);
       if (this.NODE)                      return console.warn(string);
+      if (this.RHINO)                     return java.lang.System.out.println(string);
+      if (this.WSH)                       return WScript.Echo(string);
       if (typeof console !== 'undefined') return console.log(string);
       if (typeof alert === 'function')    return alert(string);
-      if (typeof WScript !== 'undefined') return WScript.Echo(string);
       if (typeof print === 'function')    return print(string);
     }
   },
@@ -182,17 +185,30 @@ JS.Console = new JS.Module('Console', {
   puts: function(string) {
     string = (string === undefined ? '' : string).toString();
     var C = JS.Console;
-    if (!C.NODE) return C.output(string, false);
-    console.warn(C.flushFormat() + string);
-    C.__print__ = false;
+    if (C.NODE || C.RHINO) {
+      C.writeToStdout(C.flushFormat() + string);
+      C.__print__ = false;
+    }
+    else {
+      C.output(string, false);
+    }
   },
   
   print: function(string) {
     string = (string === undefined ? '' : string).toString();
     var C = JS.Console;
-    if (!C.NODE) return C.output(string, true);
-    require('sys').print(C.flushFormat() + string);
-    C.__print__ = true;
+    
+    if (C.NODE) {
+      require('sys').print(C.flushFormat() + string);
+      C.__print__ = true;
+    }
+    else if (C.RHINO) {
+      java.lang.System.out.print(C.flushFormat() + string);
+      C.__print__ = true;
+    }
+    else {
+      C.output(string, true);
+    }
   },
   
   printTable: function(table, formatter) {
