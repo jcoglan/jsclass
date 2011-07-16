@@ -39,7 +39,7 @@ my $INJECT_FILE = "test/browser.html";
 
 # Any build commands that need to happen.
 
-my $BUILD = "rm -rf build && jake";
+my $BUILD = "git checkout origin/3.0.x && rm -rf build && jake";
 
 # The name of the job that will be submitted
 # (pick a descriptive, but short, name to make it easy to search)
