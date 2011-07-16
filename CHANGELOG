@@ -1,3 +1,22 @@
+Version 3.0.2
+TestSwarm build: http://swarm.jcoglan.com/job/70/
+July 16 2011
+================================================================
+
+* Exit with non-zero exit status from JS.Test.autorun() if there
+  are any test failures
+
+* Log test progress at JSON so we can pick up test results using
+  PhantomJS (http://www.phantomjs.org)
+
+* Allow post-test reports to cause the build to fail by returning
+  false from report(). e.g. Coverage can cause a red build if it
+  finds methods that were not called
+
+* Use synchronous console.warn() to produce output in Node, and
+  System.out.print[ln] on Rhino platforms
+
+
 Version 3.0.1
 TestSwarm build: http://swarm.jcoglan.com/job/31/
 June 17 2011
