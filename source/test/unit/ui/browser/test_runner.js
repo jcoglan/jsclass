@@ -78,8 +78,7 @@ JS.Test.Unit.UI.extend({
         
         _finished: function(elapsedTime) {
           this._getDisplay().printSummary(elapsedTime);
-          if (window.console && window.JSON)
-            console.log(JSON.stringify({jstest: this._resultSummary()}));
+          this._outputJSON({jstest: this._resultSummary()});
         },
         
         _testStarted: function(testCase) {
@@ -90,8 +89,12 @@ JS.Test.Unit.UI.extend({
         
         _testFinished: function(testCase) {
           this._getDisplay().finishTestCase(testCase);
-          if (window.console && window.JSON)
-            console.log(JSON.stringify({jstest: {test: testCase.toString(), status: this._status}}));
+          this._outputJSON({jstest: {test: testCase.toString(), status: this._status}});
+        },
+        
+        _outputJSON: function(object) {
+          if (window.console && window.JSON && !window.Components)
+            console.log(JSON.stringify(object));
         },
         
         toHTML: function() {
