@@ -37,9 +37,13 @@ my $BASE_DIR = "/home/jcoglan/www/swarm.jcoglan.com/app/changeset/$USER";
 
 my $INJECT_FILE = "test/browser.html";
 
+# Git branch of the project you want to build on
+
+my $GIT_BRANCH = "3.0.x";
+
 # Any build commands that need to happen.
 
-my $BUILD = "git checkout origin/3.0.x && rm -rf build && jake";
+my $BUILD = "rm -rf build && jake";
 
 # The name of the job that will be submitted
 # (pick a descriptive, but short, name to make it easy to search)
@@ -131,6 +135,7 @@ if ( $RCS_TYPE eq "svn" ) {
 	$rev = `svn info | grep Revision`;
 	$rev =~ s/Revision: //;
 } elsif ( $RCS_TYPE eq "git" ) {
+  `git checkout origin/$GIT_BRANCH`;
 	print "git log --abbrev-commit | head -1\n" if ( $DEBUG );
 	$rev = `git log --abbrev-commit | head -1`;
 	$rev =~ s/commit.*?(\w+).*$/$1/;
