@@ -6,8 +6,12 @@
   position:     absolute;
   right:        30px;
   top:          30px;
-  width:        509px;
+  width:        640px;
   overflow:     hidden;
+  
+  -webkit-border-radius: 16px;
+     -moz-border-radius: 16px;
+          border-radius: 16px;
 }
 
 .test-result-container p,
@@ -24,17 +28,39 @@
   padding:      0;
 }
 
-.test-result-container .report th, .test-result-container .report td {
+.test-result-container .report th:first-child {
+  -webkit-border-top-left-radius: 14px;
+     -moz-border-radius-topleft:  14px;
+          border-top-left-radius: 14px;
+}
+
+.test-result-container .report th:last-child {
+  -webkit-border-top-right-radius: 14px;
+     -moz-border-radius-topright:  14px;
+          border-top-right-radius: 14px;
+}
+
+.test-result-container .report th,
+.test-result-container .report td {
   border-left:  1px solid #ccc;
   border-right: 1px solid #ccc;
   font-weight:  bold;
   padding:      0 8px;
   text-align:   right;
-  width:        110px;
+  width:        144px;
+}
+
+.test-result-container .report th:first-child,
+.test-result-container .report td:first-child {
+  border-left: none;
+}
+
+.test-result-container .report th:last-child,
+.test-result-container .report td:last-child {
+  border-right: none;
 }
 
 .test-result-container .report th {
-  border-top:   1px solid #ccc;
   background:   #eee;
   padding:      4px 8px;
 }
@@ -120,7 +146,7 @@
   float:        left;
   border-left:  1px solid #eee;
   padding:      4px 8px;
-  width:        47px;
+  width:        64px;
 }
 
 .test-result-container .stats .number {
