@@ -12,6 +12,7 @@ var fs      = require('fs'),
                 root:     path,
                 external: Boolean,
                 packages: Boolean,
+                bundles:  path,
                 output:   String,
                 approot:  path
               },
@@ -21,6 +22,7 @@ var fs      = require('fs'),
                 'e': '--external',
                 'p': '--packages',
                 'P': '--no-packages',
+                'b': '--bundles',
                 'o': '--output',
                 'd': '--directory'
               },
@@ -29,7 +31,6 @@ var fs      = require('fs'),
     
     params  = nopt(options, shorts),
     include = params.argv.remain.slice(),
-    paths   = (params.output === 'paths'),
     dir     = new RegExp('^' + path.resolve(params.directory || '.') + '/')
 
 if (params.output && outputs.indexOf(params.output) < 0)
@@ -42,6 +43,7 @@ if (include.length === 0) {
   console.error('          --root,        -r : directory containing your JavaScripts')
   console.error('          --external,    -e : include external scripts from the web')
   console.error('          --no-packages, -P : don\'t include JS.Package system in build')
+  console.error('          --bundles,     -b : path to bundle definitions file')
   console.error('          --output,      -o : select output type: \'code\' or \'paths\'')
   console.error('          --directory,   -d : directory for paths to print relative to')
   
@@ -64,6 +66,12 @@ JS.Package.DSL.file = function(filename) {
 
 if (params.manifest) require(params.manifest)
 
+var packages = [],
+    assumed  = [],
+    bundles  = params.bundles ? JSON.parse(fs.readFileSync(params.bundles)) : {},
+    source   = [],
+    output   = function() { console.log(source.join('\n\n')) }
+
 var expand = function(name, list) {
   var pkg  = JS.Package._getByName(name),
       deps = list || [],
@@ -80,51 +88,84 @@ var expand = function(name, list) {
   return deps
 }
 
-var packages = [], n = include.length
-while (n--) expand(include[n], packages)
+var array = function(object) {
+  if (object === undefined) return []
+  return [].concat(object)
+}
 
-var source = [],
-    output = function() { console.log(source.join('\n')) }
+var expandBundle = function(name) {
+  var bundle = bundles[name];
+  
+  array(bundle.packages).forEach(function(p) { expand(p, packages) })
+  
+  array(bundle.assume).forEach(function(b) {
+    array(bundles[b].packages).forEach(function(p) { expand(p, assumed) })
+  })
+}
 
-if (params.packages !== false && !paths)
+var packageFiles = function(packages) {
+  return packages.map(function(pkg) {
+    var loader = pkg._loader
+    
+    if (typeof loader !== 'string')
+      throw new Error('Cannot bundle ' + pkg + ': no path specified')
+    
+    return HTTP_REGEX.test(loader)
+         ? loader
+         : path.resolve(loader)
+  })
+}
+
+include.forEach(function(inc) {
+  if (bundles[inc]) expandBundle(inc)
+  else expand(inc, packages)
+})
+
+var includedFiles = packageFiles(packages),
+    excludedFiles = packageFiles(assumed),
+    files         = includedFiles.slice()
+
+excludedFiles.forEach(function(exclude) {
+  var index = files.indexOf(exclude)
+  if (index >= 0) files.splice(index, 1)
+})
+
+if (params.output === 'paths') {
+  var formatPath = function(s) { return s.replace(dir, '') }
+  console.log(files.map(formatPath).join('\n'))
+  process.exit()
+}
+
+if (params.packages !== false)
   source.push(fs.readFileSync(JSCLASS_PATH + '/package-browser.js'))
 
 var bundle = function(i) {
-  if (i >= packages.length) return output()
+  if (i >= files.length) return output()
+  var file = files[i]
   
-  var loader = packages[i]._loader
-  
-  if (typeof loader !== 'string')
-    throw new Error('Cannot bundle ' + pkg + ': no path specified')
-  
-  if (paths) {
-    source.push(path.resolve(loader).replace(dir, ''));
-    return bundle(i + 1);
-  }
-  
-  if (HTTP_REGEX.test(loader))
-    bundleRemote(loader, i)
+  if (HTTP_REGEX.test(file))
+    bundleRemote(file, i)
   else
-    bundleLocal(loader, i)
+    bundleLocal(file, i)
 }
 
-var bundleLocal = function(loader, i) {
-  fs.readFile(loader, function(error, content) {
+var bundleLocal = function(file, i) {
+  fs.readFile(file, function(error, content) {
     if (error)
-      throw new Error('Cannot find file ' + loader + ', please check your --root setting')
+      throw new Error('Cannot find file ' + file + ', please check your --root setting')
     
     source.push(content.toString())
     bundle(i + 1)
   })
 }
 
-var bundleRemote = function(loader, i) {
+var bundleRemote = function(file, i) {
   if (!params.external) {
-    console.error('Warning: skipping ' + loader + ', pass --external to include it')
+    console.error('Warning: skipping ' + file + ', pass --external to include it')
     return bundle(i + 1)
   }
   
-  var uri     = url.parse(loader),
+  var uri     = url.parse(file),
       client  = (uri.protocol === 'https:') ? https : http,
       port    = uri.port || (client === https ? '443' : '80'),
       options = {host: uri.hostname, port: port, path: uri.pathname},
@@ -138,7 +179,7 @@ var bundleRemote = function(loader, i) {
       bundle(i + 1)
     })
   }).on('error', function() {
-    throw new Error('Request unsuccessful: ' + loader)
+    throw new Error('Request unsuccessful: ' + file)
   })
 }
 
