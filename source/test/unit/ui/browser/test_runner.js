@@ -38,7 +38,7 @@ JS.Test.Unit.UI.extend({
           
           if (!window.TestSwarm) return;
           
-          TestSwarm.serialize = this.method('toHTML');
+          TestSwarm.serialize = this.method('serialize');
           this._mediator.addListener(JS.Test.Unit.TestCase.FINISHED, TestSwarm.heartbeat);
           
           this._mediator.addListener(JS.Test.Unit.UI.TestRunnerMediator.FINISHED,
