@@ -1,13 +1,13 @@
 .test-result-container {
-  font:         normal 15px FreeSans, Helvetica, Arial, sans-serif;
   background:   #fff;
-  color:        #444;
   border:       2px solid #444;
+  color:        #444;
+  font:         normal 15px FreeSans, Helvetica, Arial, sans-serif;
+  overflow:     hidden;
   position:     absolute;
   right:        30px;
   top:          30px;
   width:        640px;
-  overflow:     hidden;
   
   -webkit-border-radius: 16px;
      -moz-border-radius: 16px;
@@ -17,9 +17,9 @@
 .test-result-container p,
 .test-result-container ul,
 .test-result-container li {
+  list-style:   circle outside;
   margin:       0;
   padding:      0;
-  list-style:   circle outside;
 }
 
 .test-result-container .report {
@@ -66,8 +66,8 @@
 }
 
 .test-result-container .report td {
-  font-size:    300%;
   color:        #999;
+  font-size:    300%;
 }
 
 .test-result-container .light {
@@ -105,8 +105,8 @@
 
 .test-result-container .spec-name {
   border-top:   1px solid #ddd;
-  font-weight:  bold;
   cursor:       pointer;
+  font-weight:  bold;
 }
 
 .test-result-container .specs ul {
@@ -136,22 +136,22 @@
 .test-result-container .stats {
   float:        right;
   list-style:   none;
-  top:          0;
   right:        0;
+  top:          0;
 }
 
 .test-result-container .stats li {
-  list-style:   none;
+  border-left:  1px solid #eee;
   display:      block;
   float:        left;
-  border-left:  1px solid #eee;
+  list-style:   none;
   padding:      4px 8px;
   width:        64px;
 }
 
 .test-result-container .stats .number {
-  font-weight:  bold;
   color:        #666;
+  font-weight:  bold;
 }
 
 .test-result-container .stats .letter {
@@ -166,7 +166,7 @@
 .test-result-container .summary {
   border-top:   1px solid #999;
   color:        #666;
-  padding:      4px 12px;
   margin:       0;
+  padding:      4px 12px;
 }
 
