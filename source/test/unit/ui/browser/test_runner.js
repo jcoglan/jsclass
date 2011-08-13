@@ -11,7 +11,7 @@ JS.Test.Unit.UI.extend({
         },
         
         _getDisplay: function() {
-          return this._display = this._display || this.klass.Display.getInstance();
+          return this._display = this._display || new this.klass.Display();
         },
         
         start: function() {
@@ -97,17 +97,19 @@ JS.Test.Unit.UI.extend({
             console.log(JSON.stringify(object));
         },
         
-        toHTML: function() {
-          var html = '<h4>' + navigator.userAgent + '</h4>';
-          if (this._faults.length > 0) {
-            html += '<ul>';
-            for (var i = 0, n = this._faults.length; i < n; i++) {
-              html += '<li>' + this._faults[i].longDisplay().replace(/[\r\n]/g, '<br>') + '</li>';
-            }
-            html += '</ul>';
-          }
-          html += '<p>' + this._result.toString() + '</p>';
-          return html;
+        serialize: function() {
+          var items = document.getElementsByTagName('li'),
+              n     = items.length;
+          
+          while (n--) JS.DOM.removeClass(items[n], 'closed');
+          
+          var items = document.getElementsByTagName('script'),
+              n     = items.length;
+          
+          while (n--) items[n].parentNode.removeChild(items[n]);
+          
+          var html = document.getElementsByTagName('html');
+          return '<!doctype html><html>' + html.innerHTML + '</html>';
         }
       })
     }

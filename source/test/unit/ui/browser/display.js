@@ -1,10 +1,6 @@
 JS.Test.Unit.UI.Browser.TestRunner.extend({
   Display: new JS.Class({
     extend: {
-      getInstance: function() {
-        return this._instance = this._instance || new this();
-      },
-      
       Context: new JS.Class({
         initialize: function(type, parent, name) {
           this._parent   = parent;
