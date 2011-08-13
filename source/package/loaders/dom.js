@@ -10,8 +10,9 @@ JS.Package.DomLoader = {
         src     = scripts[scripts.length - 1].src,
         url     = window.location.href;
     
-    if (/^https?\:\/\//.test(src)) return src;
-    else return url.replace(/[^\/]*$/g, '') + src;
+    if (/^\w+\:\/\//.test(src)) return src;
+    if (/^\//.test(src)) return window.location.origin + src;
+    return url.replace(/[^\/]*$/g, '') + src;
   },
   
   fetch: function(path) {
