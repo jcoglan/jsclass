@@ -1,0 +1,32 @@
+#!/usr/bin/ruby1.8
+
+require 'rubygems'
+require 'testswarm/client'
+
+client  = TestSwarm::Client.new('http://swarm.jcoglan.com')
+project = client.project('jsclass', :auth => 'c986c98e2f75fed91a158a2591545d7a33a3e210')
+
+job = TestSwarm::Job.create(
+  :rcs        => {
+    :type     => "git",
+    :url      => "git://github.com/jcoglan/js.class.git",
+    :branch   => "3.0.x"
+  }
+  :directory  => "/home/jcoglan/www/swarm.jcoglan.com/app/changeset/#{project.name}",
+  :build      => [ "rm -rf build", "jake" ],
+  :inject     => "test/browser.html"
+)
+
+exit unless job.new?
+
+runner = File.read(File.dirname(__FILE__) + '/test/runner.js')
+path   = "#{client.url}/changeset/#{project.name}/#{job.revision}"
+
+runner.scan(/\b[A-Za-z.]+Spec\b/).uniq.sort.each do |spec|
+  job.add_suite spec, "#{path}/test/browser.html?spec=#{spec}"
+end
+
+project.submit_job "JS.Class Commit #{job.revision}", job,
+                   :browsers => "all",
+                   :max      => 5
+
