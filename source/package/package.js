@@ -127,10 +127,10 @@ JS.Package = function(loader) {
   //================================================================
   // Event dispatchers, for communication between packages
   
-  instance._on = function(eventType, block, scope) {
-    if (this._events[eventType]) return block.call(scope);
+  instance._on = function(eventType, block, context) {
+    if (this._events[eventType]) return block.call(context);
     var list = this._observers[eventType] = this._observers[eventType] || [];
-    list.push([block, scope]);
+    list.push([block, context]);
     this._load();
   };
   
@@ -226,7 +226,7 @@ JS.Package = function(loader) {
   //================================================================
   // Class-level event API, handles group listeners
   
-  klass.when = function(eventTable, block, scope) {
+  klass.when = function(eventTable, block, context) {
     var eventList = [], objects = {}, event, packages, i;
     for (event in eventTable) {
       if (!eventTable.hasOwnProperty(event)) continue;
@@ -237,7 +237,7 @@ JS.Package = function(loader) {
     }
     
     var waiting = i = eventList.length;
-    if (waiting === 0) return block && block.call(scope, objects);
+    if (waiting === 0) return block && block.call(context, objects);
     
     while (i--)
       (function(event) {
@@ -245,7 +245,7 @@ JS.Package = function(loader) {
         pkg._on(event[0], function() {
           objects[event[0]][event[2]] = klass._getObject(event[1], pkg._exports);
           waiting -= 1;
-          if (waiting === 0 && block) block.call(scope, objects);
+          if (waiting === 0 && block) block.call(context, objects);
         });
       })(eventList[i]);
   };

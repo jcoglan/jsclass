@@ -1,13 +1,13 @@
 JS.DOM.Event = {
   _registry: [],
   
-  on: function(element, eventName, callback, scope) {
+  on: function(element, eventName, callback, context) {
     if (element !== JS.DOM.ENV &&
         element.nodeType !== JS.DOM.ELEMENT_NODE &&
         element.nodeType !== JS.DOM.DOCUMENT_NODE)
       return;
     
-    var wrapped = function() { callback.call(scope, element) };
+    var wrapped = function() { callback.call(context, element) };
     
     if (element.addEventListener)
       element.addEventListener(eventName, wrapped, false);
@@ -18,12 +18,12 @@ JS.DOM.Event = {
       _element:   element,
       _type:      eventName,
       _callback:  callback,
-      _scope:     scope,
+      _context:   context,
       _handler:   wrapped
     });
   },
   
-  detach: function(element, eventName, callback, scope) {
+  detach: function(element, eventName, callback, context) {
     var i = this._registry.length, register;
     while (i--) {
       register = this._registry[i];
@@ -31,7 +31,7 @@ JS.DOM.Event = {
       if ((element    && element    !== register._element)   ||
           (eventName  && eventName  !== register._type)      ||
           (callback   && callback   !== register._callback)  ||
-          (scope      && scope      !== register._scope))
+          (context    && context    !== register._context))
         continue;
       
       if (register._element.removeEventListener)
