@@ -7,7 +7,11 @@ JS.Package.DomLoader = {
   
   __FILE__: function() {
     var scripts = document.getElementsByTagName('script');
-    return scripts[scripts.length - 1].src;
+        src     = scripts[scripts.length - 1].src,
+        url     = window.location.href;
+    
+    if (/^https?\:\/\//.test(src)) return src;
+    else return url.replace(/[^\/]*$/g, '') + src;
   },
   
   fetch: function(path) {
