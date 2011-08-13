@@ -105,6 +105,8 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
             });
           });
         });
+        self._light = div.div({className: 'light light-pending'});
+        div.p({className: 'user-agent'}, window.navigator.userAgent);
         self._context = new self.klass.Context('spec', div.ul({className: 'specs'}));
         self._summary = div.p({className: 'summary'});
       });
@@ -144,10 +146,13 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
           context = data.context;
       
       context.child(name).addFault(fault.longDisplay());
+      this._failed = true;
     },
     
     printSummary: function(elapsedTime) {
-      this._summary.innerHTML = 'Finished in ' + elapsedTime + ' seconds.';
+      JS.DOM.removeClass(this._light, 'light-pending');
+      JS.DOM.addClass(this._light, this._failed ? 'light-failed' : 'light-passed');
+      this._summary.innerHTML = 'Finished in ' + elapsedTime + ' seconds';
     },
     
     _testData: function(testCase) {

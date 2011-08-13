@@ -44,9 +44,27 @@
   color:        #999;
 }
 
-.test-result-container .specs {
-  border-top:   1px solid #999;
+.test-result-container .light {
+  font-size:    0;
+  height:       6px;
+  overflow:     hidden;
+}
+.test-result-container .light-pending {
+  background:   #fc6;
+}
+.test-result-container .light-passed {
+  background:   #6c3;
+}
+.test-result-container .light-failed {
+  background:   #e40;
+}
+
+.test-result-container .user-agent {
+  background:   #444;
+  color:        #fff;
+  font-size:    80%;
   list-style:   none;
+  padding:      4px 12px;
 }
 
 .test-result-container .specs .spec,
