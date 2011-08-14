@@ -24,6 +24,24 @@ JS.Test.Unit.extend({
         return runner.run(suite, this.OUTPUT_LEVELS[outputLevel || 'normal']);
       },
       
+      filter: function(objects, suffix) {
+        var filter = this.getRunner().getFilter(),
+            output = [],
+            n      = filter.length,
+            m, object;
+        
+        if (n === 0) return objects;
+        while (n--) {
+          m = objects.length;
+          while (m--) {
+            object = objects[m].replace(new RegExp(suffix + '$'), '');
+            if (filter[n].substr(0, object.length) === object)
+              output.push(objects[m]);
+          }
+        }
+        return output;
+      },
+      
       getRunner: function() {
         return (typeof window !== 'undefined')
               ? this.RUNNERS.browser

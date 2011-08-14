@@ -8,7 +8,11 @@ JS.Test = new JS.Module('Test', {
           }
         })
       }
-    })
+    }),
+    
+    filter: function(objects, suffix) {
+      return this.Unit.AutoRunner.filter(objects, suffix);
+    }
   }
 });
 

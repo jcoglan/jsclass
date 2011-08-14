@@ -15,35 +15,37 @@ JS.Packages(function() { with(this) {
 }})
 
 JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
-    JS.require( 'Test.UnitSpec',
-                'Test.ContextSpec',
-                'Test.MockingSpec',
-                'Test.FakeClockSpec',
-                'Test.AsyncStepsSpec',
-                'ModuleSpec',
-                'ClassSpec',
-                'MethodSpec',
-                'KernelSpec',
-                'SingletonSpec',
-                'InterfaceSpec',
-                'CommandSpec',
-                'ComparableSpec',
-                'ConstantScopeSpec',
-                'DecoratorSpec',
-                'EnumerableSpec',
-                'ForwardableSpec',
-                'HashSpec',
-                'LinkedListSpec',
-                'MethodChainSpec',
-                'DeferrableSpec',
-                'ObservableSpec',
-                'PackageSpec',
-                'ProxySpec',
-                'RangeSpec',
-                'SetSpec',
-                'StateSpec',
-                'TSortSpec',
-                
-                Test.method('autorun'))
+    var specs = [ 'Test.UnitSpec',
+                  'Test.ContextSpec',
+                  'Test.MockingSpec',
+                  'Test.FakeClockSpec',
+                  'Test.AsyncStepsSpec',
+                  'ModuleSpec',
+                  'ClassSpec',
+                  'MethodSpec',
+                  'KernelSpec',
+                  'SingletonSpec',
+                  'InterfaceSpec',
+                  'CommandSpec',
+                  'ComparableSpec',
+                  'ConstantScopeSpec',
+                  'DecoratorSpec',
+                  'EnumerableSpec',
+                  'ForwardableSpec',
+                  'HashSpec',
+                  'LinkedListSpec',
+                  'MethodChainSpec',
+                  'DeferrableSpec',
+                  'ObservableSpec',
+                  'PackageSpec',
+                  'ProxySpec',
+                  'RangeSpec',
+                  'SetSpec',
+                  'StateSpec',
+                  'TSortSpec' ]
+    
+    specs = JS.Test.filter(specs, 'Spec')
+    specs.push(Test.method('autorun'))
+    JS.require.apply(JS, specs)
 })
 
