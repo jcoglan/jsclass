@@ -17,7 +17,7 @@
   In this case @manifest.js@ might contain:
   
   <pre class="prettyprint">JS.Packages(function() { with(this) {
-      file('http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js')
+      file('https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js')
           .provides('jQuery');
       
       file('/app.js')
@@ -50,20 +50,29 @@
   * @--manifest@, @-m@: the path to your package manifest. If you only want to
     use modules from JS.Class itself, this is optional.
   * @--root@, @-r@: the directory containing your application's JavaScript files.
+    Paths in the manifest are resolved relative to this directory.
   * @--external@, @-e@: unless this option is passed, the build will skip files
-    that come from external domains rather than the filesystem.
+    that come from external domains rather than the local filesystem.
   * @--no-packages@, @-P@: if this is set, the @JS.Packages@ system will not be
     included in the build. Including it means your @JS.require()@ calls will
     carry on working.
+  * @--bundles@, @-b@: optional path to bundle definition file (see 'Organising
+    bundles' below).
+  * @--output@, @-o@: the type of output required, either @code@ (default) or
+    @paths@. Using @code@ makes @jsbuild@ output the combined source code, and
+    @paths@ makes it output the paths to the bundled files.
+  * @--directory@, @-d@: a directory to trim from paths output when using
+    @-o paths@. For example passing @-d public/js@ will make @jsbuild@ output
+    @app.js@ rather than @public/js/app.js@.
   
   For example to build a single package to support our application, we can run
   this command to produce a single script containing @JS.Packages@, @jQuery@ and
   @Application@, since @Application@ depends on @jQuery@:
   
-  <pre>jsbuild --manifest public/javascript/manifest.js \
-          --root public/javascript/ \
-          --external \
-          Application</pre>
+  <pre>$ jsbuild --manifest public/js/manifest.js \
+            --root public/js/ \
+            --external \
+            Application</pre>
   
   The resulting script is printed to stdout. Note that @jsbuild@ does not do
   any minification of the files your provide, it simply locates the required
@@ -74,3 +83,53 @@
   run @jsbuild@ with the names of the required modules:
   
   <pre>jsbuild JS.Set JS.Deferrable</pre>
+  
+  h3. Organising bundles
+  
+  As a project grows, it often becomes likely that you don't want _all_ your
+  modules and their dependencies in one file. Although this minimizes HTTP
+  round-trips, it means the entire bundle must be re-downloaded when any part of
+  it changes. For this reason many people keep stable libraries in one bundle
+  and their more volatile application code in another. @jsbuild@ lets you create
+  such bundles using a simple JSON file.
+  
+  The file lists a number of bundles, each of which has an @include@ field and
+  an optional @exclude@ field, both of which can be a list or a single item. The
+  @include@ field specifies which objects from the manifest should go into that
+  bundle, while @exclude@ specifies which dependencies should be skipped,
+  usually because they are provided by another bundle you will load separately.
+  Items given to @exlude@ can be object names from the manifest, or other bundle
+  names to exclude everything provided by that bundle and any bundle it depends
+  on.
+  
+  For example, let's split our files into stable libraries and our application
+  code:
+  
+  <pre class="prettyprint">// bundles.json
+  {
+      "libs": {
+          "include": [ "jQuery" ]
+      },
+      "app": {
+          "exclude": "libs",
+          "include": "Application"
+      }
+  }</pre>
+  
+  We can then pass bundle names instead of object names to @jsbuild@ to create
+  the bundled files. Remember to pass @-b bundle.json@ to tell it where your
+  bundles are stored.
+  
+  <pre>$ jsbuild -m public/js/manifest.js -b bundles.json -r public/js -o paths libs
+  https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js
+  
+  $ jsbuild -m public/js/manifest.js -b bundles.json -r public/js -o paths app
+  public/js/app.js</pre>
+  
+  If we removed the line @"exclude": "libs"@ from the @app@ bundle, we would
+  instead get this output, where jQuery has been included before our own files:
+  
+  <pre>$ jsbuild -m public/js/manifest.js -b bundles.json -r public/js -o paths app
+  https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js
+  public/js/app.js</pre>
+
