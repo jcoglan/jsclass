@@ -162,6 +162,24 @@
   <pre class="prettyprint">stub('jQuery', {});
   stub(jQuery, 'get').given('/foo.html').yields(['foo']);</pre>
   
+  h3. Stubbing constructors
+  
+  Constructors are functions that expect to be called using the @new@ keyword
+  for constructing new objects. JS.Test lets you stub these by passing @new@ as
+  the first argument to @stub@, followed by the namespace the constructor lives
+  in and its name. For example here's how you'd stub out @JS.Range@ to return
+  fake objects:
+  
+  <pre class="prettyprint">stub('new', JS, 'Range').returns({fake: 'object'})</pre>
+  
+  If the constructor is a global variable, then you can omit the namespace. For
+  example:
+  
+  <pre class="prettyprint">stub('new', 'XMLHttpRequest').returns(fakeXHR)</pre>
+  
+  Mock expectations can be applied to constructors just like for any other type
+  of function call.
+  
   h3. Mocking methods
   
   Mocking is very similar to stubbing, in fact it involves creating stubs and

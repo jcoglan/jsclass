@@ -12,6 +12,14 @@ JS.Test.extend({
       __activeStubs__: [],
       
       stub: function(object, methodName, implementation) {
+        var constructor = false;
+        
+        if (object === 'new') {
+          object         = methodName;
+          methodName     = implementation;
+          implementation = undefined;
+          constructor    = true;
+        }
         if (JS.isType(object, 'string')) {
           implementation = methodName;
           methodName     = object;
@@ -26,7 +34,7 @@ JS.Test.extend({
             return stubs[i].defaultMatcher(implementation);
         }
         
-        var stub = new JS.Test.Mocking.Stub(object, methodName);
+        var stub = new JS.Test.Mocking.Stub(object, methodName, constructor);
         stubs.push(stub);
         return stub.defaultMatcher(implementation);
       },
@@ -50,9 +58,10 @@ JS.Test.extend({
       },
       
       Stub: new JS.Class({
-        initialize: function(object, methodName) {
+        initialize: function(object, methodName, constructor) {
           this._object      = object;
           this._methodName  = methodName;
+          this._constructor = constructor;
           this._original    = object[methodName];
           
           this._ownProperty = object.hasOwnProperty
@@ -74,7 +83,7 @@ JS.Test.extend({
             return this;
           }
           
-          this._activeLastMatcher();
+          this._activateLastMatcher();
           this._currentMatcher = this._anyArgs;
           if (typeof implementation === 'function')
             this._currentMatcher._fake = implementation;
@@ -86,7 +95,8 @@ JS.Test.extend({
           if (object[methodName] !== this._original) return;
           
           var self = this;
-          object[methodName] = function() { return self._dispatch(arguments) };
+          this._shim = function() { return self._dispatch(this, arguments) };
+          object[methodName] = this._shim;
         },
         
         revoke: function() {
@@ -102,14 +112,22 @@ JS.Test.extend({
           this._anyArgs._expected = true;
         },
         
-        _activeLastMatcher: function() {
+        _activateLastMatcher: function() {
           if (this._currentMatcher) this._currentMatcher._active = true;
         },
         
-        _dispatch: function(args) {
-          this._activeLastMatcher();
+        _dispatch: function(receiver, args) {
+          this._activateLastMatcher();
           var matchers = this._argMatchers.concat(this._anyArgs),
-              matcher, result;
+              matcher, result, message;
+          
+          if (this._constructor && !(receiver instanceof this._shim)) {
+            message = new JS.Test.Unit.AssertionMessage('',
+                          '<?> expected to be a constructor but called without "new"',
+                          [this._original]);
+            
+            throw new JS.Test.Mocking.UnexpectedCallError(message);
+          }
           
           this._anyArgs.ping();
           
@@ -128,9 +146,15 @@ JS.Test.extend({
             if (result.exception) throw result.exception;
           }
           
-          var message = new JS.Test.Unit.AssertionMessage('',
-                            '<?> received call to ' + this._methodName + '() with unexpected arguments:\n(?)',
-                            [this._object, JS.array(args)]);
+          if (this._constructor) {
+            message = new JS.Test.Unit.AssertionMessage('',
+                          '<?> constructed with unexpected arguments:\n(?)',
+                          [this._original, JS.array(args)]);
+          } else {
+            message = new JS.Test.Unit.AssertionMessage('',
+                          '<?> received call to ' + this._methodName + '() with unexpected arguments:\n(?)',
+                          [this._object, JS.array(args)]);
+          }
           
           throw new JS.Test.Mocking.UnexpectedCallError(message);
         },
@@ -145,7 +169,8 @@ JS.Test.extend({
         },
         
         _verifyParameters: function(parameters) {
-          parameters.verify(this._object, this._methodName);
+          var object = this._constructor ? this._original : this._object;
+          parameters.verify(object, this._methodName, this._constructor);
         }
       })
     }

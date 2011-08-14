@@ -79,7 +79,7 @@ JS.Test.Mocking.extend({
       this._callsMade += 1;
     },
     
-    verify: function(object, methodName) {
+    verify: function(object, methodName, constructor) {
       if (!this._expected) return;
       
       var okay = true, extraMessage;
@@ -98,10 +98,18 @@ JS.Test.Mocking.extend({
       }
       if (okay) return;
       
-      var message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
-                        '<?> expected to receive call\n' + methodName + '(?)' +
-                        (extraMessage ? '\n' + extraMessage : '') + '.',
-                        [object, this.toArray()]);
+      var message;
+      if (constructor) {
+        message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
+                      '<?> expected to be constructed with\n(?)' +
+                      (extraMessage ? '\n' + extraMessage : '') + '.',
+                      [object, this.toArray()]);
+      } else {
+        message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
+                      '<?> expected to receive call\n' + methodName + '(?)' +
+                      (extraMessage ? '\n' + extraMessage : '') + '.',
+                      [object, this.toArray()]);
+      }
       
       throw new JS.Test.Mocking.ExpectationError(message);
     },

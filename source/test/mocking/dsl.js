@@ -49,8 +49,8 @@ JS.Test.Mocking.extend({
       return JS.Test.Mocking.stub.apply(JS.Test.Mocking, arguments);
     },
     
-    expect: function(object, methodName) {
-      var stub = JS.Test.Mocking.stub(object, methodName);
+    expect: function() {
+      var stub = JS.Test.Mocking.stub.apply(JS.Test.Mocking, arguments);
       stub.expected();
       this.addAssertion();
       return stub;

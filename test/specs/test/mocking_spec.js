@@ -129,6 +129,24 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
       }})
     }})
     
+    describe("with a stubbed constructor", function() { with(this) {
+      before(function() { with(this) {
+        stub("new", "Set").given([]).returns({fake: "object"})
+      }})
+      
+      it("returns the stubbed response", function() { with(this) {
+        assertEqual( {fake: "object"}, new Set([]) )
+      }})
+      
+      it("throws an error for unexpected arguments", function() { with(this) {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { new Set({}) })
+      }})
+      
+      it("throws an error if called without 'new'", function() { with(this) {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { Set([]) })
+      }})
+    }})
+    
     describe("with a matcher argument", function() { with(this) {
       before(function() { with(this) {
         stub(object, "getName").given(arrayIncluding("foo")).returns(true)
@@ -465,6 +483,58 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
                             "Mock expectation not met.\n" +
                             "<[OBJECT]> expected to receive call\n" +
                             "getName( 3, 4 )." )
+        })})
+      }})
+    }})
+    
+    describe("constructors", function() { with(this) {
+      it("passes if the constructor was called with the right arguments", function(resume) { with(this) {
+        runTests({
+          testExpectWithArgs: function() { with(this) {
+            expect("new", JS, "Set").given([3,4])
+            new JS.Set([3,4])
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 0, 0 )
+        })})
+      }})
+      
+      it("fails if the constructor was called with the wrong argument", function(resume) { with(this) {
+        runTests({
+          testExpectWithArgs: function() { with(this) {
+            expect("new", JS, "Set").given([3,4])
+            new JS.Set([3,5])
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 1 )
+          assertMessage( 1, "Error:\n" +
+                            "testExpectWithArgs(TestedSuite):\n" +
+                            "Error: <Set> constructed with unexpected arguments:\n" +
+                            "( [ 3, 5 ] )" )
+          assertMessage( 2, "Failure:\n" +
+                            "testExpectWithArgs(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<Set> expected to be constructed with\n" +
+                            "( [ 3, 4 ] )." )
+        })})
+      }})
+      
+      it("fails if the constructor was called without 'new'", function(resume) { with(this) {
+        runTests({
+          testExpectWithArgs: function() { with(this) {
+            expect("new", JS, "Set").given([3,4])
+            JS.Set([3,4])
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 1 )
+          assertMessage( 1, "Error:\n" +
+                            "testExpectWithArgs(TestedSuite):\n" +
+                            "Error: <Set> expected to be a constructor but called without \"new\"" )
+          assertMessage( 2, "Failure:\n" +
+                            "testExpectWithArgs(TestedSuite):\n" +
+                            "Mock expectation not met.\n" +
+                            "<Set> expected to be constructed with\n" +
+                            "( [ 3, 4 ] )." )
         })})
       }})
     }})
