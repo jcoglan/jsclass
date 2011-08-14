@@ -3,13 +3,15 @@ JS.Test.Unit.extend({
     extend: {
       run: function(outputLevel) {
         var runner = this.getRunner(),
+            filter = runner.getFilter(),
             names  = [],
             suites = [];
         
         JS.Test.Unit.TestCase.resolve();
         
         JS.Test.Unit.TestCase.forEach(function(testcase) {
-          suites.push(testcase.suite());
+          var suite = testcase.suite(filter);
+          if (suite.size() > 0) suites.push(suite);
           if (testcase.superclass === JS.Test.Unit.TestCase)
             names.push(testcase.displayName);
         });

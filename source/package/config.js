@@ -3,9 +3,10 @@ JS.Packages(function() { with(this) {
     // Debugging
     // JSCLASS_PATH = 'build/min/';
     
-    var PATH = JS.Package.ENV.JSCLASS_PATH ||
-               __FILE__().replace(/[^\/]*$/g, '');
+    JS.Package.ENV.JSCLASS_PATH = JS.Package.ENV.JSCLASS_PATH ||
+                                  __FILE__().replace(/[^\/]*$/g, '');
     
+    var PATH = JS.Package.ENV.JSCLASS_PATH;
     if (!/\/$/.test(PATH)) PATH = PATH + '/';
     
     var module = function(name) { return file(PATH + name + '.js') };

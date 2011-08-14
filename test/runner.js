@@ -15,40 +15,35 @@ JS.Packages(function() { with(this) {
 }})
 
 JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
-    var specs = [ 'Test.UnitSpec',
-                  'Test.ContextSpec',
-                  'Test.MockingSpec',
-                  'Test.FakeClockSpec',
-                  'Test.AsyncStepsSpec',
-                  'ModuleSpec',
-                  'ClassSpec',
-                  'MethodSpec',
-                  'KernelSpec',
-                  'SingletonSpec',
-                  'InterfaceSpec',
-                  'CommandSpec',
-                  'ComparableSpec',
-                  'ConsoleSpec',
-                  'ConstantScopeSpec',
-                  'DecoratorSpec',
-                  'EnumerableSpec',
-                  'ForwardableSpec',
-                  'HashSpec',
-                  'LinkedListSpec',
-                  'MethodChainSpec',
-                  'DeferrableSpec',
-                  'ObservableSpec',
-                  'PackageSpec',
-                  'ProxySpec',
-                  'RangeSpec',
-                  'SetSpec',
-                  'StateSpec',
-                  'TSortSpec' ]
-    
-    if (JS.ENV.location && /\bspec=/.test(location.search))
-        specs = location.search.match(/\bspec=([^&]+)/)[1].split(',')
-    
-    specs.push(Test.method('autorun'))
-    JS.require.apply(JS, specs)
+    JS.require( 'Test.UnitSpec',
+                'Test.ContextSpec',
+                'Test.MockingSpec',
+                'Test.FakeClockSpec',
+                'Test.AsyncStepsSpec',
+                'ModuleSpec',
+                'ClassSpec',
+                'MethodSpec',
+                'KernelSpec',
+                'SingletonSpec',
+                'InterfaceSpec',
+                'CommandSpec',
+                'ComparableSpec',
+                'ConstantScopeSpec',
+                'DecoratorSpec',
+                'EnumerableSpec',
+                'ForwardableSpec',
+                'HashSpec',
+                'LinkedListSpec',
+                'MethodChainSpec',
+                'DeferrableSpec',
+                'ObservableSpec',
+                'PackageSpec',
+                'ProxySpec',
+                'RangeSpec',
+                'SetSpec',
+                'StateSpec',
+                'TSortSpec',
+                
+                Test.method('autorun'))
 })
 

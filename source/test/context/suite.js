@@ -1,18 +1,14 @@
-JS.Test.Unit.TestCase.extend({
-  // Tweaks to standard method so we don't get superclass methods and we don't
-  // get weird default tests
-  suite: function() {
-    var methodNames = new JS.Enumerable.Collection(this.instanceMethods(false)),
-        tests = methodNames.select(function(name) { return /^test./.test(name) }).sort(),
-        suite = new JS.Test.Unit.TestSuite(this.displayName);
-    
-    for (var i = 0, n = tests.length; i < n; i++) {
-      try { suite.push(new this(tests[i])) } catch (e) {}
+(function() {
+  var suite = JS.Test.Unit.TestCase.suite;
+  
+  JS.Test.Unit.TestCase.extend({
+    // Tweaks to standard method so we don't get superclass methods and we don't
+    // get weird default tests
+    suite: function(filter) {
+      return suite.call(this, filter, false, false);
     }
-    
-    return suite;
-  }
-});
+  });
+})();
 
 JS.Test.Unit.TestSuite.include({
   run: function(result, continuation, callback, context) {

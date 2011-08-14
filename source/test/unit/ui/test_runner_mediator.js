@@ -12,7 +12,7 @@ JS.Test.Unit.UI.extend({
       this._suite = suite;
     },
     
-    runSuite: function(continuation, context) {
+    runSuite: function() {
       var beginTime = new Date().getTime();
       this.notifyListeners(this.klass.RESET, this._suite.size());
       var result = this.createResult();
@@ -36,8 +36,6 @@ JS.Test.Unit.UI.extend({
         JS.Test.Unit.TestCase.reports = [];
         
         this.notifyListeners(this.klass.FINISHED, elapsedTime, reportStatus);
-        
-        if (continuation) continuation.call(context || null, result);
       }, this);
       
       var resultListener = result.addListener(JS.Test.Unit.TestResult.CHANGED, function(updatedResult) {

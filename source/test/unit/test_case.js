@@ -22,18 +22,30 @@ JS.Test.Unit.extend({
       STARTED:  'Test.Unit.TestCase.STARTED',
       FINISHED: 'Test.Unit.TestCase.FINISHED',
       
-      suite: function() {
-        var methodNames = new JS.Enumerable.Collection(this.instanceMethods()),
-            tests = methodNames.select(function(name) { return /^test./.test(name) }).sort(),
+      suite: function(filter, inherit, useDefault) {
+        var methodNames = new JS.Enumerable.Collection(this.instanceMethods(inherit)),
+            tests = methodNames.select(function(name) { return this.filter(name, filter) }, this).sort(),
             suite = new JS.Test.Unit.TestSuite(this.displayName);
         
         for (var i = 0, n = tests.length; i < n; i++) {
           try { suite.push(new this(tests[i])) } catch (e) {}
         }
-        if (suite.empty()) {
+        if (suite.empty() && useDefault) {
           try { suite.push(new this('defaultTest')) } catch (e) {}
         }
         return suite;
+      },
+      
+      filter: function(name, filter) {
+        if (!/^test./.test(name)) return false;
+        if (!filter || filter.length === 0) return true;
+        
+        var n = filter.length;
+        while (n--) {
+          if (name.substr(6, filter[n].length) === filter[n])
+            return true;
+        }
+        return false;
       }
     }],
     

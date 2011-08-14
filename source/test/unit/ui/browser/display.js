@@ -5,6 +5,7 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
         initialize: function(type, parent, name) {
           this._parent   = parent;
           this._type     = type;
+          this._name     = name;
           this._children = [];
           
           if (name === undefined) {
@@ -17,24 +18,37 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
         
         _constructDOM: function(name) {
           var self = this, container = this._parent._ul || this._parent,
-              fields = {_tests: 'T', _failures: 'F'};
+              fields = {_tests: 'Tests', _failures: 'Failed'};
           
-          this._li = new JS.DOM.Builder(container).li({className: this._type + ' passed closed'},
+          this._li = new JS.DOM.Builder(container).li({className: this._type + ' passed'},
           function(li) {
             li.ul({className: 'stats'}, function(ul) {
               for (var key in fields)
                 ul.li(function(li) {
-                  li.span({className: 'letter'}, fields[key] + ': ');
+                  li.span({className: 'label'}, fields[key] + ': ');
                   self[key] = li.span({className: 'number'}, '0');
                 });
             });
-            if (name) self._toggle = li.p({className: self._type + '-name'}, name);
+            if (name) {
+              self._toggle = li.p({className: self._type + '-name'}, name);
+              if (self._type === 'spec') {
+                self._runner = JS.DOM.span({className: 'runner'}, 'Run');
+                self._runner.style.background = 'url("' + JSCLASS_PATH + 'assets/bullet_go.png") center center no-repeat';
+                self._toggle.insertBefore(self._runner, self._toggle.firstChild);
+              }
+            }
             self._ul = li.ul({className: 'children'});
           });
+          
+          if (!/\btest=/.test(window.location.search))
+            JS.DOM.addClass(this._li, 'closed');
           
           JS.DOM.Event.on(this._toggle, 'click', function() {
             JS.DOM.toggleClass(this._li, 'closed');
           }, this);
+          
+          if (this._runner)
+            JS.DOM.Event.on(this._runner, 'click', this.runTest, this);
         },
         
         child: function(name) {
@@ -62,6 +76,19 @@ JS.Test.Unit.UI.Browser.TestRunner.extend({
           this._ul.appendChild(item);
           this.ping('_failures');
           this.fail();
+        },
+        
+        getName: function() {
+          var parts  = [],
+              parent = this._parent && this._parent.getName && this._parent.getName();
+          
+          if (parent) parts.push(parent);
+          parts.push(this._name);
+          return parts.join(' ');
+        },
+        
+        runTest: function() {
+          window.location.search = 'test=' + encodeURIComponent(this.getName());
         },
         
         ping: function(field) {
