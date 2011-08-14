@@ -143,7 +143,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
       }})
       
       it("throws an error if called without 'new'", function() { with(this) {
-        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { Set([]) })
+        assertThrows(Error, function() { Set([]) })
       }})
     }})
     
