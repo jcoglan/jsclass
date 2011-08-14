@@ -58,8 +58,8 @@ JSCLASS_PATH = path.dirname(__filename) + '/../src'
 require(JSCLASS_PATH + '/loader')
 
 JS.Package.DSL.file = function(filename) {
-  if (!HTTP_REGEX.test(filename) && params.root)
-    filename = path.join(params.root, filename)
+  if (!HTTP_REGEX.test(filename))
+    filename = path.join(params.root || '.', filename)
   
   return JS.Package._getByPath(filename)
 }
@@ -67,23 +67,18 @@ JS.Package.DSL.file = function(filename) {
 if (params.manifest) require(params.manifest)
 
 var packages = [],
-    assumed  = [],
+    excluded = [],
     bundles  = params.bundles ? JSON.parse(fs.readFileSync(params.bundles)) : {},
     source   = [],
     output   = function() { console.log(source.join('\n\n')) }
 
 var expand = function(name, list) {
   var pkg  = JS.Package._getByName(name),
-      deps = list || [],
-      n
+      deps = list || []
   
-  n = pkg._deps.list.length
-  while (n--) expand(pkg._deps.list[n], deps)
-  
+  pkg._deps.list.forEach(function(p) { expand(p, deps) })
   if (deps.indexOf(pkg) === -1) deps.push(pkg)
-  
-  n = pkg._uses.list.length
-  while (n--) expand(pkg._uses.list[n], deps)
+  pkg._uses.list.forEach(function(p) { expand(p, deps) })
   
   return deps
 }
@@ -94,13 +89,18 @@ var array = function(object) {
 }
 
 var expandBundle = function(name) {
-  var bundle = bundles[name];
+  var bundle = bundles[name]
   
-  array(bundle.packages).forEach(function(p) { expand(p, packages) })
+  array(bundle.include).forEach(function(p) { expand(p, packages) })
   
-  array(bundle.assume).forEach(function(b) {
-    array(bundles[b].packages).forEach(function(p) { expand(p, assumed) })
-  })
+  var expandExcluded = function(excl) {
+    var exclBundle = bundles[excl]
+    if (!exclBundle) return expand(excl, excluded)
+    
+    array(exclBundle.include).forEach(function(p) { expand(p, excluded) })
+    array(exclBundle.exclude).forEach(expandExcluded)
+  }
+  array(bundle.exclude).forEach(expandExcluded)
 }
 
 var packageFiles = function(packages) {
@@ -122,7 +122,7 @@ include.forEach(function(inc) {
 })
 
 var includedFiles = packageFiles(packages),
-    excludedFiles = packageFiles(assumed),
+    excludedFiles = packageFiles(excluded),
     files         = includedFiles.slice()
 
 excludedFiles.forEach(function(exclude) {

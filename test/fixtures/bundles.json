@@ -1,10 +1,13 @@
 {
   "bundle-1": {
-    "packages": [ "JS.Class", "JS.Set" ]
+    "include": [ "JS.Class", "JS.Set" ]
   },
   "bundle-2": {
-    "assume": "bundle-1",
-    "packages": "JS.Test"
+    "exclude": "bundle-1"
+  },
+  "bundle-3": {
+    "exclude": [ "bundle-2", "JS.Console" ],
+    "include": "JS.Test"
   }
 }
 
