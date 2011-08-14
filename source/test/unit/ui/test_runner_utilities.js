@@ -24,7 +24,7 @@ JS.Test.Unit.extend({
             return process.argv.slice(2);
           }
           else return [];
-        },
+        }
       })
     }
   })
