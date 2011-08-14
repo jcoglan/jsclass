@@ -1,4 +1,4 @@
-ConsoleSpec = JS.Test.describe(JS.Console, function() { with(this) {
+JS.ENV.ConsoleSpec = JS.Test.describe(JS.Console, function() { with(this) {
   describe("convert", function() { with(this) {
     it("strigifies numbers", function() { with(this) {
       assertEqual( "5", JS.Console.convert(5) )
