@@ -131,19 +131,19 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
     
     describe("with a stubbed constructor", function() { with(this) {
       before(function() { with(this) {
-        stub("new", "Set").given([]).returns({fake: "object"})
+        stub("new", JS, "Set").given([]).returns({fake: "object"})
       }})
       
       it("returns the stubbed response", function() { with(this) {
-        assertEqual( {fake: "object"}, new Set([]) )
+        assertEqual( {fake: "object"}, new JS.Set([]) )
       }})
       
       it("throws an error for unexpected arguments", function() { with(this) {
-        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { new Set({}) })
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { new JS.Set({}) })
       }})
       
       it("throws an error if called without 'new'", function() { with(this) {
-        assertThrows(Error, function() { Set([]) })
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { JS.Set([]) })
       }})
     }})
     
