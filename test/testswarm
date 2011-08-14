@@ -24,7 +24,7 @@ path   = "#{client.url}/changeset/#{project.name}/#{job.revision}"
 
 runner.scan(/\b[A-Za-z.]+Spec\b/).uniq.sort.each do |spec|
   name = spec.gsub(/Spec$/, '')
-  job.add_suite name, "#{path}/test/browser.html?spec=#{name}"
+  job.add_suite name, "#{path}/test/browser.html?test=#{name}"
 end
 
 project.submit_job "JS.Class Commit #{job.revision}", job,
