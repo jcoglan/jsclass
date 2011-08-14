@@ -49,7 +49,7 @@ JS.Test.Mocking.extend({
     },
     
     toString: function() {
-      var name = JS.Console.convert(this._elemets);
+      var name = JS.Console.convert(this._elements);
       return 'objectIncluding(' + name + ')';
     }
   }),

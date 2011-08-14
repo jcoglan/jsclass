@@ -45,9 +45,11 @@ JS.Console = new JS.Module('Console', {
     
     MAX_DEPTH: 4,
     
-    convert: function(object, stringify) {
-      var E = JS.Enumerable;
+    convert: function(object, stack) {
       if (!object) return String(object);
+      var E = JS.Enumerable, stack = stack || [], items;
+      
+      if (JS.indexOf(stack, object) >= 0) return '#circular';
       
       if (object instanceof Error) {
         return (typeof object.message === 'string' && !object.message)
@@ -55,10 +57,14 @@ JS.Console = new JS.Module('Console', {
              : object.name + (object.message ? ': ' + object.message : '');
       }
       
-      if (object instanceof Array)
-      return '[' + new E.Collection(object).map(function(item) {
-          return this.convert(item);
-        }, this).join(',') + ']';
+      if (object instanceof Array) {
+        stack.push(object);
+        items = new E.Collection(object).map(function(item) {
+            return this.convert(item, stack);
+          }, this).join(', ');
+        stack.pop();
+        return items ? '[ ' + items + ' ]' : '[]';
+      }
       
       if (object instanceof String || typeof object === 'string')
         return '"' + object + '"';
@@ -74,9 +80,12 @@ JS.Console = new JS.Module('Console', {
           !object.toString.__traced__)
         return object.toString();
       
-      return '{' + new E.Collection(E.objectKeys(object, false).sort()).map(function(key) {
-          return this.convert(key) + ':' + this.convert(object[key]);
-        }, this).join(',') + '}';
+      stack.push(object);
+      items = new E.Collection(E.objectKeys(object, false).sort()).map(function(key) {
+          return this.convert(key, stack) + ': ' + this.convert(object[key], stack);
+        }, this).join(', ');
+      stack.pop();
+      return items ? '{ ' + items + ' }' : '{}';
     },
     
     ANSI_CSI: String.fromCharCode(0x1B) + '[',

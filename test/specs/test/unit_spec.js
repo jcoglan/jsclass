@@ -253,13 +253,13 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
 
           assertMessage( 1, "Failure:\n" +
                             "test1(TestedSuite):\n" +
-                            "<[1,2]> expected but was\n" +
-                            "<[2,1]>." )
+                            "<[ 1, 2 ]> expected but was\n" +
+                            "<[ 2, 1 ]>." )
 
           assertMessage( 2, "Failure:\n" +
                             "test2(TestedSuite):\n" +
-                            "<[9]> expected not to be equal to\n" +
-                            "<[9]>." )
+                            "<[ 9 ]> expected not to be equal to\n" +
+                            "<[ 9 ]>." )
         })})
       }})
     }})
@@ -279,13 +279,13 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
 
           assertMessage( 1, "Failure:\n" +
                             "test1(TestedSuite):\n" +
-                            "<{\"foo\":2}> expected but was\n" +
-                            "<{\"bar\":3,\"foo\":2}>." )
+                            "<{ \"foo\": 2 }> expected but was\n" +
+                            "<{ \"bar\": 3, \"foo\": 2 }>." )
 
           assertMessage( 2, "Failure:\n" +
                             "test2(TestedSuite):\n" +
-                            "<{\"foo\":[3,4]}> expected not to be equal to\n" +
-                            "<{\"foo\":[3,4]}>." )
+                            "<{ \"foo\": [ 3, 4 ] }> expected not to be equal to\n" +
+                            "<{ \"foo\": [ 3, 4 ] }>." )
         })})
       }})
       
@@ -910,12 +910,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
                           "test1(TestedSuite):\n" +
                           "classes are not enumerable.\n" +
                           "<SortedSet> expected to respond to\n" +
-                          "<isA(Enumerable)> with a true value." )
+                          "<isA( Enumerable )> with a true value." )
 
         assertMessage( 2, "Failure:\n" +
                           "test2(TestedSuite):\n" +
                           "<SortedSet> expected to respond to\n" +
-                          "<includes(Class)> with a true value." )
+                          "<includes( Class )> with a true value." )
       })})
     }})
   }})
@@ -953,11 +953,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
 
           assertMessage( 1, "Failure:\n" +
                             "test1(TestedSuite):\n" +
-                            "<["+__TypeError+"]> exception expected but none was thrown." )
+                            "<[ "+__TypeError+" ]> exception expected but none was thrown." )
 
           assertMessage( 2, "Failure:\n" +
                             "test2(TestedSuite):\n" +
-                            "<[String]> exception expected but none was thrown." )
+                            "<[ String ]> exception expected but none was thrown." )
         })})
       }})
       
@@ -977,17 +977,17 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
 
           assertMessage( 1, "Failure:\n" +
                             "test1(TestedSuite):\n" +
-                            "<["+__TypeError+"]> exception expected but was\n" +
+                            "<[ "+__TypeError+" ]> exception expected but was\n" +
                             "RangeError: this is the wrong type." )
 
           assertMessage( 2, "Failure:\n" +
                             "test2(TestedSuite):\n" +
-                            "<[String]> exception expected but was\n" +
+                            "<[ String ]> exception expected but was\n" +
                             __TypeError+"." )
 
           assertMessage( 3, "Failure:\n" +
                             "test3(TestedSuite):\n" +
-                            "<["+__TypeError+"]> exception expected but was\n" +
+                            "<[ "+__TypeError+" ]> exception expected but was\n" +
                             "\"string error\"." )
         })})
       }})
@@ -1021,15 +1021,15 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
 
           assertMessage( 1, "Failure:\n" +
                             "test1(TestedSuite):\n" +
-                            "<["+__TypeError+","+__RangeError+"]> exception expected but none was thrown." )
+                            "<[ "+__TypeError+", "+__RangeError+" ]> exception expected but none was thrown." )
 
           assertMessage( 2, "Failure:\n" +
                             "test2(TestedSuite):\n" +
-                            "<["+__ReferenceError+","+__SyntaxError+"]> exception expected but none was thrown." )
+                            "<[ "+__ReferenceError+", "+__SyntaxError+" ]> exception expected but none was thrown." )
 
           assertMessage( 3, "Failure:\n" +
                             "test3(TestedSuite):\n" +
-                            "<["+__SyntaxError+",String]> exception expected but none was thrown." )
+                            "<[ "+__SyntaxError+", String ]> exception expected but none was thrown." )
         })})
       }})
       
@@ -1049,17 +1049,17 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
 
           assertMessage( 1, "Failure:\n" +
                             "test1(TestedSuite):\n" +
-                            "<["+__TypeError+","+__RangeError+"]> exception expected but was\n" +
+                            "<[ "+__TypeError+", "+__RangeError+" ]> exception expected but was\n" +
                             "\"a string\"." )
 
           assertMessage( 2, "Failure:\n" +
                             "test2(TestedSuite):\n" +
-                            "<["+__ReferenceError+","+__SyntaxError+"]> exception expected but was\n" +
+                            "<[ "+__ReferenceError+", "+__SyntaxError+" ]> exception expected but was\n" +
                             __TypeError+"." )
 
           assertMessage( 3, "Failure:\n" +
                             "test3(TestedSuite):\n" +
-                            "<["+__SyntaxError+",String]> exception expected but was\n" +
+                            "<[ "+__SyntaxError+", String ]> exception expected but was\n" +
                             "TypeError: a type error." )
         })})
       }})

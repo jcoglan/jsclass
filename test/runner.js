@@ -28,6 +28,7 @@ JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
                   'InterfaceSpec',
                   'CommandSpec',
                   'ComparableSpec',
+                  'ConsoleSpec',
                   'ConstantScopeSpec',
                   'DecoratorSpec',
                   'EnumerableSpec',
