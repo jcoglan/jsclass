@@ -1,3 +1,23 @@
+Version 3.0.3
+TestSwarm build: http://swarm.jcoglan.com/job/90/
+August 15 2011
+================================================================
+
+* Allow constructors expected to be called with 'new' to be mocked
+  and stubbed in JS.Test
+
+* Enhance browser UI with user agent and success indicator and
+  provide controls for running individual groups of tests
+
+* Send entire test UI snapshot to TestSwarm rather than just a
+  short status summary
+
+* Fix serialization of objects containing circular references
+  in JS.Console.convert()
+
+* Improvements to jsbuild for managing bundles of scripts
+
+
 Version 3.0.2
 TestSwarm build: http://swarm.jcoglan.com/job/70/
 July 16 2011
