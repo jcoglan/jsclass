@@ -1,5 +1,7 @@
 JS.ENV.CWD = (typeof CWD === 'undefined') ? '.' : CWD
 
+JS.cacheBust = true;
+
 JS.Packages(function() { with(this) {
     autoload(/^(.*)Spec$/, {from: CWD + '/test/specs', require: 'JS.$1'})
     

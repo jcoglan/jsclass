@@ -15,7 +15,14 @@ JS.Package.DomLoader = {
     return url.replace(/[^\/]*$/g, '') + src;
   },
   
+  cacheBust: function(path) {
+    var token = new Date().getTime();
+    return path + (/\?/.test(path) ? '&' : '?') + token;
+  },
+  
   fetch: function(path) {
+    if (JS.cacheBust) path = this.cacheBust(path);
+    
     this.HOST = this.HOST || this.HOST_REGEX.exec(window.location.href);
     var host = this.HOST_REGEX.exec(path);
     
@@ -40,6 +47,8 @@ JS.Package.DomLoader = {
   },
   
   loadFile: function(path, fireCallbacks, source) {
+    if (JS.cacheBust && !source) path = this.cacheBust(path);
+    
     var self   = this,
         head   = document.getElementsByTagName('head')[0],
         script = document.createElement('script');

@@ -29,6 +29,15 @@ JS.Package.DSL.loader = JS.Package.DSL.file;
 JS.Packages = function(declaration) {
   declaration.call(JS.Package.DSL);
 };
+
+JS.cacheBust = false;
+
+JS.load = function(url, callback) {
+  JS.Package.Loader.loadFile(url, function() {
+    if (typeof callback === 'function') callback();
+  });
+  return this;
+};
  
 JS.require = function() {
   var requirements = [], i = 0;
@@ -43,5 +52,7 @@ JS.require = function() {
     if (!callback) return;
     callback.apply(context || null, objects && objects.complete);
   });
+  
+  return this;
 };
 
