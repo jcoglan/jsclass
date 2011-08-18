@@ -1,3 +1,14 @@
+Version 3.0.4
+TestSwarm build: http://swarm.jcoglan.com/job/97/
+August 18 2011
+================================================================
+
+* Add JS.load() function as shorthand method for loading files,
+  and JS.cacheBust setting for bypassing the browser cache
+
+* Make jsbuild error output nicer, e.g. don't show Node backtrace
+
+
 Version 3.0.3
 TestSwarm build: http://swarm.jcoglan.com/job/90/
 August 15 2011
