@@ -22,6 +22,7 @@ jake_hook :build_complete do |build|
     FileUtils.cp_r "source/assets", "#{build.build_directory}/#{size}/assets"
   end
   
+  FileUtils.rm_rf build.build_directory + "/bin"
   FileUtils.cp_r "bin", build.build_directory + "/bin"
   FileUtils.chmod 0755, build.build_directory + "/bin/jsbuild"
 end

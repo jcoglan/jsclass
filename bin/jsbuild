@@ -33,34 +33,41 @@ var fs      = require('fs'),
     include = params.argv.remain.slice(),
     dir     = new RegExp('^' + path.resolve(params.directory || '.') + '/')
 
+JSCLASS_PATH = path.dirname(__filename) + '/../src'
+require(JSCLASS_PATH + '/loader')
+JS.require('JS.Console')
+var C = JS.Console
+
 var die = function(message) {
-  console.warn(message);
-  process.exit(1);
+  C.consoleFormat('white', 'bgred')
+  C.print('ERROR')
+  C.reset()
+  C.puts(' ' + message)
+  process.exit(1)
 };
 
 if (params.output && outputs.indexOf(params.output) < 0)
   die('--output must be one of: ' + outputs.join(', '))
 
 if (include.length === 0) {
-  console.error('\nUsage: jsbuild --manifest MANIFEST --root ROOT [OPTIONS] module1 [module2 ...]')
+  C.bold()
+  C.puts('\nUsage: jsbuild --manifest MANIFEST --root ROOT [OPTIONS] module1 [module2 ...]')
+  C.reset()
   
-  console.error('\nOptions:  --manifest,    -m : path to JS.Packages manifest script')
-  console.error('          --root,        -r : directory containing your JavaScripts')
-  console.error('          --external,    -e : include external scripts from the web')
-  console.error('          --no-packages, -P : don\'t include JS.Package system in build')
-  console.error('          --bundles,     -b : path to bundle definitions file')
-  console.error('          --output,      -o : select output type: \'code\' or \'paths\'')
-  console.error('          --directory,   -d : directory for paths to print relative to')
+  C.puts('\nOptions:  --manifest,    -m : path to JS.Packages manifest script')
+  C.puts('          --root,        -r : directory containing your JavaScripts')
+  C.puts('          --external,    -e : include external scripts from the web')
+  C.puts('          --no-packages, -P : don\'t include JS.Package system in build')
+  C.puts('          --bundles,     -b : path to bundle definitions file')
+  C.puts('          --output,      -o : select output type: \'code\' or \'paths\'')
+  C.puts('          --directory,   -d : directory for paths to print relative to')
   
-  console.error('\ne.g. jsbuild -m path/to/js/manifest.js -r path/to/js/ -eP jQuery JS.Set\n')
+  C.puts('\ne.g. jsbuild -m path/to/js/manifest.js -r path/to/js/ -eP jQuery JS.Set\n')
   
   process.exit()
 }
 
 HTTP_REGEX = /^https?:\/\//
-
-JSCLASS_PATH = path.dirname(__filename) + '/../src'
-require(JSCLASS_PATH + '/loader')
 
 JS.Package.DSL.file = function(filename) {
   if (!HTTP_REGEX.test(filename))
