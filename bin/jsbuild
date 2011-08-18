@@ -33,8 +33,13 @@ var fs      = require('fs'),
     include = params.argv.remain.slice(),
     dir     = new RegExp('^' + path.resolve(params.directory || '.') + '/')
 
+var die = function(message) {
+  console.warn(message);
+  process.exit(1);
+};
+
 if (params.output && outputs.indexOf(params.output) < 0)
-  throw new Error('--output must be one of: ' + outputs.join(', '))
+  die('--output must be one of: ' + outputs.join(', '))
 
 if (include.length === 0) {
   console.error('\nUsage: jsbuild --manifest MANIFEST --root ROOT [OPTIONS] module1 [module2 ...]')
@@ -108,7 +113,7 @@ var packageFiles = function(packages) {
     var loader = pkg._loader
     
     if (typeof loader !== 'string')
-      throw new Error('Cannot bundle ' + pkg + ': no path specified')
+      die('Cannot bundle ' + pkg + ': no path specified in your manifest')
     
     return HTTP_REGEX.test(loader)
          ? loader
@@ -152,7 +157,7 @@ var bundle = function(i) {
 var bundleLocal = function(file, i) {
   fs.readFile(file, function(error, content) {
     if (error)
-      throw new Error('Cannot find file ' + file + ', please check your --root setting')
+      die('Cannot find file ' + file + ', please check your --root setting')
     
     source.push(content.toString())
     bundle(i + 1)
@@ -179,7 +184,7 @@ var bundleRemote = function(file, i) {
       bundle(i + 1)
     })
   }).on('error', function() {
-    throw new Error('Request unsuccessful: ' + file)
+    die('Request unsuccessful: ' + file)
   })
 }
 
