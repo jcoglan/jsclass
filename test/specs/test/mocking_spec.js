@@ -194,6 +194,13 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
         assertEqual( ["and", "again"], b )
       }})
       
+      it("can be combined with returns", function() { with(this) {
+        stub(object, "done").yields(["ok"]).returns("hello")
+        var a
+        assertEqual( "hello", object.done(function(r) { a = r }) )
+        assertEqual( "ok", a )
+      }})
+      
       it("throws an error for unexpected arguments", function() { with(this) {
         assertThrows(JS.Test.Mocking.UnexpectedCallError, function() {
           object.getName("b", function() {})

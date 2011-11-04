@@ -69,10 +69,13 @@ JS.Test.Mocking.extend({
       
       if (!JS.Enumerable.areEqual(this._params, argsCopy)) return false;
       
-      if (this._exception)  return {exception: this._exception};
-      if (this._yieldArgs)  return {callback: callback, context: context};
-      if (this._fake)       return this._fake;
-      else                  return true;
+      var result = {};
+      
+      if (this._exception) { result.exception = this._exception }
+      if (this._yieldArgs) { result.callback = callback; result.context = context }
+      if (this._fake)      { result.fake = this._fake }
+      
+      return result;
     },
     
     ping: function() {

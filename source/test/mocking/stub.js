@@ -138,12 +138,17 @@ JS.Test.extend({
             if (!result) continue;
             if (matcher !== this._anyArgs) matcher.ping();
             
-            if (typeof result === 'function')
-              return result.apply(this._object, args);
+            if (result.fake)
+              return result.fake.apply(this._object, args);
             
-            if (result === true)  return matcher.nextReturnValue();
-            if (result.callback)  return result.callback.apply(result.context, matcher.nextYieldArgs());
             if (result.exception) throw result.exception;
+            
+            if (result.hasOwnProperty('callback')) {
+              if (!result.callback) continue;
+              result.callback.apply(result.context, matcher.nextYieldArgs());
+            }
+            
+            if (result) return matcher.nextReturnValue();
           }
           
           if (this._constructor) {
