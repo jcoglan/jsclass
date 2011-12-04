@@ -205,10 +205,12 @@ JS.Console = new JS.Module('Console', {
   
   print: function(string) {
     string = (string === undefined ? '' : string).toString();
-    var C = JS.Console;
+    var C = JS.Console, sys;
     
     if (C.NODE) {
-      require('sys').print(C.flushFormat() + string);
+      try { sys = require('util') }
+      catch (e) { sys = require('sys') }
+      sys.print(C.flushFormat() + string);
       C.__print__ = true;
     }
     else if (C.RHINO) {
