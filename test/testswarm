@@ -13,7 +13,6 @@ job = TestSwarm::Job.create(
     :branch   => "3.0.x"
   },
   :directory  => "/home/jcoglan/www/swarm.jcoglan.com/app/changeset/#{project.name}",
-  :diff       => [],
   :build      => ["rm -rf build", "jake"],
   :inject     => "test/browser.html"
 )
