@@ -1,3 +1,13 @@
+Version 3.0.5
+TestSwarm build: http://swarm.jcoglan.com/job/109/
+December 6 2011
+================================================================
+
+* Allow yields() and returns() to be used on the same stub
+
+* Remove deprecation warnings about Node's sys module
+
+
 Version 3.0.4
 TestSwarm build: http://swarm.jcoglan.com/job/97/
 August 18 2011
