@@ -181,15 +181,16 @@ var bundleRemote = function(file, i) {
       client  = (uri.protocol === 'https:') ? https : http,
       port    = uri.port || (client === https ? '443' : '80'),
       options = {host: uri.hostname, port: port, path: uri.pathname},
-      close   = (client === https) ? 'close' : 'end',
       body    = ''
   
+  var end = function() {
+    source.push(body)
+    bundle(i + 1)
+  }
   client.get(options, function(response) {
     response.addListener('data', function(c) { body += c.toString('utf8', 0, c.length) })
-    response.addListener(close, function() {
-      source.push(body)
-      bundle(i + 1)
-    })
+    response.addListener('close', end)
+    response.addListener('end', end)
   }).on('error', function() {
     die('Request unsuccessful: ' + file)
   })
