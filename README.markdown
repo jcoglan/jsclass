@@ -34,5 +34,5 @@ License
 ---
 
 Distributed under the MIT license.
-Copyright (c) 2007-2011 James Coglan
+Copyright (c) 2007-2012 James Coglan
 
