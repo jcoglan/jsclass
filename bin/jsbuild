@@ -116,16 +116,20 @@ var expandBundle = function(name) {
 }
 
 var packageFiles = function(packages) {
-  return packages.map(function(pkg) {
-    var loader = pkg._loader
+  var files = []
+  packages.forEach(function(pkg) {
+    var paths = pkg._loader
     
-    if (typeof loader !== 'string')
+    if (!(paths instanceof Array))
       die('Cannot bundle ' + pkg + ': no path specified in your manifest')
     
-    return HTTP_REGEX.test(loader)
-         ? loader
-         : path.resolve(loader)
+    files = files.concat(paths.map(function(loader) {
+      return HTTP_REGEX.test(loader)
+           ? loader
+           : path.resolve(loader)
+    }))
   })
+  return files
 }
 
 include.forEach(function(inc) {

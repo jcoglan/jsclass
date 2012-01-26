@@ -11,8 +11,8 @@ JS.Package.DSL = {
     return pkg;
   },
   
-  file: function(path) {
-    return JS.Package._getByPath(path);
+  file: function() {
+    return JS.Package._getByPath.apply(JS.Package, arguments);
   },
   
   load: function(path, fireCallbacks) {
@@ -24,6 +24,7 @@ JS.Package.DSL = {
   }
 };
 
+JS.Package.DSL.files  = JS.Package.DSL.file;
 JS.Package.DSL.loader = JS.Package.DSL.file;
 
 JS.Packages = function(declaration) {

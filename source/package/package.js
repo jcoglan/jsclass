@@ -174,7 +174,9 @@ JS.Package = function(loader) {
     this._prefetch();
     
     var allDeps = this._deps.list.concat(this._uses.list),
-        i = allDeps.length;
+        source  = this._source || [],
+        n       = (this._loader || {}).length,
+        self    = this;
     
     klass.when({load: allDeps});
     
@@ -183,7 +185,14 @@ JS.Package = function(loader) {
         this._fire('complete');
       }, this);
       
-      var self = this, fireOnLoad = function(exports) {
+      var loadNext = function(exports) {
+        if (n === 0) return fireOnLoad(exports);
+        n -= 1;
+        var index = self._loader.length - n - 1;
+        klass.Loader.loadFile(self._loader[index], loadNext, source[index]);
+      };
+      
+      var fireOnLoad = function(exports) {
         self._exports = exports;
         if (self._onload) self._onload();
         self._isLoaded(true);
@@ -198,9 +207,10 @@ JS.Package = function(loader) {
       if (this._loader === undefined)
         return klass._throw('No load path found for ' + this._names.list[0]);
       
-      typeof this._loader === 'function'
-            ? this._loader(fireOnLoad)
-            : klass.Loader.loadFile(this._loader, fireOnLoad, this._source);
+      if (typeof this._loader === 'function')
+        this._loader(fireOnLoad);
+      else
+        loadNext();
       
       if (!klass.Loader.loadStyle) return;
       
@@ -214,9 +224,13 @@ JS.Package = function(loader) {
   };
   
   instance._prefetch = function() {
-    if (typeof this._loader !== 'string' ||!klass.Loader.fetch) return;
-    this._source = this._source ||
-                   klass.Loader.fetch(this._loader);
+    if (this._source || !(this._loader instanceof Array) || !klass.Loader.fetch)
+      return;
+    
+    this._source = [];
+    
+    for (var i = 0, n = this._loader.length; i < n; i++)
+      this._source[i] = klass.Loader.fetch(this._loader[i]);
   };
   
   instance.toString = function() {
@@ -264,8 +278,16 @@ JS.Package = function(loader) {
   };
   
   klass._getByPath = function(loader) {
-    var path = loader.toString();
-    return this._indexByPath[path] = this._indexByPath[path] || new this(loader);
+    var path = loader.toString(),
+        pkg  = this._indexByPath[path];
+    
+    if (pkg) return pkg;
+    
+    if (typeof loader === 'string')
+      loader = [].slice.call(arguments);
+    
+    pkg = this._indexByPath[path] = new this(loader);
+    return pkg;
   };
   
   klass._getByName = function(name) {
@@ -308,7 +330,7 @@ JS.Package = function(loader) {
                  .replace(/\./g, '/')
                  .toLowerCase() + '.js';
       
-      var pkg = new this(path);
+      var pkg = new this([path]);
       pkg.provides(name);
       
       if (path = autoloader[1].require)

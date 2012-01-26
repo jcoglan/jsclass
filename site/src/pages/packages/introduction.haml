@@ -59,6 +59,25 @@
   @requires()@ statement*. A file will not be loaded until all the objects it
   @requires@ are present.
   
+  A package can also list multiple files. In this case, because JS.Packages
+  doesn't know anything about the relationships between the files, it cannot
+  automatically parallelize downloads and will just download them sequentially
+  when you call @JS.require()@. This is provided as a convenience for loading
+  libraries composed of multiple files, where listing their interdependencies
+  is more trouble than it's worth and you'd rather specify the load order
+  youself.
+  
+  For example, to load the "Fancybox":http://fancybox.net/ library, you could do
+  this:
+  
+  <pre class="prettyprint">JS.Packages(function() { with(this) {
+      file( 'fancybox/lib/jquery-1.7.1.min.js',
+            'fancybox/source/jquery.fancybox.pack.js',
+            'fancybox/source/helpers/jquery.fancybox-buttons.js',
+            'fancybox/source/helpers/jquery.fancybox-thumbs.js')
+          .provides('jQuery.fancybox');
+  }});</pre>
+  
   In addition to @requires()@, there is a statement called @uses()@ that
   specifies a 'soft dependency', i.e. an object the package needs but that does
   not necessarily need to be loaded first. For example, "@Set@":/set.html uses a
