@@ -3,16 +3,25 @@ JS.Method.keyword('callSuper', function(method, env, receiver, args) {
       stackIndex = methods.length - 1,
       params     = JS.array(args);
   
-  return function() {
+  if (stackIndex === 0) return undefined;
+  
+  var _super = function() {
     var i = arguments.length;
     while (i--) params[i] = arguments[i];
     
     stackIndex -= 1;
+    var stackEmpty = (stackIndex === 0 && receiver.callSuper === _super);
+    if (stackEmpty) delete receiver.callSuper;
+    
     var returnValue = methods[stackIndex].apply(receiver, params);
+    
+    if (stackEmpty) receiver.callSuper = _super;
     stackIndex += 1;
     
     return returnValue;
   };
+  
+  return _super;
 });
 
 JS.Method.keyword('blockGiven', function(method, env, receiver, args) {

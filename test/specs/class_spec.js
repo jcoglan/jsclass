@@ -249,7 +249,7 @@ JS.ENV.ClassSpec = JS.Test.describe(JS.Class, function() { with(this) {
         })
         
         this.modC = new JS.Module({
-          aMethod: function() { return this.callSuper() + ", C" }
+          aMethod: function() { return (this.callSuper ? this.callSuper() : "") + ", C" }
         })
         
         this.modD = new JS.Module({
@@ -289,6 +289,26 @@ JS.ENV.ClassSpec = JS.Test.describe(JS.Class, function() { with(this) {
         
         it("calls the correct series of methods", function() { with(this) {
           assertEqual( "A, B, A, B, C, D, E", object.aMethod() )
+        }})
+      }})
+      
+      describe("when there is no superclass method", function() { with(this) {
+        before(function() { with(this) {
+          this.classC = new JS.Class({include: modC})
+        }})
+        
+        it("removes callSuper so the method can detect whether to call it", function() { with(this) {
+          assertEqual( ", C", new classC().aMethod() )
+        }})
+        
+        describe("with a callSuper chain", function() { with(this) {
+          before(function() { with(this) {
+            classC.define("aMethod", function() { return this.callSuper() })
+          }})
+          
+          it("calls callSuper once, then removes it", function() { with(this) {
+            assertEqual( ", C", new classC().aMethod() )
+          }})
         }})
       }})
       
