@@ -35,8 +35,8 @@
   
   var eigen = JS.Kernel.instanceMethod('__eigen__');
   
-  eigen.call(JS.Method);
-  eigen.call(JS.Module);
+  eigen.call(JS.Method).resolve();
+  eigen.call(JS.Module).resolve();
   eigen.call(JS.Class).include(JS.Module.__meta__);
 })();
 
