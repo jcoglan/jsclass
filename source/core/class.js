@@ -13,7 +13,7 @@ JS.extend(JS.Class.prototype, {
       methods = parent;
       parent  = Object;
     }
-    JS.Module.prototype.initialize.call(this, name);
+    JS.Module.prototype.initialize.call(this, name || null, null);
     options = options || {};
     
     var klass = JS.makeClass(parent);
@@ -22,7 +22,7 @@ JS.extend(JS.Class.prototype, {
     klass.prototype.constructor =
     klass.prototype.klass = klass;
     
-    klass.__eigen__().include(parent.__meta__, {_resolve: options._resolve});
+    klass.__eigen__().include(parent.__meta__ || null, {_resolve: options._resolve});
     klass.setName(name);
     
     klass.__tgt__ = klass.prototype;
@@ -31,9 +31,9 @@ JS.extend(JS.Class.prototype, {
                      ? {}
                      : (parent.__fns__ ? parent : new JS.Module(parent.prototype, {_resolve: false}));
     
-    klass.include(JS.Kernel,    {_resolve: false})
-         .include(parentModule, {_resolve: false})
-         .include(methods,      {_resolve: false});
+    klass.include(JS.Kernel,       {_resolve: false})
+         .include(parentModule,    {_resolve: false})
+         .include(methods || null, {_resolve: false});
     
     if (options._resolve !== false) klass.resolve();
     

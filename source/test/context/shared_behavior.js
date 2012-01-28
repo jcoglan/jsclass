@@ -2,7 +2,7 @@ JS.Test.Context.extend({
   SharedBehavior: new JS.Class(JS.Module, {
     extend: {
       createFromBehavior: function(beh) {
-        var mod = new this();
+        var mod = new this(null);
         mod._behavior = beh;
         return mod;
       },

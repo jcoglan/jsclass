@@ -47,6 +47,10 @@ JS.ENV.KernelSpec = JS.Test.describe(JS.Kernel, function() { with(this) {
   }})
   
   describe("#extend", function() { with(this) {
+    it("throws an error if an undefined value is given", function() { with(this) {
+      assertThrows(Error, function() { object.extend(undefined) })
+    }})
+
     describe("with a plain old object", function() { with(this) {
       before(function() { with(this) {
         object.extend({

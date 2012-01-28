@@ -454,6 +454,10 @@ JS.ENV.ModuleSpec = JS.Test.describe(JS.Module, function() { with(this) {
       this.object = new Class()
     }})
     
+    it("throws an error if an undefined value is given", function() { with(this) {
+      assertThrows(Error, function() { module.include(undefined) })
+    }})
+
     describe("taking a module", function() { with(this) {
       it("makes the mixin an ancestor of the receiver", function() { with(this) {
         assertEqual( [module], module.ancestors() )

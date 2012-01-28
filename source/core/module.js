@@ -18,7 +18,7 @@ JS.extend(JS.Module.prototype, {
     this.__mct__ = {};
     
     this.setName(name);
-    this.include(methods, {_resolve: false});
+    this.include(methods || null, {_resolve: false});
     
     if (JS.Module.__queue__)
       JS.Module.__queue__.push(this);
@@ -55,19 +55,25 @@ JS.extend(JS.Module.prototype, {
   },
   
   include: function(module, options) {
+    if (module === undefined) {
+      var target = (options && options._extended) ? 'Kernel#extend' : 'Module#include';
+      throw new Error(target + ' called with undefined argument');
+    }
+
     if (!module) return this;
     
-    var options = options || {},
-        resolve = options._resolve !== false,
-        extend  = module.extend,
-        include = module.include,
-        extended, field, value, mixins, i, n;
+    var options  = options || {},
+        resolve  = options._resolve !== false,
+        extend   = module.extend,
+        include  = module.include,
+        extended = options._extended,
+        field, value, mixins, i, n;
     
     if (module.__fns__ && module.__inc__) {
       this.__inc__.push(module);
       if ((module.__dep__ || {}).push) module.__dep__.push(this);
       
-      if (extended = options._extended) {
+      if (extended) {
         if (typeof module.extended === 'function')
           module.extended(extended);
       }
@@ -137,9 +143,10 @@ JS.extend(JS.Module.prototype, {
   },
   
   shouldIgnore: function(field, value) {
-    return (field === 'extend' || field === 'include') &&
-           (typeof value !== 'function' ||
-             (value.__fns__ && value.__inc__));
+    if (field !== 'extend' && field !== 'include') return false;
+    if (!value) return false;
+    return typeof value !== 'function' ||
+           (value.__fns__ && value.__inc__);
   },
   
   ancestors: function(list) {
