@@ -60,7 +60,7 @@ JS.State = new JS.Module('State', {
         this.buildStubs(stubs, collection, superstates[i]);
       
       for (state in collection) {
-        klass  = new JS.Class(states[state]);
+        klass  = new JS.Class(states[state] || null);
         mixins = this.findStates(superstates, state);
         
         i = mixins.length;

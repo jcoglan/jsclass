@@ -15,6 +15,24 @@ JS.ENV.ClassSpec = JS.Test.describe(JS.Class, function() { with(this) {
     assertEqual( [], JS.Class.subclasses )
   }})
   
+  describe("constructor", function() { with(this) {
+    it("throws an error if given an undefined input", function() { with(this) {
+      assertThrows(Error, function() { new JS.Class(undefined) })
+    }})
+
+    it("throws an error if given an undefined superclass and methods", function() { with(this) {
+      assertThrows(Error, function() { new JS.Class(undefined, {}) })
+    }})
+
+    it("throws an error if given an undefined superclass and undefined methods", function() { with(this) {
+      assertThrows(Error, function() { new JS.Class(undefined, undefined) })
+    }})
+
+    it("throws an error if given a name, and an undefined superclass", function() { with(this) {
+      assertThrows(Error, function() { new JS.Class("Wrong", undefined) })
+    }})
+  }})
+
   describe("with no methods", function() { with(this) {
     before(function() { with(this) {
       this.Class = new JS.Class()

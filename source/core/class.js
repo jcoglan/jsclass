@@ -2,6 +2,10 @@ JS.Class = JS.makeClass(JS.Module);
 
 JS.extend(JS.Class.prototype, {
   initialize: function(name, parent, methods, options) {
+    for (var i = 0, n = arguments.length; i < n; i++) {
+      if (arguments[i] === undefined)
+        throw new Error('Class instantiated with undefined argument');
+    }
     if (typeof name !== 'string') {
       options = arguments[2];
       methods = arguments[1];
