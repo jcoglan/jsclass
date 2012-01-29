@@ -64,8 +64,8 @@ JS.extend(JS.Module.prototype, {
     
     var options  = options || {},
         resolve  = options._resolve !== false,
-        extend   = module.extend,
-        include  = module.include,
+        extend   = module.hasOwnProperty('extend') ? module.extend : null,
+        include  = module.hasOwnProperty('include') ? module.include : null,
         extended = options._extended,
         field, value, mixins, i, n;
     
@@ -143,8 +143,8 @@ JS.extend(JS.Module.prototype, {
   },
   
   shouldIgnore: function(field, value) {
+    if (value === null) return false;
     if (field !== 'extend' && field !== 'include') return false;
-    if (!value) return false;
     return typeof value !== 'function' ||
            (value.__fns__ && value.__inc__);
   },

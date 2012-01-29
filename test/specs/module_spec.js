@@ -12,6 +12,14 @@ JS.ENV.ModuleSpec = JS.Test.describe(JS.Module, function() { with(this) {
     it("is an instance of Class", function() { this.assertEqual( JS.Class, this.subjectClass.klass ) })
     it("inherits from Kernel",    function() { this.assert( this.subjectClass.isA(JS.Kernel) ) })
     
+    it("throws an error if the include field is undefined", function() { with(this) {
+      assertThrows(Error, function() { new subjectClass({include: undefined}) })
+    }})
+    
+    it("throws an error if the extend field is undefined", function() { with(this) {
+      assertThrows(Error, function() { new subjectClass({extend: undefined}) })
+    }})
+    
     describe("with singleton methods", function() { with(this) {
       before(function() { with(this) {
         this.User = new subjectClass({
