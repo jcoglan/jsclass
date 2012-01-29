@@ -3,6 +3,11 @@ JS.Module.__queue__ = [];
 
 JS.extend(JS.Module.prototype, {
   initialize: function(name, methods, options) {
+    for (var i = 0, n = arguments.length; i < n; i++) {
+      if (arguments[i] === undefined)
+        throw new Error('Module instantiated with undefined argument');
+    }
+    
     if (typeof name !== 'string') {
       options = arguments[1];
       methods = arguments[0];
