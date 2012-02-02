@@ -33,9 +33,9 @@ end
 
 page.window['console'] = Console
 page.window['CWD'] = File.expand_path('../..', __FILE__)
-page.window['JSCLASS_PATH'] = File.expand_path('../../build/src', __FILE__)
+page.window['JSCLASS_PATH'] = File.expand_path('../../build/min', __FILE__)
 
-page.load "build/src/loader-browser.js"
+page.load "build/min/loader-browser.js"
 page.load "test/runner.js"
 
 page.x "$wait(-2000)"
