@@ -4,15 +4,7 @@ require 'json'
 
 page = Harmony::Page.new(<<-HTML)
   <!doctype html>
-  <html>
-    <head>
-      <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-      <title>JS.Class test runner</title>
-    </head>
-    <body>
-      <script type="text/javascript"></script>
-    </body>
-  </html>
+  <html></html>
 HTML
 
 module Console
