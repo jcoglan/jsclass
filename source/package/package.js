@@ -77,11 +77,6 @@ JS.Package = function(loader) {
   
   klass.ENV = JS.ENV;
   
-  if ((this.document || {}).getElementsByTagName) {
-    var script = document.getElementsByTagName('script')[0];
-    klass._isIE = (script.readyState !== undefined);
-  }
-  
   klass.onerror = function(e) { throw e };
   
   klass._throw = function(message) {
