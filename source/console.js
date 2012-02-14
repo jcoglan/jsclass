@@ -46,7 +46,7 @@ JS.Console = new JS.Module('Console', {
     MAX_DEPTH: 4,
     
     convert: function(object, stack) {
-      if (!object) return String(object);
+      if (object === null || object === undefined) return String(object);
       var E = JS.Enumerable, stack = stack || [], items;
       
       if (JS.indexOf(stack, object) >= 0) return '#circular';

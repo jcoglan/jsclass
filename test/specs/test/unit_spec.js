@@ -220,10 +220,14 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           }},
           
           test2: function() { with(this) {
+            assertEqual( "", "bar" )
+          }},
+          
+          test3: function() { with(this) {
             assertNotEqual( "foo", "foo" )
           }}
         }, function() { resume(function() {
-          assertTestResult( 2, 2, 2, 0 )
+          assertTestResult( 3, 3, 3, 0 )
 
           assertMessage( 1, "Failure:\n" +
                             "test1(TestedSuite):\n" +
@@ -232,6 +236,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
 
           assertMessage( 2, "Failure:\n" +
                             "test2(TestedSuite):\n" +
+                            "<\"\"> expected but was\n" +
+                            "<\"bar\">." )
+
+          assertMessage( 3, "Failure:\n" +
+                            "test3(TestedSuite):\n" +
                             "<\"foo\"> expected not to be equal to\n" +
                             "<\"foo\">." )
         })})
