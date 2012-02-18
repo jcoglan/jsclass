@@ -105,12 +105,12 @@ JS.Test.Mocking.extend({
       if (constructor) {
         message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
                       '<?> expected to be constructed with\n(?)' +
-                      (extraMessage ? '\n' + extraMessage : '') + '.',
+                      (extraMessage ? '\n' + extraMessage : ''),
                       [object, this.toArray()]);
       } else {
         message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
                       '<?> expected to receive call\n' + methodName + '(?)' +
-                      (extraMessage ? '\n' + extraMessage : '') + '.',
+                      (extraMessage ? '\n' + extraMessage : ''),
                       [object, this.toArray()]);
       }
       

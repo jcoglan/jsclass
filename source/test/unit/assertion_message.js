@@ -30,7 +30,7 @@ JS.Test.Unit.extend({
         },
         
         result: function(parameters) {
-          if (parameters.length !== this.count) throw "The number of parameters does not match the number of substitutions.";
+          if (parameters.length !== this.count) throw 'The number of parameters does not match the number of substitutions';
           var params = JS.array(parameters);
           return this._parts.collect(function(e) {
             if (e === '(?)') return params.shift().replace(/^\[/, '(').replace(/\]$/, ')');
@@ -51,13 +51,9 @@ JS.Test.Unit.extend({
       return this._template = this._template || this.klass.Template.create(this._templateString);
     },
     
-    addPeriod: function(string) {
-      return /\.$/.test(string) ? string : string + '.';
-    },
-    
     toString: function() {
       var messageParts = [], head, tail;
-      if (this._head) messageParts.push(this.addPeriod(this._head));
+      if (this._head) messageParts.push(this._head);
       tail = this.template().result(this._parameters.collect(function(e) {
         return JS.Console.convert(e);
       }, this));

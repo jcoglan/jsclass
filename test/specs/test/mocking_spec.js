@@ -265,9 +265,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
         assertTestResult( 1, 1, 1, 0 )
         assertMessage( 1, "Failure:\n" +
                           "testExpectMethod(TestedSuite):\n" +
-                          "Mock expectation not met.\n" +
+                          "Mock expectation not met\n" +
                           "<[OBJECT]> expected to receive call\n" +
-                          "getName( *arguments )." )
+                          "getName( *arguments )" )
       })})
     }})
     
@@ -296,11 +296,11 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
           assertTestResult( 1, 1, 1, 0 )
           assertMessage( 1, "Failure:\n" +
                             "testExpectMethod(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
                             "getName( *arguments )\n" +
                             "at least 3 times\n" +
-                            "but 2 calls were made." )
+                            "but 2 calls were made" )
         })})
       }})
       
@@ -313,9 +313,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
           assertTestResult( 1, 1, 1, 0 )
           assertMessage( 1, "Failure:\n" +
                             "testExpectMethod(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( *arguments )." )
+                            "getName( *arguments )" )
         })})
       }})
     }})
@@ -347,11 +347,11 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
           assertTestResult( 1, 1, 1, 0 )
           assertMessage( 1, "Failure:\n" +
                             "testExpectMethod(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
                             "getName( *arguments )\n" +
                             "at most 3 times\n" +
-                            "but 4 calls were made." )
+                            "but 4 calls were made" )
         })})
       }})
       
@@ -399,11 +399,11 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
           assertTestResult( 1, 1, 1, 0 )
           assertMessage( 1, "Failure:\n" +
                             "testExpectMethod(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
                             "getName( *arguments )\n" +
                             "exactly 0 times\n" +
-                            "but 1 call was made." )
+                            "but 1 call was made" )
         })})
       }})
       
@@ -419,11 +419,11 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
           assertTestResult( 1, 1, 1, 0 )
           assertMessage( 1, "Failure:\n" +
                             "testExpectMethod(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
                             "getName( *arguments )\n" +
                             "exactly 2 times\n" +
-                            "but 3 calls were made." )
+                            "but 3 calls were made" )
         })})
       }})
       
@@ -437,11 +437,11 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
           assertTestResult( 1, 1, 1, 0 )
           assertMessage( 1, "Failure:\n" +
                             "testExpectMethod(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
                             "getName( *arguments )\n" +
                             "exactly 2 times\n" +
-                            "but 1 call was made." )
+                            "but 1 call was made" )
         })})
       }})
     }})
@@ -472,9 +472,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
                             "( 3, 9 )" )
           assertMessage( 2, "Failure:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( 3, 4 )." )
+                            "getName( 3, 4 )" )
         })})
       }})
       
@@ -487,9 +487,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
           assertTestResult( 1, 1, 1, 0 )
           assertMessage( 1, "Failure:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( 3, 4 )." )
+                            "getName( 3, 4 )" )
         })})
       }})
     }})
@@ -520,9 +520,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
                             "( [ 3, 5 ] )" )
           assertMessage( 2, "Failure:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<Set> expected to be constructed with\n" +
-                            "( [ 3, 4 ] )." )
+                            "( [ 3, 4 ] )" )
         })})
       }})
       
@@ -539,9 +539,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
                             "Error: <Set> expected to be a constructor but called without \"new\"" )
           assertMessage( 2, "Failure:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<Set> expected to be constructed with\n" +
-                            "( [ 3, 4 ] )." )
+                            "( [ 3, 4 ] )" )
         })})
       }})
     }})
@@ -582,9 +582,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
           assertTestResult( 1, 1, 1, 0 )
           assertMessage( 1, "Failure:\n" +
                             "testExpectWithYields(TestedSuite):\n" +
-                            "Mock expectation not met.\n" +
+                            "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( *arguments, a(Function) )." )
+                            "getName( *arguments, a(Function) )" )
         })})
       }})
       
@@ -616,9 +616,9 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
                               "( 5, 8, #function )" )
             assertMessage( 2, "Failure:\n" +
                               "testExpectWithYields(TestedSuite):\n" +
-                              "Mock expectation not met.\n" +
+                              "Mock expectation not met\n" +
                               "<[OBJECT]> expected to receive call\n" +
-                              "getName( 5, 6, a(Function) )." )
+                              "getName( 5, 6, a(Function) )" )
           })})
         }})
       }})
