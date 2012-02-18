@@ -11,7 +11,11 @@ JS.ENV.TestSpecHelpers = new JS.Module({
   
   runTests: function(tests, resume) {
     if (tests) this.testcase = this.suite(tests)
-    this.testcase.run(this.result, resume || function() {}, function() {})
+    JS.Test.showStack = false
+    this.testcase.run(this.result, function() {
+      if (resume) resume()
+      JS.Test.showStack = true
+    }, function() {})
   },
   
   assertTestResult: function(runs, assertions, failures, errors) { with(this) {

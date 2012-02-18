@@ -11,6 +11,7 @@ JS.Test = new JS.Module('Test', {
     }),
     
     asyncTimeout: 10,
+    showStack:    true,
     
     filter: function(objects, suffix) {
       return this.Unit.AutoRunner.filter(objects, suffix);

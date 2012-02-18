@@ -22,7 +22,14 @@ JS.Test.Unit.extend({
     },
     
     longDisplay: function() {
-      return "Error:\n" + this._testName + ":\n" + this.message();
+      var string = "Error:\n" + this._testName + ":\n";
+      
+      if (JS.Test.showStack && this._exception.stack)
+        string += this._exception.stack;
+      else
+        string += this.message();
+      
+      return string;
     },
     
     toString: function() {
