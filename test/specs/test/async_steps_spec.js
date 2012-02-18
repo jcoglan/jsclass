@@ -29,6 +29,10 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
       checkResult: function(n, callback) { with(this) {
         assertEqual(n, result)
         callback()
+      }},
+      deleteFakemath: function(callback) { with(this) {
+        JS.ENV.FakeMath = undefined
+        callback()
       }}
     })
     this.steps = new JS.Singleton(StepModule)
@@ -88,11 +92,8 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
           JS.ENV.FakeMath = {}
           stub(FakeMath, "zero").returns(0)
         }})
-        after(function(resume) { with(this) {
-          sync(function() {
-            JS.ENV.FakeMath = undefined
-            resume()
-          })
+        after(function() { with(this) {
+          deleteFakemath()
         }})
         it("passes", function() { with(this) {
           multiply(6,3)

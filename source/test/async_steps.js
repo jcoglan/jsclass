@@ -9,8 +9,23 @@ JS.Test.extend({
     
     included: function(klass) {
       klass.include(JS.Test.AsyncSteps.Sync);
-      if (klass.includes(JS.Test.Context))
-        klass.after(function(resume) { this.sync(resume) });
+      if (!klass.includes(JS.Test.Context)) return;
+      
+      klass.after(function(resume) { this.sync(resume) });
+      
+      klass.extend({
+        after: function(period, block) {
+          if ((typeof period === 'function') || !block) {
+            block  = period;
+            period = 'each';
+          }
+          this.callSuper(function(resume) {
+            this.sync(function() {
+              this.exec(block, resume);
+            });
+          });
+        }
+      });
     },
     
     extend: {
@@ -31,7 +46,7 @@ JS.Test.extend({
           if (!step) {
             this.__runningSteps__ = false;
             if (!this.__stepCallbacks__) return;
-            while (callback = this.__stepCallbacks__.shift()) callback();
+            while (callback = this.__stepCallbacks__.shift()) callback.call(this);
             return;
           }
           
