@@ -21,6 +21,7 @@ JS.Package.DomLoader = {
   },
   
   fetch: function(path) {
+    var originalPath = path;
     if (JS.cacheBust) path = this.cacheBust(path);
     
     this.HOST = this.HOST || this.HOST_REGEX.exec(window.location.href);
@@ -39,7 +40,7 @@ JS.Package.DomLoader = {
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) return;
       xhr.onreadystatechange = self._K;
-      source.succeed(xhr.responseText);
+      source.succeed(xhr.responseText + '\n//@ sourceURL=' + originalPath);
       xhr = null;
     };
     xhr.send(null);
@@ -58,8 +59,7 @@ JS.Package.DomLoader = {
     if (source)
       return source.callback(function(code) {
         JS.Package.log('Executing ' + path);
-        head.appendChild(script);
-        script.text = code;
+        (new Function(code))();
         fireCallbacks();
       });
     
