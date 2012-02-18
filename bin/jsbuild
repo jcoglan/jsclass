@@ -192,10 +192,14 @@ var bundleRemote = function(file, i) {
     bundle(i + 1)
   }
   client.get(options, function(response) {
+    if (response.statusCode < 200 || response.statusCode >= 300)
+      die('Request unsuccessful: ' + file)
+    
     response.addListener('data', function(c) { body += c.toString('utf8', 0, c.length) })
     response.addListener('close', end)
     response.addListener('end', end)
-  }).on('error', function() {
+  })
+  .on('error', function() {
     die('Request unsuccessful: ' + file)
   })
 }
