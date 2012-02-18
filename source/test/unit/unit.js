@@ -10,6 +10,8 @@ JS.Test = new JS.Module('Test', {
       }
     }),
     
+    asyncTimeout: 10,
+    
     filter: function(objects, suffix) {
       return this.Unit.AutoRunner.filter(objects, suffix);
     }

@@ -1140,6 +1140,22 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
       }})
       behavesLike("asynchronous test")
     }})
+    
+    describe("when resume() is not called", function() { with(this) {
+      before(function() { with(this) {
+        this.asyncTest = function(resume) {}
+      }})
+      
+      it("causes a timeout error", function(resume) { with(this) {
+        runTests({testAsync: asyncTest}, function() { resume(function() {
+          assertTestResult( 1, 0, 0, 1 )
+          assertMessage( 1, "Error:\n" +
+                            "testAsync(TestedSuite):\n" +
+                            "Error: Timed out after waiting 10 seconds for test to resume" )
+        })})
+        clock.tick(15000)
+      }})
+    }})
   }})
 }})
 
