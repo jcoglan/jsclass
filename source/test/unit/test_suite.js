@@ -8,28 +8,36 @@ JS.Test.Unit.extend({
       
       forEach: function(tests, block, continuation, context) {
         var looping    = false,
+            pinged     = false,
             n          = tests.length,
             i          = -1,
-            calls      = 0,
+            breakTime  = new Date().getTime(),
             setTimeout = this.setTimeout;
         
         var ping = function() {
-          calls += 1;
-          if (JS.Console.BROWSER) setTimeout(iterate, 1);
-          else loop();
-        };
-        
-        var loop = function() {
-          if (looping) return;
-          looping = true;
-          while (calls > 0) iterate();
-          looping = false;
+          pinged = true;
+          var time = new Date().getTime();
+          
+          if (JS.Console.BROWSER && (time - breakTime) > 1000) {
+            breakTime = time;
+            looping = false;
+            setTimeout(iterate, 0);
+          }
+          else if (!looping) {
+            looping = true;
+            while (looping) iterate();
+          }
         };
         
         var iterate = function() {
-          i += 1; calls -= 1;
-          if (i === n) return continuation && continuation.call(context || null);
+          i += 1;
+          if (i === n) {
+            looping = false;
+            return continuation && continuation.call(context || null);
+          }
+          pinged = false;
           block.call(context || null, tests[i], ping);
+          if (!pinged) looping = false;
         };
         
         ping();
