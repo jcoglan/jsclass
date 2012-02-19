@@ -105,7 +105,7 @@ JS.Test.Unit.extend({
       }, this.processError(onError));
       
       if (!resumed && JS.ENV.setTimeout)
-        timeout = setTimeout(function() {
+        timeout = JS.ENV.setTimeout(function() {
           self.exec(function() {
             failed = true;
             throw new Error('Timed out after waiting ' + JS.Test.asyncTimeout + ' seconds for test to resume');
