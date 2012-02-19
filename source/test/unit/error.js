@@ -22,10 +22,11 @@ JS.Test.Unit.extend({
     },
     
     longDisplay: function() {
-      var string = "Error:\n" + this._testName + ":\n";
+      var string = "Error:\n" + this._testName + ":\n",
+          trace  = JS.Console.filterBacktrace(this._exception.stack || '');
       
-      if (JS.Test.showStack && this._exception.stack)
-        string += this._exception.stack;
+      if (trace && JS.Test.showStack)
+        string += trace;
       else
         string += this.message();
       

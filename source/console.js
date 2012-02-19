@@ -88,6 +88,27 @@ JS.Console = new JS.Module('Console', {
       return items ? '{ ' + items + ' }' : '{}';
     },
     
+    filterBacktrace: function(stack) {
+      if (this.BROWSER) {
+        var cwd = new RegExp(window.location.href.replace(/(\/[^\/]+)/g, '($1)?') + '/?', 'g');
+        return stack.replace(cwd, '');
+      }
+      else if (this.RHINO) {
+        var cwd = java.lang.System.getProperty('user.dir') + '/';
+        return stack.replace(new RegExp(cwd, 'g'), '');
+      }
+      else if (this.NODE) {
+        var cwd = process.cwd() + '/';
+        return stack.replace(new RegExp(cwd, 'g'), '');
+      }
+      else if (typeof version === 'function' && version() > 100) {
+        return '';
+      }
+      else {
+        return stack;
+      }
+    },
+    
     ANSI_CSI: String.fromCharCode(0x1B) + '[',
     MAX_BUFFER_LENGTH: 78,
     
