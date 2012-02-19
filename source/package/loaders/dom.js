@@ -59,7 +59,7 @@ JS.Package.DomLoader = {
     if (source)
       return source.callback(function(code) {
         JS.Package.log('Executing ' + path);
-        (new Function(code))();
+        eval(code);
         fireCallbacks();
       });
     
