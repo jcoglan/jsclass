@@ -86,6 +86,7 @@ JS.Test.Unit.extend({
           callable = (typeof methodName === 'function') ? methodName : this[methodName],
           timeout  = null,
           failed   = false,
+          resumed  = false,
           self     = this;
       
       if (arity === 0)
@@ -96,21 +97,20 @@ JS.Test.Unit.extend({
       
       this._runWithExceptionHandlers(function() {
         callable.call(this, function(asyncBlock) {
+          resumed = true;
           if (failed) return;
           if (timeout) JS.ENV.clearTimeout(timeout);
           self.exec(asyncBlock, onSuccess, onError);
         });
       }, this.processError(onError));
       
-      var setTimeout = JS.ENV.setTimeout;
-      if (!setTimeout) return;
-      
-      timeout = setTimeout(function() {
-        self.exec(function() {
-          failed = true;
-          throw new Error('Timed out after waiting ' + JS.Test.asyncTimeout + ' seconds for test to resume');
-        }, onSuccess, onError);
-      }, JS.Test.asyncTimeout * 1000);
+      if (!resumed && JS.ENV.setTimeout)
+        timeout = setTimeout(function() {
+          self.exec(function() {
+            failed = true;
+            throw new Error('Timed out after waiting ' + JS.Test.asyncTimeout + ' seconds for test to resume');
+          }, onSuccess, onError);
+        }, JS.Test.asyncTimeout * 1000);
     },
     
     processError: function(doNext) {
