@@ -51,13 +51,13 @@
   
   !/images/test1.png!
   
-  We've not created the spec file yet, so Node is complaining. Create a
-  blank file at that path, then run the tests again:
+  We've not created the spec file yet, so Node is complaining. Create a blank
+  file at @test/specs/user_spec.js@, then run the tests again:
   
   !/images/test2.png!
   
-  This error happens because @test/specs/user_spec.js@ doesn't contain any
-  code yet: the next step is to start writing this spec.
+  This error happens because @test/specs/user_spec.js@ doesn't contain any code
+  yet: the next step is to start writing this spec.
   
   h3. Writing specs
   
@@ -103,13 +103,20 @@
   
   <pre class="prettyprint">// test/runner.js
   
+  JSCLASS_PATH = 'vendor/jsclass';
+  require('../' + JSCLASS_PATH + '/loader');
+
   JS.Packages(function() { with(this) {
       autoload(/^(.*)Spec$/, {from: 'test/specs', require: '$1'});
-      
+
       file('source/user.js')
           .provides('User')
           .requires('JS.Class');
-  }});</pre>
+  }});
+
+  JS.require('JS.Test', function() {
+      JS.require('UserSpec', JS.Test.method('autorun'));
+  });</pre>
   
   Let's run our tests again:
   
@@ -158,10 +165,13 @@
   <pre class="prettyprint">// test/runner.js
   
   JS.Packages(function() { with(this) {
-      var ROOT = (typeof ROOT === 'undefined') ? '.' : ROOT;
-      
+      var ROOT = JS.ENV.ROOT || '.'; 
+
       autoload(/^(.*)Spec$/, {from: ROOT + '/test/specs', require: '$1'});
-      file(ROOT + '/source/user.js').provides('User');
+
+      file(ROOT + '/source/user.js')
+          .provides('User')
+          .requires('JS.Class');
   }});
 
   JS.require('JS.Test', function() {
