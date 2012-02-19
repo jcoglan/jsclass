@@ -6,7 +6,7 @@
     <initialWindow> 
         <content>index.html</content> 
         <visible>true</visible> 
-        <width>660</width> 
+        <width>720</width> 
         <height>800</height> 
     </initialWindow> 
 </application>

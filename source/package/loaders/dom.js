@@ -10,7 +10,7 @@ JS.Package.DomLoader = {
         src     = scripts[scripts.length - 1].src,
         url     = window.location.href;
     
-    if (/^\w+\:\/\//.test(src)) return src;
+    if (/^\w+\:\/+/.test(src)) return src;
     if (/^\//.test(src)) return window.location.origin + src;
     return url.replace(/[^\/]*$/g, '') + src;
   },
