@@ -33,7 +33,7 @@ JS.Package.DomLoader = {
     var source = new JS.Package.Deferred(),
         self   = this,
         xhr    = window.ActiveXObject
-               ? new ActiveXObject("Microsoft.XMLHTTP")
+               ? new ActiveXObject('Microsoft.XMLHTTP')
                : new XMLHttpRequest();
     
     xhr.open('GET', path, true);

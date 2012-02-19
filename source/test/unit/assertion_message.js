@@ -58,7 +58,7 @@ JS.Test.Unit.extend({
         return JS.Console.convert(e);
       }, this));
       if (tail !== '') messageParts.push(tail);
-      return messageParts.join("\n");
+      return messageParts.join('\n');
     }
   })
 });

@@ -20,20 +20,20 @@ JS.Test.Unit.extend({
     
     assert: function(bool, message) {
       this.__wrapAssertion__(function() {
-        this.assertBlock(this.buildMessage(message, "<?> is not true", bool),
+        this.assertBlock(this.buildMessage(message, '<?> is not true', bool),
                          function() { return bool });
       });
     },
     
     assertEqual: function(expected, actual, message) {
-      var fullMessage = this.buildMessage(message, "<?> expected but was\n<?>", expected, actual);
+      var fullMessage = this.buildMessage(message, '<?> expected but was\n<?>', expected, actual);
       this.assertBlock(fullMessage, function() {
         return JS.Enumerable.areEqual(expected, actual);
       });
     },
     
     assertNotEqual: function(expected, actual, message) {
-      var fullMessage = this.buildMessage(message, "<?> expected not to be equal to\n<?>",
+      var fullMessage = this.buildMessage(message, '<?> expected not to be equal to\n<?>',
                                                    expected,
                                                    actual);
       this.assertBlock(fullMessage, function() {
@@ -46,16 +46,16 @@ JS.Test.Unit.extend({
     },
     
     assertNotNull: function(object, message) {
-      var fullMessage = this.buildMessage(message, "<?> expected not to be null", object);
+      var fullMessage = this.buildMessage(message, '<?> expected not to be null', object);
       this.assertBlock(fullMessage, function() { return object !== null });
     },
     
     assertKindOf: function(klass, object, message) {
       this.__wrapAssertion__(function() {
         var type = (!object || typeof klass === 'string') ? typeof object : (object.klass || object.constructor);
-        var fullMessage = this.buildMessage(message, "<?> expected to be an instance of\n" +
-                                                     "<?> but was\n" +
-                                                     "<?>",
+        var fullMessage = this.buildMessage(message, '<?> expected to be an instance of\n' +
+                                                     '<?> but was\n' +
+                                                     '<?>',
                                                      object, klass, type);
         this.assertBlock(fullMessage, function() { return JS.isType(object, klass) });
       });
@@ -63,14 +63,14 @@ JS.Test.Unit.extend({
     
     assertRespondTo: function(object, method, message) {
       this.__wrapAssertion__(function() {
-        var fullMessage = this.buildMessage('', "<?>\ngiven as the method name argument to #assertRespondTo must be a String", method);
+        var fullMessage = this.buildMessage('', '<?>\ngiven as the method name argument to #assertRespondTo must be a String', method);
         
         this.assertBlock(fullMessage, function() { return typeof method === 'string' });
         
         var type = object ? object.constructor : typeof object;
-        fullMessage = this.buildMessage(message, "<?>\n" +
-                                                 "of type <?>\n" +
-                                                 "expected to respond to <?>",
+        fullMessage = this.buildMessage(message, '<?>\n' +
+                                                 'of type <?>\n' +
+                                                 'expected to respond to <?>',
                                                  object,
                                                  type,
                                                  method);
@@ -80,7 +80,7 @@ JS.Test.Unit.extend({
     
     assertMatch: function(pattern, string, message) {
       this.__wrapAssertion__(function() {
-        var fullMessage = this.buildMessage(message, "<?> expected to match\n<?>", string, pattern);
+        var fullMessage = this.buildMessage(message, '<?> expected to match\n<?>', string, pattern);
         this.assertBlock(fullMessage, function() {
           return JS.match(pattern, string);
         });
@@ -89,7 +89,7 @@ JS.Test.Unit.extend({
     
     assertNoMatch: function(pattern, string, message) {
       this.__wrapAssertion__(function() {
-        var fullMessage = this.buildMessage(message, "<?> expected not to match\n<?>", string, pattern);
+        var fullMessage = this.buildMessage(message, '<?> expected not to match\n<?>', string, pattern);
         this.assertBlock(fullMessage, function() {
           return (typeof pattern.test === 'function')
                ? !pattern.test(string)
@@ -99,15 +99,15 @@ JS.Test.Unit.extend({
     },
     
     assertSame: function(expected, actual, message) {
-      var fullMessage = this.buildMessage(message, "<?> expected to be the same as\n" +
-                                                   "<?>",
+      var fullMessage = this.buildMessage(message, '<?> expected to be the same as\n' +
+                                                   '<?>',
                                                    expected, actual);
       this.assertBlock(fullMessage, function() { return actual === expected });
     },
     
     assertNotSame: function(expected, actual, message) {
-      var fullMessage = this.buildMessage(message, "<?> expected not to be the same as\n" +
-                                                   "<?>",
+      var fullMessage = this.buildMessage(message, '<?> expected not to be the same as\n' +
+                                                   '<?>',
                                                    expected, actual);
       this.assertBlock(fullMessage, function() { return actual !== expected });
     },
@@ -117,11 +117,11 @@ JS.Test.Unit.extend({
         this.assertKindOf('number', expected);
         this.assertKindOf('number', actual);
         this.assertKindOf('number', delta);
-        this.assert(delta >= 0, "The delta should not be negative");
+        this.assert(delta >= 0, 'The delta should not be negative');
         
-        var fullMessage = this.buildMessage(message, "<?> and\n" +
-                                                     "<?> expected to be within\n" +
-                                                     "<?> of each other",
+        var fullMessage = this.buildMessage(message, '<?> and\n' +
+                                                     '<?> expected to be within\n' +
+                                                     '<?> of each other',
                                                      expected,
                                                      actual,
                                                      delta);
@@ -133,10 +133,10 @@ JS.Test.Unit.extend({
     
     assertSend: function(sendArray, message) {
       this.__wrapAssertion__(function() {
-        this.assertKindOf(Array, sendArray, "assertSend requires an array of send information");
-        this.assert(sendArray.length >= 2, "assertSend requires at least a receiver and a message name");
-        var fullMessage = this.buildMessage(message, "<?> expected to respond to\n" +
-                                                     "<?(?)> with a true value",
+        this.assertKindOf(Array, sendArray, 'assertSend requires an array of send information');
+        this.assert(sendArray.length >= 2, 'assertSend requires at least a receiver and a message name');
+        var fullMessage = this.buildMessage(message, '<?> expected to respond to\n' +
+                                                     '<?(?)> with a true value',
                                                      sendArray[0],
                                                      JS.Test.Unit.AssertionMessage.literal(sendArray[1]),
                                                      sendArray.slice(2));
@@ -165,7 +165,7 @@ JS.Test.Unit.extend({
           context  = A[4];
       
       this.__wrapAssertion__(function() {
-        var fullMessage = this.buildMessage(message, "<?> exception expected but none was thrown", args),
+        var fullMessage = this.buildMessage(message, '<?> exception expected but none was thrown', args),
             actualException;
         
         this.assertBlock(fullMessage, function() {
@@ -178,7 +178,7 @@ JS.Test.Unit.extend({
           return false;
         });
         
-        fullMessage = this.buildMessage(message, "<?> exception expected but was\n?", args, actualException);
+        fullMessage = this.buildMessage(message, '<?> exception expected but was\n?', args, actualException);
         this.assertBlock(fullMessage, function() {
           return expected.any(function(type) {
             return JS.isType(actualException, type) || (actualException.name &&
@@ -206,7 +206,7 @@ JS.Test.Unit.extend({
         } catch (e) {
           if ((args.length === 0 && !JS.isType(e, JS.Test.Unit.AssertionFailedError)) ||
               expected.any(function(type) { return JS.isType(e, type) }))
-            this.assertBlock(this.buildMessage(message, "Exception thrown:\n?", e), function() { return false });
+            this.assertBlock(this.buildMessage(message, 'Exception thrown:\n?', e), function() { return false });
           else
             throw e;
         }

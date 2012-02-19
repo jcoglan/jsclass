@@ -14,11 +14,11 @@ JS.Test.Unit.extend({
     },
     
     shortDisplay: function() {
-      return this._testName + ': ' + this._message.split("\n")[0];
+      return this._testName + ': ' + this._message.split('\n')[0];
     },
     
     longDisplay: function() {
-      return "Failure:\n" + this._testName + ":\n" + this._message;
+      return 'Failure:\n' + this._testName + ':\n' + this._message;
     },
     
     toString: function() {

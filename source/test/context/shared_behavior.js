@@ -10,7 +10,7 @@ JS.Test.Context.extend({
       moduleName: function(name) {
         return name.toLowerCase()
                    .replace(/[\s:',\.~;!#=\(\)&]+/g, '_')
-                   .replace(/\/(.?)/g, function(m,a) { return "." + a.toUpperCase() })
+                   .replace(/\/(.?)/g, function(m,a) { return '.' + a.toUpperCase() })
                    .replace(/(?:^|_)(.)/g, function(m,a) { return a.toUpperCase() });
       }
     },

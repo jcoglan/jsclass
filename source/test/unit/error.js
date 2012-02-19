@@ -18,11 +18,11 @@ JS.Test.Unit.extend({
     },
     
     shortDisplay: function() {
-      return this._testName + ': ' + this.message().split("\n")[0];
+      return this._testName + ': ' + this.message().split('\n')[0];
     },
     
     longDisplay: function() {
-      var string = "Error:\n" + this._testName + ":\n",
+      var string = 'Error:\n' + this._testName + ':\n',
           trace  = JS.Console.filterBacktrace(this._exception.stack || '');
       
       if (trace && JS.Test.showStack)

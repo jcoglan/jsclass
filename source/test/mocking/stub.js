@@ -123,7 +123,7 @@ JS.Test.extend({
           
           if (this._constructor && !(receiver instanceof this._shim)) {
             message = new JS.Test.Unit.AssertionMessage('',
-                          '<?> expected to be a constructor but called without "new"',
+                          '<?> expected to be a constructor but called without `new`',
                           [this._original]);
             
             throw new JS.Test.Mocking.UnexpectedCallError(message);

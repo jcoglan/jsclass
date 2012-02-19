@@ -536,7 +536,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
           assertTestResult( 1, 1, 1, 1 )
           assertMessage( 1, "Error:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
-                            "Error: <Set> expected to be a constructor but called without \"new\"" )
+                            "Error: <Set> expected to be a constructor but called without `new`" )
           assertMessage( 2, "Failure:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
                             "Mock expectation not met\n" +
