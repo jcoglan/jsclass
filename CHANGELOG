@@ -1,3 +1,28 @@
+Version 3.0.6
+TestSwarm build: http://swarm.jcoglan.com/job/119/
+February 20 2012
+================================================================
+
+* Allow packages to contain multiple files as a convenience
+  for loading 3rd-party libraries
+
+* Fix script loading on Adobe AIR
+
+* Fix fetching of scripts over HTTPS in jsbuild, and fail if
+  requests return a non-200 status
+
+* Make sure Module and Method have all the Kernel methods
+
+* Make tests raise an error if a block takes a resume-callback
+  but doesn't call it after 10 seconds
+
+* Change TestSuite.forEach so that test suites run much faster
+
+* Show stack traces for errors during tests, and use sourceURL
+  mapping to improve reporting of errros from scripts loaded
+  over XHR
+
+
 Version 3.0.5
 TestSwarm build: http://swarm.jcoglan.com/job/109/
 December 6 2011
