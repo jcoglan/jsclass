@@ -2,7 +2,7 @@
 , "description"   : "Portable class library for JavaScript"
 , "homepage"      : "http://jsclass.jcoglan.com"
 , "author"        : "James Coglan <jcoglan@gmail.com> (http://jcoglan.com/)"
-, "keywords"      : ["oop", "data-structures", "framework", "ruby"]
+, "keywords"      : ["oop", "class", "data-structures", "testing"]
 
 , "version"       : "3.0.6"
 , "engines"       : {"node": ">=0.4.0"}
