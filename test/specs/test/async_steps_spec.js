@@ -88,13 +88,20 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
   describe("Test.Unit integration", function() { with(this) {
     before(function() { with(this) {
       this.MathTest = JS.Test.describe("MathSpec", function() { with(this) {
+        include(StepModule)
         before(function() { with(this) {
           JS.ENV.FakeMath = {}
           stub(FakeMath, "zero").returns(0)
         }})
         after(function() { with(this) {
+          multiply(6,7)
+        }})
+        after(function() { with(this) {
+          checkResult(42)
           deleteFakemath()
         }})
+        after(function(resume) { this.sync(resume) })
+        
         it("passes", function() { with(this) {
           multiply(6,3)
           subtract(7)
@@ -110,7 +117,7 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
           checkResult(0)
         }})
       }})
-      this.MathTest.include(StepModule)
+      MathTest.resolve()
       this.result = new JS.Test.Unit.TestResult()
       this.faults = []
       this.result.addListener(JS.Test.Unit.TestResult.FAULT, this.faults.push, this.faults)
@@ -120,7 +127,7 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
       MathTest.suite().run(result, function() {
         resume(function() {
           assertEqual( 3, result.runCount() )
-          assertEqual( 3, result.assertionCount() )
+          assertEqual( 6, result.assertionCount() )
           assertEqual( 1, result.failureCount() )
           assertEqual( 0, result.errorCount() )
         })

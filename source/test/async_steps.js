@@ -41,12 +41,15 @@ JS.Test.extend({
         },
         
         __runNextStep__: function() {
-          var step = this.__stepQueue__.shift(), callback;
+          var step = this.__stepQueue__.shift(), n;
           
           if (!step) {
             this.__runningSteps__ = false;
             if (!this.__stepCallbacks__) return;
-            while (callback = this.__stepCallbacks__.shift()) callback.call(this);
+            
+            n = this.__stepCallbacks__.length;
+            while (n--) this.__stepCallbacks__.shift().call(this);
+            
             return;
           }
           
@@ -66,7 +69,7 @@ JS.Test.extend({
         },
         
         sync: function(callback) {
-          if (!this.__runningSteps__) return callback();
+          if (!this.__runningSteps__) return callback.call(this);
           this.__stepCallbacks__ = this.__stepCallbacks__ || [];
           this.__stepCallbacks__.push(callback);
         }
