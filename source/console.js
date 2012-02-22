@@ -80,6 +80,8 @@ JS.Console = new JS.Module('Console', {
           !object.toString.__traced__)
         return object.toString();
       
+      if (object.nodeType !== undefined) return object.toString();
+      
       stack.push(object);
       items = new E.Collection(E.objectKeys(object, false).sort()).map(function(key) {
           return this.convert(key, stack) + ': ' + this.convert(object[key], stack);
