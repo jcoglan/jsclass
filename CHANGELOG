@@ -1,3 +1,13 @@
+Version 3.0.7
+TestSwarm build: http://swarm.jcoglan.com/job/121/
+February 22 2012
+================================================================
+
+* Fix a race condition in the AsyncSteps scheduling code
+
+* Make JS.Console stringify DOM nodes successfully in Chrome
+
+
 Version 3.0.6
 TestSwarm build: http://swarm.jcoglan.com/job/119/
 February 20 2012
