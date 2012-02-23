@@ -29,7 +29,7 @@ February 20 2012
 * Change TestSuite.forEach so that test suites run much faster
 
 * Show stack traces for errors during tests, and use sourceURL
-  mapping to improve reporting of errros from scripts loaded
+  mapping to improve reporting of errors from scripts loaded
   over XHR
 
 
