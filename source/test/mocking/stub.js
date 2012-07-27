@@ -139,7 +139,7 @@ JS.Test.extend({
             if (matcher !== this._anyArgs) matcher.ping();
             
             if (result.fake)
-              return result.fake.apply(this._object, args);
+              return result.fake.apply(receiver, args);
             
             if (result.exception) throw result.exception;
             
@@ -158,7 +158,7 @@ JS.Test.extend({
           } else {
             message = new JS.Test.Unit.AssertionMessage('',
                           '<?> received call to ' + this._methodName + '() with unexpected arguments:\n(?)',
-                          [this._object, JS.array(args)]);
+                          [receiver, JS.array(args)]);
           }
           
           throw new JS.Test.Mocking.UnexpectedCallError(message);
