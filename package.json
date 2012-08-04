@@ -4,7 +4,7 @@
 , "author"        : "James Coglan <jcoglan@gmail.com> (http://jcoglan.com/)"
 , "keywords"      : ["oop", "class", "data-structures", "testing"]
 
-, "version"       : "3.0.7"
+, "version"       : "3.0.8"
 , "engines"       : {"node": ">=0.4.0"}
 , "main"          : "./index"
 , "bin"           : {"jsbuild": "./bin/jsbuild"}
@@ -12,13 +12,13 @@
 
 , "bugs"          : "http://github.com/jcoglan/js.class/issues"
 
-, "licenses"      : [ { "type"    : "MIT"
-                      , "url"     : "http://www.opensource.org/licenses/mit-license.php"
+, "licenses"      : [ { "type"  : "MIT"
+                      , "url"   : "http://www.opensource.org/licenses/mit-license.php"
                       }
                     ]
 
-, "repositories"  : [ { "type"    : "git"
-                      , "url"     : "git://github.com/jcoglan/js.class.git"
+, "repositories"  : [ { "type"  : "git"
+                      , "url"   : "git://github.com/jcoglan/js.class.git"
                       }
                     ]
 }

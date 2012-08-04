@@ -1,3 +1,19 @@
+Version 3.0.8
+TestSwarm build: http://swarm.jcoglan.com/job/121/
+Aug 4 2012
+================================================================
+
+* Ship source maps for minified JavaScript files
+
+* Fix a bug in stubbing library that makes it easier to stub
+  methods on prototypes
+
+* Catch uncaught errors on Node and in the browser, so errors
+  that happen in async code don't crash the test process
+
+* Make assertEqual() work with Date() objects
+
+
 Version 3.0.7
 TestSwarm build: http://swarm.jcoglan.com/job/121/
 February 22 2012
