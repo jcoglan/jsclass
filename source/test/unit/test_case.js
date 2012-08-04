@@ -147,7 +147,7 @@ JS.Test.Unit.extend({
       if (JS.Console.NODE)
         process.removeListener('uncaughtException', handler);
       else if (JS.Console.BROWSER)
-        delete window.onerror;
+        window.onerror = null;
       
       if (pop !== false) {
         handlers.pop();
