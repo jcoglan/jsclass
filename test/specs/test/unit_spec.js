@@ -1157,5 +1157,30 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
       }})
     }})
   }})
+  
+  describe("uncaught errors", function() { with(this) {
+    if (!JS.ENV.setTimeout) return
+    
+    before(function() { with(this) {
+      this.asyncFunction = function(callback) {
+        setTimeout(function() {
+          throw new Error("async error")
+          callback(true)
+        }, 10)
+      }
+    }})
+    
+    it("catches errors thrown asynchronously", function(resume) { with(this) {
+      runTests({
+        testAsyncErrors: function(resume) { with(this) {
+          asyncFunction(function(value) {
+            resume(function() { assert( value ) })
+          })
+        }}
+      }, function() { resume(function() {
+        assertTestResult( 1, 0, 0, 1 )
+      })})
+    }})
+  }})
 }})
 

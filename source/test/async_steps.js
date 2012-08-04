@@ -68,6 +68,11 @@ JS.Test.extend({
           this.__runNextStep__();
         },
         
+        addError: function() {
+          this.callSuper();
+          this.__endSteps__();
+        },
+        
         sync: function(callback) {
           if (!this.__runningSteps__) return callback.call(this);
           this.__stepCallbacks__ = this.__stepCallbacks__ || [];

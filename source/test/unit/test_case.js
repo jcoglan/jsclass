@@ -5,6 +5,7 @@ JS.Test.Unit.extend({
     extend: [JS.Enumerable, {
       testCases: [],
       reports:   [],
+      handlers:  [],
       
       clear: function() {
         this.testCases = [];
@@ -93,27 +94,68 @@ JS.Test.Unit.extend({
         return this._runWithExceptionHandlers(function() {
           callable.call(this);
           onSuccess.call(this);
-        }, this.processError(onError));
+        }, this._processError(onError));
+      
+      var onUncaughtError = function(error) {
+        self.exec(function() {
+          failed = true;
+          this._removeErrorCatcher();
+          if (timeout) JS.ENV.clearTimeout(timeout);
+          throw error;
+        }, onSuccess, onError);
+      };
+      this._addErrorCatcher(onUncaughtError);
       
       this._runWithExceptionHandlers(function() {
         callable.call(this, function(asyncBlock) {
           resumed = true;
-          if (failed) return;
+          self._removeErrorCatcher();
           if (timeout) JS.ENV.clearTimeout(timeout);
-          self.exec(asyncBlock, onSuccess, onError);
+          if (!failed) self.exec(asyncBlock, onSuccess, onError);
         });
-      }, this.processError(onError));
+      }, this._processError(onError));
       
       if (!resumed && JS.ENV.setTimeout)
         timeout = JS.ENV.setTimeout(function() {
           self.exec(function() {
             failed = true;
+            this._removeErrorCatcher();
             throw new Error('Timed out after waiting ' + JS.Test.asyncTimeout + ' seconds for test to resume');
           }, onSuccess, onError);
         }, JS.Test.asyncTimeout * 1000);
     },
     
-    processError: function(doNext) {
+    _addErrorCatcher: function(handler, push) {
+      if (!handler) return;
+      this._removeErrorCatcher(false);
+      
+      if (JS.Console.NODE)
+        process.addListener('uncaughtException', handler);
+      else if (JS.Console.BROWSER)
+        JS.DOM.Event.on(window, 'error', handler);
+      
+      if (push !== false) this.klass.handlers.push(handler);
+      return handler;
+    },
+    
+    _removeErrorCatcher: function(pop) {
+      var handlers = this.klass.handlers,
+          handler  = handlers[handlers.length - 1];
+      
+      if (!handler) return;
+      
+      if (JS.Console.NODE)
+        process.removeListener('uncaughtException', handler);
+      else if (JS.Console.BROWSER)
+        JS.DOM.Event.detach(window, 'error', handler);
+      
+      if (pop !== false) {
+        handlers.pop();
+        this._addErrorCatcher(handlers[handlers.length - 1], false);
+      }
+    },
+    
+    _processError: function(doNext) {
       return function(e) {
         if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
           this.addFailure(e.message);

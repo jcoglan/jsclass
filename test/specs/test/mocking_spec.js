@@ -107,6 +107,21 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
       }})
     }})
     
+    describe("on a native prototype", function() { with(this) {
+      before(function() { with(this) {
+        stub(String.prototype, "decodeForText", function() { return this.valueOf() })
+      }})
+      
+      it("adds the fake implementation to all instances", function() { with(this) {
+        assertEqual( "bob", "bob".decodeForText() )
+      }})
+      
+      it("removes the fake implementation", function() { with(this) {
+        JS.Test.Mocking.removeStubs()
+        assertEqual( "undefined", typeof String.prototype.decodeForText )
+      }})
+    }})
+    
     describe("with a fake object", function() { with(this) {
       before(function() { with(this) {
         stub("jQuery", {version: "1.5"})
