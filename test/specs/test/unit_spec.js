@@ -288,17 +288,18 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
 
-          var tz = new Date().toGMTString().split(" ").pop()
+          var tz = new Date().toGMTString().split(" ").pop(),
+              oh = /05/.test(new Date(2012,6,5,12)) ? "0" : ""
 
           assertMessage( 1, "Failure:\n" +
                             "test1(TestedSuite):\n" +
-                            "<Fri, 04 Jul 1986 23:00:00 " + tz + "> expected but was\n" +
+                            "<Fri, " + oh + "4 Jul 1986 23:00:00 " + tz + "> expected but was\n" +
                             "<Sat, 25 Feb 1984 00:00:00 " + tz + ">" )
 
           assertMessage( 2, "Failure:\n" +
                             "test2(TestedSuite):\n" +
-                            "<Fri, 04 Jul 1986 23:00:00 " + tz + "> expected not to be equal to\n" +
-                            "<Fri, 04 Jul 1986 23:00:00 " + tz + ">" )
+                            "<Fri, " + oh + "4 Jul 1986 23:00:00 " + tz + "> expected not to be equal to\n" +
+                            "<Fri, " + oh + "4 Jul 1986 23:00:00 " + tz + ">" )
         })})
       }})
     }})
