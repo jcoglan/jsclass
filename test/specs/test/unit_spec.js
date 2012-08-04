@@ -139,6 +139,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           assertEqual( {}, {} )
           assertEqual( {foo: 2}, {foo: 2} )
           assertEqual( {foo: 2}, {foo: 2} )
+          assertEqual( new Date(1984,1,25), new Date(1984,1,25,0,0) )
           assertEqual( new JS.SortedSet([1,2]), new JS.SortedSet([2,1]) )
           
           assertNotEqual( true, false )
@@ -150,11 +151,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           assertNotEqual( {foo: 2}, {foo: 3} )
           assertNotEqual( {foo: 2}, {foo: 2, bar: 1} )
           assertNotEqual( {foo: 2, bar: 1}, {foo: 2} )
+          assertNotEqual( new Date(1986,6,5), new Date(1984,1,25) )
           assertNotEqual( new JS.SortedSet([3,2]), new JS.SortedSet([2,1]) )
           assertNotEqual( function() {}, function() {} )
         }}
       }, function() { resume(function() {
-        assertTestResult( 1, 24, 0, 0 )
+        assertTestResult( 1, 26, 0, 0 )
       })})
     }})
     
@@ -269,6 +271,32 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
                             "test2(TestedSuite):\n" +
                             "<[ 9 ]> expected not to be equal to\n" +
                             "<[ 9 ]>" )
+        })})
+      }})
+    }})
+    
+    describe("with dates", function() { with(this) {
+      it("fails when given unequal dates", function(resume) { with(this) {
+        runTests({
+          test1: function() { with(this) {
+            assertEqual( new Date(1986,6,5), new Date(1984,1,25) )
+          }},
+          
+          test2: function() { with(this) {
+            assertNotEqual( new Date(1986,6,5), new Date(1986,6,5) )
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 2, 2, 2, 0 )
+
+          assertMessage( 1, "Failure:\n" +
+                            "test1(TestedSuite):\n" +
+                            "<Fri, 04 Jul 1986 23:00:00 GMT> expected but was\n" +
+                            "<Sat, 25 Feb 1984 00:00:00 GMT>" )
+
+          assertMessage( 2, "Failure:\n" +
+                            "test2(TestedSuite):\n" +
+                            "<Fri, 04 Jul 1986 23:00:00 GMT> expected not to be equal to\n" +
+                            "<Fri, 04 Jul 1986 23:00:00 GMT>" )
         })})
       }})
     }})

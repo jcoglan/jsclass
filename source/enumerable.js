@@ -36,7 +36,13 @@ JS.Enumerable = new JS.Module('Enumerable', {
         return true;
       }
       
-      if ((expected instanceof Object)) {
+      if (expected instanceof Date) {
+        if (!(actual instanceof Date)) return false;
+        if (expected.getTime() !== actual.getTime()) return false;
+        return true;
+      }
+      
+      if (expected instanceof Object) {
         if (!(actual instanceof Object)) return false;
         if (this.objectSize(expected) !== this.objectSize(actual)) return false;
         for (var key in expected) {
