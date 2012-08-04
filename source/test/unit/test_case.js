@@ -132,7 +132,7 @@ JS.Test.Unit.extend({
       if (JS.Console.NODE)
         process.addListener('uncaughtException', handler);
       else if (JS.Console.BROWSER)
-        JS.DOM.Event.on(window, 'error', handler);
+        window.onerror = handler;
       
       if (push !== false) this.klass.handlers.push(handler);
       return handler;
@@ -147,7 +147,7 @@ JS.Test.Unit.extend({
       if (JS.Console.NODE)
         process.removeListener('uncaughtException', handler);
       else if (JS.Console.BROWSER)
-        JS.DOM.Event.detach(window, 'error', handler);
+        delete window.onerror;
       
       if (pop !== false) {
         handlers.pop();
