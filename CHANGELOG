@@ -1,6 +1,12 @@
+Version 3.0.9
+August 9 2012
+================================================================
+
+* Correct the name of 'directory' param to jsbuild
+
+
 Version 3.0.8
-TestSwarm build: http://swarm.jcoglan.com/job/121/
-Aug 4 2012
+August 4 2012
 ================================================================
 
 * Ship source maps for minified JavaScript files
