@@ -124,7 +124,7 @@ JS.Test.Reporters.Browser.extend({
         self._ul = li.ul({className: 'children'});
       });
       
-      var pattern = /\btest=/;
+      var pattern = /\btest=/; // TODO get this from a UI abstraction
       if (!pattern.test(window.location.search))
         JS.DOM.addClass(this._li, 'closed');
       
