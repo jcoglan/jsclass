@@ -205,7 +205,7 @@ JS.Console = new JS.Module('Console', {
     
     writeToStdout: function(string) {
       if (this.BROWSER && window.runtime) return window.runtime.trace(string);
-      if (this.NODE)                      return console.warn(string);
+      if (this.NODE)                      return process.stdout.write(string + '\n');
       if (this.RHINO)                     return java.lang.System.out.println(string);
       if (this.WSH)                       return WScript.Echo(string);
       if (typeof console !== 'undefined') return console.log(string);
@@ -245,9 +245,7 @@ JS.Console = new JS.Module('Console', {
     var C = JS.Console, sys;
     
     if (C.NODE) {
-      try { sys = require('util') }
-      catch (e) { sys = require('sys') }
-      sys.print(C.flushFormat() + string);
+      process.stdout.write(C.flushFormat() + string);
       C.__print__ = true;
     }
     else if (C.RHINO) {
