@@ -11,6 +11,8 @@ JS.Test.extend({
           
           while (i--)
             mocking.stub(methods[i], JS.Test.FakeClock.method(methods[i]));
+          
+          Date.now = function() { return new Date() };
         },
         
         reset: function() {
