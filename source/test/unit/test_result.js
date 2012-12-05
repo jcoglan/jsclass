@@ -1,6 +1,6 @@
 JS.Test.Unit.extend({
   TestResult: new JS.Class({
-    include: JS.Test.Unit.Util.Observable,
+    include: JS.Test.Unit.Observable,
     
     extend: {
       CHANGED:  'CHANGED',

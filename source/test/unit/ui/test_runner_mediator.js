@@ -6,7 +6,7 @@ JS.Test.Unit.UI.extend({
       FINISHED: 'Test.Unit.UI.TestRunnerMediator.FINISHED'
     },
     
-    include: JS.Test.Unit.Util.Observable,
+    include: JS.Test.Unit.Observable,
     
     initialize: function(suite) {
       this._suite = suite;
