@@ -37,7 +37,7 @@ JS.ENV.CommandSpec = JS.Test.describe(JS.Command, function() { with(this) {
     it("undoes the command with undo()", function() { with(this) {
       assertEqual( 0, counter )
       command.undo()
-      assertEqual( 1, counter )
+      assertEqual( -1, counter )
     }})
   }})
   
