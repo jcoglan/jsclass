@@ -173,16 +173,18 @@ JS.Console = new JS.Module('Console', {
     },
     
     output: function(string, followon) {
+      var coloring = this.coloring();
+      
       while (string.length > 0) {
         var length  = this.__buffer__.length,
             max     = this.BROWSER ? 1000 : this.MAX_BUFFER_LENGTH,
-            movable = (length > 0 && this.coloring()),
+            movable = (length > 0 && coloring),
             escape  = movable ? this.escape('1F') + this.escape((length + 1) + 'G') : '',
             line    = string.substr(0, max - length);
         
         this.__buffer__ += line;
         
-        if (this.coloring())
+        if (coloring)
           this.writeToStdout(escape + this.flushFormat() + line);
         else if (this.__buffer__.length === max)
           this.writeToStdout(this.__buffer__);
@@ -196,7 +198,7 @@ JS.Console = new JS.Module('Console', {
         if (string === '' && !this.__buffer__)
           this.writeToStdout(this.flushFormat() + '');
         
-        if (!this.coloring() && this.__buffer__)
+        if (!coloring && this.__buffer__)
           this.writeToStdout(this.__buffer__);
         
         this.__buffer__ = '';
