@@ -7,12 +7,14 @@ JS.Test.Unit.UI.extend({
         
         initialize: function(suite, outputLevel) {
           this._suite = (typeof suite.suite === 'function') ? suite.suite() : suite;
-          this._outputLevel = outputLevel || JS.Test.Unit.UI.NORMAL;
-          this._alreadyOutputted = false;
-          this._faults = [];
         },
         
         start: function() {
+          JS.Test.setReporter(new JS.Test.Reporters.Composite([
+            new JS.Test.Reporters.Progress('normal'),
+            new JS.Test.Reporters.ExitStatus()
+          ]), false);
+          
           this._setupMediator();
           this._attachToMediator();
           return this._startMediator();
@@ -20,10 +22,6 @@ JS.Test.Unit.UI.extend({
         
         _setupMediator: function() {
           this._mediator = this._createMediator(this._suite);
-          var suiteName = this._suite.toString();
-          if (JS.isType(this._suite, JS.Module)) suiteName = this._suite.displayName;
-          this.consoleFormat('bold');
-          this._output('Loaded suite ' + suiteName);
         },
         
         _createMediator: function(suite) {
@@ -43,83 +41,34 @@ JS.Test.Unit.UI.extend({
         },
         
         _addFault: function(fault) {
-          this._faults.push(fault);
-          this.consoleFormat('bold', 'red');
-          this._outputSingle(fault.singleCharacterDisplay(), JS.Test.Unit.UI.PROGRESS_ONLY);
-          this.reset();
-          this._alreadyOutputted = true;
+          JS.Test.reporter.addFault({
+            test:   fault.testMetadata(),
+            error:  fault.errorMetadata()
+          });
         },
         
         _started: function(result) {
+          JS.Test.reporter.startRun({suites: this._suite.toString()});
           this._result = result;
-          this._nl();
-          this.reset();
-          this._output('Started');
         },
         
         _finished: function(elapsedTime, reportStatus) {
-          for (var i = 0, n = this._faults.length; i < n; i++) {
-            var message   = this._faults[i].longDisplay(),
-                parts     = message.split('\n'),
-                errorType = parts.shift(),
-                testName  = parts.shift(),
-                part;
-            
-            this.consoleFormat('bold', 'red');
-            this._nl();
-            this._output('\n' + (i + 1) + ') ' + errorType);
-            this._output(testName);
-            this.reset();
-            while (part = parts.shift()) this.puts(part);
-          }
-          this.reset();
-          this._nl();
-          this._output('Finished in ' + elapsedTime + ' seconds');
-          
-          var passed = (reportStatus && this._result.passed()),
-              color  = passed ? 'green' : 'red';
-          
-          this.consoleFormat(color);
-          this._output(this._result, JS.Test.Unit.UI.PROGRESS_ONLY);
-          this.reset();
-          this.puts('');
-          
-          var status = passed ? 0 : 1;
-          
-          if (typeof WScript !== 'undefined')            WScript.Quit(status);
-          if (typeof process === 'object')               process.exit(status);
-          if (typeof system === 'object' && system.exit) system.exit(status);
-          if (typeof quit == 'function')                 quit(status);
+          JS.Test.reporter.endRun({
+            runtime:    elapsedTime,
+            passed:     this._result.passed(),
+            tests:      this._result.runCount(),
+            assertions: this._result.assertionCount(),
+            failures:   this._result.failureCount(),
+            errors:     this._result.errorCount()
+          });
         },
         
         _testStarted: function(testCase) {
-          this._outputSingle(testCase.name() + ': ', JS.Test.Unit.UI.VERBOSE);
+          JS.Test.reporter.startTest({name: testCase.name()});
         },
         
         _testFinished: function(testCase) {
-          this.consoleFormat('green');
-          if (!this._alreadyOutputted) this._outputSingle('.', JS.Test.Unit.UI.PROGRESS_ONLY);
-          this.reset();
-          this._nl(JS.Test.Unit.UI.VERBOSE);
-          this._alreadyOutputted = false;
-        },
-        
-        _nl: function(level) {
-          this._output('', level || JS.Test.Unit.UI.NORMAL);
-        },
-        
-        _output: function(string, level) {
-          if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
-          this.puts(string);
-        },
-        
-        _outputSingle: function(string, level) {
-          if (!this._shouldOutput(level || JS.Test.Unit.UI.NORMAL)) return;
-          this.print(string);
-        },
-        
-        _shouldOutput: function(level) {
-          return level <= this._outputLevel;
+          JS.Test.reporter.endTest({name: testCase.name()});
         }
       })
     }

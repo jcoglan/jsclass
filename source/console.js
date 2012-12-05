@@ -43,8 +43,6 @@ JS.Console = new JS.Module('Console', {
       return results;
     },
     
-    MAX_DEPTH: 4,
-    
     convert: function(object, stack) {
       if (object === null || object === undefined) return String(object);
       var E = JS.Enumerable, stack = stack || [], items;
@@ -94,6 +92,9 @@ JS.Console = new JS.Module('Console', {
     },
     
     filterBacktrace: function(stack) {
+      if (!stack) return stack;
+      stack = stack.split('\n').slice(1).join('\n');
+      
       if (this.BROWSER) {
         var cwd = new RegExp(window.location.href.replace(/(\/[^\/]+)/g, '($1)?') + '/?', 'g');
         return stack.replace(cwd, '');
@@ -116,6 +117,7 @@ JS.Console = new JS.Module('Console', {
     
     ANSI_CSI: String.fromCharCode(0x1B) + '[',
     MAX_BUFFER_LENGTH: 78,
+    MAX_DEPTH: 4,
     
     BROWSER: (typeof window !== 'undefined'),
     NODE:    (typeof process === 'object'),
@@ -124,7 +126,9 @@ JS.Console = new JS.Module('Console', {
     WSH:     (typeof WScript !== 'undefined'),
     
     coloring: function() {
-      return !(this.BROWSER && !window.runtime) && !this.WINDOZE;
+      if (this.NODE) return require('tty').isatty(1);
+      if (this.WINDOZE) return false;
+      return !(this.BROWSER && !window.runtime);
     },
     
     __buffer__: '',
@@ -207,6 +211,13 @@ JS.Console = new JS.Module('Console', {
       if (typeof console !== 'undefined') return console.log(string);
       if (typeof alert === 'function')    return alert(string);
       if (typeof print === 'function')    return print(string);
+    },
+    
+    exit: function(status) {
+      if (this.WSH)                                  WScript.Quit(status);
+      if (this.NODE)                                 process.exit(status);
+      if (typeof system === 'object' && system.exit) system.exit(status);
+      if (typeof quit == 'function')                 quit(status);
     }
   },
   

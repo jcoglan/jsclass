@@ -16,7 +16,7 @@ JS.Test.Unit.extend({
             names.push(testcase.displayName);
         });
         
-        var suite = new JS.Test.Unit.TestSuite(names.join(', '));
+        var suite = new JS.Test.Unit.TestSuite(names);
         for (var i = 0, n = suites.length; i < n; i++)
           suite.push(suites[i]);
         

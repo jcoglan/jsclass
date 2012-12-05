@@ -198,12 +198,12 @@ JS.Test.Unit.extend({
     
     addFailure: function(message) {
       this._testPassed = false;
-      this._result.addFailure(new JS.Test.Unit.Failure(this.name(), message));
+      this._result.addFailure(new JS.Test.Unit.Failure(this, message));
     },
     
     addError: function(exception) {
       this._testPassed = false;
-      this._result.addError(new JS.Test.Unit.Error(this.name(), exception));
+      this._result.addError(new JS.Test.Unit.Error(this, exception));
     },
     
     name: function() {
@@ -212,6 +212,22 @@ JS.Test.Unit.extend({
         return this._methodName + '(' + this.klass.displayName + ')';
       else
         return shortName;
+    },
+    
+    metadata: function() {
+      var shortName = this._methodName.replace(/^test\W*/ig, ''),
+          context   = [],
+          klass     = this.klass;
+      
+      while (klass !== JS.Test.Unit.TestCase) {
+        context.unshift(klass._contextName || klass.displayName); // TODO actually model this properly in Context
+        klass = klass.superclass;
+      }
+      return {
+        fullName:   context.concat(shortName).join(' '),
+        shortName:  shortName,
+        context:    context
+      };
     },
     
     toString: function() {

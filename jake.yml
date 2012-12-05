@@ -75,6 +75,9 @@ packages:
       - unit/ui/browser/test_runner
       - unit/ui/browser/display
       - unit/auto_runner
+      - reporters/progress
+      - reporters/exit_status
+      - reporters/composite
       - context/context
       - context/life_cycle
       - context/shared_behavior

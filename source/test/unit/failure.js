@@ -4,8 +4,8 @@ JS.Test.Unit.extend({
       SINGLE_CHARACTER: 'F'
     },
     
-    initialize: function(testName, message) {
-      this._testName = testName;
+    initialize: function(testCase, message) {
+      this._testCase = testCase;
       this._message  = message;
     },
     
@@ -14,11 +14,22 @@ JS.Test.Unit.extend({
     },
     
     shortDisplay: function() {
-      return this._testName + ': ' + this._message.split('\n')[0];
+      return this._testCase.name() + ': ' + this._message.split('\n')[0];
+    },
+    
+    testMetadata: function() {
+      return this._testCase.metadata();
+    },
+    
+    errorMetadata: function() {
+      return {
+        type:     'failure',
+        message:  this._message
+      };
     },
     
     longDisplay: function() {
-      return 'Failure:\n' + this._testName + ':\n' + this._message;
+      return 'Failure:\n' + this._testCase.name() + ':\n' + this._message;
     },
     
     toString: function() {

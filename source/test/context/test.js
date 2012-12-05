@@ -1,10 +1,9 @@
 JS.Test.Context.Test = new JS.Module({
   test: function(name, opts, block) {
-    var testName = 'test:', contextName = this.getContextName();
-    if (contextName) testName += ' ' + contextName;
-    testName += ' ' + name;
+    var testName = 'test: ' + name;
     
-    if (this.instanceMethod(testName)) throw new Error(testName + ' is already defined in ' + this.displayName);
+    if (JS.indexOf(this.instanceMethods(false), testName) >= 0)
+      throw new Error(testName + ' is already defined in ' + this.displayName);
     
     opts = opts || {};
     
