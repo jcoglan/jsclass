@@ -55,6 +55,8 @@ JS.Test.Reporters.extend({
     
     endSuite: function(event) {},
     
+    update: function(event) {},
+    
     endRun: function(event) {
       for (var i = 0, n = this._faults.length; i < n; i++)
         this._printFault(i + 1, this._faults[i]);

@@ -19,7 +19,9 @@ JS.Test = new JS.Module('Test', {
     
     Reporters: new JS.Module({
       extend: {
-        METHODS: ['startRun', 'startSuite', 'startTest', 'addFault', 'endTest', 'endSuite', 'endRun']
+        METHODS: ['startRun', 'startSuite', 'startTest',
+                  'update', 'addFault',
+                  'endTest', 'endSuite', 'endRun']
       }
     }),
     

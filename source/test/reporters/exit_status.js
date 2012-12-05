@@ -12,6 +12,8 @@ JS.Test.Reporters.extend({
     
     endSuite: function(event) {},
     
+    update: function(event) {},
+    
     endRun: function(event) {
       JS.Console.exit(event.passed ? 0 : 1);
     }

@@ -73,20 +73,26 @@ packages:
       - unit/ui/test_runner_mediator
       - unit/ui/console/test_runner
       - unit/ui/browser/test_runner
-      - unit/ui/browser/display
       - unit/auto_runner
+      
       - reporters/progress
       - reporters/exit_status
+      - reporters/browser
+      - reporters/console
+      - reporters/test_swarm
       - reporters/composite
+      
       - context/context
       - context/life_cycle
       - context/shared_behavior
       - context/test
       - context/suite
+      
       - mocking/stub
       - mocking/parameters
       - mocking/matchers
       - mocking/dsl
+      
       - fake_clock
       - async_steps
       - coverage

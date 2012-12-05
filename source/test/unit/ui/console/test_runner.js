@@ -3,7 +3,6 @@ JS.Test.Unit.UI.extend({
     extend: {
       TestRunner: new JS.Class({
         extend: JS.Test.Unit.UI.TestRunnerUtilities,
-        include: JS.Console,
         
         initialize: function(suite, outputLevel) {
           this._suite = (typeof suite.suite === 'function') ? suite.suite() : suite;
