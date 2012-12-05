@@ -3,7 +3,7 @@ JS.Test.Reporters.extend({
     include: JS.Console,
     
     LEVELS: {
-      slient:   1,
+      silent:   1,
       normal:   2,
       verbose:  3
     },
