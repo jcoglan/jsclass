@@ -10,7 +10,7 @@ JS.Test.Unit.UI.extend({
         
         start: function() {
           JS.Test.setReporter(new JS.Test.Reporters.Composite([
-            new JS.Test.Reporters.Progress('normal'),
+            new JS.Test.Reporters.Progress(),
             new JS.Test.Reporters.ExitStatus()
           ]), false);
           

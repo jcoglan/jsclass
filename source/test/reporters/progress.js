@@ -2,12 +2,6 @@ JS.Test.Reporters.extend({
   Progress: new JS.Class({
     include: JS.Console,
     
-    LEVELS: {
-      silent:   1,
-      normal:   2,
-      verbose:  3
-    },
-    
     SYMBOLS: {
       failure:  'F',
       error:    'E'
@@ -18,8 +12,7 @@ JS.Test.Reporters.extend({
       error:    'Error'
     },
     
-    initialize: function(outputLevel) {
-      this._level = this.LEVELS[outputLevel] || this.LEVELS.normal;
+    initialize: function() {
       this._faults = [];
     },
     
