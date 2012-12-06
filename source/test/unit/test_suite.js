@@ -98,7 +98,7 @@ JS.Test.Unit.extend({
     },
     
     metadata: function() {
-      return this._metadata;
+      return JS.extend({size: this.size()}, this._metadata);
     }
   })
 });

@@ -229,7 +229,8 @@ JS.Test.Unit.extend({
       return {
         fullName:   context.concat(shortName).join(' '),
         shortName:  shortName,
-        context:    context
+        context:    context,
+        size:       this.size()
       };
     }
   })

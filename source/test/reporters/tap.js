@@ -4,6 +4,7 @@ JS.Test.Reporters.extend({
     
     startRun: function(event) {
       this._testId = 0;
+      this.puts('1..' + event.size);
     },
     
     startSuite: function(event) {},
