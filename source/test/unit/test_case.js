@@ -215,7 +215,7 @@ JS.Test.Unit.extend({
     },
     
     metadata: function() {
-      var shortName = this._methodName.replace(/^test\W*/ig, ''),
+      var shortName = this._methodName.replace(/^test:\W*/ig, ''),
           context   = [],
           klass     = this.klass;
       

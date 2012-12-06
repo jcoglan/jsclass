@@ -34,7 +34,14 @@ JS.ENV.TestSpecHelpers = new JS.Module({
       message = index
       index   = 1
     }
-    assertEqual( message, faults[index-1].longDisplay() )
+    
+    var f = faults[index-1],
+        t = f.testMetadata(),
+        e = f.errorMetadata();
+    
+    assertEqual( message, (e.type === "failure" ? "Failure" : "Error") + ":\n" +
+                          t.shortName + "(" + t.context.pop() + "):\n" +
+                          e.message )
   }}
 })
 
