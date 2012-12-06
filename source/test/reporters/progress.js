@@ -12,11 +12,9 @@ JS.Test.Reporters.extend({
       error:    'Error'
     },
     
-    initialize: function() {
-      this._faults = [];
-    },
-    
     startRun: function(event) {
+      this._faults = [];
+      
       this.consoleFormat('bold');
       this.puts('Loaded suite: ' + event.suites.join(', '));
       this.puts('');

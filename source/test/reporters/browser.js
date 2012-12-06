@@ -1,7 +1,18 @@
 JS.Test.Reporters.extend({
   Browser: new JS.Class({
-    initialize: function() {
+    _contextFor: function(test) {
+      var context = this._context,
+          scopes  = test.context;
+      
+      for (var i = 0, n = scopes.length; i < n; i++)
+        context = context.child(scopes[i]);
+      
+      return context;
+    },
+    
+    startRun: function(event) {
       var self = this;
+      if (this._container) document.body.removeChild(this._container);
       
       this._container = JS.DOM.div({className: 'test-result-container'}, function(div) {
         div.table({className: 'report'}, function(table) {
@@ -29,19 +40,6 @@ JS.Test.Reporters.extend({
       });
       
       document.body.insertBefore(this._container, document.body.firstChild);
-    },
-    
-    _contextFor: function(test) {
-      var context = this._context,
-          scopes  = test.context;
-      
-      for (var i = 0, n = scopes.length; i < n; i++)
-        context = context.child(scopes[i]);
-      
-      return context;
-    },
-    
-    startRun: function(event) {
       this.update({tests: 0, assertions: 0, failures: 0, errors: 0});
     },
     
