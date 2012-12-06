@@ -28,10 +28,7 @@ JS.Test.extend({
       });
       
       var faultListener = testResult.addListener(TR.FAULT, function(fault) {
-        JS.Test.reporter.addFault({
-          test:   fault.testMetadata(),
-          error:  fault.errorMetadata()
-        });
+        JS.Test.reporter.addFault(fault.metadata());
       });
       
       var reportResult = function() {

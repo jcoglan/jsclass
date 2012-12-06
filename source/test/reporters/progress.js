@@ -35,7 +35,7 @@ JS.Test.Reporters.extend({
       if (this._outputFault) return;
       this._outputFault = true;
       this.consoleFormat('bold','red');
-      this.print(this.SYMBOLS[event.error.type], JS.Test.Unit.UI.PROGRESS_ONLY);
+      this.print(this.SYMBOLS[event.error.type]);
       this.reset();
     },
     

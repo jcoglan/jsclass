@@ -5,6 +5,13 @@ JS.Test.Unit.extend({
       this._exception = exception;
     },
     
+    metadata: function() {
+      return {
+        test:   this.testMetadata(),
+        error:  this.errorMetadata()
+      }
+    },
+    
     testMetadata: function() {
       return this._testCase.metadata();
     },
