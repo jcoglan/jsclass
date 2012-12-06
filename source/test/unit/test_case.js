@@ -23,9 +23,30 @@ JS.Test.Unit.extend({
           block.call(context || null, this.testCases[i]);
       },
       
+      metadata: function() {
+        var shortName = this._contextName || this.displayName,
+            context   = [],
+            klass     = this.superclass;
+        
+        while (klass !== JS.Test.Unit.TestCase) {
+          context.unshift(klass._contextName || klass.displayName); // TODO actually model this properly in Context
+          klass = klass.superclass;
+        }
+        return {
+          fullName:   context.concat(shortName).join(' '),
+          shortName:  shortName,
+          context:    context
+        };
+      },
+      
       suite: function(filter, inherit, useDefault) {
-        var methodNames = new JS.Enumerable.Collection(this.instanceMethods(inherit)),
-            tests = methodNames.select(function(name) { return this.filter(name, filter) }, this).sort(),
+        var fullName    = this.metadata().fullName,
+            methodNames = new JS.Enumerable.Collection(this.instanceMethods(inherit)),
+            
+            tests = methodNames.select(function(name) {
+              return /^test./.test(name) && this.filter(fullName + ' ' + name, filter);
+            }, this).sort(),
+            
             suite = new JS.Test.Unit.TestSuite(this.displayName);
         
         for (var i = 0, n = tests.length; i < n; i++) {
@@ -38,15 +59,8 @@ JS.Test.Unit.extend({
       },
       
       filter: function(name, filter) {
-        if (!/^test./.test(name)) return false;
         if (!filter || filter.length === 0) return true;
-        
-        var n = filter.length;
-        while (n--) {
-          if (name.substr(6, filter[n].length) === filter[n])
-            return true;
-        }
-        return false;
+        return name.indexOf(filter) >= 0;
       }
     }],
     
