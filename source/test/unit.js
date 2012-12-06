@@ -8,6 +8,8 @@ JS.Test = new JS.Module('Test', {
       return JS.Test.Runner.filter(objects, suffix);
     },
     
+    UI: new JS.Module({}),
+    
     Reporters: new JS.Module({
       extend: {
         METHODS: ['startRun', 'startSuite', 'startTest',

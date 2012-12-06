@@ -1,24 +1,28 @@
-{ "name"          : "jsclass"
-, "description"   : "Portable class library for JavaScript"
-, "homepage"      : "http://jsclass.jcoglan.com"
-, "author"        : "James Coglan <jcoglan@gmail.com> (http://jcoglan.com/)"
-, "keywords"      : ["oop", "class", "data-structures", "testing"]
+{ "name"            : "jsclass"
+, "description"     : "Portable class library for JavaScript"
+, "homepage"        : "http://jsclass.jcoglan.com"
+, "author"          : "James Coglan <jcoglan@gmail.com> (http://jcoglan.com/)"
+, "keywords"        : ["oop", "class", "data-structures", "testing"]
 
-, "version"       : "3.0.9"
-, "engines"       : {"node": ">=0.4.0"}
-, "main"          : "./index"
-, "bin"           : {"jsbuild": "./bin/jsbuild"}
-, "dependencies"  : {"nopt": ""}
+, "version"         : "3.0.9"
+, "engines"         : {"node": ">=0.4.0"}
+, "main"            : "./index"
+, "bin"             : {"jsbuild": "./bin/jsbuild"}
+, "dependencies"    : {"nopt": ""}
+, "devDependencies" : {"testem": ""}
 
-, "bugs"          : "http://github.com/jcoglan/js.class/issues"
+, "scripts"         : {"test": "TAP=1 node test/console.js"}
 
-, "licenses"      : [ { "type"  : "MIT"
-                      , "url"   : "http://www.opensource.org/licenses/mit-license.php"
-                      }
-                    ]
+, "bugs"            : "http://github.com/jcoglan/js.class/issues"
 
-, "repositories"  : [ { "type"  : "git"
-                      , "url"   : "git://github.com/jcoglan/js.class.git"
-                      }
-                    ]
+, "licenses"        : [ { "type"  : "MIT"
+                        , "url"   : "http://www.opensource.org/licenses/mit-license.php"
+                        }
+                      ]
+
+, "repositories"    : [ { "type"  : "git"
+                        , "url"   : "git://github.com/jcoglan/js.class.git"
+                        }
+                      ]
 }
+

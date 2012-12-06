@@ -7,11 +7,16 @@ JS.Test.extend({
     },
     
     run: function() {
-      var options  = this.getOptions(), // TODO implement this
-          suite    = this.getSuite(options),
-          reporter = this.getReporter(options);
+      var ui = this.getUI(this._settings);
+      ui.prepare(this.start, this);
+    },
+    
+    start: function(ui) {
+      var options   = ui.getOptions(),
+          reporters = ui.getReporters(options),
+          suite     = this.getSuite(options);
       
-      JS.Test.setReporter(reporter, false);
+      JS.Test.setReporter(new JS.Test.Reporters.Composite(reporters), false);
       
       var startTime  = new Date().getTime();
           testResult = new JS.Test.Unit.TestResult(),
@@ -60,12 +65,11 @@ JS.Test.extend({
       suite.run(testResult, reportResult, reportEvent, this);
     },
     
-    getOptions: function() {
-      var options = {};
-      if (JS.Console.NODE) {
-        if (process.env.TAP) options.format = 'tap';
-      }
-      return options; // TODO implement this
+    getUI: function(settings) {
+      if (JS.Console.BROWSER)
+        return new JS.Test.UI.Browser(settings);
+      else
+        return new JS.Test.UI.Terminal(settings);
     },
     
     getSuite: function(options) {
@@ -88,22 +92,6 @@ JS.Test.extend({
       
       JS.Test.Unit.TestCase.clear();
       return suite;
-    },
-    
-    getReporter: function(options) {
-      var reporters = [], R = JS.Test.Reporters;
-      
-      if (JS.Console.BROWSER) {
-        var browser = new R.Browser(options);
-        reporters.push(browser);
-        if (JS.ENV.TestSwarm) reporters.push(new R.TestSwarm(options, browser));
-        reporters.push(new R.Console(options));
-      } else {
-        var Printer = R.find(options.format) || R.Progress;
-        reporters.push(new Printer(options));
-        reporters.push(new R.ExitStatus(options));
-      }
-      return new R.Composite(reporters);
     },
     
     extend: {

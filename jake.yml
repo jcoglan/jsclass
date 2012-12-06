@@ -70,11 +70,15 @@ packages:
       - unit/test_suite
       - unit/test_case
       
+      - ui/terminal
+      - ui/browser
+      
       - reporters/progress
       - reporters/tap
       - reporters/exit_status
       - reporters/browser
       - reporters/console
+      - reporters/testem
       - reporters/test_swarm
       - reporters/composite
       
