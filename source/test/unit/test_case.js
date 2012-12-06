@@ -40,14 +40,15 @@ JS.Test.Unit.extend({
       },
       
       suite: function(filter, inherit, useDefault) {
-        var fullName    = this.metadata().fullName,
+        var metadata    = this.metadata(),
+            fullName    = metadata.fullName,
             methodNames = new JS.Enumerable.Collection(this.instanceMethods(inherit)),
             
             tests = methodNames.select(function(name) {
               return /^test./.test(name) && this.filter(fullName + ' ' + name, filter);
             }, this).sort(),
             
-            suite = new JS.Test.Unit.TestSuite(this.displayName);
+            suite = new JS.Test.Unit.TestSuite(metadata);
         
         for (var i = 0, n = tests.length; i < n; i++) {
           try { suite.push(new this(tests[i])) } catch (e) {}

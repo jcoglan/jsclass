@@ -22,7 +22,7 @@ JS.Test.UI.extend({
       var reporters = [],
           R = JS.Test.Reporters;
       
-      var Printer = R.find(options.format) || R.Progress;
+      var Printer = R.find(options.format) || R.Dot;
       reporters.push(new Printer(options));
       reporters.push(new R.ExitStatus(options));
       

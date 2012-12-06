@@ -73,7 +73,9 @@ packages:
       - ui/terminal
       - ui/browser
       
-      - reporters/progress
+      - reporters/dot
+      - reporters/spec
+      - reporters/error
       - reporters/tap
       - reporters/exit_status
       - reporters/browser
@@ -125,3 +127,4 @@ packages:
   set:              set
   stack_trace:      stack_trace
   tsort:            tsort
+

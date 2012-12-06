@@ -12,7 +12,7 @@
 
 JS.Test.Unit.TestSuite.include({
   run: function(result, continuation, callback, context) {
-    callback.call(context || null, this.klass.STARTED, this._name);
+    callback.call(context || null, this.klass.STARTED, this);
     
     var withIvars = function(ivarsFromCallback) {
       this.forEach(function(test, resume) {
@@ -21,7 +21,7 @@ JS.Test.Unit.TestSuite.include({
         
       }, function() {
         var afterCallbacks = function() {
-          callback.call(context || null, this.klass.FINISHED, this._name);
+          callback.call(context || null, this.klass.FINISHED, this);
           continuation();
         };
         if (ivarsFromCallback) first.runAllCallbacks('after', afterCallbacks, this);
