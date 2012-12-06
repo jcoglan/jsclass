@@ -88,3 +88,5 @@ JS.Test.Reporters.extend({
   })
 });
 
+JS.Test.Reporters.register('progress', JS.Test.Reporters.Progress);
+

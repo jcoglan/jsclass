@@ -64,7 +64,11 @@ JS.Test.extend({
     },
     
     getOptions: function() {
-      return {}; // TODO implement this
+      var options = {};
+      if (JS.Console.NODE) {
+        if (process.env.TAP) options.format = 'tap';
+      }
+      return options; // TODO implement this
     },
     
     getSuite: function(options) {
@@ -98,7 +102,8 @@ JS.Test.extend({
         if (JS.ENV.TestSwarm) reporters.push(new R.TestSwarm(options, browser));
         reporters.push(new R.Console(options));
       } else {
-        reporters.push(new R.Progress(options));
+        var Printer = R.find(options.format) || R.Progress;
+        reporters.push(new Printer(options));
         reporters.push(new R.ExitStatus(options));
       }
       return new R.Composite(reporters);

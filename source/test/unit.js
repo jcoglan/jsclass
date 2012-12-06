@@ -12,7 +12,18 @@ JS.Test = new JS.Module('Test', {
       extend: {
         METHODS: ['startRun', 'startSuite', 'startTest',
                   'update', 'addFault',
-                  'endTest', 'endSuite', 'endRun']
+                  'endTest', 'endSuite', 'endRun'],
+        
+        _registry: {},
+        
+        register: function(name, klass) {
+          this._registry[name] = klass;
+        },
+        
+        find: function(name) {
+          if (!name) return null;
+          return this._registry[name] || null;
+        }
       }
     }),
     
