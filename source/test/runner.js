@@ -47,9 +47,7 @@ JS.Test.extend({
         JS.Test.reporter.endRun(result);        
       };
       
-      JS.Test.reporter.startRun({suites: suite.toString()});
-      
-      suite.run(testResult, reportResult, function(channel, testCase) {
+      var reportEvent = function(channel, testCase) {
         if (channel === TS.STARTED)
           JS.Test.reporter.startSuite();
         else if (channel === TC.STARTED)
@@ -58,7 +56,11 @@ JS.Test.extend({
           JS.Test.reporter.endTest(testCase.metadata());
         else if (channel === TS.FINISHED)
           JS.Test.reporter.endSuite();
-      }, this);
+      };
+      
+      JS.Test.reporter.startRun({suites: suite.toString()});
+      
+      suite.run(testResult, reportResult, reportEvent, this);
     },
     
     getOptions: function() {
