@@ -1,5 +1,3 @@
-console.log([].map.call(document.getElementsByTagName('script'), function(s) { return s.src }))
-
 JS.ENV.CWD = (typeof CWD === 'undefined') ? '.' : CWD
 
 JS.cacheBust = true;

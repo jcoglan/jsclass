@@ -33,10 +33,12 @@ JS.Test.UI.extend({
       
       reporters.push(browser);
       
-      if (JS.ENV.TestSwarm)
-        reporters.push(new R.TestSwarm(options, browser));
+      if (JS.ENV.buster)
+        reporters.push(new R.Buster(options));
       else if (JS.ENV.Testem)
         reporters.push(new R.Testem(options));
+      else if (JS.ENV.TestSwarm)
+        reporters.push(new R.TestSwarm(options, browser));
       else
         reporters.push(new R.Console(options));
       

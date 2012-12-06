@@ -78,6 +78,7 @@ packages:
       - reporters/exit_status
       - reporters/browser
       - reporters/console
+      - reporters/buster
       - reporters/testem
       - reporters/test_swarm
       - reporters/composite
