@@ -61,13 +61,13 @@ JS.Test.Unit.extend({
     },
     
     run: function(result, continuation, callback, context) {
-      callback.call(context || null, this.klass.STARTED, this._name);
+      callback.call(context || null, this.klass.STARTED, this);
       
       this.forEach(function(test, resume) {
         test.run(result, resume, callback, context)
         
       }, function() {
-        callback.call(context || null, this.klass.FINISHED, this._name);
+        callback.call(context || null, this.klass.FINISHED, this);
         continuation.call(context || null);
         
       }, this);

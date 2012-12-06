@@ -1,4 +1,10 @@
 JS.Test.Unit.extend({
+  AssertionFailedError: new JS.Class(Error, {
+    initialize: function(message) {
+      this.message = message.toString();
+    }
+  }),
+  
   Assertions: new JS.Module({
     assertBlock: function(message, block, context) {
       if (typeof message === 'function') {

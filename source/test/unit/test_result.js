@@ -3,8 +3,8 @@ JS.Test.Unit.extend({
     include: JS.Test.Unit.Observable,
     
     extend: {
-      CHANGED:  'CHANGED',
-      FAULT:    'FAULT'
+      CHANGED:  'Test.Unit.TestResult.CHANGED',
+      FAULT:    'Test.Unit.TestResult.FAULT'
     },
     
     initialize: function() {
@@ -35,11 +35,6 @@ JS.Test.Unit.extend({
       this.notifyListeners(this.klass.CHANGED, this);
     },
     
-    toString: function() {
-      return this.runCount() + ' tests, ' + this.assertionCount() + ' assertions, ' +
-             this.failureCount() + ' failures, ' + this.errorCount() + ' errors';
-    },
-    
     passed: function() {
       return this._failures.length === 0 && this._errors.length === 0;
     },
@@ -58,6 +53,16 @@ JS.Test.Unit.extend({
     
     errorCount: function() {
       return this._errors.length;
+    },
+    
+    metadata: function() {
+      return {
+        passed:     this.passed(),
+        tests:      this.runCount(),
+        assertions: this.assertionCount(),
+        failures:   this.failureCount(),
+        errors:     this.errorCount()
+      };
     }
   })
 });

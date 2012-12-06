@@ -3,6 +3,9 @@ JS.Test.Unit.extend({
     include: JS.Test.Unit.Assertions,
     
     extend: [JS.Enumerable, {
+      STARTED:  'Test.Unit.TestCase.STARTED',
+      FINISHED: 'Test.Unit.TestCase.FINISHED',
+      
       testCases: [],
       reports:   [],
       handlers:  [],
@@ -19,9 +22,6 @@ JS.Test.Unit.extend({
         for (var i = 0, n = this.testCases.length; i < n; i++)
           block.call(context || null, this.testCases[i]);
       },
-      
-      STARTED:  'Test.Unit.TestCase.STARTED',
-      FINISHED: 'Test.Unit.TestCase.FINISHED',
       
       suite: function(filter, inherit, useDefault) {
         var methodNames = new JS.Enumerable.Collection(this.instanceMethods(inherit)),

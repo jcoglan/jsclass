@@ -1,8 +1,7 @@
 JS.Test.Reporters.extend({
   TestSwarm: new JS.Class({
-    initialize: function(browserReporter) {
+    initialize: function(options, browserReporter) {
       this._browserReporter = browserReporter;
-      if (!JS.ENV.TestSwarm) return;
       
       TestSwarm.serialize = function() {
         return browserReporter.serialize();
@@ -18,7 +17,7 @@ JS.Test.Reporters.extend({
     addFault: function(event) {},
     
     endTest: function(event) {
-      if (JS.ENV.TestSwarm) TestSwarm.heartbeat();
+      TestSwarm.heartbeat();
     },
     
     endSuite: function(event) {},
@@ -26,8 +25,6 @@ JS.Test.Reporters.extend({
     update: function(event) {},
     
     endRun: function(event) {
-      if (!JS.ENV.TestSwarm) return;
-      
       TestSwarm.submit({
         fail:   event.failures,
         error:  event.errors,

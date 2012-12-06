@@ -69,11 +69,6 @@ packages:
       - unit/test_result
       - unit/test_suite
       - unit/test_case
-      - unit/ui/test_runner_utilities
-      - unit/ui/test_runner_mediator
-      - unit/ui/console/test_runner
-      - unit/ui/browser/test_runner
-      - unit/auto_runner
       
       - reporters/progress
       - reporters/exit_status
@@ -93,10 +88,11 @@ packages:
       - mocking/matchers
       - mocking/dsl
       
-      - fake_clock
       - async_steps
+      - fake_clock
       - coverage
       - helpers
+      - runner
   
   dom:
     directory: dom
