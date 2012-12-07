@@ -22,7 +22,7 @@ JS.Test.Unit.TestSuite.include({
       }, function() {
         var afterCallbacks = function() {
           callback.call(context || null, this.klass.FINISHED, this);
-          continuation();
+          continuation.call(context || null);
         };
         if (ivarsFromCallback) first.runAllCallbacks('after', afterCallbacks, this);
         else afterCallbacks.call(this);

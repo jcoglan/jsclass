@@ -48,7 +48,12 @@ JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
                   'TSortSpec' ]
     
     specs = JS.Test.filter(specs, 'Spec')
-    specs.push(Test.method('autorun'))
+    
+    specs.push(function() {
+      Test.autorun(function(runner) {
+        runner.addReporter(new JS.Test.Reporters.TAP())
+      })
+    })
     JS.require.apply(JS, specs)
 })
 
