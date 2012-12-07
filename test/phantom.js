@@ -1,20 +1,9 @@
-var page = new WebPage()
+JSCLASS_PATH = '../build/src'
+require(JSCLASS_PATH + '/loader')
+JS.require('JS.Test')
 
-page.onConsoleMessage = function(message) {
-  try {
-    var data = JSON.parse(message).jstest
-    if (!data) return;
-    
-    if (data.status) {
-      var message = '[' + data.status.toUpperCase() + '] ' + data.test
-      return console.log(message)
-    }
-    
-    var status = (!data.fail && !data.error) ? 0 : 1
-    console.log(data.total + ' tests, ' + data.fail + ' failures, ' + data.error + ' errors')
-    phantom.exit(status)
-    
-  } catch (e) {}
-}
+var page     = new WebPage(),
+    reporter = new JS.Test.Reporters.PhantomJS({format: 'spec'}, page)
+
 page.open('test/browser.html')
 

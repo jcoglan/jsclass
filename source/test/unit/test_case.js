@@ -61,7 +61,12 @@ JS.Test.Unit.extend({
       
       filter: function(name, filter) {
         if (!filter || filter.length === 0) return true;
-        return name.indexOf(filter) >= 0;
+        
+        var n = filter.length;
+        while (n--) {
+          if (name.indexOf(filter[n]) >= 0) return true;
+        }
+        return false;
       }
     }],
     

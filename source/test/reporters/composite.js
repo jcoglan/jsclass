@@ -5,6 +5,7 @@ JS.Test.Reporters.extend({
     },
     
     addReporter: function(reporter) {
+      if (!reporter) return;
       this._reporters.push(reporter);
     },
     

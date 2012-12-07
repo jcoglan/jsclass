@@ -1,6 +1,6 @@
 JS.ENV.CWD = (typeof CWD === 'undefined') ? '.' : CWD
 
-JS.cacheBust = true;
+JS.cacheBust = true
 
 JS.Packages(function() { with(this) {
     autoload(/^(.*)Spec$/, {from: CWD + '/test/specs', require: 'JS.$1'})
@@ -48,7 +48,8 @@ JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
                   'TSortSpec' ]
     
     specs = JS.Test.filter(specs, 'Spec')
-    specs.push(Test.method('autorun'))
+    
+    specs.push(function() { Test.autorun() })
     JS.require.apply(JS, specs)
 })
 

@@ -9,7 +9,7 @@
 , "main"            : "./index"
 , "bin"             : {"jsbuild": "./bin/jsbuild"}
 , "dependencies"    : {"nopt": ""}
-, "devDependencies" : {"testacular": "", "testem": ""}
+, "devDependencies" : {"buster": "", "testacular": "", "testem": ""}
 
 , "scripts"         : {"test": "TAP=1 node test/console.js"}
 

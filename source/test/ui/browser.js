@@ -1,7 +1,7 @@
 JS.Test.UI.extend({
   Browser: new JS.Class({
     prepare: function(callback, context) {
-      var hash = (window.location.hash || '').replace(/^#/, ''),
+      var hash = (location.hash || '').replace(/^#/, ''),
           self = this;
       
       if (hash === 'testem') {
@@ -14,15 +14,30 @@ JS.Test.UI.extend({
     },
     
     getOptions: function() {
-      var qs      = (window.location.search || '').replace(/^\?/, ''),
+      var qs      = (location.search || '').replace(/^\?/, ''),
           pairs   = qs.split('&'),
           options = {},
-          parts;
+          parts, key, value;
       
       for (var i = 0, n = pairs.length; i < n; i++) {
         parts = pairs[i].split('=');
-        options[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+        key   = decodeURIComponent(parts[0]);
+        value = decodeURIComponent(parts[1]);
+        
+        if (/\[\]$/.test(parts[0])) {
+          key = key.replace(/\[\]$/, '');
+          if (!(options[key] instanceof Array)) options[key] = [];
+          options[key].push(value);
+        } else {
+          options[key] = value;
+        }
       }
+      
+      if (options.test)
+        options.test = [].concat(options.test);
+      else
+        options.test = [];
+      
       return options;
     },
     
@@ -33,14 +48,13 @@ JS.Test.UI.extend({
       
       reporters.push(browser);
       
-      if (JS.ENV.__testacular__)
-        reporters.push(new R.Testacular(options));
-      else if (JS.ENV.Testem)
-        reporters.push(new R.Testem(options));
-      else if (JS.ENV.TestSwarm)
-        reporters.push(new R.TestSwarm(options, browser));
-      else
-        reporters.push(new R.Console(options));
+      if (JS.ENV.buster)          reporters.push(new R.Buster(options));
+      if (JS.ENV.__testacular__)  reporters.push(new R.Testacular(options));
+      if (JS.ENV.Testem)          reporters.push(new R.Testem(options));
+      if (JS.ENV.TestSwarm)       reporters.push(new R.TestSwarm(options, browser));
+      
+      if (/\bPhantomJS\b/.test(navigator.userAgent))
+        reporters.push(new R.JSON());
       
       return reporters;
     }

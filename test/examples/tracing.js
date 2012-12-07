@@ -15,7 +15,7 @@ if (this.ActiveXObject) load = function(path) {
 })()
 
 if (typeof require === 'function') {
-  require('../' + JSCLASS_PATH + 'loader')
+  require('../../' + JSCLASS_PATH + 'loader')
 } else {
   load(JSCLASS_PATH + 'loader.js')
 }
@@ -63,3 +63,4 @@ JS.require('JS.Hash', 'JS.TSort', function() {
   
   hash.hasKey('something')
 })
+

@@ -6,19 +6,22 @@ JS.Test.extend({
                      : (settings || {});
     },
     
-    run: function() {
-      var ui = this.getUI(this._settings);
-      ui.prepare(this.start, this);
+    run: function(callback, context) {
+      var ui = this.klass.getUI(this._settings);
+      ui.prepare(function() {
+        this.start(ui, callback, context);
+      }, this);
     },
     
-    start: function(ui) {
+    start: function(ui, callback, context) {
       var options   = ui.getOptions(),
           reporters = ui.getReporters(options),
           suite     = this.getSuite(options);
       
-      JS.Test.setReporter(new JS.Test.Reporters.Composite(reporters), false);
+      this.setReporter(new JS.Test.Reporters.Composite(reporters));
+      if (callback) callback.call(context || null, this);
       
-      var startTime  = new Date().getTime();
+      var startTime  = new Date().getTime(),
           testResult = new JS.Test.Unit.TestResult(),
           TR         = JS.Test.Unit.TestResult,
           TS         = JS.Test.Unit.TestSuite,
@@ -29,12 +32,12 @@ JS.Test.extend({
             time   = new Date().getTime();
         
         result.runtime = (time - startTime) / 1000;
-        JS.Test.reporter.update(result);
-      });
+        this._reporter.update(result);
+      }, this);
       
       var faultListener = testResult.addListener(TR.FAULT, function(fault) {
-        JS.Test.reporter.addFault(fault.metadata());
-      });
+        this._reporter.addFault(fault.metadata());
+      }, this);
       
       var reportResult = function() {
         testResult.removeListener(TR.CHANGED, resultListener);
@@ -46,30 +49,36 @@ JS.Test.extend({
         // TODO output reports
         var result = testResult.metadata();
         result.runtime = elapsedTime;
-        JS.Test.reporter.endRun(result);        
+        this._reporter.endRun(result);
       };
       
       var reportEvent = function(channel, testCase) {
         if (channel === TS.STARTED)
-          JS.Test.reporter.startSuite(testCase.metadata());
+          this._reporter.startSuite(testCase.metadata());
         else if (channel === TC.STARTED)
-          JS.Test.reporter.startTest(testCase.metadata());
+          this._reporter.startTest(testCase.metadata());
         else if (channel === TC.FINISHED)
-          JS.Test.reporter.endTest(testCase.metadata());
+          this._reporter.endTest(testCase.metadata());
         else if (channel === TS.FINISHED)
-          JS.Test.reporter.endSuite(testCase.metadata());
+          this._reporter.endSuite(testCase.metadata());
       };
       
-      JS.Test.reporter.startRun(suite.metadata());
+      this._reporter.startRun(suite.metadata());
       
       suite.run(testResult, reportResult, reportEvent, this);
     },
     
-    getUI: function(settings) {
-      if (JS.Console.BROWSER)
-        return new JS.Test.UI.Browser(settings);
-      else
-        return new JS.Test.UI.Terminal(settings);
+    addReporter: function(reporter) {
+      var current = this._reporter;
+      if (!(current instanceof JS.Test.Reporters.Composite)) {
+        this._reporter = new JS.Test.Reporters.Composite();
+        this._reporter.addReporter(current);
+      }
+      this._reporter.addReporter(reporter);
+    },
+    
+    setReporter: function(reporter) {
+      this._reporter = reporter;
     },
     
     getSuite: function(options) {
@@ -99,10 +108,17 @@ JS.Test.extend({
     },
     
     extend: {
+      getUI: function(settings) {
+        if (JS.Console.BROWSER && !JS.Console.PHANTOM)
+          return new JS.Test.UI.Browser(settings);
+        else
+          return new JS.Test.UI.Terminal(settings);
+      },
+      
       filter: function(objects, suffix) {
-        var filter = [], // TODO implement this
-            output = [],
+        var filter = this.getUI().getOptions().test,
             n      = filter.length,
+            output = [],
             m, object;
         
         if (n === 0) return objects;
@@ -120,9 +136,18 @@ JS.Test.extend({
     }
   }),
   
-  autorun: function(options) {
+  autorun: function(options, callback, context) {
+    if (typeof options === 'function') {
+      context  = callback;
+      callback = options;
+      options  = {};
+    }
+    if (typeof callback !== 'function') {
+      callback = undefined;
+      context  = undefined;
+    }
     var runner = new JS.Test.Runner(options);
-    runner.run();
+    runner.run(callback, context);
   }
 });
 

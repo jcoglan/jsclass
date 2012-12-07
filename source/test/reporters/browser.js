@@ -1,5 +1,9 @@
 JS.Test.Reporters.extend({
   Browser: new JS.Class({
+    initialize: function(options) {
+      this._options = options || {};
+    },
+    
     _contextFor: function(test) {
       var context = this._context,
           scopes  = test.context;
@@ -35,7 +39,7 @@ JS.Test.Reporters.extend({
         });
         self._light = div.div({className: 'light light-pending'});
         div.p({className: 'user-agent'}, window.navigator.userAgent);
-        self._context = new self.klass.Context('spec', div.ul({className: 'specs'}));
+        self._context = new self.klass.Context('spec', div.ul({className: 'specs'}), undefined, self._options);
         self._summary = div.p({className: 'summary'});
       });
       
@@ -88,10 +92,11 @@ JS.Test.Reporters.extend({
 
 JS.Test.Reporters.Browser.extend({
   Context: new JS.Class({
-    initialize: function(type, parent, name) {
+    initialize: function(type, parent, name, options) {
       this._parent   = parent;
       this._type     = type;
       this._name     = name;
+      this._options  = options;
       this._children = [];
       
       if (name === undefined) {
@@ -122,8 +127,8 @@ JS.Test.Reporters.Browser.extend({
         self._ul = li.ul({className: 'children'});
       });
       
-      var pattern = /\btest=/; // TODO get this from a UI abstraction
-      if (!pattern.test(window.location.search))
+      var filters = this._options.test || [];
+      if (filters.length === 0)
         JS.DOM.addClass(this._li, 'closed');
       
       JS.DOM.Event.on(this._toggle, 'click', function() {
@@ -149,11 +154,11 @@ JS.Test.Reporters.Browser.extend({
     
     child: function(name) {
       return this._children[name] = this._children[name] ||
-                                    new this.klass('spec', this, name);
+                                    new this.klass('spec', this, name, this._options);
     },
     
     addTest: function(name) {
-      var test = this._children[name] = new this.klass('test', this, name);
+      var test = this._children[name] = new this.klass('test', this, name, this._options);
       test.ping('_tests');
     },
     

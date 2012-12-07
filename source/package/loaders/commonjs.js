@@ -9,10 +9,19 @@ JS.Package.CommonJSLoader = {
   },
   
   loadFile: function(path, fireCallbacks) {
-    var cwd    = process.cwd(),
-        module = path.replace(/\.[^\.]+$/g, ''),
-        path   = require('path'),
-        file   = path.resolve(module);
+    var file;
+    
+    if (typeof process !== 'undefined') {
+      var cwd    = process.cwd(),
+          module = path.replace(/\.[^\.]+$/g, ''),
+          path   = require('path');
+      
+      file = path.resolve(module);
+    }
+    else if (typeof phantom !== 'undefined') {
+      file = phantom.libraryPath.replace(/\/$/, '') + '/' +
+             path.replace(/^\//, '');
+    }
     
     this._currentPath = file + '.js';
     fireCallbacks(require(file));
