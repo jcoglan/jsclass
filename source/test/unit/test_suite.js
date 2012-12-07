@@ -51,9 +51,9 @@ JS.Test.Unit.extend({
       })()
     },
     
-    initialize: function(name) {
-      this._name = name || 'Unnamed TestSuite';
-      this._tests = [];
+    initialize: function(metadata) {
+      this._metadata = metadata;
+      this._tests    = [];
     },
     
     forEach: function(block, continuation, context) {
@@ -97,8 +97,8 @@ JS.Test.Unit.extend({
       return this._tests.length === 0;
     },
     
-    toString: function() {
-      return this._name;
+    metadata: function() {
+      return JS.extend({size: this.size()}, this._metadata);
     }
   })
 });

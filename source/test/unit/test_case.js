@@ -40,14 +40,15 @@ JS.Test.Unit.extend({
       },
       
       suite: function(filter, inherit, useDefault) {
-        var fullName    = this.metadata().fullName,
+        var metadata    = this.metadata(),
+            fullName    = metadata.fullName,
             methodNames = new JS.Enumerable.Collection(this.instanceMethods(inherit)),
             
             tests = methodNames.select(function(name) {
               return /^test./.test(name) && this.filter(fullName + ' ' + name, filter);
             }, this).sort(),
             
-            suite = new JS.Test.Unit.TestSuite(this.displayName);
+            suite = new JS.Test.Unit.TestSuite(metadata);
         
         for (var i = 0, n = tests.length; i < n; i++) {
           try { suite.push(new this(tests[i])) } catch (e) {}
@@ -220,32 +221,17 @@ JS.Test.Unit.extend({
       this._result.addError(new JS.Test.Unit.Error(this, exception));
     },
     
-    name: function() {
-      var shortName = this._methodName.replace(/^test\W*/ig, '');
-      if (shortName.replace(this.klass.displayName, '') === shortName)
-        return this._methodName + '(' + this.klass.displayName + ')';
-      else
-        return shortName;
-    },
-    
     metadata: function() {
-      var shortName = this._methodName.replace(/^test:\W*/ig, ''),
-          context   = [],
-          klass     = this.klass;
+      var klassData = this.klass.metadata(),
+          context   = klassData.context.concat(klassData.shortName),
+          shortName = this._methodName.replace(/^test:\W*/ig, '');
       
-      while (klass !== JS.Test.Unit.TestCase) {
-        context.unshift(klass._contextName || klass.displayName); // TODO actually model this properly in Context
-        klass = klass.superclass;
-      }
       return {
         fullName:   context.concat(shortName).join(' '),
         shortName:  shortName,
-        context:    context
+        context:    context,
+        size:       this.size()
       };
-    },
-    
-    toString: function() {
-      return this.name();
     }
   })
 });

@@ -1,5 +1,5 @@
 JS.Test.Reporters.extend({
-  Progress: new JS.Class({
+  Dot: new JS.Class({
     include: JS.Console,
     
     SYMBOLS: {
@@ -12,13 +12,11 @@ JS.Test.Reporters.extend({
       error:    'Error'
     },
     
-    initialize: function() {
-      this._faults = [];
-    },
-    
     startRun: function(event) {
+      this._faults = [];
+      
       this.consoleFormat('bold');
-      this.puts('Loaded suite: ' + event.suites.join(', '));
+      this.puts('Loaded suite: ' + event.fullName);
       this.puts('');
       this.reset();
       this.puts('Started');
@@ -54,10 +52,6 @@ JS.Test.Reporters.extend({
       for (var i = 0, n = this._faults.length; i < n; i++)
         this._printFault(i + 1, this._faults[i]);
       
-      this.reset();
-      this.puts('');
-      this.puts('Finished in ' + event.runtime + ' seconds');
-      
       this._printSummary(event);
     },
     
@@ -72,6 +66,10 @@ JS.Test.Reporters.extend({
     },
     
     _printSummary: function(event) {
+      this.reset();
+      this.puts('');
+      this.puts('Finished in ' + event.runtime + ' seconds');
+      
       var color = event.passed ? 'green' : 'red';
       this.consoleFormat(color);
       this.puts(this._plural(event.tests, 'test') + ', ' +
@@ -88,5 +86,5 @@ JS.Test.Reporters.extend({
   })
 });
 
-JS.Test.Reporters.register('progress', JS.Test.Reporters.Progress);
+JS.Test.Reporters.register('dot', JS.Test.Reporters.Dot);
 

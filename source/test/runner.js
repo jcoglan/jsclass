@@ -51,16 +51,16 @@ JS.Test.extend({
       
       var reportEvent = function(channel, testCase) {
         if (channel === TS.STARTED)
-          JS.Test.reporter.startSuite();
+          JS.Test.reporter.startSuite(testCase.metadata());
         else if (channel === TC.STARTED)
           JS.Test.reporter.startTest(testCase.metadata());
         else if (channel === TC.FINISHED)
           JS.Test.reporter.endTest(testCase.metadata());
         else if (channel === TS.FINISHED)
-          JS.Test.reporter.endSuite();
+          JS.Test.reporter.endSuite(testCase.metadata());
       };
       
-      JS.Test.reporter.startRun({suites: suite.toString()});
+      JS.Test.reporter.startRun(suite.metadata());
       
       suite.run(testResult, reportResult, reportEvent, this);
     },
@@ -86,7 +86,11 @@ JS.Test.extend({
           names.push(testcase.displayName);
       });
       
-      var suite = new JS.Test.Unit.TestSuite(names);
+      var suite = new JS.Test.Unit.TestSuite({
+        fullName:   names.join(', '),
+        shortName:  null,
+        context:    null
+      });
       for (var i = 0, n = suites.length; i < n; i++)
         suite.push(suites[i]);
       
