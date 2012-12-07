@@ -49,11 +49,7 @@ JS.require('JS.Test', 'JS.MethodChain', function(Test, MC) {
     
     specs = JS.Test.filter(specs, 'Spec')
     
-    specs.push(function() {
-      Test.autorun(function(runner) {
-        runner.addReporter(new JS.Test.Reporters.TAP())
-      })
-    })
+    specs.push(function() { Test.autorun() })
     JS.require.apply(JS, specs)
 })
 

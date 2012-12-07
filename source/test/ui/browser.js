@@ -1,7 +1,7 @@
 JS.Test.UI.extend({
   Browser: new JS.Class({
     prepare: function(callback, context) {
-      var hash = (window.location.hash || '').replace(/^#/, ''),
+      var hash = (location.hash || '').replace(/^#/, ''),
           self = this;
       
       if (hash === 'testem') {
@@ -14,7 +14,7 @@ JS.Test.UI.extend({
     },
     
     getOptions: function() {
-      var qs      = (window.location.search || '').replace(/^\?/, ''),
+      var qs      = (location.search || '').replace(/^\?/, ''),
           pairs   = qs.split('&'),
           options = {},
           parts, key, value;
@@ -48,12 +48,12 @@ JS.Test.UI.extend({
       
       reporters.push(browser);
       
-      if (JS.ENV.buster)
-        reporters.push(new R.Buster(options));
-      else if (JS.ENV.Testem)
-        reporters.push(new R.Testem(options));
-      else if (JS.ENV.TestSwarm)
-        reporters.push(new R.TestSwarm(options, browser));
+      if (JS.ENV.buster)    reporters.push(new R.Buster(options));
+      if (JS.ENV.Testem)    reporters.push(new R.Testem(options));
+      if (JS.ENV.TestSwarm) reporters.push(new R.TestSwarm(options, browser));
+      
+      if (/\bPhantomJS\b/.test(navigator.userAgent))
+        reporters.push(new R.JSON());
       
       return reporters;
     }

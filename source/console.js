@@ -121,12 +121,14 @@ JS.Console = new JS.Module('Console', {
     
     BROWSER: (typeof window !== 'undefined'),
     NODE:    (typeof process === 'object'),
+    PHANTOM: (typeof phantom !== 'undefined'),
     RHINO:   (typeof java !== 'undefined' && typeof java.lang !== 'undefined'),
     WINDOZE: (typeof window !== 'undefined' || typeof WScript !== 'undefined'),
     WSH:     (typeof WScript !== 'undefined'),
     
     coloring: function() {
       if (this.NODE) return require('tty').isatty(1);
+      if (this.PHANTOM) return true;
       if (this.WINDOZE) return false;
       return !(this.BROWSER && !window.runtime);
     },
@@ -218,6 +220,7 @@ JS.Console = new JS.Module('Console', {
     exit: function(status) {
       if (this.WSH)                                  WScript.Quit(status);
       if (this.NODE)                                 process.exit(status);
+      if (this.PHANTOM)                              phantom.exit(status);
       if (typeof system === 'object' && system.exit) system.exit(status);
       if (typeof quit == 'function')                 quit(status);
     }
@@ -321,3 +324,4 @@ JS.Console = new JS.Module('Console', {
   
   C.extend(C);
 })();
+
