@@ -7,7 +7,7 @@ JS.Test.extend({
     },
     
     run: function() {
-      var ui = this.getUI(this._settings);
+      var ui = this.klass.getUI(this._settings);
       ui.prepare(this.start, this);
     },
     
@@ -65,13 +65,6 @@ JS.Test.extend({
       suite.run(testResult, reportResult, reportEvent, this);
     },
     
-    getUI: function(settings) {
-      if (JS.Console.BROWSER)
-        return new JS.Test.UI.Browser(settings);
-      else
-        return new JS.Test.UI.Terminal(settings);
-    },
-    
     getSuite: function(options) {
       var filter = options.test,
           names  = [],
@@ -99,10 +92,17 @@ JS.Test.extend({
     },
     
     extend: {
+      getUI: function(settings) {
+        if (JS.Console.BROWSER)
+          return new JS.Test.UI.Browser(settings);
+        else
+          return new JS.Test.UI.Terminal(settings);
+      },
+      
       filter: function(objects, suffix) {
-        var filter = [], // TODO implement this
-            output = [],
+        var filter = this.getUI().getOptions().test,
             n      = filter.length,
+            output = [],
             m, object;
         
         if (n === 0) return objects;

@@ -1,6 +1,6 @@
 JS.Test.UI.extend({
   Terminal: new JS.Class({
-    OPTIONS: {format: String, test: String},
+    OPTIONS: {format: String, test: Array},
     SHORTS:  {'f': '--format', 't': '--test'},
     
     prepare: function(callback, context) {
@@ -15,6 +15,8 @@ JS.Test.UI.extend({
         if (process.env.TAP) options.format = 'tap';
         delete options.argv;
       }
+      
+      options.test = options.test || [];
       return options;
     },
     

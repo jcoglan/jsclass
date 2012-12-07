@@ -17,12 +17,27 @@ JS.Test.UI.extend({
       var qs      = (window.location.search || '').replace(/^\?/, ''),
           pairs   = qs.split('&'),
           options = {},
-          parts;
+          parts, key, value;
       
       for (var i = 0, n = pairs.length; i < n; i++) {
         parts = pairs[i].split('=');
-        options[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+        key   = decodeURIComponent(parts[0]);
+        value = decodeURIComponent(parts[1]);
+        
+        if (/\[\]$/.test(parts[0])) {
+          key = key.replace(/\[\]$/, '');
+          if (!(options[key] instanceof Array)) options[key] = [];
+          options[key].push(value);
+        } else {
+          options[key] = value;
+        }
       }
+      
+      if (options.test)
+        options.test = [].concat(options.test);
+      else
+        options.test = [];
+      
       return options;
     },
     
