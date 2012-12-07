@@ -21,7 +21,7 @@ JS.Test.extend({
       this.setReporter(new JS.Test.Reporters.Composite(reporters));
       if (callback) callback.call(context || null, this);
       
-      var startTime  = new Date().getTime();
+      var startTime  = new Date().getTime(),
           testResult = new JS.Test.Unit.TestResult(),
           TR         = JS.Test.Unit.TestResult,
           TS         = JS.Test.Unit.TestSuite,
