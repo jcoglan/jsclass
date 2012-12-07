@@ -4,7 +4,7 @@
 })()
 
 if (typeof require === 'function')
-  require('../' + JSCLASS_PATH + 'loader')
+  require('../../' + JSCLASS_PATH + 'loader')
 else
   load(JSCLASS_PATH + 'loader.js')
 
