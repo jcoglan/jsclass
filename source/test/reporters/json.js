@@ -1,12 +1,13 @@
 JS.Test.Reporters.extend({
-  Console: new JS.Class({
+  JSON: new JS.Class({
+    include: JS.Console,
+    
     _log: function(eventName, data) {
-      if (!window.console || !window.console.log || !window.JSON) return;
-      console.log(JSON.stringify({jstest: [eventName, data]}));
+      if (!JS.ENV.JSON) return;
+      this.puts(JSON.stringify({jstest: [eventName, data]}));
     }
   })
 });
-
 
 (function() {
   var methods = JS.Test.Reporters.METHODS,
@@ -15,9 +16,11 @@ JS.Test.Reporters.extend({
   while (n--)
     (function(i) {
       var method = methods[i];
-      JS.Test.Reporters.Console.define(method, function(event) {
+      JS.Test.Reporters.JSON.define(method, function(event) {
         this._log(method, event);
       });
     })(n);
 })();
+
+JS.Test.Reporters.register('json', JS.Test.Reporters.JSON);
 
