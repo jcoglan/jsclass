@@ -2,6 +2,7 @@ JS.Test.Reporters.extend({
   Buster: new JS.Class({
     
     /*  Missing events:
+        See http://docs.busterjs.org/en/latest/modules/buster-test/runner/
     
         - context:unsupported
         - test:setUp
