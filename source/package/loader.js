@@ -1,8 +1,8 @@
 (function() {
   var candidates = [  JS.Package.XULRunnerLoader,
+                      JS.Package.RhinoLoader,
                       JS.Package.CommonJSLoader,
                       JS.Package.DomLoader,
-                      JS.Package.RhinoLoader,
                       JS.Package.ServerLoader,
                       JS.Package.WshLoader ],
       
