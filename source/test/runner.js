@@ -109,7 +109,7 @@ JS.Test.extend({
     
     extend: {
       getUI: function(settings) {
-        if (JS.Console.BROWSER)
+        if (JS.Console.BROWSER && !JS.Console.PHANTOM)
           return new JS.Test.UI.Browser(settings);
         else
           return new JS.Test.UI.Terminal(settings);
