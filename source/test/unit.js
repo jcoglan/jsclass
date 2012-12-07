@@ -31,7 +31,7 @@ JS.Test = new JS.Module('Test', {
     
     addReporter: function(reporter) {
       var current = this.reporter;
-      if (!(reporter instanceof JS.Test.Reporters.Composite)) {
+      if (!(current instanceof JS.Test.Reporters.Composite)) {
         this.reporter = new JS.Test.Reporters.Composite();
         this.reporter.addReporter(current);
       }
@@ -39,7 +39,7 @@ JS.Test = new JS.Module('Test', {
     },
     
     setReporter: function(reporter, replace) {
-      if (this.reporter && replace !== false) return;
+      if (this.reporter && replace === false) return;
       this.reporter = reporter;
     }
   }

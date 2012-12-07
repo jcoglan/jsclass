@@ -24,6 +24,7 @@ JS.Package = function(loader) {
   klass.toString = function() { return klass.displayName };
   
   klass.log = function(message) {
+    if (!JS.debug) return;
     if (typeof window === 'undefined') return;
     if (typeof window.runtime === 'object') window.runtime.trace(message);
     if (window.console && console.info) console.info(message);

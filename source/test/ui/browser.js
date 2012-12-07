@@ -54,8 +54,6 @@ JS.Test.UI.extend({
         reporters.push(new R.Testem(options));
       else if (JS.ENV.TestSwarm)
         reporters.push(new R.TestSwarm(options, browser));
-      else
-        reporters.push(new R.Console(options));
       
       return reporters;
     }

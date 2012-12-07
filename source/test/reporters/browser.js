@@ -1,7 +1,7 @@
 JS.Test.Reporters.extend({
   Browser: new JS.Class({
     initialize: function(options) {
-      this._options = options;
+      this._options = options || {};
     },
     
     _contextFor: function(test) {
@@ -127,7 +127,8 @@ JS.Test.Reporters.Browser.extend({
         self._ul = li.ul({className: 'children'});
       });
       
-      if (this._options.test.length === 0)
+      var filters = this._options.test || [];
+      if (filters.length === 0)
         JS.DOM.addClass(this._li, 'closed');
       
       JS.DOM.Event.on(this._toggle, 'click', function() {
