@@ -8,17 +8,17 @@ JS.DOM.Builder = new JS.Class('DOM.Builder', {
         return new JS.DOM.Builder().makeElement(name, arguments);
       };
     },
-    
+
     addElements: function(list) {
       var i = list.length;
       while (i--) this.addElement(list[i]);
     }
   },
-  
+
   initialize: function(parent) {
     this._parentNode = parent;
   },
-  
+
   makeElement: function(name, children) {
     var element, child, attribute;
     if ( document.createElementNS ) {
@@ -41,7 +41,7 @@ JS.DOM.Builder = new JS.Class('DOM.Builder', {
     if (this._parentNode) this._parentNode.appendChild(element);
     return element;
   },
-  
+
   concat: function(text) {
     if (!this._parentNode) return;
     this._parentNode.appendChild(document.createTextNode(text));

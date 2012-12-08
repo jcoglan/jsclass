@@ -1,29 +1,29 @@
 JS.Test.Reporters.extend({
   TAP: new JS.Class({
     include: JS.Console,
-    
+
     startRun: function(event) {
       this._testId = 0;
       this.puts('1..' + event.size);
     },
-    
+
     startSuite: function(event) {},
-    
+
     startTest: function(event) {
       this._testPassed = true;
       this._faults = [];
     },
-    
+
     addFault: function(event) {
       this._testPassed = false;
       this._faults.push(event);
     },
-    
+
     endTest: function(event) {
       var line = this._testPassed ? 'ok' : 'not ok';
       line += ' ' + ++this._testId + ' ' + event.fullName;
       this.puts(line);
-      
+
       var fault, message, parts, j, m;
       for (var i = 0, n = this._faults.length; i < n; i++) {
         fault = this._faults[i];
@@ -34,11 +34,11 @@ JS.Test.Reporters.extend({
           this.puts('    ' + parts[j]);
       }
     },
-    
+
     endSuite: function(event) {},
-    
+
     update: function(event) {},
-    
+
     endRun: function(event) {}
   })
 });

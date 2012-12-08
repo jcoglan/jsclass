@@ -7,7 +7,7 @@ JS.Test.extend({
         base.extend(JS.Test.Context.Test, {_resolve: false});
         base.include(JS.Console);
       },
-      
+
       Context: new JS.Module({
         getContextName: function() {
           this._contextName = this._contextName || '';
@@ -15,22 +15,22 @@ JS.Test.extend({
             ? (this.superclass.getContextName() + ' ' + this._contextName).replace(/^\s+/, '')
             : this.displayName;
         },
-        
+
         setContextName: function(name) {
           this._contextName = name;
         },
-        
+
         context: function(name, block) {
           var klass = new JS.Class(this, {}, {_resolve: false});
           klass.__eigen__().resolve();
-          
+
           klass.setContextName(name.toString());
           klass.setName(klass.getContextName());
-          
+
           block.call(klass);
           return klass;
         },
-        
+
         cover: function(module) {
           var logger = new JS.Test.Coverage(module);
           this.before_all_callbacks.push(logger.method('attach'));
@@ -40,12 +40,12 @@ JS.Test.extend({
       })
     }
   }),
-  
+
   describe: function(name, block) {
     var klass = new JS.Class(name.toString(), JS.Test.Unit.TestCase, {}, {_resolve: false});
     klass.include(JS.Test.Context, {_resolve: false});
     klass.__eigen__().resolve();
-    
+
     block.call(klass);
     return klass;
   }

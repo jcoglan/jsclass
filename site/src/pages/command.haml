@@ -1,27 +1,27 @@
 :textile
   h2. Command
-  
+
   @JS.Command@ is an implementation of the "command pattern":http://en.wikipedia.org/wiki/Command_pattern,
   in which objects are used to represent actions. A command object typically has
   an @execute()@ method that runs its action, and sometimes will have an
   @undo()@ method if it can be reversed.
-  
+
   h3. Creating commands
-  
+
   Here's your basic 'Hello world' command:
-  
+
   <pre class="prettyprint">var helloWorld = new JS.Command({
       execute: function() {
           alert('Hello world!');
       }
   });
-  
+
   helloWorld.execute()
   // -> alerts "Hello world!"</pre>
-  
+
   If your action can be reversed and you want to implement an 'undo' function in
   your code, you need to tell the command how to reverse itself:
-  
+
   <pre class="prettyprint">var incrementCounter = new JS.Command({
       execute: function() {
           someCounter += 1;
@@ -30,27 +30,27 @@
           someCounter -= 1;
       }
   });
-  
+
   var someCounter = 0;
   incrementCounter.execute();
   incrementCounter.execute();
   incrementCounter.undo();
-  
+
   // someCounter is now == 1</pre>
-  
+
   h3. Creating your own command classes
-  
+
   You'll often want to subclass @JS.Command@ to provide your own types of
   command. For example, you might want to create a type of command that drew a
   circle at random on a @canvas@ element:
-  
+
   <pre class="prettyprint">var DrawCircleCommand = new JS.Class(JS.Command, {
       initialize: function(ctx) {
-        
+
           var x = Math.random() * 400,
               y = Math.random() * 300,
               r = Math.random() * 50;
-          
+
           this.callSuper({
               execute: function() {
                   ctx.fillStyle = 'rgb(255,0,0)';
@@ -61,12 +61,12 @@
           });
       }
   });
-  
+
   var ctx = myCanvas.getContext('2d');
   var randomCircle = new DrawCircleCommand(ctx);
-  
+
   randomCircle.execute();</pre>
-  
+
   Note the general pattern here: we create a subclass of @JS.Command@. This new
   subclass accepts a drawing context to instantiate it (@ctx@), chooses some
   random drawing points, then uses @this.callSuper@ to pass some command
@@ -75,12 +75,12 @@
   each @new DrawCircleCommand@ does something different, but an individual
   @DrawCircleCommand@ instance ought to do the same thing every time it is
   executed.
-  
+
   *Important:* do not overwrite the @execute()@ or @undo()@ methods in a
   @Command@ sublcass. They contain hooks for talking to command stacks and must
   not be modified. Always use @callSuper()@ as shown above to set up your
   commands. Do not do this:
-  
+
   <pre class="prettyprint">var BrokenCommand = new JS.Class(JS.Command, {
       execute: function() {
           doSomething();
@@ -89,21 +89,21 @@
           undoSomething();
       }
   });</pre>
-  
+
   This command will not work properly if you try to hook it up to a command
   stack as described below.
-  
+
   h3. @JS.Command.Stack@
-  
+
   If you have actions that can be undone and you want to store the command
   history so you can step back and forth through it later, we have a class
   called @JS.Command.Stack@. To use it, just create one and give it a name:
-  
+
   <pre class="prettyprint">var counterStack = new JS.Command.Stack();</pre>
-  
+
   You can then create commands that will automatically add themselves to this
   stack whenever they are executed, using the @stack@ option:
-  
+
   <pre class="prettyprint">var incrementCounter = new JS.Command({
       execute: function() {
           someCounter += 1;
@@ -113,58 +113,58 @@
       },
       stack: counterStack
   });</pre>
-  
+
   Now, whenever @incrementCounter@ is executed, it gets added to the stack
   @counterStack@. You can use the stack's @undo()@ and @redo()@ methods to step
   back and forth through the command history:
-  
+
   <pre class="prettyprint">var someCounter = 0;
-  
+
   incrementCounter.execute();   // someCounter == 1
   incrementCounter.execute();   // someCounter == 2
   incrementCounter.execute();   // someCounter == 3
-  
+
   counterStack.undo();          // someCounter == 2
   counterStack.redo();          // someCounter == 3
   counterStack.undo();          // someCounter == 2
   counterStack.undo();          // someCounter == 1</pre>
-  
+
   Of course, this is more useful when you have lots of different types of
   commands that can all be undone, and you want to provide a means of stepping
   through the command stack.
-  
+
   Command stacks have a couple of other methods you ough to be aware of:
-  
+
   @stepTo()@ lets you revert to any point in the stack's command history by
   number. @stepTo(0)@ undoes the whole stack, and commands are numbered
   sequentially from @1@ upwards.
-  
+
   @push()@ lets you push a command onto the stack yourself -- this is the method
   @JS.Command@ uses internally if you tell a command to associate itself with
   a stack. When you push a command onto the stack, it is added at whichever
   point in the stack you happen to be, and any previously undone commands after
   this point are discarded. For example:
-  
+
   <pre class="prettyprint">someCounter = 0;
   counterStack.clear();         // 0 commands in stack
-  
+
   incrementCounter.execute();   // 1 command
   incrementCounter.execute();   // 2 commands
   incrementCounter.execute();   // 3 commands
   incrementCounter.execute();   // 4 commands
                                 // someCounter == 4
-  
+
   counterStack.stepTo(2);       // still 4 commands in stack
                                 // stack pointer is after 2nd command
                                 // someCounter == 2
-  
+
   incrementCounter.execute();   // stack truncated
                                 // contains 3 commands
                                 // pointer at end of stack
                                 // someCounter == 3</pre>
-  
+
   h3. Redo from start
-  
+
   Some commands cannot easily be undone, but you'd still like to store them in a
   stack. One example is the circle-drawing command shown above: it's hard to
   'unpaint' a circle because you don't know what filled its space before it was
@@ -173,16 +173,16 @@
   when creating a stack, the stack will assume you want a redo-from-start stack
   and will automatically call your @redo@ command to wipe the slate clean before
   running its history again.
-  
+
   As an example, here's a program that allows you to draw random squares on a
   canvas. Hooking this up to a GUI is trivial with this code in place:
-  
+
   <pre class="prettyprint">// Canvas information
   var canvas = document.getElementById('canvas'),
       ctx    = canvas.getContext('2d'),
       W      = 400,
       H      = 300;
-  
+
   // Command for clearing the drawing area
   var clearCanvas = new JS.Command({
       execute: function() {
@@ -190,18 +190,18 @@
           ctx.fillRect(0, 0, W, H);
       }
   });
-  
+
   // A redo-from-start stack
   var drawingStack = new JS.Command.Stack({redo: clearCanvas});
-  
+
   // Command for drawing a random square
   var DrawSquareCommand = new JS.Class(JS.Command, {
       initialize: function(ctx) {
-          
+
           var x = Math.random() * W,
                   y = Math.random() * H,
                   r = Math.random() * 30;
-          
+
           this.callSuper({
               execute: function() {
                   ctx.fillStyle = 'rgb(0,0,255)';
@@ -209,73 +209,73 @@
               },
               stack: drawingStack
           });
-          
+
           this.name = 'Draw square at ' + x + ', ' + y;
       }
   });</pre>
-  
+
   To undo a step, the drawing stack clears the canvas and then re-runs all its
   commands up to the required step. Notice how the drawing command includes the
   line @stack: drawingStack@ to make sure it is remembered by the stack. To draw
   a square at random, you'd just do this:
-  
+
   <pre class="prettyprint">new DrawSquareCommand(ctx).execute();</pre>
-  
+
   That could easily be hooked up to an interface button, as could a snippet of
   code for calling @drawingStack.undo()@.
-  
+
   The advantage of coding the application like this is that you can add as many
   different types of drawing command as you like without complicating the
   mechanism for undoing them - you just get all your commands to notify a single
   command stack and use that stack to revert changes.
-  
+
   Notice how the command gives itself a @name@ property inside its @initialize()@
   method - this will allow us to represent the command in the GUI in the next
   example.
-  
+
   h3. @length@ and @pointer@
-  
+
   All stacks have a @length@ property that tells you how many commands they
   contain at any point in time. This property only changes when a new command is
   @push()@-ed onto the stack - an @undo()@ or @redo()@ does not change the stack
   length. What does change is the stack's @pointer@ - this number tells you what
   point in the stack the most recently executed command is. For example:
-  
+
   <pre class="prettyprint">var stack = new JS.Command.Stack();
   var command = new JS.Command({
       execute: function() { ... }
   });
-  
+
   // stack.length == 0
   // stack.pointer == 0
-  
+
   stack.push(command);
   stack.push(command);
   stack.push(command);
-  
+
   // stack.length == 3
   // stack.pointer == 3
-  
+
   stack.undo();
   stack.undo();
-  
+
   // stack.length == 3
   // stack.pointer == 1
-  
+
   stack.push(command);
-  
+
   // stack gets truncated
   // stack.length == 2
   // stack.pointer == 2</pre>
-  
+
   h3. They're @Observable@ and @Enumerable@
-  
+
   @JS.Command.Stack@ mixes in the "@Observable@":/observable.html and "@Enumerable@":/enumerable.html
   modules. This means you can implement a Photoshop-style action history with
   barely any code at all by observing the stack:
-  
+
   <pre class="prettyprint"><ul id="drawHistory"></ul>
-  
+
   <script type="text/javascript">
   drawingStack.subscribe(function(stack) {
       var list = document.getElementById('drawHistory'), str = '';
@@ -286,7 +286,7 @@
       list.innerHTML = str;
   });
   </script></pre>
-  
+
   This creates a list that updates itself in response to stack changes. Your
   @subscribe@ callback is passed a reference to the stack whenever the stack
   executes a new command or undoes/redoes a command. Stacks have a @pointer@

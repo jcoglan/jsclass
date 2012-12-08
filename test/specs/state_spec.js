@@ -92,7 +92,7 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() { with(this) {
         }
       })
     }})
-    
+
     describe("with no initial state", function() { with(this) {
       before(function() { with(this) {
         this.subject = new Stateful()
@@ -156,7 +156,7 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() { with(this) {
         }})
       }})
     }})
-    
+
     sharedBehavior("inherited states", function() { with(this) {
       before(function() { with(this) {
         this.theStates = {
@@ -171,7 +171,7 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() { with(this) {
           }
         }
       }})
-      
+
       it("inherits states and their behaviour from the superclass", function() { with(this) {
         subject.setState("MIKE")
         assert( subject.inState("MIKE") )
@@ -179,7 +179,7 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() { with(this) {
         assertEqual( "mike", subject.name )
         assertEqual( true, subject.isCalled("mike") )
       }})
-      
+
       it("adds new states that do not exist in the superclass", function() { with(this) {
         subject.setState("EXTRA")
         assert( subject.inState("EXTRA") )
@@ -187,7 +187,7 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() { with(this) {
         assertEqual( "extra", subject.name )
         assertEqual( subject, subject.isCalled("extra") )
       }})
-      
+
       it("creates states that call super() to the same state/method in the parent class", function() { with(this) {
         subject.setState("BOB")
         assert( subject.inState("BOB") )
@@ -195,26 +195,26 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() { with(this) {
         assertEqual( "the name (inherited)", subject.name )
       }})
     }})
-    
+
     describe("subclass", function() { with(this) {
       behavesLike("inherited states")
-      
+
       before(function() { with(this) {
         this.StatefulChild = new JS.Class(Stateful)
         StatefulChild.states(theStates)
         this.subject = new StatefulChild()
       }})
     }})
-    
+
     describe("mixin", function() { with(this) {
       behavesLike("inherited states")
-      
+
       before(function() { with(this) {
         var Mixin = new JS.Module({include: JS.State})
         Mixin.states(theStates)
         this.StatefulChild = new JS.Class(Stateful, {include: Mixin})
         StatefulChild.states({})
-        
+
         this.subject = new StatefulChild()
       }})
     }})

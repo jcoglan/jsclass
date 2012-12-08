@@ -42,10 +42,10 @@ JS.indexOf = function(list, item) {
 JS.isType = function(object, type) {
   if (typeof type === 'string')
     return typeof object === type;
-  
+
   if (object === null || object === undefined)
     return false;
-  
+
   return (typeof type === 'function' && object instanceof type) ||
          (object.isA && object.isA(type)) ||
          object.constructor === type;
@@ -59,19 +59,19 @@ JS.makeBridge = function(parent) {
 
 JS.makeClass = function(parent) {
   parent = parent || Object;
-  
+
   var constructor = function() {
     return this.initialize
          ? this.initialize.apply(this, arguments) || this
          : this;
   };
   constructor.prototype = JS.makeBridge(parent);
-  
+
   constructor.superclass = parent;
-  
+
   constructor.subclasses = [];
   if (parent.subclasses) parent.subclasses.push(constructor);
-  
+
   return constructor;
 };
 

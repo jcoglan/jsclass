@@ -1,6 +1,6 @@
 :textile
   h2. Enumerator
-  
+
   The @Enumerator@ class, part of the "@Enumerable@":/enumerable.html module,
   encapsulates instances of iterative processes, allowing them to be reused and
   composed in useful ways. Most methods in the @Enumerable@ API that take an
@@ -9,76 +9,76 @@
   method used and any arguments appearing before the iterator block. Enumerators
   are generated using the @Kernel#enumFor@ method, for example here are a couple
   of generators that appear in the @Enumerable@ API:
-  
+
   <pre class="prettyprint">map: function(block, context) {
       if (!block) return this.enumFor('map');
       // map code
   }
-  
+
   forEachCons: function(n, block, context) {
       if (!block) return this.enumFor('forEachCons', n);
       // forEachCons code
   }</pre>
-  
+
   So what can you do with an @Enumerator@? Well, instances of this class
   implement the @Enumerable@ API, allowing you to use any enumeration method in
   combination with the method that produced it. Let's take an example. Suppose
   we have this basic class that wraps an array and allows us to iterate over it
   using @forEach@:
-  
+
   <pre class="prettyprint">var Collection = new JS.Class({
       include: JS.Enumerable,
-      
+
       initialize: function() {
           this._list = [];
           for (var i = 0, n = arguments.length; i < n; i++)
               this._list.push(arguments[i]);
       },
-      
+
       forEach: function(block, context) {
           if (!block) return this.enumFor('forEach');
-          
+
           for (var i = 0, n = this._list.length; i < n; i++)
               block.call(context || null, this._list[i]);
-          
+
           return this;
       }
   });</pre>
-  
+
   Notice how @forEach@ supplies only the current item to the iterator block, not
   the current index. What if we wanted to @map@ over a collection using index
   values? Enumerators make this possible; since @Enumerable#map@ returns an
   @Enumerator@, we can combine it with @forEachWithIndex@ to get what we want:
-  
+
   <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
-  
+
   list.map().forEachWithIndex(function(x,i) { return x + i })
   // -> [3, 8, 6, 11, 6]</pre>
-  
+
   These can be switched around, so you can do various things using indexes:
-  
+
   <pre class="prettyprint">list.forEachWithIndex().map(function(x,i) { return x + i })
   // -> [3, 8, 6, 11, 6]
-  
+
   list.forEachWithIndex().select(function(x,i) { return x < i })
   // -> [2]</pre>
-  
+
   @Enumerator@ provides some shorthands for common iteration methods, they are:
-  
+
     * @cons@: alias for @forEachCons@
     * @reverse@: alias for @reverseForEach@
     * @slice@: alias for @forEachSlice@
     * @withIndex@: alias for @forEachWithIndex@
     * @withObject@: alias for @forEachWithObject@
-  
+
   These help to clarify chains, for example we can rewrite the last expression as:
-  
+
   <pre class="prettyprint">list.select().withIndex(function(x,i) { return x < i })
   // -> [2]</pre>
-  
+
   We'll end with a few more examples to show how iterations can be composed
   using the @Enumerator@ class:
-  
+
   <pre class="prettyprint">list.forEachCons(3).forEach(function() {
       console.log(arguments);
   });
@@ -86,7 +86,7 @@
   //      [[3, 7, 4]]
   //      [[7, 4, 8]]
   //      [[4, 8, 2]]
-  
+
   list.forEachCons(3).withIndex(function() {
       console.log(arguments);
   });
@@ -94,7 +94,7 @@
   //      [[3, 7, 4], 0]
   //      [[7, 4, 8], 1]
   //      [[4, 8, 2], 2]
-  
+
   list.forEachCons(3).reverse(function() {
       console.log(arguments);
   });
@@ -102,7 +102,7 @@
   //      [[4, 8, 2]]
   //      [[7, 4, 8]]
   //      [[3, 7, 4]]
-  
+
   list.forEachCons(3).reverse().withIndex(function() {
       console.log(arguments);
   });
@@ -110,7 +110,7 @@
   //      [[4, 8, 2], 0]
   //      [[7, 4, 8], 1]
   //      [[3, 7, 4], 2]
-  
+
   list.reverseForEach().slice(2).cycle(4).withIndex(function() {
       console.log(arguments);
   });

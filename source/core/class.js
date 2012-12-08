@@ -15,31 +15,31 @@ JS.extend(JS.Class.prototype, {
     }
     JS.Module.prototype.initialize.call(this, name);
     options = options || {};
-    
+
     var klass = JS.makeClass(parent);
     JS.extend(klass, this);
-    
+
     klass.prototype.constructor =
     klass.prototype.klass = klass;
-    
+
     klass.__eigen__().include(parent.__meta__, {_resolve: options._resolve});
     klass.setName(name);
-    
+
     klass.__tgt__ = klass.prototype;
-    
+
     var parentModule = (parent === Object)
                      ? {}
                      : (parent.__fns__ ? parent : new JS.Module(parent.prototype, {_resolve: false}));
-    
+
     klass.include(JS.Kernel,    {_resolve: false})
          .include(parentModule, {_resolve: false})
          .include(methods,      {_resolve: false});
-    
+
     if (options._resolve !== false) klass.resolve();
-    
+
     if (typeof parent.inherited === 'function')
       parent.inherited(klass);
-    
+
     return klass;
   }
 });

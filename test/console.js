@@ -11,7 +11,7 @@ if (this.ActiveXObject) load = function(path) {
 
 (function() {
   var $ = (typeof global === 'object') ? global : this;
-  
+
   if (typeof phantom !== 'undefined') {
     $.JSCLASS_PATH = '../build/src/';
     $.CWD = '..';

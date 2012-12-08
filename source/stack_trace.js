@@ -3,7 +3,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
     logger: new JS.Singleton({
       include: JS.Console,
       active: false,
-      
+
       update: function(event, data) {
         if (!this.active) return;
         switch (event) {
@@ -12,31 +12,31 @@ JS.StackTrace = new JS.Module('StackTrace', {
           case 'error':   return this.logError(data);
         }
       },
-      
+
       indent: function() {
         var indent = ' ';
         JS.StackTrace.forEach(function() { indent += '|  ' });
         return indent;
       },
-      
+
       fullName: function(frame) {
         var C        = JS.Console,
             method   = frame.method,
             env      = frame.env,
             name     = method.name,
             module   = method.module;
-            
+
         return C.nameOf(env) +
                 (module === env ? '' : '(' + C.nameOf(module) + ')') +
                 '#' + name;
       },
-      
+
       logEnter: function(frame) {
         var fullName = this.fullName(frame),
             args = JS.Console.convert(frame.args).replace(/^\[/, '(').replace(/\]$/, ')');
-        
+
         if (this._open) this.puts();
-        
+
         this.reset();
         this.print(' ');
         this.consoleFormat('bgblack', 'white');
@@ -48,13 +48,13 @@ JS.StackTrace = new JS.Module('StackTrace', {
         this.red();
         this.print(args);
         this.reset();
-        
+
         this._open = true;
       },
-      
+
       logExit: function(frame) {
         var fullName = this.fullName(frame);
-        
+
         if (frame.leaf) {
           this.consoleFormat('red');
           this.print(' --> ');
@@ -76,7 +76,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
         this.print('');
         this._open = false;
       },
-      
+
       logError: function(e) {
         this.puts();
         this.reset();
@@ -93,7 +93,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
         this.puts('. Backtrace:');
         this.backtrace();
       },
-      
+
       backtrace: function() {
         JS.StackTrace.reverseForEach(function(frame) {
           var args = JS.Console.convert(frame.args).replace(/^\[/, '(').replace(/\]$/, ')');
@@ -112,18 +112,18 @@ JS.StackTrace = new JS.Module('StackTrace', {
         this.puts();
       }
     }),
-    
+
     include: [JS.Observable, JS.Enumerable],
-    
+
     wrap: function(func, method, env) {
       var self = JS.StackTrace;
       var wrapper = function() {
         var result;
         self.push(this, method, env, Array.prototype.slice.call(arguments));
-        
+
         try { result = func.apply(this, arguments) }
         catch (e) { self.error(e) }
-        
+
         self.pop(result);
         return result;
       };
@@ -131,21 +131,21 @@ JS.StackTrace = new JS.Module('StackTrace', {
       wrapper.__traced__ = true;
       return wrapper;
     },
-    
+
     stack: [],
-    
+
     forEach: function(block, context) {
       JS.Enumerable.forEach.call(this.stack, block, context);
     },
-    
+
     top: function() {
       return this.stack[this.stack.length - 1] || {};
     },
-    
+
     push: function(object, method, env, args) {
       var stack = this.stack;
       if (stack.length > 0) stack[stack.length - 1].leaf = false;
-      
+
       var frame = {
         object: object,
         method: method,
@@ -157,13 +157,13 @@ JS.StackTrace = new JS.Module('StackTrace', {
       this.notifyObservers('call', frame);
       stack.push(frame);
     },
-    
+
     pop: function(result) {
       var frame = this.stack.pop();
       frame.result = result;
       this.notifyObservers('return', frame);
     },
-    
+
     error: function(e) {
       if (e.logged) throw e;
       e.logged = true;

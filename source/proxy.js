@@ -6,20 +6,20 @@ JS.Proxy = new JS.Module('Proxy', {
             proxy      = new JS.Class(),
             delegators = {},
             method, func;
-        
+
         bridge.prototype = klass.prototype;
-        
+
         for (method in klass.prototype) {
           func = klass.prototype[method];
           if (typeof func === 'function' && func !== klass) func = this.klass.forward(method);
           delegators[method] = func;
         }
-        
+
         proxy.include({
           initialize: function() {
             var args    = arguments,
                 subject = null;
-            
+
             this.__getSubject__ = function() {
               subject = new bridge;
               klass.apply(subject, args);
@@ -29,12 +29,12 @@ JS.Proxy = new JS.Module('Proxy', {
           klass: klass,
           constructor: klass
         }, {_resolve: false});
-        
+
         proxy.include(new JS.Module(delegators), {_resolve: false});
         proxy.include(this.klass.InstanceMethods);
         return proxy;
       },
-      
+
       extend: {
         forward: function(name) {
           return function() {
@@ -42,7 +42,7 @@ JS.Proxy = new JS.Module('Proxy', {
             return subject[name].apply(subject, arguments);
           };
         },
-        
+
         InstanceMethods: new JS.Module({
           extend: function(source) {
             this.__getSubject__().extend(source);

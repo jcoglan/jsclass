@@ -1,11 +1,11 @@
 JS.MethodChain = function(base) {
   var queue      = [],
       baseObject = base || {};
-  
+
   this.____ = function(method, args) {
     queue.push({func: method, args: args});
   };
-  
+
   this.__exec__ = function(base) {
     return JS.MethodChain.exec(queue, base || baseObject);
   };
@@ -41,7 +41,7 @@ JS.MethodChain.prototype = {
   _: function() {
     var base = arguments[0],
         args, i, n;
-    
+
     switch (typeof base) {
       case 'object': case 'function':
         args = [];
@@ -50,7 +50,7 @@ JS.MethodChain.prototype = {
     }
     return this;
   },
-  
+
   toFunction: function() {
     var chain = this;
     return function(object) { return chain.__exec__(object); };
@@ -74,11 +74,11 @@ JS.MethodChain.addMethod = function(name) {
 
 JS.MethodChain.addMethods = function(object) {
   var methods = [], property, i;
-  
+
   for (property in object) {
     if (Number(property) !== property) methods.push(property);
   }
-  
+
   if (object instanceof Array) {
     i = object.length;
     while (i--) {
@@ -87,7 +87,7 @@ JS.MethodChain.addMethods = function(object) {
   }
   i = methods.length;
   while (i--) this.addMethod(methods[i]);
-  
+
   object.__fns__ && this.addMethods(object.__fns__);
   object.prototype && this.addMethods(object.prototype);
 };
@@ -101,23 +101,23 @@ JS.Method.added(function(method) {
 JS.Kernel.include({
   wait: function(time) {
     var chain = new JS.MethodChain(), self = this;
-    
+
     if (typeof time === 'number')
       setTimeout(function() { chain.__exec__(self) }, time * 1000);
-    
+
     if (this.forEach && typeof time === 'function')
       this.forEach(function(item) {
         setTimeout(function() { chain.__exec__(item) }, time.apply(this, arguments) * 1000);
       });
-    
+
     return chain;
   },
-  
+
   _: function() {
     var base = arguments[0],
         args = [],
         i, n;
-    
+
     for (i = 1, n = arguments.length; i < n; i++) args.push(arguments[i]);
     return  (typeof base === 'object' && base) ||
             (typeof base === 'function' && base.apply(this, args)) ||
@@ -128,7 +128,7 @@ JS.Kernel.include({
 (function() {
   var queue = JS.Module.__queue__,
       n     = queue.length;
-  
+
   while (n--) JS.MethodChain.addMethods(queue[n]);
   delete JS.Module.__queue__;
 })();

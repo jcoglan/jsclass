@@ -3,11 +3,11 @@
 /*
 ADOBE SYSTEMS INCORPORATED
 Copyright 2007-2009 Adobe Systems Incorporated. All Rights Reserved.
- 
+
 NOTICE:   Adobe permits you to modify and distribute this file only in accordance with
 the terms of Adobe AIR SDK license agreement.  You may have received this file from a
 source other than Adobe.  Nonetheless, you may modify or
-distribute this file only in accordance with such agreement. 
+distribute this file only in accordance with such agreement.
 */
 
 
@@ -79,15 +79,15 @@ if (window.runtime)
     air.Vector3D  = window.runtime.flash.geom.Vector3D;
     air.Orientation3D  = window.runtime.flash.geom.Orientation3D;
     air.Utils3D  = window.runtime.flash.geom.Utils3D;
-    
-    // Shader    
+
+    // Shader
     air.Shader = window.runtime.flash.display.Shader;
     air.ShaderFilter = window.runtime.flash.filters.ShaderFilter;
     air.ShaderPrecision = window.runtime.flash.display.ShaderPrecision;
-    
+
     // net
     air.FileFilter = window.runtime.flash.net.FileFilter;
-    
+
     air.LocalConnection = window.runtime.flash.net.LocalConnection;
     air.NetConnection = window.runtime.flash.net.NetConnection;
 
@@ -152,12 +152,12 @@ if (window.runtime)
 
     air.NativeProcess = window.runtime.flash.desktop.NativeProcess;
     air.NativeProcessStartupInfo = window.runtime.flash.desktop.NativeProcessStartupInfo;
-   
+
     // display
     air.NativeMenu = window.runtime.flash.display.NativeMenu;
     air.NativeMenuItem = window.runtime.flash.display.NativeMenuItem;
     air.Screen = window.runtime.flash.display.Screen;
-    
+
     air.Loader  = window.runtime.flash.display.Loader;
     air.Bitmap = window.runtime.flash.display.Bitmap;
     air.BitmapData = window.runtime.flash.display.BitmapData;
@@ -174,7 +174,7 @@ if (window.runtime)
     air.SignatureStatus = window.runtime.flash.security.SignatureStatus;
     air.SignerTrustSettings = window.runtime.flash.security.SignerTrustSettings;
     air.XMLSignatureValidator = window.runtime.flash.security.XMLSignatureValidator;
-        
+
 
     // utils
     air.ByteArray = window.runtime.flash.utils.ByteArray;
@@ -183,9 +183,9 @@ if (window.runtime)
     air.Timer = window.runtime.flash.utils.Timer;
 
     air.HTMLLoader = window.runtime.flash.html.HTMLLoader;
-    air.HTMLPDFCapability = window.runtime.flash.html.HTMLPDFCapability;    
+    air.HTMLPDFCapability = window.runtime.flash.html.HTMLPDFCapability;
 
-    air.Vector = window.runtime.Vector;    
+    air.Vector = window.runtime.Vector;
 
     // media
     air.ID3Info = window.runtime.flash.media.ID3Info;

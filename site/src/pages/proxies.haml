@@ -1,6 +1,6 @@
 :textile
   h2. Proxy
-  
+
   In general, a proxy is an object that controls access to another object
   (referred to as the _real subject_). It has exactly the same interface as the
   real subject and does not modify the subject's behaviour. All it does is
@@ -8,19 +8,19 @@
   Proxies are often used to restrict access to a subject, to provide a local
   interface to a remote object (such as a web service API), or to allow the
   instantiation of memory-intensive objects on demand.
-  
+
   h3. Virtual proxies
-  
+
   A virtual proxy is an object that acts as a stand-in for its real subject. The
   subject is not initialized until it is really needed, allowing for 'lazy
   instantiation' of objects that are expensive to create.
-  
+
   JS.Class provides a module called @JS.Proxy.Virtual@. This allows you create
   proxies for classes without needing to write all the forwarding and
   instantiation methods yourself. @JS.Proxy.Virtual@ inspects the proxied class
   and automatically creates proxies for all its instance methods. This saves you
   time and reduces code duplication.
-  
+
   Consider the following example: we have a @Dog@ class, which keeps track of
   how many times it has been instantiated through its class property @instances@.
   We then create a @DogProxy@ class from @Dog@, and instantiate it. At this
@@ -28,7 +28,7 @@
   instantiates @rex@'s subject and calls @bark()@ on it. @Dog.instances@ now
   equals @1@. Calling further methods on @rex@ will not create any more @Dog@
   instances.
-  
+
   <pre class="prettyprint">var Dog = new JS.Class({
       extend: {
           instances: 0
@@ -41,15 +41,15 @@
           return this.name + ' says WOOF!';
       }
   });
-  
+
   var DogProxy = new JS.Proxy.Virtual(Dog);
-  
+
   var rex = new DogProxy('Rex');
   Dog.instances   // -> 0
-  
+
   rex.bark()  // -> "Rex says WOOF!"
   Dog.instances   // -> 1</pre>
-  
+
   This pattern is particularly suited to creating parts of a UI that are
   initially hidden - you can create proxies for them on page load, but they
   won't add any of their HTML to the page until you choose to show them.

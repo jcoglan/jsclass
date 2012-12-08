@@ -1,26 +1,26 @@
 :textile
   h2. Benchmark
-  
+
   @JS.Benchmark@ provides a tool for measuring the execution time of blocks
   of JavaScript code. To take a measurement, you just supply a name for the
   measurement, the number of times to run it, and the function you want to
   execute:
-  
+
   <pre class="prettyprint">JS.Benchmark.measure('String#join', 20, {
       test: function() {
           ['a', 'list', 'of', 'strings'].join(' ');
       }
   });</pre>
-  
+
   @JS.Benchmark@ will take your @test@ function, run it the given number of
   times, and print the mean and standard deviation of the function's execution
   time to the "console":/console.html.
-  
+
   If the operation you're benchmarking requires some setup, you probably don't
   want to include the setup time in the measurement. To help you measure the
   right thing, you can place any setup code in its own function. State can be
   shared between the @setup@ and @test@ functions by assigning values to @this@:
-  
+
   <pre class="prettyprint">JS.Benchmark.measure('Module#ancestors', 10, {
       setup: function() {
           this.module = new JS.Module({ include: [JS.Comparable, JS.Enumerable] });
@@ -29,6 +29,6 @@
           this.module.ancestors();
       }
   });</pre>
-  
+
   The time reported by @Benchmark@ will not include the time it took to run the
   @setup@ function, only the @test@ function is included.

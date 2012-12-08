@@ -1,24 +1,24 @@
 :textile
   h2. Deferrable
-  
+
   @JS.Deferrable@ is a module you can use to represent "futures or promises":http://en.wikipedia.org/wiki/Futures_and_promises,
   objects that stand in for results that are not yet known. For example, an Ajax
   request can be represented as a deferrable, since when it is created the
   response is not known, and callbacks must be registered to react to the
   response when it arrives. @JS.Deferrable@ provides an API for adding and
   triggering such callbacks on these objects.
-  
+
   h3. Setting up a deferrable
-  
+
   A deferrable object's job is to wrap a long-running computation and provide a
   means to notify interested parties when the computation completes. Let's take
   our Ajax request as an example: @JS.Deferrable@ provides the API for clients
   to register callbacks, and our code just needs to call @this.succeed()@ with
   the result of the request when it completes.
-  
+
   <pre class="prettyprint">var AjaxRequest = new JS.Class({
       include: JS.Deferrable,
-      
+
       initialize: function(url) {
           var self = this;
           jQuery.get(url, function(response) {
@@ -26,60 +26,60 @@
           });
       }
   });</pre>
-  
+
   Clients can then use this class by instantiating it with a URL and then adding
   callbacks. The callbacks will be executed when the class calls its @succeed()@
   method.
-  
+
   <pre class="prettyprint">var request = new AjaxRequest('/index.html');
   request.callback(function(response) {
       // handle response
   });</pre>
-  
+
   Each callback added to a deferrable is only ever executed once, on the next
   @succeed()@ call. If the deferrable has already completed when you add a
   callback, the callback will be executed immediately with the value of the most
   recent @succeed()@ call.
-  
+
   @JS.Deferrable@ also provides an error handling mechanism based on callbacks.
   If you want to be notified of an error, you add a callback using the
   deferrable objects's @errback()@ method. Callbacks registered like this will
   be executed when the deferrable's @fail()@ method is called.
-  
+
   The full API provided by @JS.Deferrable@ is as follows. For these methods,
   @block@ should be a function and @context@ is an optional argument specifying
   the binding of @this@ when @block@ is executed.
-  
+
   h3. @callback(block, context)@
-  
+
   Adds a callback to the object. If the object has already received a
   @succeed()@, the callback is immediately executed with the value of the last
   @succeed()@ call instead of being added to the object.
-  
+
   h3. @errback(block, context)@
-  
+
   Adds an error callback to the object. If the object has already received a
   @fail()@, the callback is immediately executed with the value of the last
   @fail()@ call instead of being added to the object.
-  
+
   h3. @timeout(milliseconds)@
-  
+
   Sets a time limit specified by @milliseconds@ to the object. If the object has
   not received a @succeed()@ or @fail()@ after the given length of time, then
   @fail()@ will be called with a @JS.Deferrable.Timeout@ error.
-  
+
   h3. @cancelTimeout()@
-  
+
   Removes the time limit from the deferrable object.
-  
+
   h3. @succeed(value1[, value2 ...])@
-  
+
   Puts the object in the @success@ state, and executes any attached callbacks
   passing in the arguments to the @succeed()@ call. The callbacks are then
   detached and will not be executed again.
-  
+
   h3. @fail(value1[, value2 ...])@
-  
+
   Puts the object in the @failed@ state, and executes any attached error
   callbacks passing in the arguments to the @succeed()@ call. The callbacks are
   then detached and will not be executed again.

@@ -4,20 +4,20 @@ JS.Test.Reporters.extend({
       var self = this;
       Testem.useCustomAdapter(function(socket) { self._socket = socket });
     },
-    
+
     startRun: function(event) {
       this._results = [];
       this._testId = 0;
       this._socket.emit('tests-start');
     },
-    
+
     startSuite: function(event) {},
-    
+
     startTest: function(event) {
       this._testPassed = true;
       this._faults = [];
     },
-    
+
     addFault: function(event) {
       this._testPassed = false;
       this._faults.push({
@@ -26,7 +26,7 @@ JS.Test.Reporters.extend({
         stacktrace: event.error.backtrace
       });
     },
-    
+
     endTest: function(event) {
       var result = {
         passed: this._testPassed ? 1 : 0,
@@ -39,11 +39,11 @@ JS.Test.Reporters.extend({
       this._results.push(result);
       this._socket.emit('test-result', result);
     },
-    
+
     endSuite: function(event) {},
-    
+
     update: function(event) {},
-    
+
     endRun: function(event) {
       this._socket.emit('all-test-results', {
         passed: event.tests - event.failures - event.errors,

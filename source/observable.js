@@ -2,11 +2,11 @@ JS.Observable = new JS.Module('Observable', {
   extend: {
     DEFAULT_METHOD: 'update'
   },
-  
+
   addObserver: function(observer, context) {
     (this.__observers__ = this.__observers__ || []).push({_block: observer, _context: context || null});
   },
-  
+
   removeObserver: function(observer, context) {
     this.__observers__ = this.__observers__ || [];
     context = context || null;
@@ -18,15 +18,15 @@ JS.Observable = new JS.Module('Observable', {
       }
     }
   },
-  
+
   removeObservers: function() {
     this.__observers__ = [];
   },
-  
+
   countObservers: function() {
     return (this.__observers__ = this.__observers__ || []).length;
   },
-  
+
   notifyObservers: function() {
     if (!this.isChanged()) return;
     var i = this.countObservers(), observer, block, context;
@@ -38,11 +38,11 @@ JS.Observable = new JS.Module('Observable', {
       else block[context || JS.Observable.DEFAULT_METHOD].apply(block, arguments);
     }
   },
-  
+
   setChanged: function(state) {
     this.__changed__ = !(state === false);
   },
-  
+
   isChanged: function() {
     if (this.__changed__ === undefined) this.__changed__ = true;
     return !!this.__changed__;

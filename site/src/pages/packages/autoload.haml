@@ -1,33 +1,33 @@
 :textile
   h2. Short-hand setup using @autoload@
-  
+
   As your application grows you may find that your package configuration becomes
   repetitive. For example, you may have a set of test scripts that mirror the
   set of classes in your application:
-  
+
   <pre class="prettyprint">JS.Packages(function() { with(this) {
-      
+
       file('tests/widget_spec.js')
           .provides('WidgetSpec')
           .requires('MyApp.Widget');
-      
+
       file('tests/blog_post_spec.js')
           .provides('BlogPostSpec')
           .requires('MyApp.BlogPost');
-      
+
       file('tests/users/profile_spec.js')
           .provides('Users.ProfileSpec')
           .requires('MyApp.Users.Profile');
   });</pre>
-  
+
   If you run into this situation you can use the @autoload()@ function to set up
   packages for objects whose name matches a certain pattern. For example you
   could compress the above configuration like this:
-  
+
   <pre class="prettyprint">JS.Packages(function() { with(this) {
       autoload(/^(.*)Spec$/, {from: 'tests', require: 'MyApp.$1'});
   });</pre>
-  
+
   @autoload()@ expects three parameters. The first is a regex that is used to
   match package names. The @from@ option is a directory path where packages with
   that name pattern live, for example this rule would make the package loader
@@ -35,7 +35,7 @@
   The @require@ option lets you specify an object the package depends on, using
   match results from the regex. The above rule would mean that @Users.ProfileSpec@
   has a dependency on @MyApp.Users.Profile@.
-  
+
   If you @require()@ a package that doesn't have an explicit configuration, the
   autoloader will try to figure out where to load it from by matching its name
   against the set of patterns it knows about. A naming convention is adopted for

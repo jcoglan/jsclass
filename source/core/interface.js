@@ -9,7 +9,7 @@ JS.Interface = new JS.Class('Interface', {
       return true;
     };
   },
-  
+
   extend: {
     ensure: function() {
       var args = JS.array(arguments), object = args.shift(), face, result;
