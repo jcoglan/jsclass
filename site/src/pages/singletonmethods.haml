@@ -1,11 +1,11 @@
 :textile
   h2. Singleton methods
-  
+
   In Ruby, singleton methods are methods attached to a single object rather than
   defined in a class. If you add a singleton method to a Ruby object, @super@
   refers to the method from the object's class definition. JS.Class allows the
   same behaviour. Recall our @Animal@ class:
-  
+
   <pre class="prettyprint">var Animal = new JS.Class({
       initialize: function(name) {
           this.name = name;
@@ -14,12 +14,12 @@
           return 'My name is ' + this.name + ' and I like ' + things;
       }
   });</pre>
-  
+
   We can create a new animal and @extend@ it with singleton methods. All
   @JS.Class@-derived objects have an @extend()@ method for doing this:
-  
+
   <pre class="prettyprint">var cow = new Animal('Daisy');
-  
+
   cow.extend({
       speak: function(stuff) {
           return 'Mooo! ' + this.callSuper();
@@ -28,26 +28,26 @@
           return this.name;
       }
   });
-  
+
   cow.getName()   // -> "Daisy"
-  
+
   cow.speak('grass')
       // -> "Mooo! My name is Daisy and I like grass"</pre>
-  
+
   h3. Modules as object extensions
-  
+
   As well as passing simple objects into the @extend()@ method, you can use
   modules. The receiving object will then gain all the methods of the module. If
   we extend using "@Observable@":/observable.html, for example:
-  
+
   <pre class="prettyprint">cow.extend(JS.Observable);
-  
+
   cow.addObserver(function() {
       alert('This cow is observable!');
   });
-  
+
   cow.notifyObservers();</pre>
-  
+
   This alerts @"This cow is observable!"@, as expected. Using modules to extend
   objects has some interesting inheritance consequences, which are more
   thoroughly exposed in "the inheritance article":/inheritance.html. In short,
@@ -57,14 +57,14 @@
   the inheritance tree. So we can override @notifyObservers()@, for example, to
   duplicate every observer added to an object. @callSuper()@ calls out to the
   module we used to extend the object.
-  
+
   <pre class="prettyprint">cow.extend({
       notifyObservers: function() {
           this.callSuper();
           this.callSuper();
       }
   });
-  
+
   // alerts "This cow is observable!" twice
   cow.notifyObservers();</pre>
 

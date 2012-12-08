@@ -12,7 +12,7 @@ builds:
     source_map:     src
 
 packages:
-  
+
   core:
     directory: core
     files:
@@ -25,7 +25,7 @@ packages:
       - keywords
       - interface
       - singleton
-  
+
   package-browser:
     directory: package
     files:
@@ -33,12 +33,12 @@ packages:
       - loaders/dom
       - browser
       - dsl
-  
+
   loader-browser:
     extends: package-browser
     files:
       - config
-  
+
   package:
     directory: package
     files:
@@ -51,12 +51,12 @@ packages:
       - loaders/xulrunner
       - loader
       - dsl
-  
+
   loader:
     extends: package
     files:
       - config
-  
+
   test:
     directory: test
     files:
@@ -69,10 +69,10 @@ packages:
       - unit/test_result
       - unit/test_suite
       - unit/test_case
-      
+
       - ui/terminal
       - ui/browser
-      
+
       - reporters/dot
       - reporters/spec
       - reporters/error
@@ -85,31 +85,31 @@ packages:
       - reporters/testem
       - reporters/test_swarm
       - reporters/composite
-      
+
       - context/context
       - context/life_cycle
       - context/shared_behavior
       - context/test
       - context/suite
-      
+
       - mocking/stub
       - mocking/parameters
       - mocking/matchers
       - mocking/dsl
-      
+
       - async_steps
       - fake_clock
       - coverage
       - helpers
       - runner
-  
+
   dom:
     directory: dom
     files:
       - dom
       - builder
       - event
-  
+
   benchmark:        benchmark
   console:          console
   comparable:       comparable

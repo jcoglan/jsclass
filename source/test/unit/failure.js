@@ -4,18 +4,18 @@ JS.Test.Unit.extend({
       this._testCase = testCase;
       this._message  = message;
     },
-    
+
     metadata: function() {
       return {
         test:   this.testMetadata(),
         error:  this.errorMetadata()
       }
     },
-    
+
     testMetadata: function() {
       return this._testCase.metadata();
     },
-    
+
     errorMetadata: function() {
       return {
         type:     'failure',

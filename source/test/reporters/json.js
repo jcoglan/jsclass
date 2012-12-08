@@ -1,18 +1,18 @@
 JS.Test.Reporters.extend({
   JSON: new JS.Class({
     include: JS.Console,
-    
+
     _log: function(eventName, data) {
       if (!JS.ENV.JSON) return;
       this.puts(JSON.stringify({jstest: [eventName, data]}));
     },
-    
+
     extend: {
       Reader: new JS.Class({
         initialize: function(reporter) {
           this._reporter = reporter;
         },
-        
+
         read: function(message) {
           if (!JS.ENV.JSON) return false;
           try {
@@ -20,7 +20,7 @@ JS.Test.Reporters.extend({
                 payload = data.jstest,
                 method  = payload[0],
                 event   = payload[1];
-            
+
             this._reporter[method](event);
             return true;
           }
@@ -36,7 +36,7 @@ JS.Test.Reporters.extend({
 (function() {
   var methods = JS.Test.Reporters.METHODS,
       n       = methods.length;
-  
+
   while (n--)
     (function(i) {
       var method = methods[i];

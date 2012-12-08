@@ -11,10 +11,10 @@ else
 
 JS.require('JS.Benchmark', 'JS.Set', function() {
   var bm = JS.Benchmark
-  
+
   var sets = [JS.SortedSet, JS.OrderedSet, JS.Set],
       i    = sets.length
-  
+
   while (i--) {
     bm.measure(sets[i] + ' creation', 10, {
       test: function() {
@@ -23,7 +23,7 @@ JS.require('JS.Benchmark', 'JS.Set', function() {
       }
     })
   }
-  
+
   bm.measure('Class creation', 300, {
     test: function() {
       new JS.Class({
@@ -33,7 +33,7 @@ JS.require('JS.Benchmark', 'JS.Set', function() {
       })
     }
   })
-  
+
   bm.measure('Module#ancestors', 5000, {
     setup: function() {
       var included = new JS.Module({ include: new JS.Module({ include: new JS.Module() }) })
@@ -44,7 +44,7 @@ JS.require('JS.Benchmark', 'JS.Set', function() {
       this.module.ancestors()
     }
   })
-  
+
   bm.measure('Module#ancestors (cached)', 5000, {
     setup: function() {
       var included = new JS.Module({ include: new JS.Module({ include: new JS.Module() }) })

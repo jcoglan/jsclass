@@ -272,7 +272,7 @@ June 8 2009
 
 * The double inclusion problem is now fixed, i.e. the following
   works in JS.Class 2.1:
-  
+
       A = new JS.Module();
       C = new JS.Class({ include: A });
       B = new JS.Module({ foo: function() { return 'B#foo' } });
@@ -281,7 +281,7 @@ June 8 2009
 
       new C().foo()   // -> 'B#foo'
       new D().foo()   // -> 'B#foo'
-  
+
   (See http://eigenclass.org/hiki/The+double+inclusion+problem)
 
 * Ancestor and method lookups are cached for improved performance.

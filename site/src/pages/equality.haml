@@ -1,49 +1,49 @@
 :textile
   h2. Equality methods and hashcodes
-  
+
   There are several different ways in which two objects can be equal to each
   other, and JS.Class provides equality methods with different semantics. It's
   important to know the difference as there are parts of the framework that
   expect certain equality methods to be used to make integration as painless as
   possible.
-  
+
   If you want to use an object as a key in a "@Hash@":/hash.html, you'll need to
   override its @equals()@ and @hash()@ methods in a consistent way; see below
   for more information.
-  
+
   h3. Built-in operators: @==@ and @===@
-  
+
   JavaScript has two built-in equality operators, @==@ for equality and @===@
   for identity. The expression @foo === bar@ returns @true@ iff @foo@ and @bar@
   refer to the same object. For primitive values (numbers, strings, boolean
   values) this implies that both must have the same value _and_ the same type.
   So @'5' === '5'@ is true, but @'5' === 5@ is false. Similarly @false === null@
   and @false === 0@ are false.
-  
+
   The equality operator @==@ is more lenient. For objects it has the same effect
   as @===@, but for primitives it performs type casting to figure out whether
   two values are "equivalent". So, @'5'==5@ is true, as are @false==null@ and
   @false==0@.
-  
+
   h3. Sort position equality: @object.eq(other)@
-  
+
   This method is provided by the "@Comparable@":/comparable.html module and
   returns @true@ iff @object@ and @other@ have the same sort priority. Two
   objects may appear equal in terms of @eq()@ but may not be completely
   meaningfully equal. It simply means @object@ is neither "less than" nor
   "greater than" @other@, and they may appear in either order in a sorted
   collection. Though not used directly, the related method @compareTo()@ is used
-  by "@Hash@":/hash.html and "@SortedSet@":/set.html for sorting objects. 
-  
+  by "@Hash@":/hash.html and "@SortedSet@":/set.html for sorting objects.
+
   h3. Equivalence: @object.equals(other)@
-  
+
   This returns @true@ iff @object@ and @other@ are meaningfully equal. The
   default implementation of this method in "@Kernel@":/kernel.html just uses
   @===@ to compare the objects; classes may override this method to provide more
   meaningful comparison. For example, "@Set#equals()@":/set.html returns @true@
   iff used to compare two sets that contain the same members. The following
   classes expect objects to implement @equals()@:
-  
+
   * "@Hash@":/hash.html uses @equals()@ to make sure keys are unique, falling
     back to @===@ if they keys do not implement @equals()@. See also @object.hash()@
     below.
@@ -53,16 +53,16 @@
     iterating using @forEach()@.
   * "@Set@":/set.html uses @equals()@ to make sure elements are unique, falling
     back to @===@ if the elements do not implement @equals()@.
-  
+
   @JS.Class@ does not modify built-in JavaScript classes, but the above classes
   do contain methods for comparing @Array@ and @Object@ instances. Two arrays
   are considered equal if their elements are all equal, and two objects with no
   @equals()@ method are considered equal if they have the same set of keys-value
   pairs, much like @Hash@ equality.
-  
+
   If you implement @equals()@ in one of your own classes, it should obey these
   rules:
-  
+
   * Reflexivity: @x.equals(x)@ must be true
   * Symmetry: @x.equals(y)@ should be true iff @y.equals(x)@ is true
   * Transitivity: if @x.equals(y)@ is true and @y.equals(z)@ is true, then
@@ -70,29 +70,29 @@
   * Consistency: @x.equals(y)@ must consistently return true or false as long as
     the state of @x@ and @y@ is not modified
   * No object is equal to @null@; @x.equals(null)@ is always false
-  
+
   You must also override @hash()@ such that if @x.equals(y)@ is true, then
   @x.hash() === y.hash()@ is also true. Otherwise, your objects will not work as
   a key in a "@Hash@":/hash.html.
-  
+
   h3. Hash equality: @object.hash()@
-  
+
   The @hash()@ method is used internally by "@Hash@":/hash.html to improve key
   search performance by splitting the stored pairs into "buckets" and assigning
   each bucket a hashcode. (See Wikipedia for "more on how hashtables work":http://en.wikipedia.org/wiki/Hash_table.)
   When you ask a @Hash@ for the value for a given key, it converts the key to a
   hashcode to figure out which bucket to look in.
-  
+
   The default implementation of @hash()@ in "@Kernel@":/kernel.html produces a
   different value for every object. If you implement @equals()@ in your class
   such that two objects can be considered equal, you will need to make sure that
   two equal objects return the same hashcode; two equal objects should return
   the same value when given as keys to a @Hash@, but if they have different
   hashcodes, the hash will look in different places to find their values.
-  
+
   So, if you implement @equals()@ in a class, you must also implement @hash()@
   such that:
-  
+
   * @x.hash()@ takes no parameters and returns a string based on the state of @x@
   * Calling @x.hash()@ returns the same value every time as long as the state of
     @x@ does not change
@@ -101,4 +101,4 @@
   * If two objects are not equal, they do not necessarily return different hash
     values, though this will improve the performance of any hashtables that use
     them
-  
+

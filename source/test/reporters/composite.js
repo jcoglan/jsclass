@@ -3,12 +3,12 @@ JS.Test.Reporters.extend({
     initialize: function(reporters) {
       this._reporters = reporters || [];
     },
-    
+
     addReporter: function(reporter) {
       if (!reporter) return;
       this._reporters.push(reporter);
     },
-    
+
     removeReporter: function(reporter) {
       var index = JS.indexOf(this._reporters, reporter);
       if (index >= 0) this._reporters.splice(index, 1);
@@ -19,7 +19,7 @@ JS.Test.Reporters.extend({
 (function() {
   var methods = JS.Test.Reporters.METHODS,
       n       = methods.length;
-  
+
   while (n--)
     (function(i) {
       var method = methods[i];

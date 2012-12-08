@@ -2,7 +2,7 @@ JS.Package.XULRunnerLoader = {
   jsloader:   '@mozilla.org/moz/jssubscript-loader;1',
   cssservice: '@mozilla.org/content/style-sheet-service;1',
   ioservice:  '@mozilla.org/network/io-service;1',
-  
+
   usable: function() {
     try {
       var CC = (Components || {}).classes;
@@ -21,11 +21,11 @@ JS.Package.XULRunnerLoader = {
 
   loadFile: function(path, fireCallbacks) {
     JS.Package.log('Loading ' + path);
-    
+
     this.ssl.loadSubScript(path);
     fireCallbacks();
   },
-  
+
   loadStyle: function(path) {
     var uri = this.ios.newURI(path, null, null);
     this.sss.loadAndRegisterSheet(uri, this.sss.USER_SHEET);

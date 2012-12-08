@@ -11,15 +11,15 @@ JS.require("JS.Test", "JS.MethodChain", function() {
         }, 1000)
       }})
     }})
-    
+
     describe("with nested resume blocks", function() { with(this) {
       define("wait", function(resume, block) { with(this) {
         setTimeout(function() { resume(block) }, 1000)
       }})
-      
+
       it("keeps running until you use a resume block with no continuation", function(resume) { with(this) {
         var startTime = new Date().getTime();
-        
+
         wait(resume, function(resume) {
           assert(true)
           wait(resume, function(resume) {
@@ -32,7 +32,7 @@ JS.require("JS.Test", "JS.MethodChain", function() {
         })
       }})
     }})
-    
+
     describe("with an async before block", function() { with(this) {
       before(function(resume) { with(this) {
         var self = this
@@ -41,11 +41,11 @@ JS.require("JS.Test", "JS.MethodChain", function() {
           resume()
         }, 1000);
       }})
-      
+
       it("waits for the before block to resume", function() { with(this) {
         assertEqual( 2, value )
       }})
-      
+
       describe("with another nested block", function() { with(this) {
         before(function(resume) { with(this) {
           var self = this
@@ -54,13 +54,13 @@ JS.require("JS.Test", "JS.MethodChain", function() {
             resume()
           }, 500)
         }})
-        
+
         it("runs both before blocks sequentially", function() { with(this) {
           assertEqual( 80, this.value )
         }})
       }})
     }})
-    
+
     describe("with an async before all block", function() { with(this) {
       before("all", function(resume) { with(this) {
         var self = this
@@ -69,11 +69,11 @@ JS.require("JS.Test", "JS.MethodChain", function() {
           resume()
         }, 1000);
       }})
-      
+
       it("waits for the before all block to resume", function() { with(this) {
         assertEqual( 2, value )
       }})
-      
+
       describe("with another nested all block", function() { with(this) {
         before("all", function(resume) { with(this) {
           var self = this
@@ -82,14 +82,14 @@ JS.require("JS.Test", "JS.MethodChain", function() {
             resume()
           }, 500)
         }})
-        
+
         it("runs both before all blocks sequentially", function() { with(this) {
           assertEqual( 8, value )
         }})
       }})
     }})
   }})
-  
+
   JS.Test.autorun()
 })
 

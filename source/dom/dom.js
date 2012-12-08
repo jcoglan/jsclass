@@ -11,24 +11,24 @@ JS.DOM = {
   DOCUMENT_TYPE_NODE:             10,
   DOCUMENT_FRAGMENT_NODE:         11,
   NOTATION_NODE:                  12,
-  
+
   ENV: this,
-  
+
   toggleClass: function(node, className) {
     if (this.hasClass(node, className)) this.removeClass(node, className);
     else this.addClass(node, className);
   },
-  
+
   hasClass: function(node, className) {
     var classes = node.className.split(/\s+/);
     return JS.indexOf(classes, className) >= 0;
   },
-  
+
   addClass: function(node, className) {
     if (this.hasClass(node, className)) return;
     node.className = node.className + ' ' + className;
   },
-  
+
   removeClass: function(node, className) {
     var pattern = new RegExp('\\b' + className + '\\b\\s*', 'g');
     node.className = node.className.replace(pattern, '');

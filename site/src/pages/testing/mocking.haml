@@ -1,58 +1,58 @@
 :textile
   h2. Mocking and stubbing
-  
+
   Mocking and stubbing are an important aspect of testing object-oriented
   programs. @JS.Test@ provides a simple way to use both techniques when writing
   your tests. These terms are often confused so I'll clarify what I mean by
   them.
-  
+
   *Stubbing* means replacing a method, function or an entire object with a
   version that produces hard-coded responses. This is typically used to isolate
   components from each other, and your code from the outside world. For example,
   stubbing is often used to decouple tests from storage systems and to hard-code
   the result of HTTP requests to test code that relies on data from the Web.
-  
+
   *Mocking* is a form of testing that involves verifying behaviour by checking
   which methods are called during a test. Like stubbing, it involves replacing
   methods with fake versions, but it also means setting expectations that those
   methods must be called. This is used to specify contracts between layers of an
   application, and to test side-effects.
-  
+
   You can use mocks and stubs at any point during a test and @JS.Test@ will
   remove the stub methods at the end of each test, reinstating the original
   methods.
-  
+
   h3. Stubbing methods
-  
+
   We'll cover stubbing first because it shares a lot of API with mocking, and is
   a little simpler. To stub out a method on an object we use the @stub()@
   function.
-  
+
   <pre class="prettyprint">stub(object, 'methodName');
   object.methodName() // -> undefined</pre>
-  
+
   This is the simplest stub you can make, it means that any call to
   @object.methodName()@ with any arguments will return @undefined@ and have no
   side-effects. You can specify a return value using the @returns@ modifier. If
   you provide multiple return values they will each be used in turn, looping
   back to the start when you reach the end of the list.
-  
+
   <pre class="prettyprint">stub(object, 'methodName').returns('hello');
   object.methodName() // -> 'hello'
-  
+
   stub(object, 'methodName').returns('many', 'return', 'values');
   object.methodName() // -> 'many'
   object.methodName() // -> 'return'
   object.methodName() // -> 'values'
   object.methodName() // -> 'many'</pre>
-  
+
   Many JavaScript methods accept callback functions instead of returning a value
   directly; you can stub this sort of API using the @yields@ modifier. @yields@
   takes the argument list that the callback should be called with. As with
   @returns@, you can specify multiple argument lists to cycle through.
-  
+
   <pre class="prettyprint">stub(object, 'methodName').yields(['some', 'args']);
-  
+
   object.methodName(function(a, b) {
       // a == 'some'
       // b == 'args
@@ -60,79 +60,79 @@
 
   stub(object, 'methodName').yields(['some', 'args'],
                                     ['more', 'data']);
-  
+
   object.methodName(function(a, b) {
       // a == 'some'
       // b == 'args'
   });
-  
+
   object.methodName(function(a, b) {
       // a == 'more'
       // b == 'data'
   });</pre>
-  
+
   Methods stubbed using @yields@ invoke the callback passed to them
   synchronously, and expect a callback function as the final or the penultimate
   argument to the method call. This allows a context object to be passed after
   the callback to specify the binding of @this@ within the callback. If the
   method is called without a callback in the expected place, an error will be
   thrown.
-  
+
   Finally, you can specify that the method should throw an error when called;
   this is done using the @raises@ modifier:
-  
+
   <pre class="prettyprint">stub(object, 'methodName').raises(new TypeError());</pre>
-  
+
   h3. Reacting to input arguments
-  
+
   Often you will want to vary the output of a method based on the arguments it
   is called with, or check that a method was called with certain arguments.
   You can do using the @given@ modifier before a @returns@, @yields@ or @raises@
   modifier. For example we can specify a different return value for each input:
-  
+
   <pre class="prettyprint">stub(object, 'methodName').given(2,2).returns(4);
   stub(object, 'methodName').given(1,2,3).returns(6);
-  
+
   object.methodName(2,2)    // -> 4
   object.methodName(1,2,3)  // -> 6
-  
+
   object.methodName()       // -> error</pre>
-  
+
   Now our stubbed method will react to the input arguments as specified. If the
   method receives a call with arguments we haven't specified, an error is thrown.
   If you want to just return @undefined@ for all other inputs, just add an
   unmodified @stub(object, 'methodName')@ to your test setup.
-  
+
   When using @yields@, @given@ is used to match the arguments before the
   callback function. For example we could stub jQuery's Ajax interface like so:
-  
+
   <pre class="prettyprint">stub(jQuery, 'get').given('/foo.html').yields(['foo']);
   stub(jQuery, 'get').given('/bar.html').yields(['bar']);
-  
+
   jQuery.get('/foo.html', function(response) {
       // response == 'foo'
   });
-  
+
   jQuery.get('/bar.html', function(response) {
       // response == 'bar'
   });</pre>
-  
+
   h3. Argument matchers
-  
+
   Sometimes you don't know the exact value of the arguments ahead of time, or
   you only care about a small property of the arguments, like their type or what
   elements an array contains. For this reason we provide a set of matchers that
   you can use when stubbing to match incoming data. For example, we can set up
   a stub that reacts to an array containing the string @'test'@ followed by any
   number of arguments like this:
-  
+
   <pre class="prettyprint">stub(object, 'methodName').given(arrayIncluding('test'), anyArgs()).returns(true);
-  
+
   object.methodName(['foo', 'test', 'bar'], 'something')  // -> true
   object.methodName(['foo', 'bar'], 'something')          // -> error</pre>
-  
+
   The full set of matchers is as follows:
-  
+
   * @anything()@ matches any single value
   * @anyArgs()@ matches any number of values (including none) at the end of the
     argument list
@@ -145,67 +145,67 @@
   * @match(pattern)@ matches any value that @pattern@ matches. @pattern@ can be
     a @RegExp@ or any object that responds to @match()@, like a @Module@ or a
     @Range@.
-  
+
   h3. Stubbing global objects
-  
+
   Oftentimes you'll need to stub out a global function or object to make your
   code unit-testable. To stub globals, just omit the object argument to @stub()@.
-  
+
   <pre class="prettyprint">// Stubs out alert()
   stub('alert').given(instanceOf('string')).returns(undefined);</pre>
-  
+
   To stub a global object, just pass in a fake object you want to use in its
   place. For example, suppose you have some code that relies on jQuery's Ajax
   API; you can create a fake object and add stub functions to it. @JS.Test@
   will clean up the stubs you've created after each test.
-  
+
   <pre class="prettyprint">stub('jQuery', {});
   stub(jQuery, 'get').given('/foo.html').yields(['foo']);</pre>
-  
+
   h3. Stubbing constructors
-  
+
   Constructors are functions that expect to be called using the @new@ keyword
   for constructing new objects. JS.Test lets you stub these by passing @new@ as
   the first argument to @stub@, followed by the namespace the constructor lives
   in and its name. For example here's how you'd stub out @JS.Range@ to return
   fake objects:
-  
+
   <pre class="prettyprint">stub('new', JS, 'Range').returns({fake: 'object'})</pre>
-  
+
   If the constructor is a global variable, then you can omit the namespace. For
   example:
-  
+
   <pre class="prettyprint">stub('new', 'XMLHttpRequest').returns(fakeXHR)</pre>
-  
+
   Mock expectations can be applied to constructors just like for any other type
   of function call.
-  
+
   h3. Mocking methods
-  
+
   Mocking is very similar to stubbing, in fact it involves creating stubs and
   explicitly checking that they are called. To set up a mock expectation for a
   method call, we use the @expect()@ function instead of @stub()@.
-  
+
   <pre class="prettyprint">expect(object, 'methodName');</pre>
-  
+
   This mock states that @object.methodName()@ should be called at least once
   with any arguments; if it's not been called by the end of the test then a
   test failure will result.
-  
+
   You can use the whole stubbing API shown above when creating mocks, the only
   difference is that if you use @expect()@ then @JS.Test@ will alert you if your
   stubs are not actually called. For example, this code states that a call to
   @jQuery.get('/foo.html', function() { ... })@ must be made during the current
   test, and the given callback will be called with the response @'Hello, Wolrd'@:
-  
+
   <pre class="prettyprint">expect(jQuery, 'get').given('/foo.html').yielding(['Hello, World']);</pre>
-  
+
   (@returns@, @yields@ and @raises@ are aliased as @returning@, @yielding@ and
   @raising@ since these read a little better when setting mock expectations.)
-  
+
   You can specify how many times a given call should be made using the modifiers
   @atLeast@, @atMost@ and @exactly@. These should be added after the @given@
   modifier if one is used. For example, this tests that exactly 2 calls to
   @User.create('jcoglan')@ are made during the test, returning @true@ each time:
-  
+
   <pre class="prettyprint">expect(User, 'create').given('jcoglan').exactly(2).returning(true);</pre>

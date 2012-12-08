@@ -5,10 +5,10 @@
                       JS.Package.DomLoader,
                       JS.Package.ServerLoader,
                       JS.Package.WshLoader ],
-      
+
       n = candidates.length,
       i, candidate;
-  
+
   for (i = 0; i < n; i++) {
     candidate = candidates[i];
     if (candidate.usable()) {

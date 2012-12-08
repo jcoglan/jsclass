@@ -1,9 +1,9 @@
 JS.Test.Reporters.extend({
   Buster: new JS.Class({
-    
+
     /*  Missing events:
         See http://docs.busterjs.org/en/latest/modules/buster-test/runner/
-    
+
         - context:unsupported
         - test:setUp
         - test:async
@@ -12,28 +12,28 @@ JS.Test.Reporters.extend({
         - test:deferred
         - uncaughtException
     */
-    
+
     startRun: function(event) {
       this._contexts = 0;
       this._stack = [];
       buster.emit('suite:start');
     },
-    
+
     startSuite: function(event) {
       if (event.context === null) return;
       this._contexts += 1;
       buster.emit('context:start', {name: event.fullName});
     },
-    
+
     startTest: function(event) {
       this._testPassed = true;
       buster.emit('test:start', {name: event.shortName});
     },
-    
+
     addFault: function(event) {
       if (!this._testPassed) return;
       this._testPassed = false;
-      
+
       if (event.error.type === 'failure') {
         buster.emit('test:failure', {
           name: event.test.shortName,
@@ -50,19 +50,19 @@ JS.Test.Reporters.extend({
         });
       }
     },
-    
+
     endTest: function(event) {
       if (!this._testPassed) return;
       buster.emit('test:success', {name: event.shortName});
     },
-    
+
     endSuite: function(event) {
       if (event.context === null) return;
       buster.emit('context:end', {name: event.fullName});
     },
-    
+
     update: function(event) {},
-    
+
     endRun: function(event) {
       buster.emit('suite:end', {
         ok:         event.passed,

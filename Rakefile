@@ -28,7 +28,7 @@ class MethodSet < SortedSet
     name = link.text.strip.gsub(/^event\./, '')
     add(name) if name =~ /^[a-z][a-zA-Z0-9\_\$]*$/
   end
-  
+
   def import(url, selector)
     document(url).search(selector).each(&method(:add_method))
   end
@@ -37,18 +37,18 @@ end
 namespace :import do
   task :method_chain do
     methods = MethodSet.new
-    
+
     MDC_URLS.each { |url| methods.import(url, 'dt a') }
-    
+
     methods.import(ELEMENT_URL, 'td code a:first-child')
-    
+
     document(ELEMENT_URL).search('#pageText>p').last.search('a').map do |link|
       methods.import(link[:href], 'td code a:first-child')
     end
-    
+
     methods.import(EVENT_URL, 'dt a')
     methods.import(STYLE_URL, 'li a')
-    
+
     p methods.entries
   end
 end
