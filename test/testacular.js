@@ -1,6 +1,5 @@
 CWD = 'http://localhost:8000'
 JSCLASS_PATH = CWD + '/build/min'
-JS_DEBUG = true
 
 if (typeof window === 'undefined') {
   basePath        = '..'
@@ -13,5 +12,7 @@ if (typeof window === 'undefined') {
   autoWatch       = true
   captureTimeout  = 5000
   singleRun       = false
+} else {
+  __testacular__.start = function() {}
 }
 
