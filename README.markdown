@@ -60,6 +60,14 @@ prompts to indicate this.
     2 $ ./node_modules/.bin/buster-server # Open the URL this displays
     3 $ ./node_modules/.bin/buster-test
 
+#### Testacular
+
+    1 $ python -m SimpleHTTPServer 8000
+    2 $ ./node_modules/.bin/testacular start test/testacular.js
+    3 $ open http://localhost:8080
+
+The tests will run whenever you change/touch `test/runner.js`.
+
 #### Testem
 
     1 $ ./node_modules/.bin/testem -f test/testem.json
