@@ -57,8 +57,9 @@ prompts to indicate this.
 #### Buster.JS
 
     1 $ python -m SimpleHTTPServer 8000
-    2 $ ./node_modules/.bin/buster-server # Open the URL this displays
-    3 $ ./node_modules/.bin/buster-test
+    2 $ ./node_modules/.bin/buster-server
+    3 $ open http://localhost:1111
+    4 $ ./node_modules/.bin/buster-test
 
 #### Testacular
 
