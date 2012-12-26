@@ -12,20 +12,27 @@
 
 JS.Test.Unit.TestSuite.include({
   run: function(result, continuation, callback, context) {
-    callback.call(context || null, this.klass.STARTED, this);
+    if (this._metadata.fullName)
+      callback.call(context || null, this.klass.STARTED, this);
 
     var withIvars = function(ivarsFromCallback) {
       this.forEach(function(test, resume) {
-        if (ivarsFromCallback) test.setValuesFromCallbacks(ivarsFromCallback);
+        if (ivarsFromCallback && test.setValuesFromCallbacks)
+          test.setValuesFromCallbacks(ivarsFromCallback);
+
         test.run(result, resume, callback, context);
 
       }, function() {
         var afterCallbacks = function() {
-          callback.call(context || null, this.klass.FINISHED, this);
+          if (this._metadata.fullName)
+            callback.call(context || null, this.klass.FINISHED, this);
+          
           continuation.call(context || null);
         };
-        if (ivarsFromCallback) first.runAllCallbacks('after', afterCallbacks, this);
-        else afterCallbacks.call(this);
+        if (ivarsFromCallback && first.runAllCallbacks)
+          first.runAllCallbacks('after', afterCallbacks, this);
+        else
+          afterCallbacks.call(this);
 
       }, this);
     };

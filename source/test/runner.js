@@ -82,27 +82,9 @@ JS.Test.extend({
     },
 
     getSuite: function(options) {
-      var filter = options.test,
-          names  = [],
-          suites = [];
-
+      var filter = options.test;
       JS.Test.Unit.TestCase.resolve();
-
-      JS.Test.Unit.TestCase.forEach(function(testcase) {
-        var suite = testcase.suite(filter);
-        if (suite.size() > 0) suites.push(suite);
-        if (testcase.superclass === JS.Test.Unit.TestCase)
-          names.push(testcase.displayName);
-      });
-
-      var suite = new JS.Test.Unit.TestSuite({
-        fullName:   names.join(', '),
-        shortName:  null,
-        context:    null
-      });
-      for (var i = 0, n = suites.length; i < n; i++)
-        suite.push(suites[i]);
-
+      var suite = JS.Test.Unit.TestCase.suite(filter);
       JS.Test.Unit.TestCase.clear();
       return suite;
     },

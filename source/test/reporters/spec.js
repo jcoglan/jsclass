@@ -9,18 +9,8 @@ JS.Test.Reporters.extend({
 
     startSuite: function(event) {
       if (event.context === null) return;
-
-      var stack   = this._stack,
-          context = event.context,
-          m       = 0;
-
-      while (stack[m] && context[m] && stack[m] === context[m]) m += 1;
-
-      for (var i = m, n = event.context.length; i < n; i++)
-        this.puts(this._indent(i) + event.context[i]);
-
-      this.puts(this._indent(event.context.length) + event.shortName);
-      this._stack = event.context.concat(event.shortName);
+      this.puts(this._indent(this._stack.length) + event.shortName);
+      this._stack.push(event.shortName);
     },
 
     startTest: function(event) {
@@ -41,6 +31,11 @@ JS.Test.Reporters.extend({
       this.consoleFormat(color);
       this.puts(indent + icon + number + ' ' + event.shortName);
       this.reset();
+    },
+
+    endSuite: function(event) {
+      if (event.context === null) return;
+      this._stack.pop();
     },
 
     _indent: function(n) {

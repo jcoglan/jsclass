@@ -51,9 +51,9 @@ JS.Test.Unit.extend({
       })()
     },
 
-    initialize: function(metadata) {
+    initialize: function(metadata, tests) {
       this._metadata = metadata;
-      this._tests    = [];
+      this._tests    = tests;
     },
 
     forEach: function(block, continuation, context) {
@@ -61,28 +61,19 @@ JS.Test.Unit.extend({
     },
 
     run: function(result, continuation, callback, context) {
-      callback.call(context || null, this.klass.STARTED, this);
+      if (this._metadata.fullName)
+        callback.call(context || null, this.klass.STARTED, this);
 
       this.forEach(function(test, resume) {
         test.run(result, resume, callback, context)
 
       }, function() {
-        callback.call(context || null, this.klass.FINISHED, this);
+        if (this._metadata.fullName)
+          callback.call(context || null, this.klass.FINISHED, this);
+        
         continuation.call(context || null);
 
       }, this);
-    },
-
-    push: function(test) {
-      this._tests.push(test);
-      return this;
-    },
-
-    remove: function(test) {
-      var i = this._tests.length;
-      while (i--) {
-        if (this._tests[i] === test) this._tests.splice(i,1);
-      }
     },
 
     size: function() {

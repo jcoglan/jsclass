@@ -6,7 +6,6 @@ JS.Test.Unit.extend({
       STARTED:  'Test.Unit.TestCase.STARTED',
       FINISHED: 'Test.Unit.TestCase.FINISHED',
 
-      testCases: [],
       reports:   [],
       handlers:  [],
 
@@ -15,48 +14,59 @@ JS.Test.Unit.extend({
       },
 
       inherited: function(klass) {
+        if (!this.testCases) this.testCases = [];
         this.testCases.push(klass);
       },
 
-      forEach: function(block, context) {
-        for (var i = 0, n = this.testCases.length; i < n; i++)
-          block.call(context || null, this.testCases[i]);
-      },
-
       metadata: function() {
-        var shortName = this._contextName || this.displayName,
+        var shortName = this.displayName,
             context   = [],
-            klass     = this.superclass;
+            klass     = this,
+            root      = JS.Test.Unit.TestCase;
 
-        while (klass !== JS.Test.Unit.TestCase) {
-          context.unshift(klass._contextName || klass.displayName); // TODO actually model this properly in Context
+        while (klass !== root) {
+          context.unshift(klass.displayName);
           klass = klass.superclass;
         }
+        context.pop();
+
         return {
-          fullName:   context.concat(shortName).join(' '),
+          fullName:   this === root ? '' : context.concat(shortName).join(' '),
           shortName:  shortName,
-          context:    context
+          context:    this === root ? null : context
         };
       },
 
       suite: function(filter, inherit, useDefault) {
         var metadata    = this.metadata(),
+            root        = JS.Test.Unit.TestCase,
             fullName    = metadata.fullName,
             methodNames = new JS.Enumerable.Collection(this.instanceMethods(inherit)),
+            suite       = [],
+            children    = [],
+            i, n,
 
             tests = methodNames.select(function(name) {
               return /^test./.test(name) && this.filter(fullName + ' ' + name, filter);
-            }, this).sort(),
+            }, this).sort();
 
-            suite = new JS.Test.Unit.TestSuite(metadata);
-
-        for (var i = 0, n = tests.length; i < n; i++) {
+        for (i = 0, n = tests.length; i < n; i++) {
           try { suite.push(new this(tests[i])) } catch (e) {}
         }
-        if (suite.empty() && useDefault) {
+
+        if (useDefault && suite.length === 0) {
           try { suite.push(new this('defaultTest')) } catch (e) {}
         }
-        return suite;
+
+        if (this.testCases) {
+          for (i = 0, n = this.testCases.length; i < n; i++) {
+            children.push(this.testCases[i].displayName);
+            suite.push(this.testCases[i].suite(filter, inherit, useDefault));
+          }
+        }
+
+        metadata.children = children;
+        return new JS.Test.Unit.TestSuite(metadata, suite);
       },
 
       filter: function(name, filter) {

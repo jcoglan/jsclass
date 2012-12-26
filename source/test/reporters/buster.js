@@ -22,7 +22,7 @@ JS.Test.Reporters.extend({
     startSuite: function(event) {
       if (event.context === null) return;
       this._contexts += 1;
-      buster.emit('context:start', {name: event.fullName});
+      buster.emit('context:start', {name: event.shortName});
     },
 
     startTest: function(event) {

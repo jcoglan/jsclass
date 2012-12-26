@@ -9,24 +9,9 @@ JS.Test.extend({
       },
 
       Context: new JS.Module({
-        getContextName: function() {
-          this._contextName = this._contextName || '';
-          return (typeof this.superclass.getContextName === 'function')
-            ? (this.superclass.getContextName() + ' ' + this._contextName).replace(/^\s+/, '')
-            : this.displayName;
-        },
-
-        setContextName: function(name) {
-          this._contextName = name;
-        },
-
         context: function(name, block) {
-          var klass = new JS.Class(this, {}, {_resolve: false});
+          var klass = new JS.Class(name.toString(), this, {}, {_resolve: false});
           klass.__eigen__().resolve();
-
-          klass.setContextName(name.toString());
-          klass.setName(klass.getContextName());
-
           block.call(klass);
           return klass;
         },

@@ -19,10 +19,6 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
                        })
       }})
 
-      it("should set the context name", function() { with(this) {
-        assertEqual( "When testing", context.getContextName() )
-      }})
-
       it("should be a Test.Unit.TestCase", function() { with(this) {
         assert( JS.indexOf(context.ancestors(), JS.Test.Unit.TestCase) !== -1 )
       }})
@@ -39,11 +35,6 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
             })
           })
         }})
-      }})
-
-      it("should set a nested context's name", function() { with(this) {
-        assertEqual( "Test.Context A new context when nested and we're testing should be nested",
-                     context.nested().getContextName() )
       }})
 
       it("should also be a Test.Unit.TestCase", function() { with(this) {
