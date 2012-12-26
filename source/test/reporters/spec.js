@@ -1,5 +1,10 @@
 JS.Test.Reporters.extend({
   Spec: new JS.Class(JS.Test.Reporters.Dot, {
+    extend: {
+      TICK:   '\u2713',
+      CROSS:  '\u2717',
+    },
+
     startRun: function(event) {
       this._faults = [];
       this._stack  = [];
@@ -25,7 +30,7 @@ JS.Test.Reporters.extend({
     endTest: function(event) {
       var indent = this._indent(this._stack.length),
           color  = this._testPassed ? 'green' : 'red',
-          icon   = this._testPassed ? '\u2713' : '\u2717',
+          icon   = this._testPassed ? this.klass.TICK : this.klass.CROSS,
           number = this._testPassed ? '' : ' (' + this._faults.length + ')';
 
       this.consoleFormat(color);
