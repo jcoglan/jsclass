@@ -14,7 +14,7 @@ JS.Test.extend({
     },
 
     start: function(ui, callback, context) {
-      var options   = ui.getOptions(),
+      var options   = JS.extend(ui.getOptions(), this._settings),
           reporters = ui.getReporters(options),
           suite     = this.getSuite(options);
 

@@ -12,8 +12,14 @@ JS.Test.UI.extend({
 
       if (JS.Console.NODE) {
         options = require('nopt')(this.OPTIONS, this.SHORTS);
-        if (process.env.TAP) options.format = 'tap';
+        if (process.env.TAP)
+          options.format = options.format || 'tap';
         delete options.argv;
+      }
+
+      if (JS.Console.RHINO) {
+        if (java.lang.System.getenv().get('TAP'))
+          options.format = 'tap';
       }
 
       options.test = options.test || [];
