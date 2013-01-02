@@ -8,20 +8,20 @@ JS.Test.Reporters.extend({
     startSuite: function(event) {
       this._tc.info({total: event.size});
     },
-    
+
     startContext: function(event) {},
-    
+
     startTest: function(event) {
       this._faults = [];
       this._start  = new Date().getTime();
     },
-    
+
     addFault: function(event) {
       var message = event.error.message;
       if (event.error.backtrace) message += '\n' + event.error.backtrace;
       this._faults.push(message);
     },
-    
+
     endTest: function(event) {
       this._tc.result({
         id:          ++this._testId,
@@ -33,11 +33,11 @@ JS.Test.Reporters.extend({
         log:         this._faults
       });
     },
-    
+
     endContext: function(event) {},
-    
+
     update: function(event) {},
-    
+
     endSuite: function(event) {
       this._tc.complete();
     }

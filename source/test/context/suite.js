@@ -26,7 +26,7 @@ JS.Test.Unit.TestSuite.include({
         var afterCallbacks = function() {
           if (this._metadata.fullName)
             callback.call(context || null, this.klass.FINISHED, this);
-          
+
           continuation.call(context || null);
         };
         if (ivarsFromCallback && first.runAllCallbacks)

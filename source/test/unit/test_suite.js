@@ -70,7 +70,7 @@ JS.Test.Unit.extend({
       }, function() {
         if (this._metadata.fullName)
           callback.call(context || null, this.klass.FINISHED, this);
-        
+
         continuation.call(context || null);
 
       }, this);

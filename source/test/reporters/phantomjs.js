@@ -5,7 +5,7 @@ JS.Test.Reporters.extend({
 
       var env    = require('system').env,
           format = env.FORMAT;
-  
+
       if (env.TAP) format = format || 'tap';
       this._options.format = this._options.format || format;
 
