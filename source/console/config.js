@@ -18,7 +18,7 @@
       JS.Console.adapter.format(key);
     });
   })(key);
-  
+
   C.extend(C);
 })();
 
