@@ -8,20 +8,28 @@ JS.Test.UI.extend({
     },
 
     getOptions: function() {
-      var options = {};
+      var options = {}, env, test, format;
 
       if (JS.Console.NODE) {
-        options = require('nopt')(this.OPTIONS, this.SHORTS);
-        if (process.env.TAP)
-          options.format = options.format || 'tap';
-        delete options.argv;
+        if (process.env.TAP) options.format = 'tap';
+        format = process.env.FORMAT;
+        test   = process.env.TEST;
       }
 
       if (JS.Console.RHINO) {
-        if (java.lang.System.getenv().get('TAP'))
-          options.format = 'tap';
+        env = java.lang.System.getenv();
+        if (env.get('TAP')) options.format = 'tap';
+        format = env.get('FORMAT');
+        test   = env.get('TEST');
       }
 
+      if (format) options.format = format;
+      if (test)   options.test   = [test];
+
+      if (JS.Console.NODE)
+        JS.extend(options, require('nopt')(this.OPTIONS, this.SHORTS));
+
+      delete options.argv;
       options.test = options.test || [];
       return options;
     },
