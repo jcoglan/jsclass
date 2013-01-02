@@ -5,13 +5,13 @@ JS.Test.Reporters.extend({
       Testem.useCustomAdapter(function(socket) { self._socket = socket });
     },
 
-    startRun: function(event) {
+    startSuite: function(event) {
       this._results = [];
       this._testId = 0;
       this._socket.emit('tests-start');
     },
 
-    startSuite: function(event) {},
+    startContext: function(event) {},
 
     startTest: function(event) {
       this._testPassed = true;
@@ -40,11 +40,11 @@ JS.Test.Reporters.extend({
       this._socket.emit('test-result', result);
     },
 
-    endSuite: function(event) {},
+    endContext: function(event) {},
 
     update: function(event) {},
 
-    endRun: function(event) {
+    endSuite: function(event) {
       this._socket.emit('all-test-results', {
         passed: event.tests - event.failures - event.errors,
         failed: event.failures,

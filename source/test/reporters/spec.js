@@ -5,14 +5,14 @@ JS.Test.Reporters.extend({
       CROSS:  '\u2717',
     },
 
-    startRun: function(event) {
+    startSuite: function(event) {
       this._faults = [];
       this._stack  = [];
 
       this.puts('');
     },
 
-    startSuite: function(event) {
+    startContext: function(event) {
       if (event.context === null) return;
       this.puts(this._indent(this._stack.length) + event.shortName);
       this._stack.push(event.shortName);
@@ -38,7 +38,7 @@ JS.Test.Reporters.extend({
       this.reset();
     },
 
-    endSuite: function(event) {
+    endContext: function(event) {
       if (event.context === null) return;
       this._stack.pop();
     },

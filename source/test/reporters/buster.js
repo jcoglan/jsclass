@@ -13,13 +13,13 @@ JS.Test.Reporters.extend({
         - uncaughtException
     */
 
-    startRun: function(event) {
+    startSuite: function(event) {
       this._contexts = 0;
       this._stack = [];
       buster.emit('suite:start');
     },
 
-    startSuite: function(event) {
+    startContext: function(event) {
       if (event.context === null) return;
       this._contexts += 1;
       buster.emit('context:start', {name: event.shortName});
@@ -56,14 +56,14 @@ JS.Test.Reporters.extend({
       buster.emit('test:success', {name: event.shortName});
     },
 
-    endSuite: function(event) {
+    endContext: function(event) {
       if (event.context === null) return;
       buster.emit('context:end', {name: event.fullName});
     },
 
     update: function(event) {},
 
-    endRun: function(event) {
+    endSuite: function(event) {
       buster.emit('suite:end', {
         ok:         event.passed,
         contexts:   this._contexts,

@@ -2,12 +2,12 @@ JS.Test.Reporters.extend({
   TAP: new JS.Class({
     include: JS.Console,
 
-    startRun: function(event) {
+    startSuite: function(event) {
       this._testId = 0;
       this.puts('1..' + event.size);
     },
 
-    startSuite: function(event) {},
+    startContext: function(event) {},
 
     startTest: function(event) {
       this._testPassed = true;
@@ -35,11 +35,11 @@ JS.Test.Reporters.extend({
       }
     },
 
-    endSuite: function(event) {},
+    endContext: function(event) {},
 
     update: function(event) {},
 
-    endRun: function(event) {}
+    endSuite: function(event) {}
   })
 });
 

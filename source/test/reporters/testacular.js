@@ -5,11 +5,11 @@ JS.Test.Reporters.extend({
       this._testId = 0;
     },
 
-    startRun: function(event) {
+    startSuite: function(event) {
       this._tc.info({total: event.size});
     },
     
-    startSuite: function(event) {},
+    startContext: function(event) {},
     
     startTest: function(event) {
       this._faults = [];
@@ -34,11 +34,11 @@ JS.Test.Reporters.extend({
       });
     },
     
-    endSuite: function(event) {},
+    endContext: function(event) {},
     
     update: function(event) {},
     
-    endRun: function(event) {
+    endSuite: function(event) {
       this._tc.complete();
     }
   })

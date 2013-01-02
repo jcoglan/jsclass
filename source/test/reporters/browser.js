@@ -14,7 +14,7 @@ JS.Test.Reporters.extend({
       return context;
     },
 
-    startRun: function(event) {
+    startSuite: function(event) {
       var self = this;
       if (this._container) document.body.removeChild(this._container);
 
@@ -47,7 +47,7 @@ JS.Test.Reporters.extend({
       this.update({tests: 0, assertions: 0, failures: 0, errors: 0});
     },
 
-    startSuite: function(event) {},
+    startContext: function(event) {},
 
     startTest: function(event) {
       this._contextFor(event).addTest(event.shortName);
@@ -59,7 +59,7 @@ JS.Test.Reporters.extend({
 
     endTest: function(event) {},
 
-    endSuite: function(event) {},
+    endContext: function(event) {},
 
     update: function(event) {
       this._tests.innerHTML      = String(event.tests);
@@ -68,7 +68,7 @@ JS.Test.Reporters.extend({
       this._errors.innerHTML     = String(event.errors);
     },
 
-    endRun: function(event) {
+    endSuite: function(event) {
       this.update(event);
       JS.DOM.removeClass(this._light, 'light-pending');
       JS.DOM.addClass(this._light, event.passed ? 'light-passed' : 'light-failed');

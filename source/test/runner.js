@@ -49,21 +49,21 @@ JS.Test.extend({
         // TODO output reports
         var result = testResult.metadata();
         result.runtime = elapsedTime;
-        this._reporter.endRun(result);
+        this._reporter.endSuite(result);
       };
 
       var reportEvent = function(channel, testCase) {
         if (channel === TS.STARTED)
-          this._reporter.startSuite(testCase.metadata());
+          this._reporter.startContext(testCase.metadata());
         else if (channel === TC.STARTED)
           this._reporter.startTest(testCase.metadata());
         else if (channel === TC.FINISHED)
           this._reporter.endTest(testCase.metadata());
         else if (channel === TS.FINISHED)
-          this._reporter.endSuite(testCase.metadata());
+          this._reporter.endContext(testCase.metadata());
       };
 
-      this._reporter.startRun(suite.metadata());
+      this._reporter.startSuite(suite.metadata());
 
       suite.run(testResult, reportResult, reportEvent, this);
     },

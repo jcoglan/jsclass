@@ -12,7 +12,7 @@ JS.Test.Reporters.extend({
       error:    'Error'
     },
 
-    startRun: function(event) {
+    startSuite: function(event) {
       this._faults = [];
 
       this.consoleFormat('bold');
@@ -22,7 +22,7 @@ JS.Test.Reporters.extend({
       this.puts('Started');
     },
 
-    startSuite: function(event) {},
+    startContext: function(event) {},
 
     startTest: function(event) {
       this._outputFault = false;
@@ -44,11 +44,11 @@ JS.Test.Reporters.extend({
       this.reset();
     },
 
-    endSuite: function(event) {},
+    endContext: function(event) {},
 
     update: function(event) {},
 
-    endRun: function(event) {
+    endSuite: function(event) {
       for (var i = 0, n = this._faults.length; i < n; i++)
         this._printFault(i + 1, this._faults[i]);
 

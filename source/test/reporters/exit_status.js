@@ -1,8 +1,8 @@
 JS.Test.Reporters.extend({
   ExitStatus: new JS.Class({
-    startRun: function(event) {},
-
     startSuite: function(event) {},
+
+    startContext: function(event) {},
 
     startTest: function(event) {},
 
@@ -10,11 +10,11 @@ JS.Test.Reporters.extend({
 
     endTest: function(event) {},
 
-    endSuite: function(event) {},
+    endContext: function(event) {},
 
     update: function(event) {},
 
-    endRun: function(event) {
+    endSuite: function(event) {
       JS.Console.exit(event.passed ? 0 : 1);
     }
   })

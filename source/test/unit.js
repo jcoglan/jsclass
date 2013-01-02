@@ -8,9 +8,9 @@ JS.Test = new JS.Module('Test', {
 
     Reporters: new JS.Module({
       extend: {
-        METHODS: ['startRun', 'startSuite', 'startTest',
+        METHODS: ['startSuite', 'startContext', 'startTest',
                   'update', 'addFault',
-                  'endTest', 'endSuite', 'endRun'],
+                  'endTest', 'endContext', 'endSuite'],
 
         _registry: {},
 

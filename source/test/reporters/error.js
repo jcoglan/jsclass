@@ -1,6 +1,6 @@
 JS.Test.Reporters.extend({
   Error: new JS.Class(JS.Test.Reporters.Dot, {
-    startRun: function(event) {
+    startSuite: function(event) {
       this._faults = [];
     },
 
@@ -11,7 +11,7 @@ JS.Test.Reporters.extend({
 
     endTest: function(event) {},
 
-    endRun: function(event) {
+    endSuite: function(event) {
       this._printSummary(event);
     }
   })

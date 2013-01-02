@@ -8,9 +8,9 @@ JS.Test.Reporters.extend({
       };
     },
 
-    startRun: function(event) {},
-
     startSuite: function(event) {},
+
+    startContext: function(event) {},
 
     startTest: function(event) {},
 
@@ -20,11 +20,11 @@ JS.Test.Reporters.extend({
       TestSwarm.heartbeat();
     },
 
-    endSuite: function(event) {},
+    endContext: function(event) {},
 
     update: function(event) {},
 
-    endRun: function(event) {
+    endSuite: function(event) {
       TestSwarm.submit({
         fail:   event.failures,
         error:  event.errors,
