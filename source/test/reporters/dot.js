@@ -32,7 +32,7 @@ JS.Test.Reporters.extend({
       this._faults.push(event);
       if (this._outputFault) return;
       this._outputFault = true;
-      this.consoleFormat('bold','red');
+      this.consoleFormat('bold', 'red');
       this.print(this.SYMBOLS[event.error.type]);
       this.reset();
     },
