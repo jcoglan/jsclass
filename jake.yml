@@ -112,8 +112,18 @@ packages:
       - builder
       - event
 
+  console:
+    directory: console
+    files:
+      - console
+      - base
+      - browser
+      - node
+      - rhino
+      - windows
+      - config
+
   benchmark:        benchmark
-  console:          console
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable
