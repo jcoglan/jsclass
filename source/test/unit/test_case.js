@@ -44,7 +44,7 @@ JS.Test.Unit.extend({
             methodNames = new JS.Enumerable.Collection(this.instanceMethods(inherit)),
             suite       = [],
             children    = [],
-            i, n,
+            child, i, n;
 
             tests = methodNames.select(function(name) {
               return /^test./.test(name) && this.filter(fullName + ' ' + name, filter);
@@ -60,8 +60,10 @@ JS.Test.Unit.extend({
 
         if (this.testCases) {
           for (i = 0, n = this.testCases.length; i < n; i++) {
+            child = this.testCases[i].suite(filter, inherit, useDefault);
+            if (child.size() === 0) continue;
             children.push(this.testCases[i].displayName);
-            suite.push(this.testCases[i].suite(filter, inherit, useDefault));
+            suite.push(child);
           }
         }
 
