@@ -3,8 +3,7 @@ require(JSCLASS_PATH + '/loader')
 JS.require('JS.Test')
 
 var page     = new WebPage(),
-    format   = phantom.args[0] || 'dot',
-    reporter = new JS.Test.Reporters.PhantomJS({format: format}, page)
+    reporter = new JS.Test.Reporters.PhantomJS({}, page)
 
 page.open('test/browser.html')
 
