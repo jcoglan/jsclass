@@ -1,4 +1,9 @@
-JS.ENV.ForwardableSpec = JS.Test.describe(JS.Forwardable, function() { with(this) {
+(function() {
+
+var E = (typeof exports === "object"),
+    Forwardable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/forwardable") : JS).Forwardable
+
+JS.ENV.ForwardableSpec = JS.Test.describe(Forwardable, function() { with(this) {
   define("Subject", new JS.Class({
       initialize: function() {
           this.name = "something";
@@ -15,7 +20,7 @@ JS.ENV.ForwardableSpec = JS.Test.describe(JS.Forwardable, function() { with(this
   }))
 
   define("forwardableClass", function() { with(this) {
-    return new JS.Class({extend: JS.Forwardable,
+    return new JS.Class({extend: Forwardable,
       initialize: function() {
         this.subject = new Subject()
       }
@@ -67,4 +72,6 @@ JS.ENV.ForwardableSpec = JS.Test.describe(JS.Forwardable, function() { with(this
     }})
   }})
 }})
+
+})()
 

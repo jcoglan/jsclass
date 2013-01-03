@@ -1,4 +1,13 @@
-JS.Forwardable = new JS.Module('Forwardable', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = E ? require('./core') : JS;
+
+  if (E) exports.JS = exports;
+  factory(js, E ? exports : js);
+
+})(function(JS, exports) {
+
+var Forwardable = new JS.Module('Forwardable', {
   defineDelegator: function(subject, method, alias, resolve) {
     alias = alias || method;
     this.define(alias, function() {
@@ -20,3 +29,7 @@ JS.Forwardable = new JS.Module('Forwardable', {
     this.resolve();
   }
 });
+
+exports.Forwardable = Forwardable;
+});
+

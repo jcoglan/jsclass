@@ -1,4 +1,4 @@
-JS.Test.Context.Test = new JS.Module({
+Test.Context.Test = new JS.Module({
   test: function(name, opts, block) {
     var testName = 'test: ' + name;
 
@@ -22,7 +22,7 @@ JS.Test.Context.Test = new JS.Module({
   }
 });
 
-JS.Test.Context.Test.alias({
+Test.Context.Test.alias({
   it:     'test',
   should: 'test',
   tests:  'test',

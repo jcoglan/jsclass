@@ -1,7 +1,13 @@
-JS.ENV.LinkedListSpec = JS.Test.describe(JS.LinkedList, function() { with(this) {
-  describe(JS.LinkedList.Doubly.Circular, function() { with(this) {
+(function() {
+
+var E = (typeof exports === "object"),
+    Enumerable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/enumerable") : JS).Enumerable,
+    LinkedList = (E ? JS.Package.loadFile(JSCLASS_PATH + "/linked_list") : JS).LinkedList
+
+JS.ENV.LinkedListSpec = JS.Test.describe(LinkedList, function() { with(this) {
+  describe(LinkedList.Doubly.Circular, function() { with(this) {
     before(function() { with(this) {
-      this.list = new JS.LinkedList.Doubly.Circular()
+      this.list = new LinkedList.Doubly.Circular()
       this.foo = {}
       this.bar = {}
       this.qux = {}
@@ -37,7 +43,7 @@ JS.ENV.LinkedListSpec = JS.Test.describe(JS.LinkedList, function() { with(this) 
       }})
 
       it("is Enumerable", function() { with(this) {
-        assertKindOf( JS.Enumerable, list )
+        assertKindOf( Enumerable, list )
       }})
 
       describe("#push", function() { with(this) {
@@ -208,4 +214,6 @@ JS.ENV.LinkedListSpec = JS.Test.describe(JS.LinkedList, function() { with(this) 
     }})
   }})
 }})
+
+})()
 

@@ -81,7 +81,8 @@ JS.extend(JS.Method.prototype, {
       return returnValue;
     };
 
-    if (trace) return JS.StackTrace.wrap(compiled, method, environment);
+    var StackTrace = ((typeof require === 'function') ? require('./stack_trace') : global.JS).StackTrace;
+    if (trace) return StackTrace.wrap(compiled, method, environment);
     return compiled;
   },
 
@@ -133,8 +134,8 @@ JS.Method.keyword = function(name, filter) {
 };
 
 JS.Method.tracing = function(classes, block, context) {
-  JS.require('JS.StackTrace', function() {
-    var logger = JS.StackTrace.logger,
+  global.JS.require('JS.StackTrace', function(StackTrace) {
+    var logger = StackTrace.logger,
         active = logger.active;
 
     classes = [].concat(classes);

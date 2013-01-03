@@ -1,6 +1,6 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   Dot: new JS.Class({
-    include: JS.Console,
+    include: Console,
 
     SYMBOLS: {
       failure:  'F',
@@ -86,5 +86,5 @@ JS.Test.Reporters.extend({
   })
 });
 
-JS.Test.Reporters.register('dot', JS.Test.Reporters.Dot);
+Test.Reporters.register('dot', Test.Reporters.Dot);
 

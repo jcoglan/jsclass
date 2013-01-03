@@ -1,4 +1,4 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   Testacular: new JS.Class({
     initialize: function(options) {
       this._tc = JS.ENV.__testacular__;

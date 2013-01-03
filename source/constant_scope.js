@@ -1,4 +1,13 @@
-JS.ConstantScope = new JS.Module('ConstantScope', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = E ? require('./core') : JS;
+
+  if (E) exports.JS = exports;
+  factory(js, E ? exports : js);
+
+})(function(JS, exports) {
+
+var ConstantScope = new JS.Module('ConstantScope', {
   extend: {
     included: function(base) {
       base.__consts__ = new JS.Module();
@@ -22,7 +31,7 @@ JS.ConstantScope = new JS.Module('ConstantScope', {
           this.callSuper();
 
         if (JS.isType(callable, JS.Module)) {
-          callable.include(JS.ConstantScope);
+          callable.include(ConstantScope);
           callable.__consts__.include(constants);
         }
       }
@@ -40,5 +49,8 @@ JS.ConstantScope = new JS.Module('ConstantScope', {
       return constants;
     }
   }
+});
+
+exports.ConstantScope = ConstantScope;
 });
 

@@ -1,6 +1,6 @@
-JS.Test.Mocking.Stub.include({
+Test.Mocking.Stub.include({
   given: function() {
-    var matcher = new JS.Test.Mocking.Parameters(arguments, this._expected);
+    var matcher = new Test.Mocking.Parameters(arguments, this._expected);
     this._argMatchers.push(matcher);
     this._currentMatcher = matcher;
     return this;
@@ -37,51 +37,51 @@ JS.Test.Mocking.Stub.include({
   }
 });
 
-JS.Test.Mocking.Stub.alias({
+Test.Mocking.Stub.alias({
   raising:    'raises',
   returning:  'returns',
   yielding:   'yields'
 });
 
-JS.Test.Mocking.extend({
+Test.Mocking.extend({
   DSL: new JS.Module({
     stub: function() {
-      return JS.Test.Mocking.stub.apply(JS.Test.Mocking, arguments);
+      return Test.Mocking.stub.apply(Test.Mocking, arguments);
     },
 
     expect: function() {
-      var stub = JS.Test.Mocking.stub.apply(JS.Test.Mocking, arguments);
+      var stub = Test.Mocking.stub.apply(Test.Mocking, arguments);
       stub.expected();
       this.addAssertion();
       return stub;
     },
 
     anything: function() {
-      return new JS.Test.Mocking.Anything();
+      return new Test.Mocking.Anything();
     },
 
     anyArgs: function() {
-      return new JS.Test.Mocking.AnyArgs();
+      return new Test.Mocking.AnyArgs();
     },
 
     instanceOf: function(type) {
-      return new JS.Test.Mocking.InstanceOf(type);
+      return new Test.Mocking.InstanceOf(type);
     },
 
     match: function(type) {
-      return new JS.Test.Mocking.Matcher(type);
+      return new Test.Mocking.Matcher(type);
     },
 
     arrayIncluding: function() {
-      return new JS.Test.Mocking.ArrayIncluding(arguments);
+      return new Test.Mocking.ArrayIncluding(arguments);
     },
 
     objectIncluding: function(elements) {
-      return new JS.Test.Mocking.ObjectIncluding(elements);
+      return new Test.Mocking.ObjectIncluding(elements);
     }
   })
 });
 
-JS.Test.Unit.TestCase.include(JS.Test.Mocking.DSL);
-JS.Test.Unit.mocking = JS.Test.Mocking;
+Test.Unit.TestCase.include(Test.Mocking.DSL);
+Test.Unit.mocking = Test.Mocking;
 

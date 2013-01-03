@@ -1,3 +1,11 @@
+(function() {
+
+var E          = (typeof exports === "object"),
+    Comparable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/comparable") : JS).Comparable,
+    Enumerable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/enumerable") : JS).Enumerable,
+    hashes     = (E ? JS.Package.loadFile(JSCLASS_PATH + "/hash") : JS),
+    sets       = (E ? JS.Package.loadFile(JSCLASS_PATH + "/set") : JS)
+
 JS.ENV.Test = JS.ENV.Test || {}
 
 JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
@@ -146,19 +154,19 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
 
     describe("with a stubbed constructor", function() { with(this) {
       before(function() { with(this) {
-        stub("new", JS, "Set").given([]).returns({fake: "object"})
+        stub("new", sets, "Set").given([]).returns({fake: "object"})
       }})
 
       it("returns the stubbed response", function() { with(this) {
-        assertEqual( {fake: "object"}, new JS.Set([]) )
+        assertEqual( {fake: "object"}, new sets.Set([]) )
       }})
 
       it("throws an error for unexpected arguments", function() { with(this) {
-        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { new JS.Set({}) })
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { new sets.Set({}) })
       }})
 
       it("throws an error if called without 'new'", function() { with(this) {
-        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { JS.Set([]) })
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { sets.Set([]) })
       }})
     }})
 
@@ -513,8 +521,8 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
       it("passes if the constructor was called with the right arguments", function(resume) { with(this) {
         runTests({
           testExpectWithArgs: function() { with(this) {
-            expect("new", JS, "Set").given([3,4])
-            new JS.Set([3,4])
+            expect("new", sets, "Set").given([3,4])
+            new sets.Set([3,4])
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 0, 0 )
@@ -524,8 +532,8 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
       it("fails if the constructor was called with the wrong argument", function(resume) { with(this) {
         runTests({
           testExpectWithArgs: function() { with(this) {
-            expect("new", JS, "Set").given([3,4])
-            new JS.Set([3,5])
+            expect("new", sets, "Set").given([3,4])
+            new sets.Set([3,5])
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 1 )
@@ -544,8 +552,8 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
       it("fails if the constructor was called without 'new'", function(resume) { with(this) {
         runTests({
           testExpectWithArgs: function() { with(this) {
-            expect("new", JS, "Set").given([3,4])
-            JS.Set([3,4])
+            expect("new", sets, "Set").given([3,4])
+            sets.Set([3,4])
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 1 )
@@ -664,8 +672,8 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
 
     describe("instanceOf", function() { with(this) {
       it("matches instances of the given type", function() { with(this) {
-        assertEqual( instanceOf(JS.Set), new JS.SortedSet() )
-        assertEqual( instanceOf(JS.Enumerable), new JS.Hash() )
+        assertEqual( instanceOf(sets.Set), new sets.SortedSet() )
+        assertEqual( instanceOf(Enumerable), new hashes.Hash() )
         assertEqual( instanceOf(String), "hi" )
         assertEqual( instanceOf("string"), "hi" )
         assertEqual( instanceOf(Number), 9 )
@@ -680,8 +688,8 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
 
       it("does not match instances of other types", function() { with(this) {
         assertNotEqual( instanceOf("object"), 9 )
-        assertNotEqual( instanceOf(JS.Comparable), new JS.Set )
-        assertNotEqual( instanceOf(JS.SortedSet), new JS.Set )
+        assertNotEqual( instanceOf(Comparable), new sets.Set() )
+        assertNotEqual( instanceOf(sets.SortedSet), new sets.Set() )
         assertNotEqual( instanceOf(Function), "string" )
         assertNotEqual( instanceOf(Array), {} )
       }})
@@ -690,12 +698,12 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
     describe("match", function() { with(this) {
       it("matches objects the match the type", function() { with(this) {
         assertEqual( match(/foo/), "foo" )
-        assertEqual( match(JS.Enumerable), new JS.Set() )
+        assertEqual( match(Enumerable), new sets.Set() )
       }})
 
       it("does not match objects that don't match the type", function() { with(this) {
         assertNotEqual( match(/foo/), "bar" )
-        assertNotEqual( match(JS.Enumerable), new JS.Class() )
+        assertNotEqual( match(Enumerable), new JS.Class() )
       }})
     }})
 
@@ -754,4 +762,6 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
     }})
   }})
 }})
+
+})()
 

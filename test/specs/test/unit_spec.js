@@ -1,3 +1,11 @@
+(function() {
+
+var E          = (typeof exports === "object"),
+    sets       = (E ? JS.Package.loadFile(JSCLASS_PATH + "/set") : JS),
+    Enumerable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/enumerable") : JS).Enumerable,
+    Observable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/observable") : JS).Observable,
+    Range      = (E ? JS.Package.loadFile(JSCLASS_PATH + "/range") : JS).Range
+
 JS.ENV.Test = this.Test || {}
 
 Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
@@ -140,7 +148,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           assertEqual( {foo: 2}, {foo: 2} )
           assertEqual( {foo: 2}, {foo: 2} )
           assertEqual( new Date(1984,1,25), new Date(1984,1,25,0,0) )
-          assertEqual( new JS.SortedSet([1,2]), new JS.SortedSet([2,1]) )
+          assertEqual( new sets.SortedSet([1,2]), new sets.SortedSet([2,1]) )
 
           assertNotEqual( true, false )
           assertNotEqual( false, null )
@@ -152,7 +160,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           assertNotEqual( {foo: 2}, {foo: 2, bar: 1} )
           assertNotEqual( {foo: 2, bar: 1}, {foo: 2} )
           assertNotEqual( new Date(1986,6,5), new Date(1984,1,25) )
-          assertNotEqual( new JS.SortedSet([3,2]), new JS.SortedSet([2,1]) )
+          assertNotEqual( new sets.SortedSet([3,2]), new sets.SortedSet([2,1]) )
           assertNotEqual( function() {}, function() {} )
         }}
       }, function() { resume(function() {
@@ -333,11 +341,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         it("fails when given unequal objects", function(resume) { with(this) {
           runTests({
             test1: function() { with(this) {
-              assertEqual( new JS.SortedSet([1,2]), new JS.SortedSet([3,2]) )
+              assertEqual( new sets.SortedSet([1,2]), new sets.SortedSet([3,2]) )
             }},
 
             test2: function() { with(this) {
-              assertNotEqual( new JS.SortedSet([2,1]), new JS.SortedSet([1,2]) )
+              assertNotEqual( new sets.SortedSet([2,1]), new sets.SortedSet([1,2]) )
             }}
           }, function() { resume(function() {
             assertTestResult( 2, 2, 2, 0 )
@@ -365,7 +373,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           }},
 
           test2: function() { with(this) {
-            assertNotEqual( JS.SortedSet, JS.SortedSet )
+            assertNotEqual( sets.SortedSet, sets.SortedSet )
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
@@ -555,19 +563,19 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
       it("passes when the object's inheritance chain includes the given module", function(resume) { with(this) {
         runTests({
           testAssertKindOf: function() { with(this) {
-            var set = new JS.SortedSet([1,2])
+            var set = new sets.SortedSet([1,2])
 
-            assertKindOf( JS.Module,  JS.SortedSet )
-            assertKindOf( JS.Class,   JS.SortedSet )
-            assertKindOf( JS.Kernel,  JS.SortedSet )
+            assertKindOf( JS.Module,  sets.SortedSet )
+            assertKindOf( JS.Class,   sets.SortedSet )
+            assertKindOf( JS.Kernel,  sets.SortedSet )
 
-            assertKindOf( JS.Set,         set )
-            assertKindOf( JS.SortedSet,   set )
+            assertKindOf( sets.Set,       set )
+            assertKindOf( sets.SortedSet, set )
             assertKindOf( JS.Kernel,      set )
-            assertKindOf( JS.Enumerable,  set )
+            assertKindOf( Enumerable,     set )
 
-            set.extend(JS.Observable)
-            assertKindOf( JS.Observable,  set )
+            set.extend(Observable)
+            assertKindOf( Observable,     set )
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 8, 0, 0 )
@@ -576,12 +584,12 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
 
       it("fails when the object's inheritance chain does not include the given module", function(resume) { with(this) {
         runTests({
-          test1: function() { with(this) { assertKindOf( Array,         JS.SortedSet ) }},
-          test2: function() { with(this) { assertKindOf( JS.Enumerable, JS.SortedSet ) }},
-          test3: function() { with(this) { assertKindOf( JS.Observable, JS.SortedSet ) }},
-          test4: function() { with(this) { assertKindOf( JS.Module,     new JS.SortedSet([1,2]) ) }},
-          test5: function() { with(this) { assertKindOf( JS.Class,      new JS.SortedSet([1,2]) ) }},
-          test6: function() { with(this) { assertKindOf( JS.Observable, new JS.SortedSet([1,2]) ) }}
+          test1: function() { with(this) { assertKindOf( Array,         sets.SortedSet ) }},
+          test2: function() { with(this) { assertKindOf( Enumerable,    sets.SortedSet ) }},
+          test3: function() { with(this) { assertKindOf( Observable,    sets.SortedSet ) }},
+          test4: function() { with(this) { assertKindOf( JS.Module,     new sets.SortedSet([1,2]) ) }},
+          test5: function() { with(this) { assertKindOf( JS.Class,      new sets.SortedSet([1,2]) ) }},
+          test6: function() { with(this) { assertKindOf( Observable,    new sets.SortedSet([1,2]) ) }}
         }, function() { resume(function() {
           assertTestResult( 6, 6, 6, 0 )
 
@@ -741,8 +749,8 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
       it("passes if the object is of the given type", function(resume) { with(this) {
         runTests({
           testAssertMatch: function() { with(this) {
-            assertMatch( JS.Module, JS.Enumerable )
-            assertNoMatch( JS.Class, new JS.SortedSet([1,2]) )
+            assertMatch( JS.Module, Enumerable )
+            assertNoMatch( JS.Class, new sets.SortedSet([1,2]) )
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 2, 0, 0 )
@@ -752,11 +760,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
       it("fails if the object is not of the given type", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
-            assertMatch( JS.Class, new JS.SortedSet([1,2]) )
+            assertMatch( JS.Class, new sets.SortedSet([1,2]) )
           }},
 
           test2: function() { with(this) {
-            assertNoMatch( JS.Module, JS.Enumerable )
+            assertNoMatch( JS.Module, Enumerable )
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
@@ -778,8 +786,8 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
       it("passes if the object is in the given range", function(resume) { with(this) {
         runTests({
           testAssertMatch: function() { with(this) {
-            assertMatch( new JS.Range(1,10), 10 )
-            assertNoMatch( new JS.Range(1,10,true), 10 )
+            assertMatch( new Range(1,10), 10 )
+            assertNoMatch( new Range(1,10,true), 10 )
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 2, 0, 0 )
@@ -789,11 +797,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
       it("fails if the object is not in the given range", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
-            assertMatch( new JS.Range(1,10,true), 10 )
+            assertMatch( new Range(1,10,true), 10 )
           }},
 
           test2: function() { with(this) {
-            assertNoMatch( new JS.Range(1,10), 10 )
+            assertNoMatch( new Range(1,10), 10 )
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
@@ -816,7 +824,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
     it("passes when the objects are identical", function(resume) { with(this) {
       runTests({
         testAssertSame: function() { with(this) {
-          var obj = {}, arr = [], fn = function() {}, set = new JS.SortedSet([1,2])
+          var obj = {}, arr = [], fn = function() {}, set = new sets.SortedSet([1,2])
 
           assertSame( obj, obj )
           assertSame( arr, arr )
@@ -826,7 +834,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           assertNotSame( obj, {} )
           assertNotSame( arr, [] )
           assertNotSame( fn,  function() {}  )
-          assertNotSame( set, new JS.SortedSet([1,2]) )
+          assertNotSame( set, new sets.SortedSet([1,2]) )
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 8, 0, 0 )
@@ -845,7 +853,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           assertNotSame( Object, Object )
         }},
         test4: function() { with(this) {
-          assertSame( new JS.SortedSet([2,1]), new JS.SortedSet([2,1]) )
+          assertSame( new sets.SortedSet([2,1]), new sets.SortedSet([2,1]) )
         }}
       }, function() { resume(function() {
         assertTestResult( 4, 4, 4, 0 )
@@ -927,8 +935,8 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
     it("passes when the constructed method call returns true", function(resume) { with(this) {
       runTests({
         testAssertSend: function() { with(this) {
-          assertSend( [JS.SortedSet, 'includes', JS.Enumerable] )
-          assertSend( [JS.SortedSet, 'isA', JS.Class] )
+          assertSend( [sets.SortedSet, 'includes', Enumerable] )
+          assertSend( [sets.SortedSet, 'isA', JS.Class] )
         }}
       }, function() { resume(function() {
         assertTestResult( 1, 2, 0, 0 )
@@ -938,10 +946,10 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
     it("fails when the constructed method call returns false", function(resume) { with(this) {
       runTests({
         test1: function() { with(this) {
-          assertSend( [JS.SortedSet, 'isA', JS.Enumerable], "classes are not enumerable" )
+          assertSend( [sets.SortedSet, 'isA', Enumerable], "classes are not enumerable" )
         }},
         test2: function() { with(this) {
-          assertSend( [JS.SortedSet, 'includes', JS.Class] )
+          assertSend( [sets.SortedSet, 'includes', JS.Class] )
         }}
       }, function() { resume(function() {
         assertTestResult( 2, 2, 2, 0 )
@@ -1214,4 +1222,6 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
     }})
   }})
 }})
+
+})()
 

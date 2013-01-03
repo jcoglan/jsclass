@@ -1,4 +1,4 @@
-JS.Test.extend({
+Test.extend({
   Coverage: new JS.Class({
     initialize: function(module) {
       this._module = module;
@@ -47,7 +47,7 @@ JS.Test.extend({
     printTable: function(table, formatter) {
       var widths = [],
           table  = [['Method', 'Calls']].concat(table),
-          C = JS.Console,
+          C = Console,
           i = table.length,
           j, string;
 

@@ -1,4 +1,9 @@
-JS.ENV.DecoratorSpec = JS.Test.describe(JS.Decorator, function() { with(this) {
+(function() {
+
+var E = (typeof exports === "object"),
+    Decorator = (E ? JS.Package.loadFile(JSCLASS_PATH + "/decorator") : JS).Decorator
+
+JS.ENV.DecoratorSpec = JS.Test.describe(Decorator, function() { with(this) {
   var Bicycle = new JS.Class({
       initialize: function(model, gears) {
           this.model = model;
@@ -12,13 +17,13 @@ JS.ENV.DecoratorSpec = JS.Test.describe(JS.Decorator, function() { with(this) {
       }
   });
 
-  var HeadlightDecorator = new JS.Decorator(Bicycle, {
+  var HeadlightDecorator = new Decorator(Bicycle, {
       getPrice: function() {
           return 5 + this.component.getPrice();
       }
   });
 
-  var PedalsDecorator = new JS.Decorator(Bicycle, {
+  var PedalsDecorator = new Decorator(Bicycle, {
       getPrice: function() {
           return 24 + this.component.getPrice();
       },
@@ -82,4 +87,6 @@ JS.ENV.DecoratorSpec = JS.Test.describe(JS.Decorator, function() { with(this) {
     assertEqual( decorated.getSizes(), subject.getSizes() )
   }})
 }})
+
+})()
 

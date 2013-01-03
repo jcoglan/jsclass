@@ -9,10 +9,10 @@ else
   load(JSCLASS_PATH + 'loader.js')
 
 
-JS.require('JS.Benchmark', 'JS.Set', function() {
-  var bm = JS.Benchmark
+JS.require('JS.Module', 'JS.Class', 'JS.Benchmark', 'JS.Set', 'JS.OrderedSet', 'JS.SortedSet',
+function(Module, Class, bm, Set, OrderedSet, SortedSet) {
 
-  var sets = [JS.SortedSet, JS.OrderedSet, JS.Set],
+  var sets = [SortedSet, OrderedSet, Set],
       i    = sets.length
 
   while (i--) {
@@ -26,7 +26,7 @@ JS.require('JS.Benchmark', 'JS.Set', function() {
 
   bm.measure('Class creation', 300, {
     test: function() {
-      new JS.Class({
+      new Class({
         method1: function() {},
         method1: function() {},
         method1: function() {}
@@ -36,8 +36,8 @@ JS.require('JS.Benchmark', 'JS.Set', function() {
 
   bm.measure('Module#ancestors', 5000, {
     setup: function() {
-      var included = new JS.Module({ include: new JS.Module({ include: new JS.Module() }) })
-      this.module = new JS.Module()
+      var included = new Module({ include: new Module({ include: new Module() }) })
+      this.module = new Module()
       this.module.include(included)
     },
     test: function() {
@@ -47,8 +47,8 @@ JS.require('JS.Benchmark', 'JS.Set', function() {
 
   bm.measure('Module#ancestors (cached)', 5000, {
     setup: function() {
-      var included = new JS.Module({ include: new JS.Module({ include: new JS.Module() }) })
-      this.module = new JS.Module()
+      var included = new Module({ include: new Module({ include: new Module() }) })
+      this.module = new Module()
       this.module.include(included)
       this.module.ancestors()
     },

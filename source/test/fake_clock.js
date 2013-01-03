@@ -1,32 +1,32 @@
-JS.Test.extend({
+Test.extend({
   FakeClock: new JS.Module({
     extend: {
       API: new JS.Singleton({
         stub: function() {
-          var mocking = JS.Test.Mocking,
+          var mocking = Test.Mocking,
               methods = ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
               i       = methods.length;
 
-          JS.Test.FakeClock.reset();
+          Test.FakeClock.reset();
 
           while (i--)
-            mocking.stub(methods[i], JS.Test.FakeClock.method(methods[i]));
+            mocking.stub(methods[i], Test.FakeClock.method(methods[i]));
 
           Date.now = function() { return new Date() };
         },
 
         reset: function() {
-          return JS.Test.FakeClock.reset();
+          return Test.FakeClock.reset();
         },
 
         tick: function(milliseconds) {
-          return JS.Test.FakeClock.tick(milliseconds);
+          return Test.FakeClock.tick(milliseconds);
         }
       }),
 
       JSDate: Date,
 
-      Schedule: new JS.Class(JS.SortedSet, {
+      Schedule: new JS.Class(SortedSet, {
         nextScheduledAt: function(time) {
           return this.find(function(timeout) { return timeout.time <= time });
         }
@@ -110,7 +110,7 @@ JS.Test.extend({
   })
 });
 
-JS.Test.FakeClock.include({
-  clock: JS.Test.FakeClock.API
+Test.FakeClock.include({
+  clock: Test.FakeClock.API
 });
 

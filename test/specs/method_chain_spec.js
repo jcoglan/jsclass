@@ -1,4 +1,9 @@
-JS.ENV.MethodChainSpec = JS.Test.describe(JS.MethodChain, function() { with(this) {
+(function() {
+
+var E = (typeof exports === "object"),
+    MethodChain = (E ? JS.Package.loadFile(JSCLASS_PATH + "/method_chain") : JS).MethodChain
+
+JS.ENV.MethodChainSpec = JS.Test.describe(MethodChain, function() { with(this) {
   include(JS.Test.Helpers)
 
   define("Widget", new JS.Class({
@@ -14,7 +19,7 @@ JS.ENV.MethodChainSpec = JS.Test.describe(JS.MethodChain, function() { with(this
     this.list  = ["food", "bar"]
     list.call  = function() { this.called = true }
     this.langs = ["ruby", "javascript", "scheme"]
-    this.chain = new JS.MethodChain(list)
+    this.chain = new MethodChain(list)
   }})
 
   describe("method call", function() { with(this) {
@@ -56,7 +61,7 @@ JS.ENV.MethodChainSpec = JS.Test.describe(JS.MethodChain, function() { with(this
       }})
 
       it("recognises methods added to custom classes", function() { with(this) {
-        var chain = new JS.MethodChain()
+        var chain = new MethodChain()
         chain.methodNameWeHaveProbablyNotSeenBefore()
         assertEqual( "nick", chain.__exec__(new Widget("Nick")) )
       }})
@@ -76,7 +81,7 @@ JS.ENV.MethodChainSpec = JS.Test.describe(JS.MethodChain, function() { with(this
     describe("with a chain of stored methods", function() { with(this) {
       before(function() { with(this) {
         this.string = "something else"
-        this.chain  = new JS.MethodChain(string)
+        this.chain  = new MethodChain(string)
         chain.toUpperCase().replace(/[aeiou]/ig, "_")
       }})
 
@@ -146,4 +151,6 @@ JS.ENV.MethodChainSpec = JS.Test.describe(JS.MethodChain, function() { with(this
     }})
   }})
 }})
+
+})()
 

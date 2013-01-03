@@ -1,4 +1,13 @@
-JS.Comparable = new JS.Module('Comparable', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = E ? require('./core') : JS;
+
+  if (E) exports.JS = exports;
+  factory(js, E ? exports : js);
+
+})(function(JS, exports) {
+
+var Comparable = new JS.Module('Comparable', {
   extend: {
     ClassMethods: new JS.Module({
       compare: function(one, another) {
@@ -35,3 +44,7 @@ JS.Comparable = new JS.Module('Comparable', {
     return this.gte(a) && this.lte(b);
   }
 });
+
+exports.Comparable = Comparable;
+});
+

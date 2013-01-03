@@ -1,4 +1,16 @@
-JS.Command = new JS.Class('Command', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = E ? require('./core') : JS,
+
+      Enumerable = (E ? require('./enumerable') : js).Enumerable,
+      Observable = (E ? require('./observable') : js).Observable;
+
+  if (E) exports.JS = exports;
+  factory(js, Enumerable, Observable, E ? exports : js);
+
+})(function(JS, Enumerable, Observable, exports) {
+
+var Command = new JS.Class('Command', {
   initialize: function(functions) {
     if (typeof functions === 'function')
       functions = {execute: functions};
@@ -20,7 +32,7 @@ JS.Command = new JS.Class('Command', {
 
   extend: {
     Stack: new JS.Class({
-      include: [JS.Observable || {}, JS.Enumerable || {}],
+      include: [Observable || {}, Enumerable || {}],
 
       initialize: function(options) {
         options = options || {};
@@ -30,7 +42,7 @@ JS.Command = new JS.Class('Command', {
 
       forEach: function(block, context) {
         if (!block) return this.enumFor('forEach');
-        block = JS.Enumerable.toFn(block);
+        block = Enumerable.toFn(block);
 
         for (var i = 0, n = this._stack.length; i < n; i++) {
           if (this._stack[i] !== undefined)
@@ -91,3 +103,7 @@ JS.Command = new JS.Class('Command', {
     })
   }
 });
+
+exports.Command = Command;
+});
+

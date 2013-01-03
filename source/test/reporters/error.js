@@ -1,5 +1,5 @@
-JS.Test.Reporters.extend({
-  Error: new JS.Class(JS.Test.Reporters.Dot, {
+Test.Reporters.extend({
+  Error: new JS.Class(Test.Reporters.Dot, {
     startSuite: function(event) {
       this._faults = [];
     },
@@ -17,5 +17,5 @@ JS.Test.Reporters.extend({
   })
 });
 
-JS.Test.Reporters.register('error', JS.Test.Reporters.Error);
+Test.Reporters.register('error', Test.Reporters.Error);
 

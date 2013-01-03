@@ -1,10 +1,4 @@
-<%= license %>
-
-(function() {
-  var $ = (typeof this.global === 'object') ? this.global : this;
-  $.JS = $.JS || {};
-  JS.ENV = $;
-})();
+var JS = {ENV: global};
 
 JS.END_WITHOUT_DOT = /([^\.])$/;
 

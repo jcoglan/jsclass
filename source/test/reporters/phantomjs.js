@@ -1,4 +1,4 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   PhantomJS: new JS.Class({
     initialize: function(options, page) {
       this._options = options || {};
@@ -9,7 +9,7 @@ JS.Test.Reporters.extend({
       if (env.TAP) format = format || 'tap';
       this._options.format = this._options.format || format;
 
-      var R        = JS.Test.Reporters,
+      var R        = Test.Reporters,
           Printer  = R.find(this._options.format) || R.Dot,
           reporter = new R.Composite(),
           bridge   = new R.JSON.Reader(reporter);

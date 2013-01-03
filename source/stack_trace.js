@@ -1,7 +1,20 @@
-JS.StackTrace = new JS.Module('StackTrace', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = E ? require('./core') : JS,
+
+      Observable = (E ? require('./observable') : js).Observable,
+      Enumerable = (E ? require('./enumerable') : js).Enumerable,
+      Console = (E ? require('./console') : js).Console;
+
+  if (E) exports.JS = exports;
+  factory(js, Observable, Enumerable, Console, E ? exports : js);
+
+})(function(JS, Observable, Enumerable, Console, exports) {
+
+var StackTrace = new JS.Module('StackTrace', {
   extend: {
     logger: new JS.Singleton({
-      include: JS.Console,
+      include: Console,
       active: false,
 
       update: function(event, data) {
@@ -15,12 +28,12 @@ JS.StackTrace = new JS.Module('StackTrace', {
 
       indent: function() {
         var indent = ' ';
-        JS.StackTrace.forEach(function() { indent += '|  ' });
+        StackTrace.forEach(function() { indent += '|  ' });
         return indent;
       },
 
       fullName: function(frame) {
-        var C        = JS.Console,
+        var C        = Console,
             method   = frame.method,
             env      = frame.env,
             name     = method.name,
@@ -33,7 +46,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
 
       logEnter: function(frame) {
         var fullName = this.fullName(frame),
-            args = JS.Console.convert(frame.args).replace(/^\[/, '(').replace(/\]$/, ')');
+            args = Console.convert(frame.args).replace(/^\[/, '(').replace(/\]$/, ')');
 
         if (this._open) this.puts();
 
@@ -71,7 +84,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
           this.print(' --> ');
         }
         this.consoleFormat('yellow');
-        this.puts(JS.Console.convert(frame.result));
+        this.puts(Console.convert(frame.result));
         this.reset();
         this.print('');
         this._open = false;
@@ -84,19 +97,19 @@ JS.StackTrace = new JS.Module('StackTrace', {
         this.consoleFormat('bgred', 'white');
         this.print('ERROR');
         this.consoleFormat('bold', 'red');
-        this.print(' ' + JS.Console.convert(e));
+        this.print(' ' + Console.convert(e));
         this.reset();
         this.print(' thrown by ');
         this.bold();
-        this.print(JS.StackTrace.top().name);
+        this.print(StackTrace.top().name);
         this.reset();
         this.puts('. Backtrace:');
         this.backtrace();
       },
 
       backtrace: function() {
-        JS.StackTrace.reverseForEach(function(frame) {
-          var args = JS.Console.convert(frame.args).replace(/^\[/, '(').replace(/\]$/, ')');
+        StackTrace.reverseForEach(function(frame) {
+          var args = Console.convert(frame.args).replace(/^\[/, '(').replace(/\]$/, ')');
           this.print('      | ');
           this.consoleFormat('blue');
           this.print(frame.name);
@@ -106,17 +119,17 @@ JS.StackTrace = new JS.Module('StackTrace', {
           this.puts(' in ');
           this.print('      |  ');
           this.bold();
-          this.puts(JS.Console.convert(frame.object));
+          this.puts(Console.convert(frame.object));
         }, this);
         this.reset();
         this.puts();
       }
     }),
 
-    include: [JS.Observable, JS.Enumerable],
+    include: [Observable, Enumerable],
 
     wrap: function(func, method, env) {
-      var self = JS.StackTrace;
+      var self = StackTrace;
       var wrapper = function() {
         var result;
         self.push(this, method, env, Array.prototype.slice.call(arguments));
@@ -135,7 +148,7 @@ JS.StackTrace = new JS.Module('StackTrace', {
     stack: [],
 
     forEach: function(block, context) {
-      JS.Enumerable.forEach.call(this.stack, block, context);
+      Enumerable.forEach.call(this.stack, block, context);
     },
 
     top: function() {
@@ -174,4 +187,8 @@ JS.StackTrace = new JS.Module('StackTrace', {
   }
 });
 
-JS.StackTrace.addObserver(JS.StackTrace.logger);
+StackTrace.addObserver(StackTrace.logger);
+
+exports.StackTrace = StackTrace;
+});
+

@@ -1,9 +1,14 @@
-JS.ENV.RangeSpec = JS.Test.describe(JS.Range, function() { with(this) {
+(function() {
+
+var E     = (typeof exports === "object"),
+    Range = (E ? JS.Package.loadFile(JSCLASS_PATH + "/range") : JS).Range
+
+JS.ENV.RangeSpec = JS.Test.describe(Range, function() { with(this) {
   include(JS.Test.Helpers)
 
   before(function() { with(this) {
-    this.R = function(start,end,f) { return new JS.Range(start,end,f) }
-    this.succ = JS.Range.method('succ')
+    this.R = function(start,end,f) { return new Range(start,end,f) }
+    this.succ = Range.method('succ')
   }})
 
   describe("succ()", function() { with(this) {
@@ -67,7 +72,7 @@ JS.ENV.RangeSpec = JS.Test.describe(JS.Range, function() { with(this) {
           },
 
           succ: function() {
-              return new this.klass(JS.Range.succ(5 + this.value));
+              return new this.klass(Range.succ(5 + this.value));
           }
       })
     })
@@ -132,4 +137,6 @@ JS.ENV.RangeSpec = JS.Test.describe(JS.Range, function() { with(this) {
     }})
   }})
 }})
+
+})()
 

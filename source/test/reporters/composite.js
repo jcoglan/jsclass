@@ -1,4 +1,4 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   Composite: new JS.Class({
     initialize: function(reporters) {
       this._reporters = reporters || [];
@@ -17,13 +17,13 @@ JS.Test.Reporters.extend({
 });
 
 (function() {
-  var methods = JS.Test.Reporters.METHODS,
+  var methods = Test.Reporters.METHODS,
       n       = methods.length;
 
   while (n--)
     (function(i) {
       var method = methods[i];
-      JS.Test.Reporters.Composite.define(method, function(event) {
+      Test.Reporters.Composite.define(method, function(event) {
         var fn;
         for (var i = 0, n = this._reporters.length; i < n; i++) {
           fn = this._reporters[i][method];

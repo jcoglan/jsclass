@@ -1,11 +1,11 @@
-JS.DOM.Builder = new JS.Class('DOM.Builder', {
+DOM.Builder = new JS.Class('DOM.Builder', {
   extend: {
     addElement: function(name) {
       this.define(name, function() {
         return this.makeElement(name, arguments);
       });
-      JS.DOM[name] = function() {
-        return new JS.DOM.Builder().makeElement(name, arguments);
+      DOM[name] = function() {
+        return new DOM.Builder().makeElement(name, arguments);
       };
     },
 
@@ -48,7 +48,7 @@ JS.DOM.Builder = new JS.Class('DOM.Builder', {
   }
 });
 
-JS.DOM.Builder.addElements([
+DOM.Builder.addElements([
   'a', 'abbr', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b',
   'base', 'bdo', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption',
   'cite', 'code', 'col', 'colgroup', 'command', 'datalist', 'dd', 'del',

@@ -1,9 +1,17 @@
-JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) {
+(function() {
+
+var E = (typeof exports === "object"),
+    Enumerable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/enumerable") : JS).Enumerable,
+    Comparable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/comparable") : JS).Comparable,
+    Hash = (E ? JS.Package.loadFile(JSCLASS_PATH + "/hash") : JS).Hash,
+    Range = (E ? JS.Package.loadFile(JSCLASS_PATH + "/range") : JS).Range
+
+JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
   include(JS.Test.Helpers)
 
   extend({
     List: new JS.Class("List", {
-        include: JS.Enumerable,
+        include: Enumerable,
 
         initialize: function(members) {
             this._members = [];
@@ -26,8 +34,8 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
 
   define("assertEnumFor", function(object, method, args, actual) {
     this.__wrapAssertion__(function() {
-      this.assertKindOf( JS.Enumerable.Enumerator, actual )
-      var enumerator = new JS.Enumerable.Enumerator(object, method, args)
+      this.assertKindOf( Enumerable.Enumerator, actual )
+      var enumerator = new Enumerable.Enumerator(object, method, args)
       this.assertEqual( enumerator, actual )
     })
   })
@@ -324,7 +332,7 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
 
   describe("#grep", function() { with(this) {
     before(function() { with(this) {
-      items = list(4, "hi", $w("foo bar"), true, new JS.Range(3,7), null, JS.Range, false)
+      items = list(4, "hi", $w("foo bar"), true, new Range(3,7), null, Range, false)
     }})
 
     it("returns items that match the regex", function() { with(this) {
@@ -334,12 +342,12 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
     it("returns values of a given type", function() { with(this) {
       assertEqual( [true,false], items.grep(Boolean) )
       assertEqual( [4], items.grep(Number) )
-      assertEqual( [JS.Range], items.grep(JS.Class) )
-      assertEqual( [new JS.Range(3,7)], items.grep(JS.Enumerable) )
+      assertEqual( [Range], items.grep(JS.Class) )
+      assertEqual( [new Range(3,7)], items.grep(Enumerable) )
     }})
 
     it("returns values within a given range", function() { with(this) {
-      assertEqual( [3,4,5], list(2,3,4,7,5,9).grep(new JS.Range(3,5)) )
+      assertEqual( [3,4,5], list(2,3,4,7,5,9).grep(new Range(3,5)) )
     }})
 
     it("uses the block to modify the results", function() { with(this) {
@@ -349,7 +357,7 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
 
   describe("#groupBy", function() { with(this) {
     it("returns a hash", function() { with(this) {
-      assertKindOf( JS.Hash, items.groupBy(function(x) { return x % 3 }) )
+      assertKindOf( Hash, items.groupBy(function(x) { return x % 3 }) )
     }})
 
     it("groups the items by their return value for the block", function() { with(this) {
@@ -383,7 +391,7 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
 
       describe("on an object starting value", function() { with(this) {
         before(function() { with(this) {
-          this.tree = new JS.Hash(["A", new JS.Hash(["B", new JS.Hash(["C", "hi"])])])
+          this.tree = new Hash(["A", new Hash(["B", new Hash(["C", "hi"])])])
         }})
 
         it("accepts a method name to inject between values", function() { with(this) {
@@ -689,7 +697,7 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
 
   describe("sorting methods", function() { with(this) {
     define("TodoItem", new JS.Class({
-        include: JS.Comparable,
+        include: Comparable,
         initialize: function(position, task) {
             this.position = position;
             this.task = task || "";
@@ -813,7 +821,7 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
     }})
   }})
 
-  describe(JS.Enumerable.Enumerator, function() { with(this) {
+  describe(Enumerable.Enumerator, function() { with(this) {
     if (!List.prototype.klass) throw (List.toString());
 
     extend({
@@ -842,11 +850,11 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
 
     describe("with no method name", function() { with(this) {
       before(function() { with(this) {
-        this.iterator = new JS.Enumerable.Enumerator(dictionary)
+        this.iterator = new Enumerable.Enumerator(dictionary)
       }})
 
       it("is enumerable", function() { with(this) {
-        assertKindOf( JS.Enumerable, iterator )
+        assertKindOf( Enumerable, iterator )
       }})
 
       it("uses the #forEach method to iterate over the collection", function() { with(this) {
@@ -857,11 +865,11 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
 
     describe("with no modifier arguments", function() { with(this) {
       before(function() { with(this) {
-        this.iterator = new JS.Enumerable.Enumerator(dictionary, "eachWord")
+        this.iterator = new Enumerable.Enumerator(dictionary, "eachWord")
       }})
 
       it("is enumerable", function() { with(this) {
-        assertKindOf( JS.Enumerable, iterator )
+        assertKindOf( Enumerable, iterator )
       }})
 
       it("uses the named method to iterate over the collection", function() { with(this) {
@@ -872,11 +880,11 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
 
     describe("with a modifier argument", function() { with(this) {
       before(function() { with(this) {
-        this.iterator = new JS.Enumerable.Enumerator(dictionary, "eachWordLongerThan", [4])
+        this.iterator = new Enumerable.Enumerator(dictionary, "eachWordLongerThan", [4])
       }})
 
       it("is enumerable", function() { with(this) {
-        assertKindOf( JS.Enumerable, iterator )
+        assertKindOf( Enumerable, iterator )
       }})
 
       it("uses the named method and argument to iterate over the collection", function() { with(this) {
@@ -905,4 +913,6 @@ JS.ENV.EnumerableSpec = JS.Test.describe(JS.Enumerable, function() { with(this) 
     }})
   }})
 }})
+
+})()
 

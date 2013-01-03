@@ -1,6 +1,6 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   TAP: new JS.Class({
-    include: JS.Console,
+    include: Console,
 
     startSuite: function(event) {
       this._testId = 0;
@@ -43,5 +43,5 @@ JS.Test.Reporters.extend({
   })
 });
 
-JS.Test.Reporters.register('tap', JS.Test.Reporters.TAP);
+Test.Reporters.register('tap', Test.Reporters.TAP);
 

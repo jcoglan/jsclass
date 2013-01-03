@@ -11,7 +11,7 @@ if (this.ActiveXObject) load = function(path) {
 
 (function() {
   var $ = (typeof this.global === 'object') ? this.global : this
-  $.JSCLASS_PATH = 'build/min/'
+  $.JSCLASS_PATH = 'build/src/'
 })()
 
 if (typeof require === 'function') {
@@ -22,9 +22,10 @@ if (typeof require === 'function') {
 
 Foo = {}
 
-JS.require('JS.Hash', 'JS.TSort', function() {
-  Tasks = new JS.Class({
-    include: JS.TSort,
+JS.require('JS.Class', 'JS.Method', 'JS.Console', 'JS.Hash', 'JS.OrderedHash', 'JS.TSort',
+function(Class, Method, Console, Hash, OrderedHash, TSort) {
+  Tasks = new Class({
+    include: TSort,
 
     initialize: function(table) {
       this.table = table;
@@ -52,12 +53,12 @@ JS.require('JS.Hash', 'JS.TSort', function() {
     'buy eggs':      []
   })
 
-  var hash = new JS.OrderedHash(['foo', 4, 'bar', 5])
+  var hash = new OrderedHash(['foo', 4, 'bar', 5])
 
-  JS.Method.tracing([JS.Hash, JS.TSort], function() {
+  Method.tracing([Hash, TSort], function() {
     tasks.tsort()
     hash.hasKey('foo')
-    JS.Console.puts(JS.Console.nameOf(Foo))
+    Console.puts(Console.nameOf(Foo))
     hash.select(function() { throw new Error('fail') })
   })
 

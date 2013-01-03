@@ -1,4 +1,13 @@
-JS.State = new JS.Module('State', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = E ? require('./core') : JS;
+
+  if (E) exports.JS = exports;
+  factory(js, E ? exports : js);
+
+})(function(JS, exports) {
+
+var State = new JS.Module('State', {
   __getState__: function(state) {
     if (typeof state === 'object') return state;
     if (typeof state === 'string') return (this.states || {})[state];
@@ -7,7 +16,7 @@ JS.State = new JS.Module('State', {
 
   setState: function(state) {
     this.__state__ = this.__getState__(state);
-    JS.State.addMethods(this.__state__, this.klass);
+    State.addMethods(this.__state__, this.klass);
   },
 
   inState: function() {
@@ -21,7 +30,7 @@ JS.State = new JS.Module('State', {
   extend: {
     ClassMethods: new JS.Module({
       states: function(block) {
-        this.define('states', JS.State.buildCollection(this, block));
+        this.define('states', State.buildCollection(this, block));
       }
     }),
 
@@ -99,5 +108,8 @@ JS.State = new JS.Module('State', {
       };
     }
   }
+});
+
+exports.State = State;
 });
 

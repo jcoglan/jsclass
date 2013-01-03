@@ -1,5 +1,10 @@
-JS.ENV.ProxySpec = JS.Test.describe(JS.Proxy, function() { with(this) {
-  describe(JS.Proxy.Virtual, function() { with(this) {
+(function() {
+
+var E     = (typeof exports === "object"),
+    Proxy = (E ? JS.Package.loadFile(JSCLASS_PATH + "/proxy") : JS).Proxy
+
+JS.ENV.ProxySpec = JS.Test.describe(Proxy, function() { with(this) {
+  describe(Proxy.Virtual, function() { with(this) {
     before(function() { with(this) {
       this.instances = 0
 
@@ -19,7 +24,7 @@ JS.ENV.ProxySpec = JS.Test.describe(JS.Proxy, function() { with(this) {
         getAge:  function() { return this.age  }
       })
 
-      this.Proxy = new JS.Proxy.Virtual(Subject)
+      this.Proxy = new Proxy.Virtual(Subject)
       this.proxyInstance = new Proxy("jcoglan", 26)
     }})
 
@@ -79,4 +84,6 @@ JS.ENV.ProxySpec = JS.Test.describe(JS.Proxy, function() { with(this) {
     }})
   }})
 }})
+
+})()
 

@@ -1,4 +1,4 @@
-JS.Test.Unit.extend({
+Test.Unit.extend({
   Error: new JS.Class({
     initialize: function(testCase, exception) {
       this._testCase  = testCase;
@@ -20,7 +20,7 @@ JS.Test.Unit.extend({
       return {
         type:       'error',
         message:    this._exception.name + ': ' + this._exception.message,
-        backtrace:  JS.Console.filterBacktrace(this._exception.stack)
+        backtrace:  Console.filterBacktrace(this._exception.stack)
       };
     }
   })

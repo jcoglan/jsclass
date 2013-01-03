@@ -1,7 +1,7 @@
 (function() {
-  var suite = JS.Test.Unit.TestCase.suite;
+  var suite = Test.Unit.TestCase.suite;
 
-  JS.Test.Unit.TestCase.extend({
+  Test.Unit.TestCase.extend({
     // Tweaks to standard method so we don't get superclass methods and we don't
     // get weird default tests
     suite: function(filter) {
@@ -10,7 +10,7 @@
   });
 })();
 
-JS.Test.Unit.TestSuite.include({
+Test.Unit.TestSuite.include({
   run: function(result, continuation, callback, context) {
     if (this._metadata.fullName)
       callback.call(context || null, this.klass.STARTED, this);

@@ -1,0 +1,3 @@
+JS.extend(exports, JS);
+});
+

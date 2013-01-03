@@ -1,7 +1,7 @@
-JS.Test.extend({
+Test.extend({
   Helpers: new JS.Module({
     $R: function(start, end) {
-      return new JS.Range(start, end);
+      return new Range(start, end);
     },
 
     $w: function(string) {
@@ -15,11 +15,11 @@ JS.Test.extend({
     },
 
     its: function() {
-      return new JS.MethodChain();
+      return new MethodChain();
     },
 
     map: function(list, block, context) {
-      return new JS.Enumerable.Collection(list).map(block, context)
+      return new Enumerable.Collection(list).map(block, context)
     },
 
     repeat: function(n, block, context) {

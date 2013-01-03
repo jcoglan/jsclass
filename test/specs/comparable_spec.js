@@ -1,8 +1,13 @@
-JS.ENV.ComparableSpec = JS.Test.describe(JS.Comparable, function() { with(this) {
+(function() {
+
+var E = (typeof exports === "object"),
+    Comparable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/comparable") : JS).Comparable
+
+JS.ENV.ComparableSpec = JS.Test.describe(Comparable, function() { with(this) {
   include(JS.Test.Helpers)
 
   define("TodoItem", new JS.Class({
-      include: JS.Comparable,
+      include: Comparable,
       initialize: function(position, task) {
           this.position = position;
           this.task = task || "";
@@ -98,4 +103,6 @@ JS.ENV.ComparableSpec = JS.Test.describe(JS.Comparable, function() { with(this) 
     }})
   }})
 }})
+
+})()
 

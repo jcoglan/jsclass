@@ -1,4 +1,13 @@
-JS.MethodChain = function(base) {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = E ? require('./core') : JS;
+
+  if (E) exports.JS = exports;
+  factory(js, E ? exports : js);
+
+})(function(JS, exports) {
+
+var MethodChain = function(base) {
   var queue      = [],
       baseObject = base || {};
 
@@ -7,15 +16,15 @@ JS.MethodChain = function(base) {
   };
 
   this.__exec__ = function(base) {
-    return JS.MethodChain.exec(queue, base || baseObject);
+    return MethodChain.exec(queue, base || baseObject);
   };
 };
 
-JS.MethodChain.exec = function(queue, object) {
+MethodChain.exec = function(queue, object) {
   var method, property, i, n;
   loop: for (i = 0, n = queue.length; i < n; i++) {
     method = queue[i];
-    if (object instanceof JS.MethodChain) {
+    if (object instanceof MethodChain) {
       object.____(method.func, method.args);
       continue;
     }
@@ -31,13 +40,13 @@ JS.MethodChain.exec = function(queue, object) {
   return object;
 };
 
-JS.MethodChain.displayName = 'MethodChain';
+MethodChain.displayName = 'MethodChain';
 
-JS.MethodChain.toString = function() {
+MethodChain.toString = function() {
   return 'MethodChain';
 };
 
-JS.MethodChain.prototype = {
+MethodChain.prototype = {
   _: function() {
     var base = arguments[0],
         args, i, n;
@@ -57,13 +66,13 @@ JS.MethodChain.prototype = {
   }
 };
 
-JS.MethodChain.reserved = (function() {
+MethodChain.reserved = (function() {
   var names = [], key;
-  for (key in new JS.MethodChain) names.push(key);
+  for (key in new MethodChain) names.push(key);
   return new RegExp('^(?:' + names.join('|') + ')$');
 })();
 
-JS.MethodChain.addMethod = function(name) {
+MethodChain.addMethod = function(name) {
   if (this.reserved.test(name)) return;
   var func = this.prototype[name] = function() {
     this.____(name, arguments);
@@ -72,7 +81,7 @@ JS.MethodChain.addMethod = function(name) {
   func.displayName = 'MethodChain#' + name;
 };
 
-JS.MethodChain.addMethods = function(object) {
+MethodChain.addMethods = function(object) {
   var methods = [], property, i;
 
   for (property in object) {
@@ -92,15 +101,13 @@ JS.MethodChain.addMethods = function(object) {
   object.prototype && this.addMethods(object.prototype);
 };
 
-JS.ENV.it = JS.ENV.its = function() { return new JS.MethodChain() };
-
 JS.Method.added(function(method) {
-  if (method && method.name) JS.MethodChain.addMethod(method.name);
+  if (method && method.name) MethodChain.addMethod(method.name);
 });
 
 JS.Kernel.include({
   wait: function(time) {
-    var chain = new JS.MethodChain(), self = this;
+    var chain = new MethodChain(), self = this;
 
     if (typeof time === 'number')
       setTimeout(function() { chain.__exec__(self) }, time * 1000);
@@ -129,12 +136,12 @@ JS.Kernel.include({
   var queue = JS.Module.__queue__,
       n     = queue.length;
 
-  while (n--) JS.MethodChain.addMethods(queue[n]);
+  while (n--) MethodChain.addMethods(queue[n]);
   delete JS.Module.__queue__;
 })();
 
 // Last updated December 30 2010 (483 methods)
-JS.MethodChain.addMethods([
+MethodChain.addMethods([
   'abs', 'accept', 'acceptCharset', 'accesskey', 'acos', 'action', 'add',
   'addEventListener', 'alt', 'altKey', 'anchor', 'appendChild', 'apply',
   'archive', 'arguments', 'arity', 'asin', 'atan', 'atan2', 'attributes',
@@ -226,4 +233,7 @@ JS.MethodChain.addMethods([
   'which', 'whiteSpace', 'widows', 'width', 'wordSpacing', 'wordWrap', 'wrap',
   'zIndex'
 ]);
+
+exports.MethodChain = MethodChain;
+});
 

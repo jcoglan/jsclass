@@ -1,4 +1,16 @@
-JS.Set = new JS.Class('Set', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = E ? require('./core') : JS,
+
+      Enumerable = (E ? require('./enumerable') : js).Enumerable,
+      hash = (E ? require('./hash') : js);
+
+  if (E) exports.JS = exports;
+  factory(js, Enumerable, hash, E ? exports : js);
+
+})(function(JS, Enumerable, hash, exports) {
+
+var Set = new JS.Class('Set', {
   extend: {
     forEach: function(list, block, context) {
       if (!list || !block) return;
@@ -10,7 +22,7 @@ JS.Set = new JS.Class('Set', {
     }
   },
 
-  include: JS.Enumerable || {},
+  include: Enumerable || {},
 
   initialize: function(list, block, context) {
     this.clear();
@@ -22,7 +34,7 @@ JS.Set = new JS.Class('Set', {
 
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     this._members.forEachKey(block, context);
     return this;
@@ -37,9 +49,9 @@ JS.Set = new JS.Class('Set', {
 
   classify: function(block, context) {
     if (!block) return this.enumFor('classify');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
-    var classes = new JS.Hash();
+    var classes = new hash.Hash();
     this.forEach(function(item) {
       var value = block.call(context || null, item);
       if (!classes.hasKey(value)) classes.store(value, new this.klass);
@@ -49,7 +61,7 @@ JS.Set = new JS.Class('Set', {
   },
 
   clear: function() {
-    this._members = new JS.Hash();
+    this._members = new hash.Hash();
     this.size = this.length = 0;
   },
 
@@ -66,7 +78,7 @@ JS.Set = new JS.Class('Set', {
   },
 
   difference: function(other) {
-    other = JS.isType(other, JS.Set) ? other : new JS.Set(other);
+    other = JS.isType(other, Set) ? other : new Set(other);
     var set = new this.klass;
     this.forEach(function(item) {
       if (!other.contains(item)) set.add(item);
@@ -76,17 +88,17 @@ JS.Set = new JS.Class('Set', {
 
   divide: function(block, context) {
     if (!block) return this.enumFor('divide');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     var classes = this.classify(block, context),
-        sets    = new JS.Set;
+        sets    = new Set;
 
     classes.forEachValue(sets.method('add'));
     return sets;
   },
 
   equals: function(other) {
-    if (this.length !== other.length || !JS.isType(other, JS.Set)) return false;
+    if (this.length !== other.length || !JS.isType(other, Set)) return false;
     var result = true;
     this.forEach(function(item) {
       if (!result) return;
@@ -97,7 +109,7 @@ JS.Set = new JS.Class('Set', {
 
   hash: function() {
     var hashes = [];
-    this.forEach(function(object) { hashes.push(JS.Hash.codeFor(object)) });
+    this.forEach(function(object) { hashes.push(hash.Hash.codeFor(object)) });
     return hashes.sort().join('');
   },
 
@@ -106,7 +118,7 @@ JS.Set = new JS.Class('Set', {
     copy._members = this._members;
     if (!set) { set = this; set.clear(); }
     copy.forEach(function(item) {
-      if (JS.isType(item, JS.Set)) item.flatten(set);
+      if (JS.isType(item, Set)) item.flatten(set);
       else set.add(item);
     });
     return set;
@@ -154,7 +166,7 @@ JS.Set = new JS.Class('Set', {
   },
 
   product: function(other) {
-    var pairs = new JS.Set;
+    var pairs = new Set;
     this.forEach(function(item) {
       this.klass.forEach(other, function(partner) {
         pairs.add([item, partner]);
@@ -175,7 +187,7 @@ JS.Set = new JS.Class('Set', {
 
   removeIf: function(block, context) {
     if (!block) return this.enumFor('removeIf');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     this._members.removeIf(function(pair) {
       return block.call(context || null, pair.key);
@@ -220,7 +232,7 @@ JS.Set = new JS.Class('Set', {
 
   _indexOf: function(item) {
     var i    = this._members.length,
-        Enum = JS.Enumerable;
+        Enum = Enumerable;
 
     while (i--) {
       if (Enum.areEqual(item, this._members[i])) return i;
@@ -229,22 +241,20 @@ JS.Set = new JS.Class('Set', {
   }
 });
 
-JS.Set.alias({
+Set.alias({
   n:  'intersection',
   u:  'union',
   x:  'product'
 });
 
-JS.HashSet = JS.Set;
-
-JS.OrderedSet = new JS.Class('OrderedSet', JS.Set, {
+var OrderedSet = new JS.Class('OrderedSet', Set, {
   clear: function() {
-    this._members = new JS.OrderedHash();
+    this._members = new hash.OrderedHash();
     this.size = this.length = 0;
   }
 });
 
-JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
+var SortedSet = new JS.Class('SortedSet', Set, {
   extend: {
     compare: function(one, another) {
       return JS.isType(one, Object)
@@ -255,7 +265,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
 
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
     this.klass.forEach(this._members, block, context);
     return this;
   },
@@ -292,7 +302,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
 
   removeIf: function(block, context) {
     if (!block) return this.enumFor('removeIf');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     var members = this._members,
         i       = members.length;
@@ -310,7 +320,7 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
         i       = 0,
         d       = n,
         compare = this.klass.compare,
-        Enum    = JS.Enumerable,
+        Enum    = Enumerable,
         found;
 
     if (n === 0) return insertionPoint ? 0 : -1;
@@ -336,10 +346,15 @@ JS.SortedSet = new JS.Class('SortedSet', JS.Set, {
   }
 });
 
-JS.Enumerable.include({
+Enumerable.include({
   toSet: function(klass, block, context) {
-    klass = klass || JS.Set;
+    klass = klass || Set;
     return new klass(this, block, context);
   }
+});
+
+exports.Set = exports.HashSet = Set;
+exports.OrderedSet = OrderedSet;
+exports.SortedSet = SortedSet;
 });
 

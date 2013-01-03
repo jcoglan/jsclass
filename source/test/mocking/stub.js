@@ -1,7 +1,7 @@
-JS.Test.extend({
+Test.extend({
   Mocking: new JS.Module({
     extend: {
-      ExpectationError: new JS.Class(JS.Test.Unit.AssertionFailedError),
+      ExpectationError: new JS.Class(Test.Unit.AssertionFailedError),
 
       UnexpectedCallError: new JS.Class(Error, {
         initialize: function(message) {
@@ -34,7 +34,7 @@ JS.Test.extend({
             return stubs[i].defaultMatcher(implementation);
         }
 
-        var stub = new JS.Test.Mocking.Stub(object, methodName, constructor);
+        var stub = new Test.Mocking.Stub(object, methodName, constructor);
         stubs.push(stub);
         return stub.defaultMatcher(implementation);
       },
@@ -68,7 +68,7 @@ JS.Test.extend({
                             ? object.hasOwnProperty(methodName)
                             : (typeof this._original !== 'undefined');
 
-          var mocking = JS.Test.Mocking;
+          var mocking = Test.Mocking;
 
           this._argMatchers = [];
           this._anyArgs     = new mocking.Parameters([new mocking.AnyArgs()]);
@@ -122,11 +122,11 @@ JS.Test.extend({
               matcher, result, message;
 
           if (this._constructor && !(receiver instanceof this._shim)) {
-            message = new JS.Test.Unit.AssertionMessage('',
+            message = new Test.Unit.AssertionMessage('',
                           '<?> expected to be a constructor but called without `new`',
                           [this._original]);
 
-            throw new JS.Test.Mocking.UnexpectedCallError(message);
+            throw new Test.Mocking.UnexpectedCallError(message);
           }
 
           this._anyArgs.ping();
@@ -152,16 +152,16 @@ JS.Test.extend({
           }
 
           if (this._constructor) {
-            message = new JS.Test.Unit.AssertionMessage('',
+            message = new Test.Unit.AssertionMessage('',
                           '<?> constructed with unexpected arguments:\n(?)',
                           [this._original, JS.array(args)]);
           } else {
-            message = new JS.Test.Unit.AssertionMessage('',
+            message = new Test.Unit.AssertionMessage('',
                           '<?> received call to ' + this._methodName + '() with unexpected arguments:\n(?)',
                           [receiver, JS.array(args)]);
           }
 
-          throw new JS.Test.Mocking.UnexpectedCallError(message);
+          throw new Test.Mocking.UnexpectedCallError(message);
         },
 
         _verify: function() {

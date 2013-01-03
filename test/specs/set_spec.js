@@ -1,9 +1,15 @@
-JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
+(function() {
+
+var E      = (typeof exports === "object"),
+    sets   = E ? JS.Package.loadFile(JSCLASS_PATH + "/set") : JS,
+    hashes = E ? JS.Package.loadFile(JSCLASS_PATH + "/hash") : JS
+
+JS.ENV.SetSpec = JS.Test.describe(sets.Set, function() { with(this) {
   include(JS.Test.Helpers)
 
   define("assertSetEqual", function(expected, actual) {
     this.__wrapAssertion__(function() {
-      this.assertKindOf( JS.Set, actual )
+      this.assertKindOf( sets.Set, actual )
       if (expected.entries) expected = expected.entries()
       if (actual.entries)   actual   = actual.entries()
       this.assertEqual( expected.sort(), actual.sort() )
@@ -38,8 +44,8 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
       }})
 
       it("returns a Hash of Sets", function() { with(this) {
-        assertKindOf( JS.Hash, classification )
-        assert( classification.all(function(pair) { return pair.value.isA(JS.Set) }) )
+        assertKindOf( hashes.Hash, classification )
+        assert( classification.all(function(pair) { return pair.value.isA(sets.Set) }) )
       }})
 
       it("returns Sets of the same type as the receiver", function() { with(this) {
@@ -83,15 +89,15 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
 
       it("returns a Set of sets of the same type as the receiver", function() { with(this) {
         var diva = a.divide(function(x) { return x % 3 })
-        assertEqual( JS.Set, diva.klass )
+        assertEqual( sets.Set, diva.klass )
         assert( diva.all(function(s) { return s.klass === Set }) )
       }})
 
       it("returns a set of subsets grouped by the block's return value", function() { with(this) {
         assertEqual( 3, division.size )
-        assert( division.contains(new JS.Set([9,3,6])) )
-        assert( division.contains(new JS.Set([1,4,7])) )
-        assert( division.contains(new JS.Set([2,5,8])) )
+        assert( division.contains(new sets.Set([9,3,6])) )
+        assert( division.contains(new sets.Set([1,4,7])) )
+        assert( division.contains(new sets.Set([2,5,8])) )
       }})
     }})
 
@@ -111,14 +117,14 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
 
     describe("#product", function() { with(this) {
       before(function() { with(this) {
-        this.k = new JS.SortedSet([1,2,3,4])
-        this.l = new JS.SortedSet([5,6,7,8])
+        this.k = new sets.SortedSet([1,2,3,4])
+        this.l = new sets.SortedSet([5,6,7,8])
       }})
 
       it("returns a Set", function() { with(this) {
-        assertEqual( JS.Set, a.x(b).klass )
-        assertEqual( JS.Set, b.x(a).klass )
-        assertEqual( JS.Set, k.x(l).klass )
+        assertEqual( sets.Set, a.x(b).klass )
+        assertEqual( sets.Set, b.x(a).klass )
+        assertEqual( sets.Set, k.x(l).klass )
       }})
 
       it("returns a set containing all possible pairs of members", function() { with(this) {
@@ -246,9 +252,9 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
     describe("#flatten", function() { with(this) {
       before(function() { with(this) {
         this.list     = [9,3,7,8,4]
-        this.sorted   = new JS.SortedSet(['fred', 'baz'])
-        this.nested   = new JS.Set([5, sorted])
-        this.hashset  = new JS.Set([45,'twelve'])
+        this.sorted   = new sets.SortedSet(['fred', 'baz'])
+        this.nested   = new sets.Set([5, sorted])
+        this.hashset  = new sets.Set([45,'twelve'])
 
         this.set      = new Set([4, 'foo', nested, 12, hashset])
         this.withList = new Set([4,13,list])
@@ -271,33 +277,33 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
       }})
 
       it("rejects equal objects", function() { with(this) {
-        set.add( new JS.OrderedSet )
-        set.add( new JS.Set )
-        assertSetEqual( [new JS.Set], set )
+        set.add( new sets.OrderedSet )
+        set.add( new sets.Set )
+        assertSetEqual( [new sets.Set], set )
       }})
 
       it("accepts non-equal objects", function() { with(this) {
-        set.add( new JS.SortedSet )
-        set.add( new JS.Set([12]) )
+        set.add( new sets.SortedSet )
+        set.add( new sets.Set([12]) )
         assertEqual( 2, set.entries().length )
-        assert( set.contains(new JS.OrderedSet) )
-        assert( set.contains(new JS.Set([12])) )
+        assert( set.contains(new sets.OrderedSet) )
+        assert( set.contains(new sets.Set([12])) )
       }})
 
       describe("#remove", function() { with(this) {
         before(function() { with(this) {
-          set.add( new JS.OrderedSet )
-          set.add( new JS.Set([12]) )
+          set.add( new sets.OrderedSet )
+          set.add( new sets.Set([12]) )
         }})
 
         it("removes objects that equal the argument", function() { with(this) {
-          set.remove( new JS.Set )
+          set.remove( new sets.Set )
           assertEqual( 1, set.size )
-          assert( set.contains(new JS.Set([12])) )
+          assert( set.contains(new sets.Set([12])) )
         }})
 
         it("does not remove objects that do not equal the argument", function() { with(this) {
-          set.remove( new JS.Set([6]) )
+          set.remove( new sets.Set([6]) )
           assertEqual( 2, set.size )
         }})
       }})
@@ -314,13 +320,13 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
   }})
 
   describe("Set", function() { with(this) {
-    before(function() { this.Set = JS.Set })
+    before(function() { this.Set = sets.Set })
     behavesLike("set")
     behavesLike("unsorted set")
   }})
 
   describe("OrderedSet", function() { with(this) {
-    before(function() { this.Set = JS.OrderedSet })
+    before(function() { this.Set = sets.OrderedSet })
     behavesLike("set")
     behavesLike("unsorted set")
 
@@ -340,24 +346,24 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
 
     it("keeps its elements in insertion order", function() { with(this) {
       var colors = map($w('red blue RED'), function(c) { return new Color(c) })
-      var set = new JS.OrderedSet(colors)
+      var set = new sets.OrderedSet(colors)
       assertEqual( $w('red blue RED'), map(set.entries(), 'code') )
     }})
   }})
 
   describe("SortedSet", function() { with(this) {
-    before(function() { this.Set = JS.SortedSet })
+    before(function() { this.Set = sets.SortedSet })
     behavesLike("set")
   }})
 
   describe("#equals", function() { with(this) {
     before(function() { with(this) {
-      this.set        = new JS.Set(['j','s','c'])
-      this.orderedset = new JS.OrderedSet(['j','s','c'])
-      this.sorted     = new JS.SortedSet(['j','s','c'])
-      this.bigger     = new JS.Set(['j','s','c','g'])
-      this.smaller    = new JS.Set(['j','s'])
-      this.diff       = new JS.SortedSet(['j','b','f'])
+      this.set        = new sets.Set(['j','s','c'])
+      this.orderedset = new sets.OrderedSet(['j','s','c'])
+      this.sorted     = new sets.SortedSet(['j','s','c'])
+      this.bigger     = new sets.Set(['j','s','c','g'])
+      this.smaller    = new sets.Set(['j','s'])
+      this.diff       = new sets.SortedSet(['j','b','f'])
     }})
 
     it("returns true for sets with the same members", function() { with(this) {
@@ -375,8 +381,8 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
 
   describe("sorted sets", function() { with(this) {
     before(function() { with(this) {
-      this.a = new JS.SortedSet([8,3,6,1])
-      this.b = new JS.Set([2,9,7,4])
+      this.a = new sets.SortedSet([8,3,6,1])
+      this.b = new sets.Set([2,9,7,4])
 
       this.TodoItem = new JS.Class({
         include: JS.Comparable,
@@ -402,11 +408,11 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
       repeat(10, function() {
         // make a list of unique random numbers
         var list    = $R(1,20).map(function() { return Math.round(Math.random() * 100) }),
-            uniques = new JS.Set(list).entries()
+            uniques = new sets.Set(list).entries()
 
         assertNotEqual( [], uniques )
 
-        var sorted  = new JS.SortedSet(list).entries()
+        var sorted  = new sets.SortedSet(list).entries()
         uniques.sort(function(a,b) { return a - b })
         assertEqual( uniques, sorted )
       })
@@ -414,7 +420,7 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
 
     describe("containing homogenous values", function() { with(this) {
       before(function() { with(this) {
-        this.set = new JS.SortedSet()
+        this.set = new sets.SortedSet()
         $R(1,20).forEach(function(position) { set.add(new TodoItem(position%4)) })
       }})
 
@@ -425,7 +431,7 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
 
     describe("containing objects", function() { with(this) {
       it("sorts the objects", function() { with(this) {
-        var set = new JS.SortedSet()
+        var set = new sets.SortedSet()
         forEach([4,3,5,1,2], function(position) {
           set.add(new TodoItem(position))
         })
@@ -434,4 +440,6 @@ JS.ENV.SetSpec = JS.Test.describe(JS.Set, function() { with(this) {
     }})
   }})
 }})
+
+})()
 

@@ -1,8 +1,8 @@
-JS.Test.Unit.extend({
+Test.Unit.extend({
   TestCase: new JS.Class({
-    include: JS.Test.Unit.Assertions,
+    include: Test.Unit.Assertions,
 
-    extend: [JS.Enumerable, {
+    extend: [Enumerable, {
       STARTED:  'Test.Unit.TestCase.STARTED',
       FINISHED: 'Test.Unit.TestCase.FINISHED',
 
@@ -22,7 +22,7 @@ JS.Test.Unit.extend({
         var shortName = this.displayName,
             context   = [],
             klass     = this,
-            root      = JS.Test.Unit.TestCase;
+            root      = Test.Unit.TestCase;
 
         while (klass !== root) {
           context.unshift(klass.displayName);
@@ -39,9 +39,9 @@ JS.Test.Unit.extend({
 
       suite: function(filter, inherit, useDefault) {
         var metadata    = this.metadata(),
-            root        = JS.Test.Unit.TestCase,
+            root        = Test.Unit.TestCase,
             fullName    = metadata.fullName,
-            methodNames = new JS.Enumerable.Collection(this.instanceMethods(inherit)),
+            methodNames = new Enumerable.Collection(this.instanceMethods(inherit)),
             suite       = [],
             children    = [],
             child, i, n;
@@ -68,7 +68,7 @@ JS.Test.Unit.extend({
         }
 
         metadata.children = children;
-        return new JS.Test.Unit.TestSuite(metadata, suite);
+        return new Test.Unit.TestSuite(metadata, suite);
       },
 
       filter: function(name, filter) {
@@ -94,7 +94,7 @@ JS.Test.Unit.extend({
 
       var teardown = function() {
         this.exec('teardown', function() {
-          this.exec(function() { JS.Test.Unit.mocking.verify() }, function() {
+          this.exec(function() { Test.Unit.mocking.verify() }, function() {
             result.addRun();
             callback.call(context || null, this.klass.FINISHED, this);
             continuation();
@@ -152,18 +152,18 @@ JS.Test.Unit.extend({
           self.exec(function() {
             failed = true;
             this._removeErrorCatcher();
-            throw new Error('Timed out after waiting ' + JS.Test.asyncTimeout + ' seconds for test to resume');
+            throw new Error('Timed out after waiting ' + Test.asyncTimeout + ' seconds for test to resume');
           }, onSuccess, onError);
-        }, JS.Test.asyncTimeout * 1000);
+        }, Test.asyncTimeout * 1000);
     },
 
     _addErrorCatcher: function(handler, push) {
       if (!handler) return;
       this._removeErrorCatcher(false);
 
-      if (JS.Console.NODE)
+      if (Console.NODE)
         process.addListener('uncaughtException', handler);
-      else if (JS.Console.BROWSER)
+      else if (Console.BROWSER)
         window.onerror = handler;
 
       if (push !== false) this.klass.handlers.push(handler);
@@ -176,9 +176,9 @@ JS.Test.Unit.extend({
 
       if (!handler) return;
 
-      if (JS.Console.NODE)
+      if (Console.NODE)
         process.removeListener('uncaughtException', handler);
-      else if (JS.Console.BROWSER)
+      else if (Console.BROWSER)
         window.onerror = null;
 
       if (pop !== false) {
@@ -189,7 +189,7 @@ JS.Test.Unit.extend({
 
     _processError: function(doNext) {
       return function(e) {
-        if (JS.isType(e, JS.Test.Unit.AssertionFailedError))
+        if (JS.isType(e, Test.Unit.AssertionFailedError))
           this.addFailure(e.message);
         else
           this.addError(e);
@@ -230,12 +230,12 @@ JS.Test.Unit.extend({
 
     addFailure: function(message) {
       this._testPassed = false;
-      this._result.addFailure(new JS.Test.Unit.Failure(this, message));
+      this._result.addFailure(new Test.Unit.Failure(this, message));
     },
 
     addError: function(exception) {
       this._testPassed = false;
-      this._result.addError(new JS.Test.Unit.Error(this, exception));
+      this._result.addError(new Test.Unit.Error(this, exception));
     },
 
     metadata: function() {

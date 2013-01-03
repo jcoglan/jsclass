@@ -1,4 +1,4 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   TestSwarm: new JS.Class({
     initialize: function(options, browserReporter) {
       this._browserReporter = browserReporter;

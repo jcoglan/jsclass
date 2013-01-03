@@ -1,4 +1,4 @@
-JS.Test.Unit.extend({
+Test.Unit.extend({
   Failure: new JS.Class({
     initialize: function(testCase, message) {
       this._testCase = testCase;

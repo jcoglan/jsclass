@@ -27,6 +27,10 @@ JS.Package.DSL = {
 JS.Package.DSL.files  = JS.Package.DSL.file;
 JS.Package.DSL.loader = JS.Package.DSL.file;
 
+JS.Package.loadFile = function(path) {
+  return this.Loader.loadFile(path, function() {});
+};
+
 JS.Packages = function(declaration) {
   declaration.call(JS.Package.DSL);
 };

@@ -11,7 +11,8 @@ JS.Packages(function() { with(this) {
 
     var module = function(name) { return file(PATH + name + '.js') };
 
-    module('core')          .provides('JS.Module',
+    module('core')          .provides('JS',
+                                      'JS.Module',
                                       'JS.Class',
                                       'JS.Method',
                                       'JS.Kernel',
@@ -36,6 +37,8 @@ JS.Packages(function() { with(this) {
                                       'JS.DOM',
                                       'JS.Enumerable',
                                       'JS.SortedSet',
+                                      'JS.Range',
+                                      'JS.MethodChain',
                                       'JS.Comparable',
                                       'JS.StackTrace')
                             .styling(PATH + 'assets/testui.css');
@@ -80,7 +83,8 @@ JS.Packages(function() { with(this) {
 
     module('range')         .provides('JS.Range')
                             .requires('JS.Class',
-                                      'JS.Enumerable');
+                                      'JS.Enumerable',
+                                      'JS.Hash');
 
     module('set')           .provides('JS.Set',
                                       'JS.HashSet',

@@ -1,5 +1,5 @@
-JS.Console.extend({
-  Browser: new JS.Class(JS.Console.Base, {
+Console.extend({
+  Browser: new JS.Class(Console.Base, {
     backtraceFilter: function() {
       return new RegExp(window.location.href.replace(/(\/[^\/]+)/g, '($1)?') + '/?', 'g');
     },

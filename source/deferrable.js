@@ -1,4 +1,13 @@
-JS.Deferrable = new JS.Module('Deferrable', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = E ? require('./core') : JS;
+
+  if (E) exports.JS = exports;
+  factory(js, E ? exports : js);
+
+})(function(JS, exports) {
+
+var Deferrable = new JS.Module('Deferrable', {
   extend: {
     Timeout: new JS.Class(Error)
   },
@@ -27,7 +36,7 @@ JS.Deferrable = new JS.Module('Deferrable', {
 
   timeout: function(milliseconds) {
     this.cancelTimeout();
-    var self = this, error = new JS.Deferrable.Timeout();
+    var self = this, error = new Deferrable.Timeout();
     this.__timeout__ = JS.ENV.setTimeout(function() { self.fail(error) }, milliseconds);
   },
 
@@ -68,3 +77,7 @@ JS.Deferrable = new JS.Module('Deferrable', {
     return this.setDeferredStatus('failure', arguments);
   }
 });
+
+exports.Deferrable = Deferrable;
+});
+

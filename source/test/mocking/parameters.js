@@ -1,4 +1,4 @@
-JS.Test.Mocking.extend({
+Test.Mocking.extend({
   Parameters: new JS.Class({
     initialize: function(params, expected) {
       this._params    = JS.array(params);
@@ -9,7 +9,7 @@ JS.Test.Mocking.extend({
 
     toArray: function() {
       var array = this._params.slice();
-      if (this._yieldArgs) array.push(new JS.Test.Mocking.InstanceOf(Function));
+      if (this._yieldArgs) array.push(new Test.Mocking.InstanceOf(Function));
       return array;
     },
 
@@ -67,7 +67,7 @@ JS.Test.Mocking.extend({
         }
       }
 
-      if (!JS.Enumerable.areEqual(this._params, argsCopy)) return false;
+      if (!Enumerable.areEqual(this._params, argsCopy)) return false;
 
       var result = {};
 
@@ -103,18 +103,18 @@ JS.Test.Mocking.extend({
 
       var message;
       if (constructor) {
-        message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
+        message = new Test.Unit.AssertionMessage('Mock expectation not met',
                       '<?> expected to be constructed with\n(?)' +
                       (extraMessage ? '\n' + extraMessage : ''),
                       [object, this.toArray()]);
       } else {
-        message = new JS.Test.Unit.AssertionMessage('Mock expectation not met',
+        message = new Test.Unit.AssertionMessage('Mock expectation not met',
                       '<?> expected to receive call\n' + methodName + '(?)' +
                       (extraMessage ? '\n' + extraMessage : ''),
                       [object, this.toArray()]);
       }
 
-      throw new JS.Test.Mocking.ExpectationError(message);
+      throw new Test.Mocking.ExpectationError(message);
     },
 
     _createMessage: function(type) {
