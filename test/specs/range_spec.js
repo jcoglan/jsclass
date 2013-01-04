@@ -1,7 +1,7 @@
 (function() {
 
 var E     = (typeof exports === "object"),
-    Range = (E ? JS.Package.loadFile(JSCLASS_PATH + "/range") : JS).Range
+    Range = (E ? loadModule("range") : JS).Range
 
 JS.ENV.RangeSpec = JS.Test.describe(Range, function() { with(this) {
   include(JS.Test.Helpers)

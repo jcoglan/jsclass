@@ -1,7 +1,7 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    Decorator = (E ? JS.Package.loadFile(JSCLASS_PATH + "/decorator") : JS).Decorator
+    Decorator = (E ? loadModule("decorator") : JS).Decorator
 
 JS.ENV.DecoratorSpec = JS.Test.describe(Decorator, function() { with(this) {
   var Bicycle = new JS.Class({

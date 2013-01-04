@@ -1,8 +1,8 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    Enumerable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/enumerable") : JS).Enumerable,
-    LinkedList = (E ? JS.Package.loadFile(JSCLASS_PATH + "/linked_list") : JS).LinkedList
+    Enumerable = (E ? loadModule("enumerable") : JS).Enumerable,
+    LinkedList = (E ? loadModule("linked_list") : JS).LinkedList
 
 JS.ENV.LinkedListSpec = JS.Test.describe(LinkedList, function() { with(this) {
   describe(LinkedList.Doubly.Circular, function() { with(this) {

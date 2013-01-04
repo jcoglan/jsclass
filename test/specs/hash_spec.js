@@ -1,7 +1,7 @@
 (function() {
 
 var E      = (typeof exports === "object")
-    hashes = E ? JS.Package.loadFile(JSCLASS_PATH + "/hash") : JS
+    hashes = E ? loadModule("hash") : JS
 
 JS.ENV.HashSpec = JS.Test.describe(hashes.Hash, function() { with(this) {
   include(JS.Test.Helpers)

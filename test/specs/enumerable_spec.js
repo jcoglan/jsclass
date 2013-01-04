@@ -1,10 +1,10 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    Enumerable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/enumerable") : JS).Enumerable,
-    Comparable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/comparable") : JS).Comparable,
-    Hash = (E ? JS.Package.loadFile(JSCLASS_PATH + "/hash") : JS).Hash,
-    Range = (E ? JS.Package.loadFile(JSCLASS_PATH + "/range") : JS).Range
+    Enumerable = (E ? loadModule("enumerable") : JS).Enumerable,
+    Comparable = (E ? loadModule("comparable") : JS).Comparable,
+    Hash = (E ? loadModule("hash") : JS).Hash,
+    Range = (E ? loadModule("range") : JS).Range
 
 JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
   include(JS.Test.Helpers)

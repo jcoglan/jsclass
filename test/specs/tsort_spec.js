@@ -1,8 +1,8 @@
 (function() {
 
 var E     = (typeof exports === "object"),
-    TSort = (E ? JS.Package.loadFile(JSCLASS_PATH + "/tsort") : JS).TSort,
-    Hash  = (E ? JS.Package.loadFile(JSCLASS_PATH + "/hash") : JS).Hash
+    TSort = (E ? loadModule("tsort") : JS).TSort,
+    Hash  = (E ? loadModule("hash") : JS).Hash
 
 JS.ENV.TSortSpec = JS.Test.describe(TSort, function() { with(this) {
   before(function() { with(this) {

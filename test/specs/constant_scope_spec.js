@@ -1,7 +1,7 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    ConstantScope = (E ? JS.Package.loadFile(JSCLASS_PATH + "/constant_scope") : JS).ConstantScope
+    ConstantScope = (E ? loadModule("constant_scope") : JS).ConstantScope
 
 JS.ENV.ConstantScopeSpec = JS.Test.describe(ConstantScope, function() { with(this) {
   include(JS.Test.Helpers)

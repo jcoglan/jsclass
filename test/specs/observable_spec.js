@@ -1,7 +1,7 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    Observable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/observable") : JS).Observable
+    Observable = (E ? loadModule("observable") : JS).Observable
 
 JS.ENV.ObservableSpec = JS.Test.describe(Observable, function() { with(this) {
   before(function() { with(this) {

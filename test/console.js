@@ -18,7 +18,11 @@ if (this.ActiveXObject) load = function(path) {
   } else {
     $.JSCLASS_PATH = 'build/src/';
   }
-})()
+
+  $.loadModule = function(name) {
+    return JS.Package.loadFile(JSCLASS_PATH + name);
+  };
+})();
 
 if (typeof phantom !== 'undefined') {
   require(JSCLASS_PATH + 'loader');

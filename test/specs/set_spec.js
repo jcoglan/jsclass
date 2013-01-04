@@ -1,8 +1,8 @@
 (function() {
 
 var E      = (typeof exports === "object"),
-    sets   = E ? JS.Package.loadFile(JSCLASS_PATH + "/set") : JS,
-    hashes = E ? JS.Package.loadFile(JSCLASS_PATH + "/hash") : JS
+    sets   = E ? loadModule("set") : JS,
+    hashes = E ? loadModule("hash") : JS
 
 JS.ENV.SetSpec = JS.Test.describe(sets.Set, function() { with(this) {
   include(JS.Test.Helpers)

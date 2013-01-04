@@ -1,7 +1,7 @@
 (function() {
 
 var E     = (typeof exports === "object"),
-    Proxy = (E ? JS.Package.loadFile(JSCLASS_PATH + "/proxy") : JS).Proxy
+    Proxy = (E ? loadModule("proxy") : JS).Proxy
 
 JS.ENV.ProxySpec = JS.Test.describe(Proxy, function() { with(this) {
   describe(Proxy.Virtual, function() { with(this) {

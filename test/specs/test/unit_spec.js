@@ -1,10 +1,10 @@
 (function() {
 
 var E          = (typeof exports === "object"),
-    sets       = (E ? JS.Package.loadFile(JSCLASS_PATH + "/set") : JS),
-    Enumerable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/enumerable") : JS).Enumerable,
-    Observable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/observable") : JS).Observable,
-    Range      = (E ? JS.Package.loadFile(JSCLASS_PATH + "/range") : JS).Range
+    sets       = (E ? loadModule("set") : JS),
+    Enumerable = (E ? loadModule("enumerable") : JS).Enumerable,
+    Observable = (E ? loadModule("observable") : JS).Observable,
+    Range      = (E ? loadModule("range") : JS).Range
 
 JS.ENV.Test = this.Test || {}
 

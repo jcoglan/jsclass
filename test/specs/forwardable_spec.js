@@ -1,7 +1,7 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    Forwardable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/forwardable") : JS).Forwardable
+    Forwardable = (E ? loadModule("forwardable") : JS).Forwardable
 
 JS.ENV.ForwardableSpec = JS.Test.describe(Forwardable, function() { with(this) {
   define("Subject", new JS.Class({

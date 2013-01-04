@@ -1,7 +1,7 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    MethodChain = (E ? JS.Package.loadFile(JSCLASS_PATH + "/method_chain") : JS).MethodChain
+    MethodChain = (E ? loadModule("method_chain") : JS).MethodChain
 
 JS.ENV.MethodChainSpec = JS.Test.describe(MethodChain, function() { with(this) {
   include(JS.Test.Helpers)

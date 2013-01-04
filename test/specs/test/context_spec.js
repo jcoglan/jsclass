@@ -1,7 +1,7 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    Enumerable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/enumerable") : JS).Enumerable
+    Enumerable = (E ? loadModule("enumerable") : JS).Enumerable
 
 JS.ENV.Test = JS.ENV.Test || {}
 

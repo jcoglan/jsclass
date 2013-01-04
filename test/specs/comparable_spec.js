@@ -1,7 +1,7 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    Comparable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/comparable") : JS).Comparable
+    Comparable = (E ? loadModule("comparable") : JS).Comparable
 
 JS.ENV.ComparableSpec = JS.Test.describe(Comparable, function() { with(this) {
   include(JS.Test.Helpers)

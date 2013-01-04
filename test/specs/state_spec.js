@@ -1,7 +1,7 @@
 (function() {
 
 var E     = (typeof exports === "object"),
-    State = (E ? JS.Package.loadFile(JSCLASS_PATH + "/state") : JS).State
+    State = (E ? loadModule("state") : JS).State
 
 JS.ENV.StateSpec = JS.Test.describe(State, function() { with(this) {
   define("Positive", {

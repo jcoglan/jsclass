@@ -1,7 +1,7 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    Command = (E ? JS.Package.loadFile(JSCLASS_PATH + "/command") : JS).Command
+    Command = (E ? loadModule("command") : JS).Command
 
 JS.ENV.CommandSpec = JS.Test.describe(Command, function() { with(this) {
   before(function() { this.counter = 0 })

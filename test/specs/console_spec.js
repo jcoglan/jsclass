@@ -1,7 +1,7 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    Console = (E ? JS.Package.loadFile(JSCLASS_PATH + "/console") : JS).Console
+    Console = (E ? loadModule("console") : JS).Console
   
 JS.ENV.ConsoleSpec = JS.Test.describe(Console, function() { with(this) {
   describe("convert", function() { with(this) {

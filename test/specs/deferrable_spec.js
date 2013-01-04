@@ -1,7 +1,7 @@
 (function() {
 
 var E = (typeof exports === "object"),
-    Deferrable = (E ? JS.Package.loadFile(JSCLASS_PATH + "/deferrable") : JS).Deferrable
+    Deferrable = (E ? loadModule("deferrable") : JS).Deferrable
 
 JS.ENV.DeferrableSpec = JS.Test.describe(Deferrable, function() { with(this) {
   include(JS.Test.FakeClock)
