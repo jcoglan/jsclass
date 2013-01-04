@@ -6,6 +6,9 @@ JS.Test.Reporters.extend({
       this._faults = [];
       this._stack  = [];
       this._suites = [];
+
+      this.puts('<?xml version="1.0" encoding="UTF-8" ?>');
+      this.puts('<testsuites>');
     },
 
     startContext: function(event) {
@@ -57,50 +60,45 @@ JS.Test.Reporters.extend({
       var suite = this._suites[this._suites.length - 1];
       suite.time = (new Date().getTime() - suite.start) / 1000;
       delete suite.start;
+
+      var test, failure, ending, i, j, m, n;
+
+      this.puts('    <testsuite name="' + this._xmlStr(suite.name) +
+                             '" tests="' + suite.cases.length +
+                             '" failures="' + suite.failures +
+                             '" errors="' + suite.errors +
+                             '" time="' + suite.time +
+                             '">');
+
+      for (i = 0, n = suite.cases.length; i < n; i++) {
+        test   = suite.cases[i];
+        ending = (test.failures.length === 0) ? ' />' : '>';
+        this.puts('        <testcase classname="' + this._xmlStr(suite.name) +
+                                  '" name="' + this._xmlStr(test.name) +
+                                  '" time="' + test.time +
+                                  '"' + ending);
+
+        for (j = 0, m = test.failures.length; j < m; j++) {
+          failure = test.failures[j];
+          ending  = failure.error.backtrace ? '>' : ' />';
+          this.puts('            <failure type="' + failure.type +
+                                       '" message="' + this._xmlStr(failure.error.message) +
+                                       '"' + ending);
+
+          if (failure.error.backtrace) {
+            this._printBacktrace(failure.error.backtrace);
+            this.puts('            </failure>');
+          }
+        }
+        if (test.failures.length > 0)
+          this.puts('        </testcase>');
+      }
+      this.puts('    </testsuite>');
     },
 
     update: function(event) {},
 
     endSuite: function(event) {
-      this.puts('<?xml version="1.0" encoding="UTF-8" ?>');
-      this.puts('<testsuites>');
-
-      var suite, test, failure, ending, i, j, k, l, m, n;
-
-      for (i = 0, n = this._suites.length; i < n; i++) {
-        suite = this._suites[i];
-        this.puts('    <testsuite name="' + this._xmlStr(suite.name) +
-                               '" tests="' + suite.cases.length +
-                               '" failures="' + suite.failures +
-                               '" errors="' + suite.errors +
-                               '" time="' + suite.time +
-                               '">');
-
-        for (j = 0, m = suite.cases.length; j < m; j++) {
-          test   = suite.cases[j];
-          ending = (test.failures.length === 0) ? ' />' : '>';
-          this.puts('        <testcase classname="' + this._xmlStr(suite.name) +
-                                    '" name="' + this._xmlStr(test.name) +
-                                    '" time="' + test.time +
-                                    '"' + ending);
-
-          for (k = 0, l = test.failures.length; k < l; k++) {
-            failure = test.failures[k];
-            ending  = failure.error.backtrace ? '>' : ' />';
-            this.puts('            <failure type="' + failure.type +
-                                         '" message="' + this._xmlStr(failure.error.message) +
-                                         '"' + ending);
-
-            if (failure.error.backtrace) {
-              this._printBacktrace(failure.error.backtrace);
-              this.puts('            </failure>');
-            }
-          }
-          if (test.failures.length > 0)
-            this.puts('        </testcase>');
-        }
-        this.puts('    </testsuite>');
-      }
       this.puts('</testsuites>');
     },
 
