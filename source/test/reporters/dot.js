@@ -16,7 +16,7 @@ JS.Test.Reporters.extend({
       this._faults = [];
 
       this.consoleFormat('bold');
-      this.puts('Loaded suite: ' + event.fullName);
+      this.puts('Loaded suite: ' + event.children.join(', '));
       this.puts('');
       this.reset();
       this.puts('Started');
