@@ -10,7 +10,7 @@
   if (C.BROWSER)    C.adapter = new C.Browser();
   else if (C.NODE)  C.adapter = new C.Node();
   else if (C.RHINO) C.adapter = new C.Rhino();
-  else if (C.WSH)   C.adatper = new C.Windows();
+  else if (C.WSH)   C.adapter = new C.Windows();
   else              C.adapter = new C.Base();
 
   for (var key in C.ESCAPE_CODES) (function(key) {
