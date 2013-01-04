@@ -26,7 +26,7 @@ var Test = new JS.Module('Test', {
     }),
 
     UI:   new JS.Module({}),
-    Unit: new JS.Module({}),
+    Unit: new JS.Module({})
   }
 });
 
