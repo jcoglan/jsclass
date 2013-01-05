@@ -1,4 +1,4 @@
-JS.require('JS.Enumerable', function(Enumerable) {
+PKG.require('JS.Enumerable', function(Enumerable) {
 
 JS.ENV.Test = JS.ENV.Test || {}
 

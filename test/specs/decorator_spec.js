@@ -1,4 +1,4 @@
-JS.require('JS.Decorator', function(Decorator) {
+PKG.require('JS.Decorator', function(Decorator) {
 
 JS.ENV.DecoratorSpec = JS.Test.describe(Decorator, function() { with(this) {
   var Bicycle = new JS.Class({

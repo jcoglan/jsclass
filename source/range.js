@@ -1,9 +1,9 @@
 (function(factory) {
   var E  = (typeof exports === 'object'),
-      js = E ? require('./core') : JS,
+      js = (typeof JS === 'undefined') ? require('./core') : JS,
 
-      Enumerable = (E ? require('./enumerable') : js).Enumerable,
-      Hash = (E ? require('./hash') : js).Hash;
+      Enumerable = js.Enumerable || require('./enumerable').Enumerable,
+      Hash = js.Hash || require('./hash').Hash;
 
   if (E) exports.JS = exports;
   factory(js, Enumerable, Hash, E ? exports : js);

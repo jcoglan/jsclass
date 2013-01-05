@@ -1,7 +1,8 @@
 (function(factory) {
   var E  = (typeof exports === 'object'),
-      js = E ? require('./core') : JS,
-      Hash = (E ? require('./hash') : js).Hash;
+      js = (typeof JS === 'undefined') ? require('./core') : JS,
+
+      Hash = js.Hash || require('./hash').Hash;
 
   if (E) exports.JS = exports;
   factory(js, Hash, E ? exports : js);

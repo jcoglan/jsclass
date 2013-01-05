@@ -97,8 +97,8 @@ P.packages(function() { with(this) {
                                       'JS.OrderedSet',
                                       'JS.SortedSet')
                             .requires('JS.Class',
-                                      'JS.Enumerable')
-                            .uses(    'JS.Hash');
+                                      'JS.Enumerable',
+                                      'JS.Hash');
 
     module('linked_list')   .provides('JS.LinkedList',
                                       'JS.LinkedList.Doubly',

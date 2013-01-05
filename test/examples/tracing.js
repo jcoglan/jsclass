@@ -15,7 +15,7 @@ if (this.ActiveXObject) load = function(path) {
 })()
 
 if (typeof require === 'function') {
-  require('../../' + JSCLASS_PATH + 'loader')
+  var JS = require('../../' + JSCLASS_PATH + 'loader')
 } else {
   load(JSCLASS_PATH + 'loader.js')
 }

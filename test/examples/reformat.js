@@ -6,7 +6,7 @@
 //     $ node test/console -f json | node test/examples/reformat -f tap
 
 JSCLASS_PATH = 'build/src'
-require('../../' + JSCLASS_PATH + '/loader')
+var JS = require('../../' + JSCLASS_PATH + '/loader')
 
 JS.require('JS.Test', function(Test) {
   var options  = require('nopt')({format: String}),

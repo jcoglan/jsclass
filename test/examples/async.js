@@ -1,5 +1,5 @@
 JSCLASS_PATH = "build/min/"
-require("../../" + JSCLASS_PATH + "loader")
+var JS = require("../../" + JSCLASS_PATH + "loader")
 
 JS.require("JS.Test", "JS.MethodChain", function(Test, MC) {
 

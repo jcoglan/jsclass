@@ -1,4 +1,4 @@
-JS.require('JS.Hash', 'JS.OrderedHash', function(Hash, OrderedHash) {
+PKG.require('JS.Hash', 'JS.OrderedHash', function(Hash, OrderedHash) {
 
 JS.ENV.HashSpec = JS.Test.describe(Hash, function() { with(this) {
   include(JS.Test.Helpers)

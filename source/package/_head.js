@@ -6,8 +6,11 @@ var JS = (typeof JS === 'undefined') ? {} : JS;
   var $ = (typeof this.global === 'object') ? this.global : this,
       E = (typeof exports === 'object');
 
-  if (E) exports.JS = exports;
-  factory($, E ? exports : JS);
+  if (E) {
+    exports.JS = exports;
+    JS = exports;
+  }
+  factory($, JS);
 
 })(function(global, exports) {
 

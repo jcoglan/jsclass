@@ -1,4 +1,4 @@
-JS.require('JS.Set', 'JS.OrderedSet', 'JS.SortedSet', 'JS.Hash',
+PKG.require('JS.Set', 'JS.OrderedSet', 'JS.SortedSet', 'JS.Hash',
 function(Set, OrderedSet, SortedSet, Hash) {
 
 var sets = {

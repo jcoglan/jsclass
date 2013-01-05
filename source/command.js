@@ -1,9 +1,9 @@
 (function(factory) {
   var E  = (typeof exports === 'object'),
-      js = E ? require('./core') : JS,
+      js = (typeof JS === 'undefined') ? require('./core') : JS,
 
-      Enumerable = (E ? require('./enumerable') : js).Enumerable,
-      Observable = (E ? require('./observable') : js).Observable;
+      Enumerable = js.Enumerable || require('./enumerable').Enumerable,
+      Observable = js.Observable || require('./observable').Observable;
 
   if (E) exports.JS = exports;
   factory(js, Enumerable, Observable, E ? exports : js);

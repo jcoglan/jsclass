@@ -1,10 +1,10 @@
 (function(factory) {
   var E  = (typeof exports === 'object'),
-      js = E ? require('./core') : JS,
+      js = (typeof JS === 'undefined') ? require('./core') : JS,
 
-      Observable = (E ? require('./observable') : js).Observable,
-      Enumerable = (E ? require('./enumerable') : js).Enumerable,
-      Console = (E ? require('./console') : js).Console;
+      Observable = js.Observable || require('./observable').Observable,
+      Enumerable = js.Enumerable || require('./enumerable').Enumerable,
+      Console    = js.Console    || require('./console').Console;
 
   if (E) exports.JS = exports;
   factory(js, Observable, Enumerable, Console, E ? exports : js);

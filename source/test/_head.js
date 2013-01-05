@@ -1,15 +1,15 @@
 (function(factory) {
   var E  = (typeof exports === 'object'),
-      js = E ? require('./core') : JS,
+      js = (typeof JS === 'undefined') ? require('./core') : JS,
 
-      Console     = (E ? require('./console') : js).Console,
-      DOM         = (E ? require('./dom') : js).DOM,
-      Enumerable  = (E ? require('./enumerable') : js).Enumerable,
-      SortedSet   = (E ? require('./set') : js).SortedSet,
-      Range       = (E ? require('./range') : js).Range,
-      MethodChain = (E ? require('./method_chain') : js).MethodChain,
-      Comparable  = (E ? require('./comparable') : js).Comparable,
-      StackTrace  = (E ? require('./stack_trace') : js).StackTrace;
+      Console     = js.Console     || require('./console').Console,
+      DOM         = js.DOM         || require('./dom').DOM,
+      Enumerable  = js.Enumerable  || require('./enumerable').Enumerable,
+      SortedSet   = js.SortedSet   || require('./set').SortedSet,
+      Range       = js.Range       || require('./range').Range,
+      MethodChain = js.MethodChain || require('./method_chain').MethodChain,
+      Comparable  = js.Comparable  || require('./comparable').Comparable,
+      StackTrace  = js.StackTrace  || require('./stack_trace').StackTrace;
 
   if (E) exports.JS = exports;
   factory(js, Console, DOM, Enumerable, SortedSet, Range, MethodChain, Comparable, StackTrace, E ? exports : js);

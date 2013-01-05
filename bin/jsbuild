@@ -33,6 +33,8 @@ var fs      = require('fs'),
     include = params.argv.remain.slice(),
     dir     = new RegExp('^' + path.resolve(params.directory || '.') + '/')
 
+JSCLASS_PATH = path.dirname(__filename) + '/../src';
+
 var C = require('../src/console').Console,
     P = require('../index')
 

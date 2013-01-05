@@ -1,4 +1,4 @@
-JS.require('JS.Command', function(Command) {
+PKG.require('JS.Command', function(Command) {
 
 JS.ENV.CommandSpec = JS.Test.describe(Command, function() { with(this) {
   before(function() { this.counter = 0 })

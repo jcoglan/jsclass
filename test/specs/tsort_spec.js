@@ -1,4 +1,4 @@
-JS.require('JS.TSort', 'JS.Hash', function(TSort, Hash) {
+PKG.require('JS.TSort', 'JS.Hash', function(TSort, Hash) {
 
 JS.ENV.TSortSpec = JS.Test.describe(TSort, function() { with(this) {
   before(function() { with(this) {

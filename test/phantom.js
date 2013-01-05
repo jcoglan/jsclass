@@ -1,7 +1,7 @@
 JSCLASS_PATH = '../build/src'
-require(JSCLASS_PATH + '/loader')
+var pkg = require(JSCLASS_PATH + '/loader')
 
-JS.require('JS.Test', function(Test) {
+pkg.require('JS.Test', function(Test) {
   var page     = new WebPage(),
       reporter = new Test.Reporters.PhantomJS({}, page)
 

@@ -1,4 +1,4 @@
-JS.require('JS.Deferrable', function(Deferrable) {
+PKG.require('JS.Deferrable', function(Deferrable) {
 
 JS.ENV.DeferrableSpec = JS.Test.describe(Deferrable, function() { with(this) {
   include(JS.Test.FakeClock)

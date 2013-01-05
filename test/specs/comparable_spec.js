@@ -1,4 +1,4 @@
-JS.require('JS.Comparable', function(Comparable) {
+PKG.require('JS.Comparable', function(Comparable) {
 
 JS.ENV.ComparableSpec = JS.Test.describe(Comparable, function() { with(this) {
   include(JS.Test.Helpers)

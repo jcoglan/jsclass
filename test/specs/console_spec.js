@@ -1,4 +1,4 @@
-JS.require('JS.Console', function(Console) {
+PKG.require('JS.Console', function(Console) {
 
 JS.ENV.ConsoleSpec = JS.Test.describe(Console, function() { with(this) {
   describe("convert", function() { with(this) {

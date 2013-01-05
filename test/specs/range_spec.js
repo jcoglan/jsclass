@@ -1,4 +1,4 @@
-JS.require('JS.Range', function(Range) {
+PKG.require('JS.Range', function(Range) {
 
 JS.ENV.RangeSpec = JS.Test.describe(Range, function() { with(this) {
   include(JS.Test.Helpers)
