@@ -73,9 +73,9 @@ packages:
       - ui/terminal
       - ui/browser
 
+      - reporters/error
       - reporters/dot
       - reporters/spec
-      - reporters/error
       - reporters/xml
       - reporters/json
       - reporters/tap
