@@ -1,4 +1,4 @@
-JS.Package.CommonJSLoader = {
+Package.CommonJSLoader = {
   usable: function() {
     return typeof require === 'function' &&
            typeof exports === 'object';
@@ -30,3 +30,4 @@ JS.Package.CommonJSLoader = {
     return module;
   }
 };
+

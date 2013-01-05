@@ -1,1 +1,2 @@
-JS.Package.Loader = JS.Package.DomLoader;
+Package.loader = Package.DomLoader;
+

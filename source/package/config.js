@@ -1,12 +1,18 @@
-JS.Packages(function() { with(this) {
+(function() {
+
+var E = (typeof exports === 'object'),
+    P = (E ? exports : JS),
+    Package = P.Package;
+
+P.packages(function() { with(this) {
 
     // Debugging
     // JSCLASS_PATH = 'build/min/';
 
-    JS.Package.ENV.JSCLASS_PATH = JS.Package.ENV.JSCLASS_PATH ||
-                                  __FILE__().replace(/[^\/]*$/g, '');
+    Package.ENV.JSCLASS_PATH = Package.ENV.JSCLASS_PATH ||
+                               __FILE__().replace(/[^\/]*$/g, '');
 
-    var PATH = JS.Package.ENV.JSCLASS_PATH;
+    var PATH = Package.ENV.JSCLASS_PATH;
     if (!/\/$/.test(PATH)) PATH = PATH + '/';
 
     var module = function(name) { return file(PATH + name + '.js') };
@@ -135,4 +141,6 @@ JS.Packages(function() { with(this) {
                             .requires('JS.Class')
                             .requires('JS.Hash');
 }});
+
+})();
 

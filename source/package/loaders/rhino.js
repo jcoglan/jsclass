@@ -1,4 +1,4 @@
-JS.Package.RhinoLoader = {
+Package.RhinoLoader = {
   usable: function() {
     return typeof java === 'object' &&
            typeof require === 'function';
@@ -20,3 +20,4 @@ JS.Package.RhinoLoader = {
     return module;
   }
 };
+

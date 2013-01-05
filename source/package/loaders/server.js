@@ -1,7 +1,7 @@
-JS.Package.ServerLoader = {
+Package.ServerLoader = {
   usable: function() {
-    return typeof JS.Package._getObject('load') === 'function' &&
-           typeof JS.Package._getObject('version') === 'function';
+    return typeof Package._getObject('load') === 'function' &&
+           typeof Package._getObject('version') === 'function';
   },
 
   __FILE__: function() {
@@ -14,3 +14,4 @@ JS.Package.ServerLoader = {
     fireCallbacks();
   }
 };
+
