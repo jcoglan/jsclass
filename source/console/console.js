@@ -122,6 +122,10 @@ JS.Console = new JS.Module('Console', {
       nocolor:    39,   bgnocolor:    49
     },
 
+    envvar: function(name) {
+      return this.adapter.envvar(name);
+    },
+
     escape: function(string) {
       return this.ANSI_CSI + string;
     },

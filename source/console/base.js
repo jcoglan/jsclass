@@ -15,6 +15,10 @@ JS.Console.extend({
       return true;
     },
 
+    envvar: function(name) {
+      return null;
+    },
+
     exit: function(status) {
       if (typeof phantom === 'object')               phantom.exit(status);
       if (typeof system === 'object' && system.exit) system.exit(status);

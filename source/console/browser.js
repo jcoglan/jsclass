@@ -8,6 +8,13 @@ JS.Console.extend({
       return !window.runtime;
     },
 
+    envvar: function(name) {
+      if (typeof phantom !== 'undefined')
+        return require('system').env[name] || null;
+      else
+        return window[name] || null;
+    },
+
     maxBufferLength: function() {
       return 1000;
     },
