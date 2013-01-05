@@ -1,7 +1,4 @@
-(function() {
-
-var E = (typeof exports === "object"),
-    Command = (E ? loadModule("command") : JS).Command
+JS.require('JS.Command', function(Command) {
 
 JS.ENV.CommandSpec = JS.Test.describe(Command, function() { with(this) {
   before(function() { this.counter = 0 })
@@ -283,5 +280,5 @@ JS.ENV.CommandSpec = JS.Test.describe(Command, function() { with(this) {
   }})
 }})
 
-})()
+})
 

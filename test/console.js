@@ -18,10 +18,6 @@ if (this.ActiveXObject) load = function(path) {
     $.CWD = '..';
   }
 
-  $.loadModule = function(name) {
-    return JS.load(JSCLASS_PATH + name);
-  };
-
   if (typeof require === 'function') {
     $.JS = require('../' + path + 'loader');
     require('./runner');

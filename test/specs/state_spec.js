@@ -1,7 +1,4 @@
-(function() {
-
-var E     = (typeof exports === "object"),
-    State = (E ? loadModule("state") : JS).State
+JS.require('JS.State', function(State) {
 
 JS.ENV.StateSpec = JS.Test.describe(State, function() { with(this) {
   define("Positive", {
@@ -226,5 +223,5 @@ JS.ENV.StateSpec = JS.Test.describe(State, function() { with(this) {
   }})
 }})
 
-})()
+})
 

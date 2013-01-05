@@ -1,7 +1,4 @@
-(function() {
-
-var E = (typeof exports === "object"),
-    Enumerable = (E ? loadModule("enumerable") : JS).Enumerable
+JS.require('JS.Enumerable', function(Enumerable) {
 
 JS.ENV.Test = JS.ENV.Test || {}
 
@@ -342,5 +339,5 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
   }})
 }})
 
-})()
+})
 

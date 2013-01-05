@@ -1,7 +1,4 @@
-(function() {
-
-var E     = (typeof exports === "object"),
-    Proxy = (E ? loadModule("proxy") : JS).Proxy
+JS.require('JS.Proxy', function(Proxy) {
 
 JS.ENV.ProxySpec = JS.Test.describe(Proxy, function() { with(this) {
   describe(Proxy.Virtual, function() { with(this) {
@@ -85,5 +82,5 @@ JS.ENV.ProxySpec = JS.Test.describe(Proxy, function() { with(this) {
   }})
 }})
 
-})()
+})
 

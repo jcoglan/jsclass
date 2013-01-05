@@ -1,8 +1,5 @@
-(function() {
+JS.require('JS.Console', function(Console) {
 
-var E = (typeof exports === "object"),
-    Console = (E ? loadModule("console") : JS).Console
-  
 JS.ENV.ConsoleSpec = JS.Test.describe(Console, function() { with(this) {
   describe("convert", function() { with(this) {
     it("strigifies undefined", function() { with(this) {
@@ -64,5 +61,5 @@ JS.ENV.ConsoleSpec = JS.Test.describe(Console, function() { with(this) {
   }})
 }})
 
-})()
+})
 

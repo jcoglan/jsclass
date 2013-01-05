@@ -1,7 +1,4 @@
-(function() {
-
-var E = (typeof exports === "object"),
-    Deferrable = (E ? loadModule("deferrable") : JS).Deferrable
+JS.require('JS.Deferrable', function(Deferrable) {
 
 JS.ENV.DeferrableSpec = JS.Test.describe(Deferrable, function() { with(this) {
   include(JS.Test.FakeClock)
@@ -126,5 +123,5 @@ JS.ENV.DeferrableSpec = JS.Test.describe(Deferrable, function() { with(this) {
   }})
 }})
 
-})()
+})
 

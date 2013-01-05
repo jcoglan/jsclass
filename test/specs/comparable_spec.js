@@ -1,7 +1,4 @@
-(function() {
-
-var E = (typeof exports === "object"),
-    Comparable = (E ? loadModule("comparable") : JS).Comparable
+JS.require('JS.Comparable', function(Comparable) {
 
 JS.ENV.ComparableSpec = JS.Test.describe(Comparable, function() { with(this) {
   include(JS.Test.Helpers)
@@ -104,5 +101,5 @@ JS.ENV.ComparableSpec = JS.Test.describe(Comparable, function() { with(this) {
   }})
 }})
 
-})()
+})
 

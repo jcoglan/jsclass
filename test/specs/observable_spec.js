@@ -1,7 +1,4 @@
-(function() {
-
-var E = (typeof exports === "object"),
-    Observable = (E ? loadModule("observable") : JS).Observable
+JS.require('JS.Observable', function(Observable) {
 
 JS.ENV.ObservableSpec = JS.Test.describe(Observable, function() { with(this) {
   before(function() { with(this) {
@@ -127,5 +124,5 @@ JS.ENV.ObservableSpec = JS.Test.describe(Observable, function() { with(this) {
   }})
 }})
 
-})()
+})
 

@@ -1,6 +1,6 @@
 JS.ENV.Test = JS.ENV.Test || {}
 
-JS.ENV.Test.FakeClockSpec = JS.Test.describe(JS.Test.FakeClock, function() { with(this) {
+Test.FakeClockSpec = JS.Test.describe(JS.Test.FakeClock, function() { with(this) {
   include(JS.Test.FakeClock)
 
   before(function() { this.clock.stub() })

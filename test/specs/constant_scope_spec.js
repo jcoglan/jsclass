@@ -1,7 +1,4 @@
-(function() {
-
-var E = (typeof exports === "object"),
-    ConstantScope = (E ? loadModule("constant_scope") : JS).ConstantScope
+JS.require('JS.ConstantScope', function(ConstantScope) {
 
 JS.ENV.ConstantScopeSpec = JS.Test.describe(ConstantScope, function() { with(this) {
   include(JS.Test.Helpers)
@@ -126,5 +123,5 @@ JS.ENV.ConstantScopeSpec = JS.Test.describe(ConstantScope, function() { with(thi
   }})
 }})
 
-})()
+})
 

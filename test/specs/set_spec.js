@@ -1,8 +1,11 @@
-(function() {
+JS.require('JS.Set', 'JS.OrderedSet', 'JS.SortedSet', 'JS.Hash',
+function(Set, OrderedSet, SortedSet, Hash) {
 
-var E      = (typeof exports === "object"),
-    sets   = E ? loadModule("set") : JS,
-    hashes = E ? loadModule("hash") : JS
+var sets = {
+  Set:        Set,
+  OrderedSet: OrderedSet,
+  SortedSet:  SortedSet
+}
 
 JS.ENV.SetSpec = JS.Test.describe(sets.Set, function() { with(this) {
   include(JS.Test.Helpers)
@@ -44,7 +47,7 @@ JS.ENV.SetSpec = JS.Test.describe(sets.Set, function() { with(this) {
       }})
 
       it("returns a Hash of Sets", function() { with(this) {
-        assertKindOf( hashes.Hash, classification )
+        assertKindOf( Hash, classification )
         assert( classification.all(function(pair) { return pair.value.isA(sets.Set) }) )
       }})
 
@@ -441,5 +444,5 @@ JS.ENV.SetSpec = JS.Test.describe(sets.Set, function() { with(this) {
   }})
 }})
 
-})()
+})
 

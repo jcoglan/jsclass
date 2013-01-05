@@ -1,14 +1,10 @@
-(function() {
-
-var E          = (typeof exports === "object"),
-    Comparable = (E ? loadModule("comparable") : JS).Comparable,
-    Enumerable = (E ? loadModule("enumerable") : JS).Enumerable,
-    hashes     = (E ? loadModule("hash") : JS),
-    sets       = (E ? loadModule("set") : JS)
+JS.require('JS.Enumerable', 'JS.Comparable', 'JS.Hash', 'JS.Set', 'JS.SortedSet',
+function(Enumerable, Comparable, Hash, Set, SortedSet) {
 
 JS.ENV.Test = JS.ENV.Test || {}
+var sets = {Set: Set, SortedSet: SortedSet}
 
-JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
+Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
   include(JS.Test.Helpers)
   include(TestSpecHelpers)
   before(function() { this.createTestEnvironment() })
@@ -673,7 +669,7 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
     describe("instanceOf", function() { with(this) {
       it("matches instances of the given type", function() { with(this) {
         assertEqual( instanceOf(sets.Set), new sets.SortedSet() )
-        assertEqual( instanceOf(Enumerable), new hashes.Hash() )
+        assertEqual( instanceOf(Enumerable), new Hash() )
         assertEqual( instanceOf(String), "hi" )
         assertEqual( instanceOf("string"), "hi" )
         assertEqual( instanceOf(Number), 9 )
@@ -763,5 +759,5 @@ JS.ENV.Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(th
   }})
 }})
 
-})()
+})
 

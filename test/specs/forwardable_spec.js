@@ -1,7 +1,4 @@
-(function() {
-
-var E = (typeof exports === "object"),
-    Forwardable = (E ? loadModule("forwardable") : JS).Forwardable
+JS.require('JS.Forwardable', function(Forwardable) {
 
 JS.ENV.ForwardableSpec = JS.Test.describe(Forwardable, function() { with(this) {
   define("Subject", new JS.Class({
@@ -73,5 +70,5 @@ JS.ENV.ForwardableSpec = JS.Test.describe(Forwardable, function() { with(this) {
   }})
 }})
 
-})()
+})
 

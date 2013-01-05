@@ -1,7 +1,4 @@
-(function() {
-
-var E = (typeof exports === "object"),
-    Decorator = (E ? loadModule("decorator") : JS).Decorator
+JS.require('JS.Decorator', function(Decorator) {
 
 JS.ENV.DecoratorSpec = JS.Test.describe(Decorator, function() { with(this) {
   var Bicycle = new JS.Class({
@@ -88,5 +85,5 @@ JS.ENV.DecoratorSpec = JS.Test.describe(Decorator, function() { with(this) {
   }})
 }})
 
-})()
+})
 

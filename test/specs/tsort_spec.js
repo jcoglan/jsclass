@@ -1,8 +1,4 @@
-(function() {
-
-var E     = (typeof exports === "object"),
-    TSort = (E ? loadModule("tsort") : JS).TSort,
-    Hash  = (E ? loadModule("hash") : JS).Hash
+JS.require('JS.TSort', 'JS.Hash', function(TSort, Hash) {
 
 JS.ENV.TSortSpec = JS.Test.describe(TSort, function() { with(this) {
   before(function() { with(this) {
@@ -94,5 +90,5 @@ JS.ENV.TSortSpec = JS.Test.describe(TSort, function() { with(this) {
   }})
 }})
 
-})()
+})
 

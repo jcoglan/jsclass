@@ -1,10 +1,5 @@
-(function() {
-
-var E = (typeof exports === "object"),
-    Enumerable = (E ? loadModule("enumerable") : JS).Enumerable,
-    Comparable = (E ? loadModule("comparable") : JS).Comparable,
-    Hash = (E ? loadModule("hash") : JS).Hash,
-    Range = (E ? loadModule("range") : JS).Range
+JS.require('JS.Comparable', 'JS.Enumerable', 'JS.Hash', 'JS.Range',
+function(Comparable, Enumerable, Hash, Range) {
 
 JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
   include(JS.Test.Helpers)
@@ -914,5 +909,5 @@ JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
   }})
 }})
 
-})()
+})
 

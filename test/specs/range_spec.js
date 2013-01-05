@@ -1,7 +1,4 @@
-(function() {
-
-var E     = (typeof exports === "object"),
-    Range = (E ? loadModule("range") : JS).Range
+JS.require('JS.Range', function(Range) {
 
 JS.ENV.RangeSpec = JS.Test.describe(Range, function() { with(this) {
   include(JS.Test.Helpers)
@@ -138,5 +135,5 @@ JS.ENV.RangeSpec = JS.Test.describe(Range, function() { with(this) {
   }})
 }})
 
-})()
+})
 

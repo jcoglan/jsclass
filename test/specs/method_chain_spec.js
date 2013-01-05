@@ -1,7 +1,4 @@
-(function() {
-
-var E = (typeof exports === "object"),
-    MethodChain = (E ? loadModule("method_chain") : JS).MethodChain
+JS.require('JS.MethodChain', function(MethodChain) {
 
 JS.ENV.MethodChainSpec = JS.Test.describe(MethodChain, function() { with(this) {
   include(JS.Test.Helpers)
@@ -152,5 +149,5 @@ JS.ENV.MethodChainSpec = JS.Test.describe(MethodChain, function() { with(this) {
   }})
 }})
 
-})()
+})
 
