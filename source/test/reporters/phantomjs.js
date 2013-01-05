@@ -3,10 +3,9 @@ Test.Reporters.extend({
     initialize: function(options, page) {
       this._options = options || {};
 
-      var env    = require('system').env,
-          format = env.FORMAT;
+      var format = Console.envvar('FORMAT');
 
-      if (env.TAP) format = format || 'tap';
+      if (Console.envvar('TAP')) format = format || 'tap';
       this._options.format = this._options.format || format;
 
       var R        = Test.Reporters,

@@ -8,20 +8,11 @@ Test.UI.extend({
     },
 
     getOptions: function() {
-      var options = {}, env, test, format;
+      var options = {},
+          format  = Console.envvar('FORMAT'),
+          test    = Console.envvar('TEST');
 
-      if (Console.NODE) {
-        if (process.env.TAP) options.format = 'tap';
-        format = process.env.FORMAT;
-        test   = process.env.TEST;
-      }
-
-      if (Console.RHINO) {
-        env = java.lang.System.getenv();
-        if (env.get('TAP')) options.format = 'tap';
-        format = env.get('FORMAT');
-        test   = env.get('TEST');
-      }
+      if (Console.envvar('TAP')) options.format = 'tap';
 
       if (format) options.format = format;
       if (test)   options.test   = [test];
