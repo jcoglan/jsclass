@@ -2,14 +2,18 @@ Test.Reporters.extend({
   Error: new JS.Class({
     include: Console,
 
+    NAMES: {
+      failure:  'Failure',
+      error:    'Error'
+    },
+
     startSuite: function(event) {
       this._faults = [];
 
       this.consoleFormat('bold');
       this.puts('Loaded suite: ' + event.children.join(', '));
-      this.puts('');
       this.reset();
-      this.puts('Started');
+      this.puts('');
     },
 
     startContext: function(event) {},
@@ -32,18 +36,17 @@ Test.Reporters.extend({
     },
 
     _printFault: function(index, fault) {
-      this.puts('');
       this.consoleFormat('bold', 'red');
-      this.puts('\n' + index + ') ' + this.NAMES[fault.error.type] + ': ' + fault.test.fullName);
+      this.puts(index + ') ' + this.NAMES[fault.error.type] + ': ' + fault.test.fullName);
       this.reset();
       this.puts(fault.error.message);
       if (fault.error.backtrace) this.puts(fault.error.backtrace);
       this.reset();
+      this.puts('');
     },
 
     _printSummary: function(event) {
       this.reset();
-      this.puts('');
       this.puts('Finished in ' + event.runtime + ' seconds');
 
       var color = event.passed ? 'green' : 'red';

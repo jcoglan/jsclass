@@ -55,7 +55,7 @@ Test.Reporters.extend({
     endSuite: function(event) {
       this._passed = event.passed;
       this._draw();
-      this.cursorPrevLine(1);
+      this.cursorPrevLine(2);
       this.cursorShow();
       this.callSuper();
     },

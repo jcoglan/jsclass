@@ -5,11 +5,6 @@ Test.Reporters.extend({
       error:    'E'
     },
 
-    NAMES: {
-      failure:  'Failure',
-      error:    'Error'
-    },
-
     startTest: function(event) {
       this._outputFault = false;
     },
@@ -31,6 +26,8 @@ Test.Reporters.extend({
     },
 
     endSuite: function(event) {
+      this.puts('\n');
+
       for (var i = 0, n = this._faults.length; i < n; i++)
         this._printFault(i + 1, this._faults[i]);
 
