@@ -10,11 +10,6 @@ JS.Console.extend({
     },
 
     getDimensions: function() {
-      var time = new Date().getTime();
-
-      if (this._dimCache && time < this._dimTime + 1000)
-        return this._dimCache;
-
       var proc = java.lang.Runtime.getRuntime().exec(['sh', '-c', 'stty -a < /dev/tty']),
           is   = proc.getInputStream(),
           bite = 0,
@@ -29,7 +24,6 @@ JS.Console.extend({
       var match = /rows\s+(\d+);\s+columns\s+(\d+)/mg.exec(out);
       if (!match) return this._dimCache || this.callSuper();
 
-      this._dimTime = new Date().getTime();
       return this._dimCache = [parseInt(match[2], 10), parseInt(match[1], 10)];
     },
 

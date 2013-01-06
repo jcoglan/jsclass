@@ -1,5 +1,9 @@
 JS.Test.Reporters.extend({
   Progress: new JS.Class(JS.Test.Reporters.Dot, {
+    extend: {
+      CACHE_TIME: 1000
+    },
+
     startSuite: function(event) {
       if (!JS.Console.coloring())
         throw new Error('Cannot use the progress reporter; terminal formatting is not available');
@@ -7,12 +11,35 @@ JS.Test.Reporters.extend({
       this._tests  = [];
       this._faults = [];
       this._size   = event.size;
+      this._space  = ' ';
+      this._lines  = [''];
+
+      var n = 10;
+      while (n--) this._space = this._space + this._space;
  
       this.puts('\n\n\n');
+      this.cursorHide();
     },
 
     startTest: function(event) {
       this._tests.push(event);
+
+      var words = event.fullName.split(/\s+/),
+          width = this._getWidth() - 10,
+          lines = [],
+          line  = '';
+
+      while (words.length > 0) {
+        while (words[0] && line.length + words[0].length + 1 <= width)
+          line += words.shift() + ' ';
+
+        if (words[0]) {
+          lines.push(line);
+          line = '';
+        }
+      }
+      lines.push(line);
+      this._nextLines = lines;
       this._draw();
     },
 
@@ -27,23 +54,19 @@ JS.Test.Reporters.extend({
       this._passed = event.passed;
       this._draw();
       this.cursorPrevLine(1);
+      this.cursorShow();
       this.callSuper();
     },
 
     _draw: function() {
-      var cols     = JS.Console.getDimensions()[0] - 8,
+      var cols     = this._getWidth(),
           fraction = this._tests.length / this._size,
           test     = this._tests[this._tests.length - 1],
           blocks   = Math.floor(cols * fraction),
-          left     = '',
-          right    = '';
+          percent  = String(Math.floor(100 * fraction)),
+          i, n;
 
-      var n = blocks;
-      while (n--) left += ' ';
-      n = cols - blocks;
-      while (n--) right += ' ';
-
-      this.cursorPrevLine(3);
+      this.cursorPrevLine(2 + this._lines.length);
       this.reset();
       this.print('  ');
 
@@ -54,17 +77,35 @@ JS.Test.Reporters.extend({
       else
         this.bgyellow();
 
-      this.print(left);
+      this.print(this._space.substr(0, blocks));
       this.bgblack();
-      this.puts(right);
+      this.puts(this._space.substr(0, cols - blocks));
       this.reset();
-      this.eraseLine();
+      this.eraseScreenForward();
 
-      if (this._passed === undefined)
-        this.puts('  ' + test.fullName.replace(/\s+/g, ' ').substr(0, cols));
+      if (this._passed !== undefined) return this.puts('');
+
+      while (percent.length < 2) percent = ' ' + percent;
+      percent = '[' + percent + '%]';
+      this.cursorForward(2 + cols - percent.length);
+      this.puts(percent);
+      this.cursorPrevLine(1);
+
+      this._lines = this._nextLines;
+      for (i = 0, n = this._lines.length; i < n; i++)
+        this.puts('  ' + this._lines[i]);
 
       this.puts('');
-    } 
+    },
+
+    _getWidth: function() {
+      var time = new Date().getTime();
+      if (this._width && time < this._cacheTime + this.klass.CACHE_TIME)
+        return this._width;
+
+      this._cacheTime = new Date().getTime();
+      return this._width = JS.Console.getDimensions()[0] - 8;
+    }
   })
 });
 
