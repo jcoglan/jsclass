@@ -102,7 +102,7 @@ var Console = new JS.Module('Console', {
     },
 
     ANSI_CSI:       String.fromCharCode(0x1B) + '[',
-    DEFAULT_WIDTH:  80,
+    DEFAULT_WIDTH:  78,
     DEFAULT_HEIGHT: 24,
     MAX_DEPTH:      4,
 
