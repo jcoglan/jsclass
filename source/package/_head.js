@@ -9,7 +9,10 @@ var JS = (typeof JS === 'undefined') ? {} : JS;
   if (E) {
     exports.JS = exports;
     JS = exports;
+  } else if (typeof WScript !== 'undefined') {
+    $.JS = JS;
   }
+
   factory($, JS);
 
 })(function(global, exports) {
