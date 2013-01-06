@@ -39,6 +39,10 @@ Test.Reporters.extend({
         }
       }
       lines.push(line);
+
+      if (this._lines) {
+        while (lines.length < this._lines.length) lines.push('');
+      }
       this._nextLines = lines;
       this._draw();
     },
@@ -64,7 +68,7 @@ Test.Reporters.extend({
           test     = this._tests[this._tests.length - 1],
           blocks   = Math.floor(cols * fraction),
           percent  = String(Math.floor(100 * fraction)),
-          i, n;
+          line, i, n;
 
       this.cursorPrevLine(2 + this._lines.length);
       this.reset();
@@ -81,9 +85,11 @@ Test.Reporters.extend({
       this.bgblack();
       this.puts(this._space.substr(0, cols - blocks));
       this.reset();
-      this.eraseScreenForward();
 
-      if (this._passed !== undefined) return this.puts('');
+      if (this._passed !== undefined) {
+        this.eraseScreenForward();
+        return this.puts('');
+      }
 
       while (percent.length < 2) percent = ' ' + percent;
       percent = '[' + percent + '%]';
@@ -92,8 +98,10 @@ Test.Reporters.extend({
       this.cursorPrevLine(1);
 
       this._lines = this._nextLines;
-      for (i = 0, n = this._lines.length; i < n; i++)
-        this.puts('  ' + this._lines[i]);
+      for (i = 0, n = this._lines.length; i < n; i++) {
+        line = this._lines[i];
+        this.puts('  ' + line + this._space.substr(0, cols - line.length - 10));
+      }
 
       this.puts('');
     },
