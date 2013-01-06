@@ -1,8 +1,8 @@
-JS.Package.DomLoader = {
+Package.DomLoader = {
   HOST_REGEX: /^https?\:\/\/[^\/]+/i,
 
   usable: function() {
-    return !!JS.Package._getObject('window.document.getElementsByTagName');
+    return !!Package._getObject('window.document.getElementsByTagName');
   },
 
   __FILE__: function() {
@@ -22,15 +22,15 @@ JS.Package.DomLoader = {
 
   fetch: function(path) {
     var originalPath = path;
-    if (JS.cacheBust) path = this.cacheBust(path);
+    if (exports.cacheBust) path = this.cacheBust(path);
 
     this.HOST = this.HOST || this.HOST_REGEX.exec(window.location.href);
     var host = this.HOST_REGEX.exec(path);
 
     if (!this.HOST || (host && host[0] !== this.HOST[0])) return null;
-    JS.Package.log('Loading ' + path);
+    Package.log('Loading ' + path);
 
-    var source = new JS.Package.Deferred(),
+    var source = new Package.Deferred(),
         self   = this,
         xhr    = window.ActiveXObject
                ? new ActiveXObject('Microsoft.XMLHTTP')
@@ -48,7 +48,7 @@ JS.Package.DomLoader = {
   },
 
   loadFile: function(path, fireCallbacks, source) {
-    if (JS.cacheBust && !source) path = this.cacheBust(path);
+    if (exports.cacheBust && !source) path = this.cacheBust(path);
 
     var self   = this,
         head   = document.getElementsByTagName('head')[0],
@@ -58,12 +58,12 @@ JS.Package.DomLoader = {
 
     if (source)
       return source.callback(function(code) {
-        JS.Package.log('Executing ' + path);
+        Package.log('Executing ' + path);
         eval(code);
         fireCallbacks();
       });
 
-    JS.Package.log('Loading and executing ' + path);
+    Package.log('Loading and executing ' + path);
     script.src = path;
 
     script.onload = script.onreadystatechange = function() {
@@ -90,3 +90,4 @@ JS.Package.DomLoader = {
 
   _K: function() {}
 };
+

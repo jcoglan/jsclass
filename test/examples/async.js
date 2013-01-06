@@ -1,9 +1,9 @@
 JSCLASS_PATH = "build/min/"
-require("../../" + JSCLASS_PATH + "loader")
+var JS = require("../../" + JSCLASS_PATH + "loader")
 
-JS.require("JS.Test", "JS.MethodChain", function() {
+JS.require("JS.Test", "JS.MethodChain", function(Test, MC) {
 
-  JS.Test.describe("Asynchronous testing", function() { with(this) {
+  Test.describe("Asynchronous testing", function() { with(this) {
     describe("with a simple test", function() { with(this) {
       it("allows async assertions", function(resume) { with(this) {
         setTimeout(function() {
@@ -90,6 +90,6 @@ JS.require("JS.Test", "JS.MethodChain", function() {
     }})
   }})
 
-  JS.Test.autorun()
+  Test.autorun()
 })
 

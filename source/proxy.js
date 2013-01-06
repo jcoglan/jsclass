@@ -1,4 +1,13 @@
-JS.Proxy = new JS.Module('Proxy', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = (typeof JS === 'undefined') ? require('./core') : JS;
+
+  if (E) exports.JS = exports;
+  factory(js, E ? exports : js);
+
+})(function(JS, exports) {
+
+var Proxy = new JS.Module('Proxy', {
   extend: {
     Virtual: new JS.Class({
       initialize: function(klass) {
@@ -49,7 +58,7 @@ JS.Proxy = new JS.Module('Proxy', {
             var method, func;
             for (method in source) {
               func = source[method];
-              if (typeof func  === 'function') func = JS.Proxy.Virtual.forward(method);
+              if (typeof func  === 'function') func = Proxy.Virtual.forward(method);
               this[method] = func;
             }
           }
@@ -57,5 +66,8 @@ JS.Proxy = new JS.Module('Proxy', {
       }
     })
   }
+});
+
+exports.Proxy = Proxy;
 });
 

@@ -1,5 +1,16 @@
-JS.Benchmark = new JS.Module('Benchmark', {
-  include: JS.Console,
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = (typeof JS === 'undefined') ? require('./core') : JS,
+
+      Console = js.Console || require('./console').Console;
+
+  if (E) exports.JS = exports;
+  factory(js, Console, E ? exports : js);
+
+})(function(JS, Console, exports) {
+
+var Benchmark = new JS.Module('Benchmark', {
+  include: Console,
   N: 5,
 
   measure: function(name, runs, functions) {
@@ -7,14 +18,14 @@ JS.Benchmark = new JS.Module('Benchmark', {
         times = [],
         block = functions.test;
 
-    var i = runs * JS.Benchmark.N;
+    var i = runs * Benchmark.N;
     while (i--) {
       env = {};
       if (functions.setup) functions.setup.call(env);
       envs.push(env);
     }
 
-    var n = JS.Benchmark.N, start, end;
+    var n = Benchmark.N, start, end;
     while (n--) {
       i = runs;
       start = new Date().getTime();
@@ -67,4 +78,8 @@ JS.Benchmark = new JS.Module('Benchmark', {
   }
 });
 
-JS.Benchmark.extend(JS.Benchmark);
+Benchmark.extend(Benchmark);
+
+exports.Benchmark = Benchmark;
+});
+

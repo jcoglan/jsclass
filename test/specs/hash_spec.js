@@ -1,4 +1,6 @@
-JS.ENV.HashSpec = JS.Test.describe(JS.Hash, function() { with(this) {
+PKG.require('JS.Hash', 'JS.OrderedHash', function(Hash, OrderedHash) {
+
+JS.ENV.HashSpec = JS.Test.describe(Hash, function() { with(this) {
   include(JS.Test.Helpers)
 
   before(function() { with(this) {
@@ -513,17 +515,17 @@ JS.ENV.HashSpec = JS.Test.describe(JS.Hash, function() { with(this) {
   }})
 
   describe("Hash", function() { with(this) {
-    before(function() { this.Hash = JS.Hash })
+    before(function() { this.Hash = Hash })
     behavesLike("hashtable")
   }})
 
   describe("OrderedHash", function() { with(this) {
-    before(function() { this.Hash = JS.OrderedHash })
+    before(function() { this.Hash = OrderedHash })
     behavesLike("hashtable")
 
     describe("ordering", function() { with(this) {
       before(function() { with(this) {
-        this.hash = new JS.OrderedHash([
+        this.hash = new OrderedHash([
           new Color('red'),  3,
           new Color('blue'), 2,
           new Color('RED'),  1
@@ -540,4 +542,6 @@ JS.ENV.HashSpec = JS.Test.describe(JS.Hash, function() { with(this) {
     }})
   }})
 }})
+
+})
 

@@ -9,7 +9,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
     store: function(name) {
       this._objectNames.push(name);
 
-      var env   = JS.Package.ENV,
+      var env   = PKG.ENV,
           parts = name.split('.'),
           used  = [],
           part;
@@ -25,7 +25,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
       this.store(name);
 
       var defineObject = function() {
-        var env   = JS.Package.ENV,
+        var env   = PKG.ENV,
             parts = name.split('.'),
             part;
 
@@ -35,7 +35,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
 
       var loaded = this._loaded;
 
-      JS.Packages(function() { with(this) {
+      PKG.packages(function() { with(this) {
         var block = function(callback) {
           JS.ENV.setTimeout(function() {
             defineObject(name);
@@ -67,7 +67,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
   after(function() { with(this) {
     forEach(_objectNames, JS.Package.remove, JS.Package)
     forEach(_undefined, function(name) {
-      var env   = JS.Package.ENV,
+      var env   = PKG.ENV,
           parts = name.split('.'),
           last  = parts.pop(),
           part;
@@ -79,7 +79,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
 
   describe("loading a CommonJS module", function() { with(this) {
     before(function() { with(this) {
-      JS.Packages(function() { with(this) {
+      PKG.packages(function() { with(this) {
         file(CWD + "/test/fixtures/common.js").provides("Common", "HTTP")
       }})
     }})
@@ -90,7 +90,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
     }})
 
     it("yields the required objects to the callback", function(resume) { with(this) {
-      JS.require("Common", "HTTP", function(Common, HTTP) {
+      PKG.require("Common", "HTTP", function(Common, HTTP) {
         resume(function() {
           assertEqual( "CommonJS module", Common.name )
           assertEqual( "CommonJS HTTP lib", HTTP.name )
@@ -106,7 +106,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
     }})
 
     it("loads the object", function() { with(this) {
-      JS.require("Standalone")
+      PKG.require("Standalone")
       clock.tick(500)
       assertKindOf( Object, Standalone )
       assertEqual( "Standalone", Standalone.name )
@@ -115,11 +115,11 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
     it("loads the object once and runs every waiting block", function() { with(this) {
       var done1 = false, done2 = false, doneAsync = false
 
-      JS.require("Standalone", function() { done1 = true })
-      JS.require("Standalone", function() { done2 = true })
+      PKG.require("Standalone", function() { done1 = true })
+      PKG.require("Standalone", function() { done2 = true })
 
       JS.ENV.setTimeout(function() {
-        JS.require("Standalone", function() { doneAsync = true })
+        PKG.require("Standalone", function() { doneAsync = true })
       }, 300)
 
       assertEqual( "undefined", typeof Standalone )
@@ -143,7 +143,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
       }})
 
       it("loads the object", function() { with(this) {
-        JS.require("Object.In.A.Namespace")
+        PKG.require("Object.In.A.Namespace")
         clock.tick(100)
         assertKindOf( Object, Object.In.A.Namespace )
       }})
@@ -162,7 +162,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
 
       var bothLoaded = false
 
-      JS.require("Bar", "Foo", function() {
+      PKG.require("Bar", "Foo", function() {
         bothLoaded = (typeof Foo === "object") && (typeof Foo === "object")
       })
 
@@ -183,7 +183,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
 
     it("loads the packages in order when one is required", function() { with(this) {
       var done = false
-      JS.require("Dependent", function() { done = true })
+      PKG.require("Dependent", function() { done = true })
 
       assertEqual( "undefined", typeof Base )
       assertEqual( "undefined", typeof Dependent )
@@ -218,13 +218,13 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
 
     describe("when the dependency is already defined", function() { with(this) {
       before(function() { with(this) {
-        JS.Package.ENV.Base = {}
+        PKG.ENV.Base = {}
         assertEqual( "undefined", typeof Dependent )
       }})
 
       it("just loads the dependent object", function() { with(this) {
         var done = false
-        JS.require("Dependent", function() { done = true })
+        PKG.require("Dependent", function() { done = true })
 
         clock.tick(50)
 
@@ -242,13 +242,13 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
 
     describe("when the required object is already defined", function() { with(this) {
       before(function() { with(this) {
-        JS.Package.ENV.Dependent = {}
+        PKG.ENV.Dependent = {}
         assertEqual( "undefined", typeof Base )
       }})
 
       it("loads the dependency and waits", function() { with(this) {
         var done = false
-        JS.require("Dependent", function() { done = true })
+        PKG.require("Dependent", function() { done = true })
 
         clock.tick(50)
 
@@ -281,7 +281,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
 
     it("loads all the objects, parallelizing where possible", function() { with(this) {
       var done = false
-      JS.require("TreeSet", function() { done = true })
+      PKG.require("TreeSet", function() { done = true })
 
       clock.tick(50)
 
@@ -327,7 +327,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
 
     it("loads the packages in parallel but waits until both are loaded", function() { with(this) {
       var done = false
-      JS.require("Application", function() { done = true })
+      PKG.require("Application", function() { done = true })
 
       assertEqual( "undefined", typeof Helper )
       assertEqual( "undefined", typeof Application )
@@ -356,13 +356,13 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
 
     describe("when the required object is defined but the dependency is missing", function() { with(this) {
       before(function() { with(this) {
-        JS.Package.ENV.Application = {}
+        PKG.ENV.Application = {}
         assertEqual( "undefined", typeof Helper )
       }})
 
       it("loads the dependency and waits", function() { with(this) {
         var done = false
-        JS.require("Application", function() { done = true })
+        PKG.require("Application", function() { done = true })
 
         clock.tick(250)
 
@@ -380,13 +380,13 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
 
     describe("when the dependency is defined but the required is not", function() { with(this) {
       before(function() { with(this) {
-        JS.Package.ENV.Helper = {}
+        PKG.ENV.Helper = {}
         assertEqual( "undefined", typeof Application )
       }})
 
       it("loads the required object and waits", function() { with(this) {
         var done = false
-        JS.require("Application", function() { done = true })
+        PKG.require("Application", function() { done = true })
 
         clock.tick(50)
 
@@ -407,7 +407,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
     it("runs the block immediately without loading anything", function() { with(this) {
       var done = false
       assertKindOf( Object, JS.Test )
-      JS.require("JS.Test", function() { done = true })
+      PKG.require("JS.Test", function() { done = true })
       assert( done )
       assertEqual( [], _loaded )
     }})

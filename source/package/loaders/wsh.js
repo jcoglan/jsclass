@@ -1,7 +1,7 @@
-JS.Package.WshLoader = {
+Package.WshLoader = {
   usable: function() {
-    return !!JS.Package._getObject('ActiveXObject') &&
-           !!JS.Package._getObject('WScript');
+    return !!Package._getObject('ActiveXObject') &&
+           !!Package._getObject('WScript');
   },
 
   __FILE__: function() {
@@ -21,3 +21,4 @@ JS.Package.WshLoader = {
     }
   }
 };
+

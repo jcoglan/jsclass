@@ -1,4 +1,4 @@
-JS.Test.Context.LifeCycle = new JS.Module({
+Test.Context.LifeCycle = new JS.Module({
   extend: {
     included: function(base) {
       base.extend(this.ClassMethods);
@@ -74,7 +74,7 @@ JS.Test.Context.LifeCycle = new JS.Module({
   runCallbacks: function(callbackType, period, continuation) {
     var callbacks = this.klass.gatherCallbacks(callbackType, period);
 
-    JS.Test.Unit.TestSuite.forEach(callbacks, function(callback, resume) {
+    Test.Unit.TestSuite.forEach(callbacks, function(callback, resume) {
       this.exec(callback, resume);
 
     }, continuation, this);
@@ -104,14 +104,14 @@ JS.Test.Context.LifeCycle = new JS.Module({
     for (var key in this) {
       if (this.hasOwnProperty(key)) ivars.push(key);
     }
-    return new JS.Enumerable.Collection(ivars);
+    return new Enumerable.Collection(ivars);
   }
 });
 
 (function() {
-  var m = JS.Test.Context.LifeCycle.ClassMethods.method('instanceMethod');
+  var m = Test.Context.LifeCycle.ClassMethods.method('instanceMethod');
 
-  JS.Test.Context.LifeCycle.ClassMethods.include({
+  Test.Context.LifeCycle.ClassMethods.include({
     setup:    m('before'),
     teardown: m('after')
   });

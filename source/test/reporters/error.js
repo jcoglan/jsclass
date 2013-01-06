@@ -1,6 +1,6 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   Error: new JS.Class({
-    include: JS.Console,
+    include: Console,
 
     startSuite: function(event) {
       this._faults = [];
@@ -11,26 +11,26 @@ JS.Test.Reporters.extend({
       this.reset();
       this.puts('Started');
     },
-    
+
     startContext: function(event) {},
-    
+
     startTest: function(event) {},
 
     addFault: function(event) {
       this._faults.push(event);
       this._printFault(this._faults.length, event);
     },
-    
+
     update: function(event) {},
 
     endTest: function(event) {},
-    
+
     endContext: function(event) {},
 
     endSuite: function(event) {
       this._printSummary(event);
     },
-    
+
     _printFault: function(index, fault) {
       this.puts('');
       this.consoleFormat('bold', 'red');
@@ -62,5 +62,5 @@ JS.Test.Reporters.extend({
   })
 });
 
-JS.Test.Reporters.register('error', JS.Test.Reporters.Error);
+Test.Reporters.register('error', Test.Reporters.Error);
 

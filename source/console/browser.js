@@ -1,5 +1,5 @@
-JS.Console.extend({
-  Browser: new JS.Class(JS.Console.Base, {
+Console.extend({
+  Browser: new JS.Class(Console.Base, {
     backtraceFilter: function() {
       return new RegExp(window.location.href.replace(/(\/[^\/]+)/g, '($1)?') + '/?', 'g');
     },
@@ -9,14 +9,14 @@ JS.Console.extend({
     },
 
     envvar: function(name) {
-      if (JS.Console.PHANTOM)
+      if (Console.PHANTOM)
         return require('system').env[name] || null;
       else
         return window[name] || null;
     },
 
     getDimensions: function() {
-      if (JS.Console.PHANTOM) return this.callSuper();
+      if (Console.PHANTOM) return this.callSuper();
       return [1024, 1];
     },
 

@@ -16,6 +16,7 @@ packages:
   core:
     directory: core
     files:
+      - _head
       - utils
       - method
       - module
@@ -25,14 +26,17 @@ packages:
       - keywords
       - interface
       - singleton
+      - _tail
 
   package-browser:
     directory: package
     files:
+      - _head
       - package
       - loaders/dom
       - browser
       - dsl
+      - _tail
 
   loader-browser:
     extends: package-browser
@@ -42,6 +46,7 @@ packages:
   package:
     directory: package
     files:
+      - _head
       - package
       - loaders/commonjs
       - loaders/dom
@@ -51,6 +56,7 @@ packages:
       - loaders/xulrunner
       - loader
       - dsl
+      - _tail
 
   loader:
     extends: package
@@ -60,6 +66,7 @@ packages:
   test:
     directory: test
     files:
+      - _head
       - unit
       - unit/observable
       - unit/assertions
@@ -105,17 +112,21 @@ packages:
       - coverage
       - helpers
       - runner
+      - _tail
 
   dom:
     directory: dom
     files:
+      - _head
       - dom
       - builder
       - event
+      - _tail
 
   console:
     directory: console
     files:
+      - _head
       - console
       - base
       - browser
@@ -123,6 +134,7 @@ packages:
       - rhino
       - windows
       - config
+      - _tail
 
   benchmark:        benchmark
   comparable:       comparable

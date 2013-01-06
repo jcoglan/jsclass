@@ -1,4 +1,4 @@
-JS.Test.extend({
+Test.extend({
   AsyncSteps: new JS.Class(JS.Module, {
     define: function(name, method) {
       this.callSuper(name, function() {
@@ -8,8 +8,8 @@ JS.Test.extend({
     },
 
     included: function(klass) {
-      klass.include(JS.Test.AsyncSteps.Sync);
-      if (!klass.includes(JS.Test.Context)) return;
+      klass.include(Test.AsyncSteps.Sync);
+      if (!klass.includes(Test.Context)) return;
 
       klass.after(function(resume) { this.sync(resume) });
 
@@ -36,7 +36,7 @@ JS.Test.extend({
           if (this.__runningSteps__) return;
           this.__runningSteps__ = true;
 
-          var setTimeout = JS.Test.Unit.TestSuite.setTimeout;
+          var setTimeout = Test.Unit.TestSuite.setTimeout;
           setTimeout(this.method('__runNextStep__'), 1);
         },
 

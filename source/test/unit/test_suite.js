@@ -1,6 +1,6 @@
-JS.Test.Unit.extend({
+Test.Unit.extend({
   TestSuite: new JS.Class({
-    include: JS.Enumerable,
+    include: Enumerable,
 
     extend: {
       STARTED:  'Test.Unit.TestSuite.STARTED',
@@ -18,7 +18,7 @@ JS.Test.Unit.extend({
           pinged = true;
           var time = new Date().getTime();
 
-          if (JS.Console.BROWSER && (time - breakTime) > 1000) {
+          if (Console.BROWSER && (time - breakTime) > 1000) {
             breakTime = time;
             looping = false;
             setTimeout(iterate, 0);

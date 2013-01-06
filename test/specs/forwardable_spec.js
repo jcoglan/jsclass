@@ -1,4 +1,6 @@
-JS.ENV.ForwardableSpec = JS.Test.describe(JS.Forwardable, function() { with(this) {
+PKG.require('JS.Forwardable', function(Forwardable) {
+
+JS.ENV.ForwardableSpec = JS.Test.describe(Forwardable, function() { with(this) {
   define("Subject", new JS.Class({
       initialize: function() {
           this.name = "something";
@@ -15,7 +17,7 @@ JS.ENV.ForwardableSpec = JS.Test.describe(JS.Forwardable, function() { with(this
   }))
 
   define("forwardableClass", function() { with(this) {
-    return new JS.Class({extend: JS.Forwardable,
+    return new JS.Class({extend: Forwardable,
       initialize: function() {
         this.subject = new Subject()
       }
@@ -67,4 +69,6 @@ JS.ENV.ForwardableSpec = JS.Test.describe(JS.Forwardable, function() { with(this
     }})
   }})
 }})
+
+})
 

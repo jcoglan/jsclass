@@ -1,5 +1,5 @@
-JS.Test.Reporters.extend({
-  Spec: new JS.Class(JS.Test.Reporters.Dot, {
+Test.Reporters.extend({
+  Spec: new JS.Class(Test.Reporters.Dot, {
     extend: {
       TICK:   '\u2713',
       CROSS:  '\u2717'
@@ -51,5 +51,5 @@ JS.Test.Reporters.extend({
   })
 });
 
-JS.Test.Reporters.register('spec', JS.Test.Reporters.Spec);
+Test.Reporters.register('spec', Test.Reporters.Spec);
 

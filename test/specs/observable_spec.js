@@ -1,6 +1,8 @@
-JS.ENV.ObservableSpec = JS.Test.describe(JS.Observable, function() { with(this) {
+PKG.require('JS.Observable', function(Observable) {
+
+JS.ENV.ObservableSpec = JS.Test.describe(Observable, function() { with(this) {
   before(function() { with(this) {
-    var Publisher  = new JS.Class(JS.Observable)
+    var Publisher  = new JS.Class(Observable)
     this.publisher = new Publisher()
 
     this.counter    = 0
@@ -121,4 +123,6 @@ JS.ENV.ObservableSpec = JS.Test.describe(JS.Observable, function() { with(this) 
     }})
   }})
 }})
+
+})
 

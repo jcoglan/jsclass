@@ -1,4 +1,4 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   Browser: new JS.Class({
     initialize: function(options) {
       this._options = options || {};
@@ -18,7 +18,7 @@ JS.Test.Reporters.extend({
       var self = this;
       if (this._container) document.body.removeChild(this._container);
 
-      this._container = JS.DOM.div({className: 'test-result-container'}, function(div) {
+      this._container = DOM.div({className: 'test-result-container'}, function(div) {
         div.table({className: 'report'}, function(table) {
           table.thead(function(thead) {
             thead.tr(function(tr) {
@@ -70,15 +70,15 @@ JS.Test.Reporters.extend({
 
     endSuite: function(event) {
       this.update(event);
-      JS.DOM.removeClass(this._light, 'light-pending');
-      JS.DOM.addClass(this._light, event.passed ? 'light-passed' : 'light-failed');
+      DOM.removeClass(this._light, 'light-pending');
+      DOM.addClass(this._light, event.passed ? 'light-passed' : 'light-failed');
       this._summary.innerHTML = 'Finished in ' + event.runtime + ' seconds';
     },
 
     serialize: function() {
       var items = document.getElementsByTagName('li'),
           n     = items.length;
-      while (n--) JS.DOM.removeClass(items[n], 'closed');
+      while (n--) DOM.removeClass(items[n], 'closed');
 
       var items = document.getElementsByTagName('script'),
           n     = items.length;
@@ -90,7 +90,7 @@ JS.Test.Reporters.extend({
   })
 });
 
-JS.Test.Reporters.Browser.extend({
+Test.Reporters.Browser.extend({
   Context: new JS.Class({
     initialize: function(type, parent, name, options) {
       this._parent   = parent;
@@ -108,7 +108,7 @@ JS.Test.Reporters.Browser.extend({
           fields    = {_tests: 'Tests', _failures: 'Failed'},
           self      = this;
 
-      this._li = new JS.DOM.Builder(container).li({className: this._type + ' passed'}, function(li) {
+      this._li = new DOM.Builder(container).li({className: this._type + ' passed'}, function(li) {
         li.ul({className: 'stats'}, function(ul) {
           for (var key in fields)
             ul.li(function(li) {
@@ -119,7 +119,7 @@ JS.Test.Reporters.Browser.extend({
         if (name) {
           self._toggle = li.p({className: self._type + '-name'}, name);
           if (self._type === 'spec') {
-            self._runner = JS.DOM.span({className: 'runner'}, 'Run');
+            self._runner = DOM.span({className: 'runner'}, 'Run');
             self._runner.style.background = 'url("' + JSCLASS_PATH + 'assets/bullet_go.png") center center no-repeat';
             self._toggle.insertBefore(self._runner, self._toggle.firstChild);
           }
@@ -129,14 +129,14 @@ JS.Test.Reporters.Browser.extend({
 
       var filters = this._options.test || [];
       if (filters.length === 0)
-        JS.DOM.addClass(this._li, 'closed');
+        DOM.addClass(this._li, 'closed');
 
-      JS.DOM.Event.on(this._toggle, 'click', function() {
-        JS.DOM.toggleClass(this._li, 'closed');
+      DOM.Event.on(this._toggle, 'click', function() {
+        DOM.toggleClass(this._li, 'closed');
       }, this);
 
       if (this._runner)
-        JS.DOM.Event.on(this._runner, 'click', this.runTest, this);
+        DOM.Event.on(this._runner, 'click', this.runTest, this);
     },
 
     ping: function(field) {
@@ -147,8 +147,8 @@ JS.Test.Reporters.Browser.extend({
 
     fail: function() {
       if (!this._li) return;
-      JS.DOM.removeClass(this._li, 'passed');
-      JS.DOM.addClass(this._toggle, 'failed');
+      DOM.removeClass(this._li, 'passed');
+      DOM.addClass(this._toggle, 'failed');
       if (this._parent.fail) this._parent.fail();
     },
 
@@ -166,7 +166,7 @@ JS.Test.Reporters.Browser.extend({
       var message = fault.message;
       if (fault.backtrace) message += '\n' + fault.backtrace;
 
-      var item = JS.DOM.li({className: 'fault'}, function(li) {
+      var item = DOM.li({className: 'fault'}, function(li) {
         li.p(function(p) {
           var parts = message.split(/[\r\n]+/);
           for (var i = 0, n = parts.length; i < n; i++) {

@@ -1,4 +1,4 @@
-JS.Test.UI.extend({
+Test.UI.extend({
   Terminal: new JS.Class({
     OPTIONS: {format: String, test: Array},
     SHORTS:  {'f': '--format', 't': '--test'},
@@ -9,15 +9,15 @@ JS.Test.UI.extend({
 
     getOptions: function() {
       var options = {},
-          format  = JS.Console.envvar('FORMAT'),
-          test    = JS.Console.envvar('TEST');
+          format  = Console.envvar('FORMAT'),
+          test    = Console.envvar('TEST');
 
-      if (JS.Console.envvar('TAP')) options.format = 'tap';
+      if (Console.envvar('TAP')) options.format = 'tap';
 
       if (format) options.format = format;
       if (test)   options.test   = [test];
 
-      if (JS.Console.NODE)
+      if (Console.NODE)
         JS.extend(options, require('nopt')(this.OPTIONS, this.SHORTS));
 
       delete options.argv;
@@ -27,7 +27,7 @@ JS.Test.UI.extend({
 
     getReporters: function(options) {
       var reporters = [],
-          R = JS.Test.Reporters;
+          R = Test.Reporters;
 
       var Printer = R.find(options.format) || R.Dot;
       reporters.push(new Printer(options));

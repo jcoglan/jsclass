@@ -1,4 +1,13 @@
-JS.Decorator = new JS.Class('Decorator', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = (typeof JS === 'undefined') ? require('./core') : JS;
+
+  if (E) exports.JS = exports;
+  factory(js, E ? exports : js);
+
+})(function(JS, exports) {
+
+var Decorator = new JS.Class('Decorator', {
   initialize: function(decoree, methods) {
     var decorator  = new JS.Class(),
         delegators = {},
@@ -31,7 +40,7 @@ JS.Decorator = new JS.Class('Decorator', {
         for (method in component) {
           if (this[method]) continue;
           func = component[method];
-          if (typeof func === 'function') func = JS.Decorator.delegate(method);
+          if (typeof func === 'function') func = Decorator.delegate(method);
           this[method] = func;
         }
       },
@@ -41,10 +50,14 @@ JS.Decorator = new JS.Class('Decorator', {
         var method, func;
         for (method in source) {
           func = source[method];
-          if (typeof func === 'function') func = JS.Decorator.delegate(method);
+          if (typeof func === 'function') func = Decorator.delegate(method);
           this[method] = func;
         }
       }
     })
   }
 });
+
+exports.Decorator = Decorator;
+});
+

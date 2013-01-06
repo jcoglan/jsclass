@@ -1,4 +1,4 @@
-JS.Test.Unit.extend({
+Test.Unit.extend({
   AssertionMessage: new JS.Class({
     extend: {
       Literal: new JS.Class({
@@ -25,7 +25,7 @@ JS.Test.Unit.extend({
         },
 
         initialize: function(parts) {
-          this._parts = new JS.Enumerable.Collection(parts);
+          this._parts = new Enumerable.Collection(parts);
           this.count = this._parts.findAll(function(e) { return e === '?' || e === '(?)' }).length;
         },
 
@@ -44,7 +44,7 @@ JS.Test.Unit.extend({
     initialize: function(head, template, parameters) {
       this._head = head;
       this._templateString = template;
-      this._parameters = new JS.Enumerable.Collection(parameters);
+      this._parameters = new Enumerable.Collection(parameters);
     },
 
     template: function() {
@@ -55,7 +55,7 @@ JS.Test.Unit.extend({
       var messageParts = [], head, tail;
       if (this._head) messageParts.push(this._head);
       tail = this.template().result(this._parameters.collect(function(e) {
-        return JS.Console.convert(e);
+        return Console.convert(e);
       }, this));
       if (tail !== '') messageParts.push(tail);
       return messageParts.join('\n');

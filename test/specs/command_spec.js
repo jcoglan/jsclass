@@ -1,9 +1,11 @@
-JS.ENV.CommandSpec = JS.Test.describe(JS.Command, function() { with(this) {
+PKG.require('JS.Command', function(Command) {
+
+JS.ENV.CommandSpec = JS.Test.describe(Command, function() { with(this) {
   before(function() { this.counter = 0 })
 
   describe("with an execute() method", function() { with(this) {
     before(function() { with(this) {
-      this.command = new JS.Command({
+      this.command = new Command({
         execute: function() { counter += 1 }
       })
     }})
@@ -22,7 +24,7 @@ JS.ENV.CommandSpec = JS.Test.describe(JS.Command, function() { with(this) {
 
   describe("with execute() and undo() methods", function() { with(this) {
     before(function() { with(this) {
-      this.command = new JS.Command({
+      this.command = new Command({
         execute: function() { counter += 1 },
         undo:    function() { counter -= 1 }
       })
@@ -41,7 +43,7 @@ JS.ENV.CommandSpec = JS.Test.describe(JS.Command, function() { with(this) {
     }})
   }})
 
-  describe(JS.Command.Stack, function() { with(this) {
+  describe(Command.Stack, function() { with(this) {
     sharedBehavior("command stack", function() { with(this) {
       describe("with no commands in the stack", function() { with(this) {
         describe("#undo", function() { with(this) {
@@ -231,10 +233,10 @@ JS.ENV.CommandSpec = JS.Test.describe(JS.Command, function() { with(this) {
 
     describe("using incremental undo/redo", function() { with(this) {
       before(function() { with(this) {
-        this.stack = new JS.Command.Stack()
+        this.stack = new Command.Stack()
 
         var makeCommand = function(x) {
-          return new JS.Command({
+          return new Command({
             execute: function() { counter += x },
             undo:    function() { counter -= x },
             stack:   stack
@@ -253,14 +255,14 @@ JS.ENV.CommandSpec = JS.Test.describe(JS.Command, function() { with(this) {
 
     describe("using redo-from-start", function() { with(this) {
       before(function() { with(this) {
-        this.reset = new JS.Command({
+        this.reset = new Command({
           execute: function() { counter = 0 }
         })
 
-        this.stack = new JS.Command.Stack({redo: reset})
+        this.stack = new Command.Stack({redo: reset})
 
         var makeCommand = function(x) {
-          return new JS.Command({
+          return new Command({
             execute: function() { counter += x },
             stack:   stack
           })
@@ -277,4 +279,6 @@ JS.ENV.CommandSpec = JS.Test.describe(JS.Command, function() { with(this) {
     }})
   }})
 }})
+
+})
 

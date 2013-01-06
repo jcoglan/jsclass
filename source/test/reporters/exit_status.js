@@ -1,4 +1,4 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   ExitStatus: new JS.Class({
     startSuite: function(event) {},
 
@@ -15,7 +15,7 @@ JS.Test.Reporters.extend({
     update: function(event) {},
 
     endSuite: function(event) {
-      JS.Console.exit(event.passed ? 0 : 1);
+      Console.exit(event.passed ? 0 : 1);
     }
   })
 });

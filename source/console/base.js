@@ -1,4 +1,4 @@
-JS.Console.extend({
+Console.extend({
   Base: new JS.Class({
     __buffer__: '',
     __format__: '',
@@ -27,12 +27,12 @@ JS.Console.extend({
 
     format: function(name, args) {
       if (!this.coloring()) return;
-      var escape = JS.Console.ESCAPE_CODES[name];
+      var escape = Console.ESCAPE_CODES[name];
 
       for (var i = 0, n = args.length; i < n; i++)
         escape = escape.replace('%' + (i+1), args[i]);
 
-      this.__format__ += JS.Console.escape(escape);
+      this.__format__ += Console.escape(escape);
     },
 
     flushFormat: function() {
@@ -42,7 +42,7 @@ JS.Console.extend({
     },
 
     getDimensions: function() {
-      return [JS.Console.DEFAULT_WIDTH, JS.Console.DEFAULT_HEIGHT];
+      return [Console.DEFAULT_WIDTH, Console.DEFAULT_HEIGHT];
     },
 
     output: function(string, followon) {
@@ -52,7 +52,7 @@ JS.Console.extend({
         var length  = this.__buffer__.length,
             max     = this.getDimensions()[0],
             movable = (length > 0 && coloring),
-            escape  = movable ? JS.Console.escape('1F') + JS.Console.escape((length + 1) + 'G') : '',
+            escape  = movable ? Console.escape('1F') + Console.escape((length + 1) + 'G') : '',
             line    = string.substr(0, max - length);
 
         this.__buffer__ += line;

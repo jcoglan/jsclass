@@ -1,4 +1,4 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   Buster: new JS.Class({
 
     /*  Missing events:

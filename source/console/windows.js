@@ -1,5 +1,5 @@
-JS.Console.extend({
-  Windows: new JS.Class(JS.Console.Base, {
+Console.extend({
+  Windows: new JS.Class(Console.Base, {
     coloring: function() {
       return false;
     },

@@ -1,5 +1,5 @@
-JS.Test.Reporters.extend({
-  Dot: new JS.Class(JS.Test.Reporters.Error, {
+Test.Reporters.extend({
+  Dot: new JS.Class(Test.Reporters.Error, {
     SYMBOLS: {
       failure:  'F',
       error:    'E'
@@ -39,5 +39,5 @@ JS.Test.Reporters.extend({
   })
 });
 
-JS.Test.Reporters.register('dot', JS.Test.Reporters.Dot);
+Test.Reporters.register('dot', Test.Reporters.Dot);
 

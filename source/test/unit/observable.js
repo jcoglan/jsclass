@@ -1,4 +1,4 @@
-JS.Test.Unit.extend({
+Test.Unit.extend({
   Observable: new JS.Module({
     addListener: function(channelName, block, context) {
       if (block === undefined) throw new Error('No callback was passed as a listener');

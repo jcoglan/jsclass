@@ -1,17 +1,24 @@
-JS.Packages(function() { with(this) {
+(function() {
+
+var E = (typeof exports === 'object'),
+    P = (E ? exports : JS),
+    Package = P.Package;
+
+P.packages(function() { with(this) {
 
     // Debugging
     // JSCLASS_PATH = 'build/min/';
 
-    JS.Package.ENV.JSCLASS_PATH = JS.Package.ENV.JSCLASS_PATH ||
-                                  __FILE__().replace(/[^\/]*$/g, '');
+    Package.ENV.JSCLASS_PATH = Package.ENV.JSCLASS_PATH ||
+                               __FILE__().replace(/[^\/]*$/g, '');
 
-    var PATH = JS.Package.ENV.JSCLASS_PATH;
+    var PATH = Package.ENV.JSCLASS_PATH;
     if (!/\/$/.test(PATH)) PATH = PATH + '/';
 
     var module = function(name) { return file(PATH + name + '.js') };
 
-    module('core')          .provides('JS.Module',
+    module('core')          .provides('JS',
+                                      'JS.Module',
                                       'JS.Class',
                                       'JS.Method',
                                       'JS.Kernel',
@@ -36,6 +43,8 @@ JS.Packages(function() { with(this) {
                                       'JS.DOM',
                                       'JS.Enumerable',
                                       'JS.SortedSet',
+                                      'JS.Range',
+                                      'JS.MethodChain',
                                       'JS.Comparable',
                                       'JS.StackTrace')
                             .styling(PATH + 'assets/testui.css');
@@ -80,15 +89,16 @@ JS.Packages(function() { with(this) {
 
     module('range')         .provides('JS.Range')
                             .requires('JS.Class',
-                                      'JS.Enumerable');
+                                      'JS.Enumerable',
+                                      'JS.Hash');
 
     module('set')           .provides('JS.Set',
                                       'JS.HashSet',
                                       'JS.OrderedSet',
                                       'JS.SortedSet')
                             .requires('JS.Class',
-                                      'JS.Enumerable')
-                            .uses(    'JS.Hash');
+                                      'JS.Enumerable',
+                                      'JS.Hash');
 
     module('linked_list')   .provides('JS.LinkedList',
                                       'JS.LinkedList.Doubly',
@@ -131,4 +141,6 @@ JS.Packages(function() { with(this) {
                             .requires('JS.Class')
                             .requires('JS.Hash');
 }});
+
+})();
 

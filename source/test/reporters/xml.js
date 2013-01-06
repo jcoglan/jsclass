@@ -1,6 +1,6 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   XML: new JS.Class({
-    include: JS.Console,
+    include: Console,
 
     startSuite: function(event) {
       this._faults = [];
@@ -118,6 +118,6 @@ JS.Test.Reporters.extend({
   })
 });
 
-JS.Test.Reporters.register('xml', JS.Test.Reporters.XML);
-JS.Test.Reporters.register('junit', JS.Test.Reporters.XML);
+Test.Reporters.register('xml', Test.Reporters.XML);
+Test.Reporters.register('junit', Test.Reporters.XML);
 

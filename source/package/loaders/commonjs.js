@@ -1,4 +1,4 @@
-JS.Package.CommonJSLoader = {
+Package.CommonJSLoader = {
   usable: function() {
     return typeof require === 'function' &&
            typeof exports === 'object';
@@ -24,6 +24,10 @@ JS.Package.CommonJSLoader = {
     }
 
     this._currentPath = file + '.js';
-    fireCallbacks(require(file));
+    var module = require(file);
+    fireCallbacks(module);
+
+    return module;
   }
 };
+

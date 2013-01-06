@@ -10,24 +10,20 @@ if (this.ActiveXObject) load = function(path) {
 };
 
 (function() {
-  var $ = (typeof global === 'object') ? global : this;
+  var $ = (typeof global === 'object') ? global : this,
+      path = $.JSCLASS_PATH = 'build/src/';
 
   if (typeof phantom !== 'undefined') {
-    $.JSCLASS_PATH = '../build/src/';
+    $.JSCLASS_PATH = '../' + $.JSCLASS_PATH;
     $.CWD = '..';
-  } else {
-    $.JSCLASS_PATH = 'build/src/';
   }
-})()
 
-if (typeof phantom !== 'undefined') {
-  require(JSCLASS_PATH + 'loader');
-  require('./runner');
-} else if (typeof require === 'function') {
-  require('../' + JSCLASS_PATH + 'loader');
-  require('./runner');
-} else {
-  load(JSCLASS_PATH + 'loader.js');
-  load('test/runner.js');
-}
+  if (typeof require === 'function') {
+    $.PKG = require('../' + path + 'loader');
+    require('./runner');
+  } else {
+    load(path + 'loader.js');
+    load('test/runner.js');
+  }
+})();
 

@@ -1,11 +1,11 @@
-JS.Test.Reporters.extend({
-  Progress: new JS.Class(JS.Test.Reporters.Dot, {
+Test.Reporters.extend({
+  Progress: new JS.Class(Test.Reporters.Dot, {
     extend: {
       CACHE_TIME: 1000
     },
 
     startSuite: function(event) {
-      if (!JS.Console.coloring())
+      if (!Console.coloring())
         throw new Error('Cannot use the progress reporter; terminal formatting is not available');
 
       this._tests  = [];
@@ -104,10 +104,10 @@ JS.Test.Reporters.extend({
         return this._width;
 
       this._cacheTime = new Date().getTime();
-      return this._width = JS.Console.getDimensions()[0] - 8;
+      return this._width = Console.getDimensions()[0] - 8;
     }
   })
 });
 
-JS.Test.Reporters.register('progress', JS.Test.Reporters.Progress);
+Test.Reporters.register('progress', Test.Reporters.Progress);
 

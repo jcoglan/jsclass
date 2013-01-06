@@ -1,8 +1,10 @@
-JS.ENV.ConstantScopeSpec = JS.Test.describe(JS.ConstantScope, function() { with(this) {
+PKG.require('JS.ConstantScope', function(ConstantScope) {
+
+JS.ENV.ConstantScopeSpec = JS.Test.describe(ConstantScope, function() { with(this) {
   include(JS.Test.Helpers)
 
   define("createClass", function(methods) {
-    methods.include = JS.ConstantScope
+    methods.include = ConstantScope
     return new JS.Class(methods)
   })
 
@@ -60,7 +62,7 @@ JS.ENV.ConstantScopeSpec = JS.Test.describe(JS.ConstantScope, function() { with(
   describe("with nested classes", function() { with(this) {
     before(function() { with(this) {
       this.Outer = new JS.Class('Outer', {
-        include: JS.ConstantScope,
+        include: ConstantScope,
         CONST:   45,
 
         Inner: new JS.Module('Inner', {
@@ -120,4 +122,6 @@ JS.ENV.ConstantScopeSpec = JS.Test.describe(JS.ConstantScope, function() { with(
     }})
   }})
 }})
+
+})
 

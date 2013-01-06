@@ -1,4 +1,4 @@
-JS.Test.UI.extend({
+Test.UI.extend({
   Browser: new JS.Class({
     prepare: function(callback, context) {
       var hash = (location.hash || '').replace(/^#/, ''),
@@ -43,7 +43,7 @@ JS.Test.UI.extend({
 
     getReporters: function(options) {
       var reporters = [],
-          R         = JS.Test.Reporters,
+          R         = Test.Reporters,
           browser   = new R.Browser(options);
 
       reporters.push(browser);

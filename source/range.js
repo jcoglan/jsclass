@@ -1,5 +1,17 @@
-JS.Range = new JS.Class('Range', {
-  include: JS.Enumerable || {},
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = (typeof JS === 'undefined') ? require('./core') : JS,
+
+      Enumerable = js.Enumerable || require('./enumerable').Enumerable,
+      Hash = js.Hash || require('./hash').Hash;
+
+  if (E) exports.JS = exports;
+  factory(js, Enumerable, Hash, E ? exports : js);
+
+})(function(JS, Enumerable, Hash, exports) {
+
+var Range = new JS.Class('Range', {
+  include: Enumerable || {},
 
   extend: {
     compare: function(one, another) {
@@ -19,7 +31,7 @@ JS.Range = new JS.Class('Range', {
         while (roll && i--) {
           next = null;
 
-          JS.Enumerable.forEach.call(this.SETS, function(name) {
+          Enumerable.forEach.call(this.SETS, function(name) {
             var range = this[name];
             if (chars[i] !== range._last) return;
             set  = range;
@@ -52,7 +64,7 @@ JS.Range = new JS.Class('Range', {
 
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     var needle  = this._first,
         exclude = this._excludeEnd;
@@ -80,16 +92,16 @@ JS.Range = new JS.Class('Range', {
   },
 
   equals: function(other) {
-    return JS.isType(other, JS.Range) &&
-           JS.Enumerable.areEqual(other._first, this._first) &&
-           JS.Enumerable.areEqual(other._last, this._last) &&
+    return JS.isType(other, Range) &&
+           Enumerable.areEqual(other._first, this._first) &&
+           Enumerable.areEqual(other._last, this._last) &&
            other._excludeEnd === this._excludeEnd;
   },
 
   hash: function() {
-    var hash = JS.Hash.codeFor(this._first) + '..';
+    var hash = Hash.codeFor(this._first) + '..';
     if (this._excludeEnd) hash += '.';
-    hash += JS.Hash.codeFor(this._last);
+    hash += Hash.codeFor(this._last);
     return hash;
   },
 
@@ -108,7 +120,7 @@ JS.Range = new JS.Class('Range', {
 
   step: function(n, block, context) {
     if (!block) return this.enumFor('step', n);
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     var i = 0;
     this.forEach(function(member) {
@@ -125,18 +137,21 @@ JS.Range = new JS.Class('Range', {
   }
 });
 
-JS.Range.extend({
-  DIGITS:     new JS.Range('0','9'),
-  LOWERCASE:  new JS.Range('a','z'),
-  UPPERCASE:  new JS.Range('A','Z'),
+Range.extend({
+  DIGITS:     new Range('0','9'),
+  LOWERCASE:  new Range('a','z'),
+  UPPERCASE:  new Range('A','Z'),
   SETS:       ['DIGITS', 'LOWERCASE', 'UPPERCASE']
 });
 
-JS.Range.alias({
+Range.alias({
   begin:  'first',
   end:    'last',
   covers: 'includes',
   match:  'includes',
   member: 'includes'
+});
+
+exports.Range = Range;
 });
 

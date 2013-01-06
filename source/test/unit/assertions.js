@@ -1,4 +1,4 @@
-JS.Test.Unit.extend({
+Test.Unit.extend({
   AssertionFailedError: new JS.Class(Error, {
     initialize: function(message) {
       this.message = message.toString();
@@ -15,7 +15,7 @@ JS.Test.Unit.extend({
       this.__wrapAssertion__(function() {
         if (!block.call(context || null)) {
           message = this.buildMessage(message || 'assertBlock failed');
-          throw new JS.Test.Unit.AssertionFailedError(message);
+          throw new Test.Unit.AssertionFailedError(message);
         }
       });
     },
@@ -34,7 +34,7 @@ JS.Test.Unit.extend({
     assertEqual: function(expected, actual, message) {
       var fullMessage = this.buildMessage(message, '<?> expected but was\n<?>', expected, actual);
       this.assertBlock(fullMessage, function() {
-        return JS.Enumerable.areEqual(expected, actual);
+        return Enumerable.areEqual(expected, actual);
       });
     },
 
@@ -43,7 +43,7 @@ JS.Test.Unit.extend({
                                                    expected,
                                                    actual);
       this.assertBlock(fullMessage, function() {
-        return !JS.Enumerable.areEqual(expected, actual);
+        return !Enumerable.areEqual(expected, actual);
       });
     },
 
@@ -144,7 +144,7 @@ JS.Test.Unit.extend({
         var fullMessage = this.buildMessage(message, '<?> expected to respond to\n' +
                                                      '<?(?)> with a true value',
                                                      sendArray[0],
-                                                     JS.Test.Unit.AssertionMessage.literal(sendArray[1]),
+                                                     Test.Unit.AssertionMessage.literal(sendArray[1]),
                                                      sendArray.slice(2));
         this.assertBlock(fullMessage, function() {
           return sendArray[0][sendArray[1]].apply(sendArray[0], sendArray.slice(2));
@@ -157,7 +157,7 @@ JS.Test.Unit.extend({
           context  = (typeof args[args.length - 1] === 'function') ? null : args.pop(),
           block    = args.pop(),
           message  = JS.isType(args[args.length - 1], 'string') ? args.pop() : '',
-          expected = new JS.Enumerable.Collection(args);
+          expected = new Enumerable.Collection(args);
 
       return [args, expected, message, block, context];
     },
@@ -210,7 +210,7 @@ JS.Test.Unit.extend({
         try {
           block.call(context);
         } catch (e) {
-          if ((args.length === 0 && !JS.isType(e, JS.Test.Unit.AssertionFailedError)) ||
+          if ((args.length === 0 && !JS.isType(e, Test.Unit.AssertionFailedError)) ||
               expected.any(function(type) { return JS.isType(e, type) }))
             this.assertBlock(this.buildMessage(message, 'Exception thrown:\n?', e), function() { return false });
           else
@@ -223,7 +223,7 @@ JS.Test.Unit.extend({
       var args     = JS.array(arguments),
           head     = args.shift(),
           template = args.shift();
-      return new JS.Test.Unit.AssertionMessage(head, template, args);
+      return new Test.Unit.AssertionMessage(head, template, args);
     },
 
     __wrapAssertion__: function(block) {

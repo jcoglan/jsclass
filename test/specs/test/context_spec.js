@@ -1,3 +1,5 @@
+PKG.require('JS.Enumerable', function(Enumerable) {
+
 JS.ENV.Test = JS.ENV.Test || {}
 
 Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
@@ -44,7 +46,7 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
   }})
 
   describe("lifecycle hooks", function() { with(this) {
-    extend({ hook_register: new JS.Enumerable.Collection() })
+    extend({ hook_register: new Enumerable.Collection() })
 
     before(function() { with(this) {
       klass.hook_register.push("inherited_before_each")
@@ -336,4 +338,6 @@ Test.ContextSpec = JS.Test.describe(JS.Test.Context, function() { with(this) {
     }})
   }})
 }})
+
+})
 

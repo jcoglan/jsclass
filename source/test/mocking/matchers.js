@@ -1,11 +1,11 @@
-JS.Test.Mocking.extend({
+Test.Mocking.extend({
   Anything: new JS.Class({
     equals: function() { return true },
     toString: function() { return 'anything' }
   }),
 
   AnyArgs: new JS.Class({
-    equals: function() { return JS.Enumerable.ALL_EQUAL },
+    equals: function() { return Enumerable.ALL_EQUAL },
     toString: function() { return '*arguments' }
   }),
 
@@ -20,7 +20,7 @@ JS.Test.Mocking.extend({
       loop: while (i--) {
         j = array.length;
         while (j--) {
-          if (JS.Enumerable.areEqual(this._elements[i], array[j]))
+          if (Enumerable.areEqual(this._elements[i], array[j]))
             continue loop;
         }
         return false;
@@ -29,7 +29,7 @@ JS.Test.Mocking.extend({
     },
 
     toString: function() {
-      var name = JS.Console.convert(this._elements);
+      var name = Console.convert(this._elements);
       return 'arrayIncluding(' + name + ')';
     }
   }),
@@ -42,14 +42,14 @@ JS.Test.Mocking.extend({
     equals: function(object) {
       if (!JS.isType(object, Object)) return false;
       for (var key in this._elements) {
-        if (!JS.Enumerable.areEqual(this._elements[key], object[key]))
+        if (!Enumerable.areEqual(this._elements[key], object[key]))
           return false;
       }
       return true;
     },
 
     toString: function() {
-      var name = JS.Console.convert(this._elements);
+      var name = Console.convert(this._elements);
       return 'objectIncluding(' + name + ')';
     }
   }),
@@ -64,7 +64,7 @@ JS.Test.Mocking.extend({
     },
 
     toString: function() {
-      var name = JS.Console.convert(this._type),
+      var name = Console.convert(this._type),
           an   = /^[aeiou]/i.test(name) ? 'an' : 'a';
       return an + '(' + name + ')';
     }
@@ -80,7 +80,7 @@ JS.Test.Mocking.extend({
     },
 
     toString: function() {
-      var name = JS.Console.convert(this._type);
+      var name = Console.convert(this._type);
       return 'matching(' + name + ')';
     }
   })

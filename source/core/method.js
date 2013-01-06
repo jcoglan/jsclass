@@ -81,7 +81,8 @@ JS.extend(JS.Method.prototype, {
       return returnValue;
     };
 
-    if (trace) return JS.StackTrace.wrap(compiled, method, environment);
+    var StackTrace = trace && (exports.StackTrace || require('./stack_trace').StackTrace);
+    if (trace) return StackTrace.wrap(compiled, method, environment);
     return compiled;
   },
 
@@ -133,8 +134,9 @@ JS.Method.keyword = function(name, filter) {
 };
 
 JS.Method.tracing = function(classes, block, context) {
-  JS.require('JS.StackTrace', function() {
-    var logger = JS.StackTrace.logger,
+  var pkg = exports.require ? exports : require('./loader');
+  pkg.require('JS.StackTrace', function(StackTrace) {
+    var logger = StackTrace.logger,
         active = logger.active;
 
     classes = [].concat(classes);

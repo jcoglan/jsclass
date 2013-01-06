@@ -1,21 +1,19 @@
-(function() {
-  var candidates = [  JS.Package.XULRunnerLoader,
-                      JS.Package.RhinoLoader,
-                      JS.Package.CommonJSLoader,
-                      JS.Package.DomLoader,
-                      JS.Package.ServerLoader,
-                      JS.Package.WshLoader ],
+var candidates = [  Package.XULRunnerLoader,
+                    Package.RhinoLoader,
+                    Package.CommonJSLoader,
+                    Package.DomLoader,
+                    Package.ServerLoader,
+                    Package.WshLoader ],
 
-      n = candidates.length,
-      i, candidate;
+    n = candidates.length,
+    i, candidate;
 
-  for (i = 0; i < n; i++) {
-    candidate = candidates[i];
-    if (candidate.usable()) {
-      JS.Package.Loader = candidate;
-      if (candidate.setup) candidate.setup();
-      break;
-    }
+for (i = 0; i < n; i++) {
+  candidate = candidates[i];
+  if (candidate.usable()) {
+    Package.loader = candidate;
+    if (candidate.setup) candidate.setup();
+    break;
   }
-})();
+}
 

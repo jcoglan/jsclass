@@ -1,4 +1,4 @@
-JS.Console = new JS.Module('Console', {
+var Console = new JS.Module('Console', {
   extend: {
     nameOf: function(object, root) {
       var results = [], i, n, field, l;
@@ -45,7 +45,7 @@ JS.Console = new JS.Module('Console', {
 
     convert: function(object, stack) {
       if (object === null || object === undefined) return String(object);
-      var E = JS.Enumerable, stack = stack || [], items;
+      var E = Enumerable, stack = stack || [], items;
 
       if (JS.indexOf(stack, object) >= 0) return '#circular';
 
@@ -170,12 +170,12 @@ JS.Console = new JS.Module('Console', {
 
   print: function(string) {
     string = (string === undefined ? '' : string).toString();
-    JS.Console.adapter.print(string);
+    Console.adapter.print(string);
   },
 
   puts: function(string) {
     string = (string === undefined ? '' : string).toString();
-    JS.Console.adapter.puts(string);
+    Console.adapter.puts(string);
   }
 });
 

@@ -1,7 +1,9 @@
-JS.ENV.TSortSpec = JS.Test.describe(JS.TSort, function() { with(this) {
+PKG.require('JS.TSort', 'JS.Hash', function(TSort, Hash) {
+
+JS.ENV.TSortSpec = JS.Test.describe(TSort, function() { with(this) {
   before(function() { with(this) {
-    this.Hash = new JS.Class(JS.Hash, {
-      include: JS.TSort,
+    this.Hash = new JS.Class(Hash, {
+      include: TSort,
 
       tsortEachNode: function(block, context) {
         return this.forEachKey(block, context)
@@ -42,7 +44,7 @@ JS.ENV.TSortSpec = JS.Test.describe(JS.TSort, function() { with(this) {
       }})
 
       it("raises an error", function() { with(this) {
-        assertThrows(JS.TSort.Cyclic, function() { hash.tsort() })
+        assertThrows(TSort.Cyclic, function() { hash.tsort() })
       }})
 
       it("identifies strongly connected nodes", function() { with(this) {
@@ -87,4 +89,6 @@ JS.ENV.TSortSpec = JS.Test.describe(JS.TSort, function() { with(this) {
     }})
   }})
 }})
+
+})
 

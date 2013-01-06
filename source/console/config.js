@@ -1,24 +1,20 @@
-(function() {
-  var C = JS.Console;
+Console.BROWSER = (typeof window !== 'undefined');
+Console.NODE    = (typeof process === 'object');
+Console.PHANTOM = (typeof phantom !== 'undefined');
+Console.RHINO   = (typeof java !== 'undefined' && typeof java.lang !== 'undefined');
+Console.WSH     = (typeof WScript !== 'undefined');
 
-  C.BROWSER = (typeof window !== 'undefined');
-  C.NODE    = (typeof process === 'object');
-  C.PHANTOM = (typeof phantom !== 'undefined');
-  C.RHINO   = (typeof java !== 'undefined' && typeof java.lang !== 'undefined');
-  C.WSH     = (typeof WScript !== 'undefined');
+if (Console.BROWSER)    Console.adapter = new Console.Browser();
+else if (Console.NODE)  Console.adapter = new Console.Node();
+else if (Console.RHINO) Console.adapter = new Console.Rhino();
+else if (Console.WSH)   Console.adapter = new Console.Windows();
+else                    Console.adapter = new Console.Base();
 
-  if (C.BROWSER)    C.adapter = new C.Browser();
-  else if (C.NODE)  C.adapter = new C.Node();
-  else if (C.RHINO) C.adapter = new C.Rhino();
-  else if (C.WSH)   C.adapter = new C.Windows();
-  else              C.adapter = new C.Base();
+for (var key in Console.ESCAPE_CODES) (function(key) {
+  Console.define(key, function() {
+    Console.adapter.format(key, arguments);
+  });
+})(key);
 
-  for (var key in C.ESCAPE_CODES) (function(key) {
-    C.define(key, function() {
-      JS.Console.adapter.format(key, arguments);
-    });
-  })(key);
-
-  C.extend(C);
-})();
+Console.extend(Console);
 

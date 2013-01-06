@@ -1,5 +1,5 @@
-JS.Console.extend({
-  Rhino: new JS.Class(JS.Console.Base, {
+Console.extend({
+  Rhino: new JS.Class(Console.Base, {
     backtraceFilter: function() {
       return new RegExp(java.lang.System.getProperty('user.dir') + '/', 'g');
     },

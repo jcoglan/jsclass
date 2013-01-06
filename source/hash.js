@@ -1,9 +1,21 @@
-JS.Hash = new JS.Class('Hash', {
-  include: JS.Enumerable || {},
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = (typeof JS === 'undefined') ? require('./core') : JS,
+
+      Enumerable = js.Enumerable || require('./enumerable').Enumerable,
+      Comparable = js.Comparable || require('./comparable').Comparable;
+
+  if (E) exports.JS = exports;
+  factory(js, Enumerable, Comparable, E ? exports : js);
+
+})(function(JS, Enumerable, Comparable, exports) {
+
+var Hash = new JS.Class('Hash', {
+  include: Enumerable || {},
 
   extend: {
     Pair: new JS.Class({
-      include: JS.Comparable || {},
+      include: Comparable || {},
       length: 2,
 
       setKey: function(key) {
@@ -11,7 +23,7 @@ JS.Hash = new JS.Class('Hash', {
       },
 
       hasKey: function(key) {
-        return JS.Enumerable.areEqual(this.key, key);
+        return Enumerable.areEqual(this.key, key);
       },
 
       setValue: function(value) {
@@ -19,7 +31,7 @@ JS.Hash = new JS.Class('Hash', {
       },
 
       hasValue: function(value) {
-        return JS.Enumerable.areEqual(this.value, value);
+        return Enumerable.areEqual(this.value, value);
       },
 
       compareTo: function(other) {
@@ -29,8 +41,8 @@ JS.Hash = new JS.Class('Hash', {
       },
 
       hash: function() {
-        var key   = JS.Hash.codeFor(this.key),
-            value = JS.Hash.codeFor(this.value);
+        var key   = Hash.codeFor(this.key),
+            value = Hash.codeFor(this.value);
 
         return [key, value].sort().join('/');
       }
@@ -53,7 +65,7 @@ JS.Hash = new JS.Class('Hash', {
 
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     var hash, bucket, i;
 
@@ -135,7 +147,7 @@ JS.Hash = new JS.Class('Hash', {
   },
 
   equals: function(other) {
-    if (!JS.isType(other, JS.Hash) || this.length !== other.length)
+    if (!JS.isType(other, Hash) || this.length !== other.length)
       return false;
     var result = true;
     this.forEach(function(pair) {
@@ -163,7 +175,7 @@ JS.Hash = new JS.Class('Hash', {
 
   forEachKey: function(block, context) {
     if (!block) return this.enumFor('forEachKey');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     this.forEach(function(pair) {
       block.call(context || null, pair.key);
@@ -173,7 +185,7 @@ JS.Hash = new JS.Class('Hash', {
 
   forEachPair: function(block, context) {
     if (!block) return this.enumFor('forEachPair');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     this.forEach(function(pair) {
       block.call(context || null, pair.key, pair.value);
@@ -183,7 +195,7 @@ JS.Hash = new JS.Class('Hash', {
 
   forEachValue: function(block, context) {
     if (!block) return this.enumFor('forEachValue');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     this.forEach(function(pair) {
       block.call(context || null, pair.value);
@@ -204,7 +216,7 @@ JS.Hash = new JS.Class('Hash', {
     var has = false, ident = !!this._compareByIdentity;
     this.forEach(function(pair) {
       if (has) return;
-      if (ident ? value === pair.value : JS.Enumerable.areEqual(value, pair.value))
+      if (ident ? value === pair.value : Enumerable.areEqual(value, pair.value))
         has = true;
     });
     return has;
@@ -229,7 +241,7 @@ JS.Hash = new JS.Class('Hash', {
   key: function(value) {
     var result = null;
     this.forEach(function(pair) {
-      if (!result && JS.Enumerable.areEqual(value, pair.value))
+      if (!result && Enumerable.areEqual(value, pair.value))
         result = pair.key;
     });
     return result;
@@ -286,7 +298,7 @@ JS.Hash = new JS.Class('Hash', {
 
   removeIf: function(block, context) {
     if (!block) return this.enumFor('removeIf');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     var toRemove = [];
 
@@ -348,15 +360,15 @@ JS.Hash = new JS.Class('Hash', {
   }
 });
 
-JS.Hash.alias({
+Hash.alias({
   includes: 'hasKey',
   index:    'key',
   put:      'store'
 });
 
-JS.OrderedHash = new JS.Class('OrderedHash', JS.Hash, {
+var OrderedHash = new JS.Class('OrderedHash', Hash, {
   assoc: function(key, createIfAbsent) {
-    var _super = JS.Hash.prototype.assoc;
+    var _super = Hash.prototype.assoc;
 
     var existing = _super.call(this, key, false);
     if (existing || !createIfAbsent) return existing;
@@ -392,7 +404,7 @@ JS.OrderedHash = new JS.Class('OrderedHash', JS.Hash, {
 
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     var pair = this._first;
     while (pair) {
@@ -410,3 +422,8 @@ JS.OrderedHash = new JS.Class('OrderedHash', JS.Hash, {
     }
   }
 });
+
+exports.Hash = Hash;
+exports.OrderedHash = OrderedHash;
+});
+

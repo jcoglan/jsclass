@@ -1,4 +1,4 @@
-JS.Test.Reporters.extend({
+Test.Reporters.extend({
   Testem: new JS.Class({
     initialize: function() {
       var self = this;

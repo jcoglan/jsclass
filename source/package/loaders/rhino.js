@@ -1,4 +1,4 @@
-JS.Package.RhinoLoader = {
+Package.RhinoLoader = {
   usable: function() {
     return typeof java === 'object' &&
            typeof require === 'function';
@@ -14,6 +14,10 @@ JS.Package.RhinoLoader = {
 
     var requirePath = new java.io.File(cwd, module).toString();
     this._currentPath = requirePath + '.js';
-    fireCallbacks(require(requirePath));
+    var module = require(requirePath);
+    fireCallbacks(module);
+
+    return module;
   }
 };
+

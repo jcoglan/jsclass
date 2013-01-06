@@ -1,4 +1,4 @@
-JS.Test.extend({
+Test.extend({
   Runner: new JS.Class({
     initialize: function(settings) {
       this._settings = (typeof settings === 'string')
@@ -18,14 +18,14 @@ JS.Test.extend({
           reporters = ui.getReporters(options),
           suite     = this.getSuite(options);
 
-      this.setReporter(new JS.Test.Reporters.Composite(reporters));
+      this.setReporter(new Test.Reporters.Composite(reporters));
       if (callback) callback.call(context || null, this);
 
       var startTime  = new Date().getTime(),
-          testResult = new JS.Test.Unit.TestResult(),
-          TR         = JS.Test.Unit.TestResult,
-          TS         = JS.Test.Unit.TestSuite,
-          TC         = JS.Test.Unit.TestCase;
+          testResult = new Test.Unit.TestResult(),
+          TR         = Test.Unit.TestResult,
+          TS         = Test.Unit.TestSuite,
+          TC         = Test.Unit.TestCase;
 
       var resultListener = testResult.addListener(TR.CHANGED, function() {
         var result = testResult.metadata(),
@@ -70,8 +70,8 @@ JS.Test.extend({
 
     addReporter: function(reporter) {
       var current = this._reporter;
-      if (!(current instanceof JS.Test.Reporters.Composite)) {
-        this._reporter = new JS.Test.Reporters.Composite();
+      if (!(current instanceof Test.Reporters.Composite)) {
+        this._reporter = new Test.Reporters.Composite();
         this._reporter.addReporter(current);
       }
       this._reporter.addReporter(reporter);
@@ -83,18 +83,18 @@ JS.Test.extend({
 
     getSuite: function(options) {
       var filter = options.test;
-      JS.Test.Unit.TestCase.resolve();
-      var suite = JS.Test.Unit.TestCase.suite(filter);
-      JS.Test.Unit.TestCase.clear();
+      Test.Unit.TestCase.resolve();
+      var suite = Test.Unit.TestCase.suite(filter);
+      Test.Unit.TestCase.clear();
       return suite;
     },
 
     extend: {
       getUI: function(settings) {
-        if (JS.Console.BROWSER && !JS.Console.PHANTOM)
-          return new JS.Test.UI.Browser(settings);
+        if (Console.BROWSER && !Console.PHANTOM)
+          return new Test.UI.Browser(settings);
         else
-          return new JS.Test.UI.Terminal(settings);
+          return new Test.UI.Terminal(settings);
       },
 
       filter: function(objects, suffix) {
@@ -128,7 +128,7 @@ JS.Test.extend({
       callback = undefined;
       context  = undefined;
     }
-    var runner = new JS.Test.Runner(options);
+    var runner = new Test.Runner(options);
     runner.run(callback, context);
   }
 });

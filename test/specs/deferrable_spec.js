@@ -1,11 +1,13 @@
-JS.ENV.DeferrableSpec = JS.Test.describe(JS.Deferrable, function() { with(this) {
+PKG.require('JS.Deferrable', function(Deferrable) {
+
+JS.ENV.DeferrableSpec = JS.Test.describe(Deferrable, function() { with(this) {
   include(JS.Test.FakeClock)
 
   before(function() { this.clock.stub() })
   after(function() { this.clock.reset() })
 
   before(function() { with(this) {
-    var Future    = new JS.Class(JS.Deferrable)
+    var Future    = new JS.Class(Deferrable)
     this.future   = new Future()
     this.values   = []
     this.callback = function(v) { values.push(v) }
@@ -64,7 +66,7 @@ JS.ENV.DeferrableSpec = JS.Test.describe(JS.Deferrable, function() { with(this) 
         future.errback(callback)
         future.timeout(200)
         clock.tick(250)
-        assertEqual( [instanceOf(JS.Deferrable.Timeout)], values )
+        assertEqual( [instanceOf(Deferrable.Timeout)], values )
       }})
 
       it("can be cancelled using cancelTimeout()", function() { with(this) {
@@ -120,4 +122,6 @@ JS.ENV.DeferrableSpec = JS.Test.describe(JS.Deferrable, function() { with(this) 
     }})
   }})
 }})
+
+})
 

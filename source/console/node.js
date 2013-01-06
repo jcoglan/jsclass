@@ -1,5 +1,5 @@
-JS.Console.extend({
-  Node: new JS.Class(JS.Console.Base, {
+Console.extend({
+  Node: new JS.Class(Console.Base, {
     backtraceFilter: function() {
       return new RegExp(process.cwd() + '/', 'g');
     },

@@ -1,5 +1,16 @@
-JS.LinkedList = new JS.Class('LinkedList', {
-  include: JS.Enumerable || {},
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = (typeof JS === 'undefined') ? require('./core') : JS,
+
+      Enumerable = js.Enumerable || require('./enumerable').Enumerable;
+
+  if (E) exports.JS = exports;
+  factory(js, Enumerable, E ? exports : js);
+
+})(function(JS, Enumerable, exports) {
+
+var LinkedList = new JS.Class('LinkedList', {
+  include: Enumerable || {},
 
   initialize: function(array, useNodes) {
     this.length = 0;
@@ -11,7 +22,7 @@ JS.LinkedList = new JS.Class('LinkedList', {
 
   forEach: function(block, context) {
     if (!block) return this.enumFor('forEach');
-    block = JS.Enumerable.toFn(block);
+    block = Enumerable.toFn(block);
 
     var node   = this.first,
         next, i, n;
@@ -55,7 +66,7 @@ JS.LinkedList = new JS.Class('LinkedList', {
   }
 });
 
-JS.LinkedList.Doubly = new JS.Class('LinkedList.Doubly', JS.LinkedList, {
+LinkedList.Doubly = new JS.Class('LinkedList.Doubly', LinkedList, {
   insertAt: function(n, newNode) {
     if (n < 0 || n >= this.length) return;
     this.insertBefore(this.at(n), newNode);
@@ -70,7 +81,7 @@ JS.LinkedList.Doubly = new JS.Class('LinkedList.Doubly', JS.LinkedList, {
   insertBefore: function() {}
 });
 
-JS.LinkedList.insertTemplate = function(prev, next, pos) {
+LinkedList.insertTemplate = function(prev, next, pos) {
   return function(node, newNode) {
     if (node.list !== this) return;
     newNode[prev] = node;
@@ -82,9 +93,9 @@ JS.LinkedList.insertTemplate = function(prev, next, pos) {
   };
 };
 
-JS.LinkedList.Doubly.Circular = new JS.Class('LinkedList.Doubly.Circular', JS.LinkedList.Doubly, {
-  insertAfter: JS.LinkedList.insertTemplate('prev', 'next', 'last'),
-  insertBefore: JS.LinkedList.insertTemplate('next', 'prev', 'first'),
+LinkedList.Doubly.Circular = new JS.Class('LinkedList.Doubly.Circular', LinkedList.Doubly, {
+  insertAfter: LinkedList.insertTemplate('prev', 'next', 'last'),
+  insertBefore: LinkedList.insertTemplate('next', 'prev', 'first'),
 
   push: function(newNode) {
     if (this.length)
@@ -112,3 +123,7 @@ JS.LinkedList.Doubly.Circular = new JS.Class('LinkedList.Doubly.Circular', JS.Li
     return removed;
   }
 });
+
+exports.LinkedList = LinkedList;
+});
+

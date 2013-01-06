@@ -1,10 +1,10 @@
-JS.DOM.Event = {
+DOM.Event = {
   _registry: [],
 
   on: function(element, eventName, callback, context) {
-    if (element !== JS.DOM.ENV &&
-        element.nodeType !== JS.DOM.ELEMENT_NODE &&
-        element.nodeType !== JS.DOM.DOCUMENT_NODE)
+    if (element !== DOM.ENV &&
+        element.nodeType !== DOM.ELEMENT_NODE &&
+        element.nodeType !== DOM.DOCUMENT_NODE)
       return;
 
     var wrapped = function() { callback.call(context, element) };
@@ -45,5 +45,5 @@ JS.DOM.Event = {
   }
 };
 
-JS.DOM.Event.on(JS.DOM.ENV, 'unload', JS.DOM.Event.detach, JS.DOM.Event);
+DOM.Event.on(DOM.ENV, 'unload', DOM.Event.detach, DOM.Event);
 

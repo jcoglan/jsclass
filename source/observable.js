@@ -1,4 +1,13 @@
-JS.Observable = new JS.Module('Observable', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = (typeof JS === 'undefined') ? require('./core') : JS;
+
+  if (E) exports.JS = exports;
+  factory(js, E ? exports : js);
+
+})(function(JS, exports) {
+
+var Observable = new JS.Module('Observable', {
   extend: {
     DEFAULT_METHOD: 'update'
   },
@@ -35,7 +44,7 @@ JS.Observable = new JS.Module('Observable', {
       block    = observer._block;
       context  = observer._context;
       if (typeof block === 'function') block.apply(context || null, arguments);
-      else block[context || JS.Observable.DEFAULT_METHOD].apply(block, arguments);
+      else block[context || Observable.DEFAULT_METHOD].apply(block, arguments);
     }
   },
 
@@ -49,8 +58,11 @@ JS.Observable = new JS.Module('Observable', {
   }
 });
 
-JS.Observable.alias({
+Observable.alias({
   subscribe:    'addObserver',
   unsubscribe:  'removeObserver'
 }, true);
+
+exports.Observable = Observable;
+});
 

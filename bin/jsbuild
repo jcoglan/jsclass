@@ -33,10 +33,10 @@ var fs      = require('fs'),
     include = params.argv.remain.slice(),
     dir     = new RegExp('^' + path.resolve(params.directory || '.') + '/')
 
-JSCLASS_PATH = path.dirname(__filename) + '/../src'
-require(JSCLASS_PATH + '/loader')
-JS.require('JS.Console')
-var C = JS.Console
+JSCLASS_PATH = path.dirname(__filename) + '/../src';
+
+var C = require('../src/console').Console,
+    P = require('../index')
 
 var die = function(message) {
   C.consoleFormat('white', 'bgred')
@@ -69,11 +69,11 @@ if (include.length === 0) {
 
 HTTP_REGEX = /^https?:\/\//
 
-JS.Package.DSL.file = function(filename) {
+P.DSL.file = function(filename) {
   if (!HTTP_REGEX.test(filename))
     filename = path.join(params.root || '.', filename)
 
-  return JS.Package._getByPath(filename)
+  return P.Package._getByPath(filename)
 }
 
 if (params.manifest) require(params.manifest)
@@ -85,7 +85,7 @@ var packages = [],
     output   = function() { console.log(source.join('\n\n')) }
 
 var expand = function(name, list) {
-  var pkg  = JS.Package._getByName(name),
+  var pkg  = P.Package._getByName(name),
       deps = list || []
 
   pkg._deps.list.forEach(function(p) { expand(p, deps) })

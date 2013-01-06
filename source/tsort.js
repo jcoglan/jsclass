@@ -1,4 +1,15 @@
-JS.TSort = new JS.Module('TSort', {
+(function(factory) {
+  var E  = (typeof exports === 'object'),
+      js = (typeof JS === 'undefined') ? require('./core') : JS,
+
+      Hash = js.Hash || require('./hash').Hash;
+
+  if (E) exports.JS = exports;
+  factory(js, Hash, E ? exports : js);
+
+})(function(JS, Hash, exports) {
+
+var TSort = new JS.Module('TSort', {
   extend: {
     Cyclic: new JS.Class(Error)
   },
@@ -14,7 +25,7 @@ JS.TSort = new JS.Module('TSort', {
       if (component.length === 1)
         block.call(context || null, component[0]);
       else
-        throw new JS.TSort.Cyclic('topological sort failed: ' + component.toString());
+        throw new TSort.Cyclic('topological sort failed: ' + component.toString());
     });
   },
 
@@ -25,7 +36,7 @@ JS.TSort = new JS.Module('TSort', {
   },
 
   eachStronglyConnectedComponent: function(block, context) {
-    var idMap = new JS.Hash(),
+    var idMap = new Hash(),
         stack = [];
 
     this.tsortEachNode(function(node) {
@@ -72,5 +83,8 @@ JS.TSort = new JS.Module('TSort', {
   tsortEachChild: function() {
     throw new JS.NotImplementedError('tsortEachChild');
   }
+});
+
+exports.TSort = TSort;
 });
 

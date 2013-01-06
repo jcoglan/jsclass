@@ -1,4 +1,6 @@
-JS.ENV.StateSpec = JS.Test.describe(JS.State, function() { with(this) {
+PKG.require('JS.State', function(State) {
+
+JS.ENV.StateSpec = JS.Test.describe(State, function() { with(this) {
   define("Positive", {
     ping: function() { this.value += 1 }
   })
@@ -9,7 +11,7 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() { with(this) {
 
   before(function() { with(this) {
     this.Stateful = new JS.Class({
-      include: JS.State,
+      include: State,
       initialize: function() { this.value = 0 }
     })
   }})
@@ -210,7 +212,7 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() { with(this) {
       behavesLike("inherited states")
 
       before(function() { with(this) {
-        var Mixin = new JS.Module({include: JS.State})
+        var Mixin = new JS.Module({include: State})
         Mixin.states(theStates)
         this.StatefulChild = new JS.Class(Stateful, {include: Mixin})
         StatefulChild.states({})
@@ -220,4 +222,6 @@ JS.ENV.StateSpec = JS.Test.describe(JS.State, function() { with(this) {
     }})
   }})
 }})
+
+})
 

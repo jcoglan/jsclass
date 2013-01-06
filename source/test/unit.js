@@ -1,9 +1,9 @@
-JS.Test = new JS.Module('Test', {
+var Test = new JS.Module('Test', {
   extend: {
     asyncTimeout: 10,
 
     filter: function(objects, suffix) {
-      return JS.Test.Runner.filter(objects, suffix);
+      return Test.Runner.filter(objects, suffix);
     },
 
     Reporters: new JS.Module({
