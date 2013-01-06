@@ -40,9 +40,7 @@ Test.Reporters.extend({
       }
       lines.push(line);
 
-      if (this._lines) {
-        while (lines.length < this._lines.length) lines.push('');
-      }
+      while (lines.length < this._lines.length) lines.push('');
       this._nextLines = lines;
       this._draw();
     },
