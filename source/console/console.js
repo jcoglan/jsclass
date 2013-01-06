@@ -101,25 +101,46 @@ JS.Console = new JS.Module('Console', {
            : stack;
     },
 
-    ANSI_CSI: String.fromCharCode(0x1B) + '[',
-    MAX_BUFFER_LENGTH: 78,
-    MAX_DEPTH: 4,
+    ANSI_CSI:       String.fromCharCode(0x1B) + '[',
+    DEFAULT_WIDTH:  80,
+    DEFAULT_HEIGHT: 24,
+    MAX_DEPTH:      4,
 
     ESCAPE_CODES: {
-      reset:      0,
-      bold:       1,    normal:       22,
-      underline:  4,    noline:       24,
-      blink:      5,    noblink:      25,
+      cursorUp:       '%1A',
+      cursorDown:     '%1B',
+      cursorForward:  '%1C',
+      cursorBack:     '%1D',
+      cursorNextLine: '%1E',
+      cursorPrevLine: '%1F',
+      cursorColumn:   '%1G',
+      cursorPosition: '%1;%2H',
 
-      black:      30,   bgblack:      40,
-      red:        31,   bgred:        41,
-      green:      32,   bggreen:      42,
-      yellow:     33,   bgyellow:     43,
-      blue:       34,   bgblue:       44,
-      magenta:    35,   bgmagenta:    45,
-      cyan:       36,   bgcyan:       46,
-      white:      37,   bgwhite:      47,
-      nocolor:    39,   bgnocolor:    49
+      eraseScreenForward: '0J',
+      eraseScreenBack:    '1J',
+      eraseScreen:        '2J',
+      eraseLineForward:   '0K',
+      eraseLineBack:      '1K',
+      eraseLine:          '2K',
+
+      reset:      '0m',
+      bold:       '1m',   normal:     '22m',
+      underline:  '4m',   noline:     '24m',
+      blink:      '5m',   noblink:    '25m',
+
+      black:      '30m',  bgblack:    '40m',
+      red:        '31m',  bgred:      '41m',
+      green:      '32m',  bggreen:    '42m',
+      yellow:     '33m',  bgyellow:   '43m',
+      blue:       '34m',  bgblue:     '44m',
+      magenta:    '35m',  bgmagenta:  '45m',
+      cyan:       '36m',  bgcyan:     '46m',
+      white:      '37m',  bgwhite:    '47m',
+      nocolor:    '39m',  bgnocolor:  '49m'
+    },
+
+    coloring: function() {
+      return this.adapter.coloring();
     },
 
     envvar: function(name) {
@@ -132,6 +153,10 @@ JS.Console = new JS.Module('Console', {
 
     exit: function(status) {
       this.adapter.exit(status);
+    },
+
+    getDimensions: function() {
+      return this.adapter.getDimensions();
     }
   },
 

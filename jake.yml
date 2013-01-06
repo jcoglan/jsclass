@@ -75,6 +75,7 @@ packages:
 
       - reporters/error
       - reporters/dot
+      - reporters/progress
       - reporters/spec
       - reporters/xml
       - reporters/json

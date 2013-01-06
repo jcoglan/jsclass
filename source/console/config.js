@@ -15,7 +15,7 @@
 
   for (var key in C.ESCAPE_CODES) (function(key) {
     C.define(key, function() {
-      JS.Console.adapter.format(key);
+      JS.Console.adapter.format(key, arguments);
     });
   })(key);
 

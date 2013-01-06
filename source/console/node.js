@@ -16,6 +16,20 @@ JS.Console.extend({
       process.exit(status);
     },
 
+    getDimensions: function() {
+      var width, height, dims;
+      if (process.stdout.getWindowSize) {
+        dims   = process.stdout.getWindowSize();
+        width  = dims[0];
+        height = dims[1];
+      } else {
+        dims   = process.binding('stdio').getWindowSize();
+        width  = dims[1];
+        height = dims[0];
+      }
+      return [width, height];
+    },
+
     print: function(string) {
       process.stdout.write(this.flushFormat() + string);
     },

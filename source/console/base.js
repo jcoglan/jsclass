@@ -25,10 +25,14 @@ JS.Console.extend({
       if (typeof quit === 'function')                quit(status);
     },
 
-    format: function(name) {
+    format: function(name, args) {
       if (!this.coloring()) return;
       var escape = JS.Console.ESCAPE_CODES[name];
-      this.__format__ += JS.Console.escape(escape + 'm');
+
+      for (var i = 0, n = args.length; i < n; i++)
+        escape = escape.replace('%' + (i+1), args[i]);
+
+      this.__format__ += JS.Console.escape(escape);
     },
 
     flushFormat: function() {
@@ -37,8 +41,8 @@ JS.Console.extend({
       return format;
     },
 
-    maxBufferLength: function() {
-      return JS.Console.MAX_BUFFER_LENGTH;
+    getDimensions: function() {
+      return [JS.Console.DEFAULT_WIDTH, JS.Console.DEFAULT_HEIGHT];
     },
 
     output: function(string, followon) {
@@ -46,7 +50,7 @@ JS.Console.extend({
 
       while (string.length > 0) {
         var length  = this.__buffer__.length,
-            max     = this.maxBufferLength(),
+            max     = this.getDimensions()[0],
             movable = (length > 0 && coloring),
             escape  = movable ? JS.Console.escape('1F') + JS.Console.escape((length + 1) + 'G') : '',
             line    = string.substr(0, max - length);

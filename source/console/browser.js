@@ -9,14 +9,15 @@ JS.Console.extend({
     },
 
     envvar: function(name) {
-      if (typeof phantom !== 'undefined')
+      if (JS.Console.PHANTOM)
         return require('system').env[name] || null;
       else
         return window[name] || null;
     },
 
-    maxBufferLength: function() {
-      return 1000;
+    getDimensions: function() {
+      if (JS.Console.PHANTOM) return this.callSuper();
+      return [1024, 1];
     },
 
     println: function(string) {
