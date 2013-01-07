@@ -21,7 +21,7 @@ Console.extend({
         if (bite >= 0) out += String.fromCharCode(bite);
       }
 
-      var match = /rows\s+(\d+);\s+columns\s+(\d+)/mg.exec(out);
+      var match = out.match(/rows\s+(\d+);\s+columns\s+(\d+)/);
       if (!match) return this._dimCache || this.callSuper();
 
       return this._dimCache = [parseInt(match[2], 10), parseInt(match[1], 10)];
