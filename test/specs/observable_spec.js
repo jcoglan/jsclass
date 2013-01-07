@@ -1,4 +1,4 @@
-PKG.require('JS.Observable', function(Observable) {
+JS.require('JS.Observable', function(Observable) {
 
 JS.ENV.ObservableSpec = JS.Test.describe(Observable, function() { with(this) {
   before(function() { with(this) {

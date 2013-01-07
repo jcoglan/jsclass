@@ -1,4 +1,4 @@
-PKG.require('JS.State', function(State) {
+JS.require('JS.State', function(State) {
 
 JS.ENV.StateSpec = JS.Test.describe(State, function() { with(this) {
   define("Positive", {

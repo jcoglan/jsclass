@@ -1,4 +1,4 @@
-PKG.require('JS.ConstantScope', function(ConstantScope) {
+JS.require('JS.ConstantScope', function(ConstantScope) {
 
 JS.ENV.ConstantScopeSpec = JS.Test.describe(ConstantScope, function() { with(this) {
   include(JS.Test.Helpers)

@@ -19,7 +19,7 @@ if (this.ActiveXObject) load = function(path) {
   }
 
   if (typeof require === 'function') {
-    $.PKG = require('../' + path + 'loader');
+    $.JS = require('../' + path + 'loader');
     require('./runner');
   } else {
     load(path + 'loader.js');

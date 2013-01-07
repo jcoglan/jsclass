@@ -1,4 +1,4 @@
-PKG.require('JS.Enumerable', 'JS.Observable', 'JS.Range', 'JS.Set', 'JS.SortedSet',
+JS.require('JS.Enumerable', 'JS.Observable', 'JS.Range', 'JS.Set', 'JS.SortedSet',
 function(Enumerable, Observable, Range, Set, SortedSet) {
 
 JS.ENV.Test = JS.ENV.Test || {}

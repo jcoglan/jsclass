@@ -5,7 +5,7 @@ Test.UI.extend({
           self = this;
 
       if (hash === 'testem') {
-        JS.Package.Loader.loadFile('/testem.js', function() {
+        JS.load('/testem.js', function() {
           callback.call(context || null, self);
         });
       } else {

@@ -1,4 +1,4 @@
-PKG.require('JS.Comparable', 'JS.Enumerable', 'JS.Enumerator', 'JS.Hash', 'JS.Range',
+JS.require('JS.Comparable', 'JS.Enumerable', 'JS.Enumerator', 'JS.Hash', 'JS.Range',
 function(Comparable, Enumerable, Enumerator, Hash, Range) {
 
 JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {

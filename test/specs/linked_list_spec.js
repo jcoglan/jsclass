@@ -1,4 +1,4 @@
-PKG.require('JS.Enumerable', 'JS.LinkedList', function(Enumerable, LinkedList) {
+JS.require('JS.Enumerable', 'JS.LinkedList', function(Enumerable, LinkedList) {
 
 JS.ENV.LinkedListSpec = JS.Test.describe(LinkedList, function() { with(this) {
   describe(LinkedList.Doubly.Circular, function() { with(this) {
