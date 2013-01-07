@@ -1,10 +1,9 @@
-PKG = (typeof PKG === 'object') ? PKG : JS
-PKG.ENV.CWD = (typeof CWD === 'undefined') ? '.' : CWD
+JS.ENV.CWD = (typeof CWD === 'undefined') ? '.' : CWD
 
-PKG.cacheBust = true
-if (PKG.ENV.JS_DEBUG) PKG.debug = true
+JS.cacheBust = true
+if (JS.ENV.JS_DEBUG) JS.debug = true
 
-PKG.packages(function() { with(this) {
+JS.packages(function() { with(this) {
   autoload(/^(.*)Spec$/, {from: CWD + '/test/specs', require: 'JS.$1'})
 
   pkg('Test.UnitSpec').requires('JS.Set', 'JS.Observable')
@@ -16,10 +15,9 @@ PKG.packages(function() { with(this) {
   pkg('Test.MockingSpec').requires('TestSpecHelpers')
 }})
 
-PKG.require('JS', 'JS.Test', function(JS, Test) {
-  PKG.ENV.JS = JS
-  JS.Package = PKG.Package
-  JS.Test    = Test
+JS.require('JS', 'JS.Test', function(js, Test) {
+  js.extend(JS, js)
+  JS.Test = Test
 
   var specs = [ 'Test.UnitSpec',
                 'Test.ContextSpec',
@@ -53,6 +51,6 @@ PKG.require('JS', 'JS.Test', function(JS, Test) {
 
   specs = Test.filter(specs, 'Spec')
   specs.push(function() { Test.autorun() })
-  PKG.require.apply(PKG, specs)
+  JS.require.apply(JS, specs)
 })
 

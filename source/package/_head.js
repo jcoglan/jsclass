@@ -1,6 +1,6 @@
 <%= license %>
 
-var JS = (typeof JS === 'undefined') ? {} : JS;
+var JS = (typeof this.JS === 'undefined') ? {} : this.JS;
 
 (function(factory) {
   var $ = (typeof this.global === 'object') ? this.global : this,

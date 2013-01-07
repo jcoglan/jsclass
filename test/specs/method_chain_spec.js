@@ -1,4 +1,4 @@
-PKG.require('JS.MethodChain', function(MethodChain) {
+JS.require('JS.MethodChain', function(MethodChain) {
 
 JS.ENV.MethodChainSpec = JS.Test.describe(MethodChain, function() { with(this) {
   include(JS.Test.Helpers)

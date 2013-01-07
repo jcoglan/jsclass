@@ -1,4 +1,4 @@
-PKG.require('JS.Forwardable', function(Forwardable) {
+JS.require('JS.Forwardable', function(Forwardable) {
 
 JS.ENV.ForwardableSpec = JS.Test.describe(Forwardable, function() { with(this) {
   define("Subject", new JS.Class({
