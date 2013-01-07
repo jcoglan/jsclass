@@ -7,6 +7,7 @@ if (PKG.ENV.JS_DEBUG) PKG.debug = true
 PKG.packages(function() { with(this) {
   autoload(/^(.*)Spec$/, {from: CWD + '/test/specs', require: 'JS.$1'})
 
+  pkg('EnumerableSpec').requires('JS.Enumerator', 'JS.Hash', 'JS.Range')
   pkg('Test.UnitSpec').requires('JS.Set', 'JS.Observable')
   pkg('ClassSpec').requires('ModuleSpec')
 

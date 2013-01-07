@@ -1,6 +1,6 @@
 PKG.require('JS', 'JS.Enumerable', 'JS.Enumerator', function(JS, Enumerable, Enumerator) {
 
-PKG.ENV.EnumeratorSpec = JS.Test.describe(Enumerator, function() { with(this) {
+JS.ENV.EnumeratorSpec = JS.Test.describe(Enumerator, function() { with(this) {
   include(JS.Test.Helpers)
 
   var Dictionary = new JS.Class("Dictionary", {
