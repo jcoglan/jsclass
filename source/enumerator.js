@@ -29,9 +29,9 @@ var Enumerator = new JS.Class('Enumerator', {
            this._object === enumerator._object &&
            this._method === enumerator._method &&
            Enumerable.areEqual(this._args, enumerator._args);
-        },
+  },
 
-        forEach: function(block, context) {
+  forEach: function(block, context) {
     if (!block) return this;
     var args = this._args.slice();
     args.push(block);
