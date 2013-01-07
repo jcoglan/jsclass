@@ -17,6 +17,7 @@ Test.Reporters.extend({
     startSuite: function(event) {
       var self = this;
       if (this._container) document.body.removeChild(this._container);
+      this._start = event.timestamp;
 
       this._container = DOM.div({className: 'test-result-container'}, function(div) {
         div.table({className: 'report'}, function(table) {
@@ -72,7 +73,9 @@ Test.Reporters.extend({
       this.update(event);
       DOM.removeClass(this._light, 'light-pending');
       DOM.addClass(this._light, event.passed ? 'light-passed' : 'light-failed');
-      this._summary.innerHTML = 'Finished in ' + event.runtime + ' seconds';
+
+      var runtime = (event.timestamp - this._start) / 1000;
+      this._summary.innerHTML = 'Finished in ' + runtime + ' seconds';
     },
 
     serialize: function() {

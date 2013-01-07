@@ -13,7 +13,7 @@ Test.Reporters.extend({
 
     startTest: function(event) {
       this._faults = [];
-      this._start  = new Date().getTime();
+      this._start  = event.timestamp;
     },
 
     addFault: function(event) {
@@ -29,7 +29,7 @@ Test.Reporters.extend({
         suite:       event.context,
         success:     this._faults.length === 0,
         skipped:     0,
-        time:        (new Date().getTime()) - this._start,
+        time:        event.timestamp - this._start,
         log:         this._faults
       });
     },

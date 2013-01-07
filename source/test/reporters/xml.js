@@ -20,7 +20,7 @@ Test.Reporters.extend({
           tests:    0,
           failures: 0,
           errors:   0,
-          start:    new Date().getTime()
+          start:    event.timestamp
         });
       this._stack.push(event.shortName);
     },
@@ -28,7 +28,7 @@ Test.Reporters.extend({
     startTest: function(event) {
       this._suites[this._suites.length - 1].cases.push({
         name:     event.context.slice(1).concat(event.shortName).join(' '),
-        start:    new Date().getTime(),
+        start:    event.timestamp,
         failures: []
       });
     },
@@ -50,7 +50,7 @@ Test.Reporters.extend({
       var suite = this._suites[this._suites.length - 1],
           test  = suite.cases[suite.cases.length - 1];
 
-      test.time = (new Date().getTime() - test.start) / 1000;
+      test.time = (event.timestamp - test.start) / 1000;
       delete test.start;
     },
 
@@ -58,7 +58,7 @@ Test.Reporters.extend({
       this._stack.pop();
       if (this._stack.length > 0) return;
       var suite = this._suites[this._suites.length - 1];
-      suite.time = (new Date().getTime() - suite.start) / 1000;
+      suite.time = (event.timestamp - suite.start) / 1000;
       delete suite.start;
 
       var test, failure, ending, i, j, m, n;

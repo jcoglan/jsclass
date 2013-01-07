@@ -10,6 +10,7 @@ Test.Reporters.extend({
 
       this._tests  = [];
       this._faults = [];
+      this._start  = event.timestamp;
       this._size   = event.size;
       this._space  = ' ';
       this._lines  = [''];
@@ -105,11 +106,11 @@ Test.Reporters.extend({
     },
 
     _getWidth: function() {
-      var time = new Date().getTime();
+      var time = new Test.Runner.Date().getTime();
       if (this._width && time < this._cacheTime + this.klass.CACHE_TIME)
         return this._width;
 
-      this._cacheTime = new Date().getTime();
+      this._cacheTime = new Test.Runner.Date().getTime();
       return this._width = Console.getDimensions()[0] - 8;
     }
   })

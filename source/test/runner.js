@@ -21,49 +21,38 @@ Test.extend({
       this.setReporter(new Test.Reporters.Composite(reporters));
       if (callback) callback.call(context || null, this);
 
-      var startTime  = new Date().getTime(),
-          testResult = new Test.Unit.TestResult(),
+      var testResult = new Test.Unit.TestResult(),
           TR         = Test.Unit.TestResult,
           TS         = Test.Unit.TestSuite,
           TC         = Test.Unit.TestCase;
 
       var resultListener = testResult.addListener(TR.CHANGED, function() {
-        var result = testResult.metadata(),
-            time   = new Date().getTime();
-
-        result.runtime = (time - startTime) / 1000;
-        this._reporter.update(result);
+        var result = testResult.metadata();
+        this._reporter.update(this.klass.timestamp(result));
       }, this);
 
       var faultListener = testResult.addListener(TR.FAULT, function(fault) {
-        this._reporter.addFault(fault.metadata());
+        this._reporter.addFault(this.klass.timestamp(fault.metadata()));
       }, this);
 
       var reportResult = function() {
         testResult.removeListener(TR.CHANGED, resultListener);
         testResult.removeListener(TR.FAULT, faultListener);
 
-        var endTime     = new Date().getTime(),
-            elapsedTime = (endTime - startTime) / 1000;
-
         // TODO output reports
         var result = testResult.metadata();
-        result.runtime = elapsedTime;
-        this._reporter.endSuite(result);
+        this._reporter.endSuite(this.klass.timestamp(result));
       };
 
       var reportEvent = function(channel, testCase) {
-        if (channel === TS.STARTED)
-          this._reporter.startContext(testCase.metadata());
-        else if (channel === TC.STARTED)
-          this._reporter.startTest(testCase.metadata());
-        else if (channel === TC.FINISHED)
-          this._reporter.endTest(testCase.metadata());
-        else if (channel === TS.FINISHED)
-          this._reporter.endContext(testCase.metadata());
+        var event = this.klass.timestamp(testCase.metadata());
+        if (channel === TS.STARTED)       this._reporter.startContext(event);
+        else if (channel === TC.STARTED)  this._reporter.startTest(event);
+        else if (channel === TC.FINISHED) this._reporter.endTest(event);
+        else if (channel === TS.FINISHED) this._reporter.endContext(event);
       };
 
-      this._reporter.startSuite(suite.metadata());
+      this._reporter.startSuite(this.klass.timestamp(suite.metadata()));
 
       suite.run(testResult, reportResult, reportEvent, this);
     },
@@ -90,6 +79,13 @@ Test.extend({
     },
 
     extend: {
+      Date: Date,
+
+      timestamp: function(event) {
+        event.timestamp = new this.Date().getTime();
+        return event;
+      },
+
       getUI: function(settings) {
         if (Console.BROWSER && !Console.PHANTOM)
           return new Test.UI.Browser(settings);

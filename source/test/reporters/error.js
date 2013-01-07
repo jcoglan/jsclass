@@ -9,6 +9,7 @@ Test.Reporters.extend({
 
     startSuite: function(event) {
       this._faults = [];
+      this._start  = event.timestamp;
 
       this.consoleFormat('bold');
       this.puts('Loaded suite: ' + event.children.join(', '));
@@ -46,8 +47,9 @@ Test.Reporters.extend({
     },
 
     _printSummary: function(event) {
+      var runtime = (event.timestamp - this._start) / 1000;
       this.reset();
-      this.puts('Finished in ' + event.runtime + ' seconds');
+      this.puts('Finished in ' + runtime + ' seconds');
 
       var color = event.passed ? 'green' : 'red';
       this.consoleFormat(color);

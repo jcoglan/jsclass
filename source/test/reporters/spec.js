@@ -7,6 +7,7 @@ Test.Reporters.extend({
 
     startSuite: function(event) {
       this._faults = [];
+      this._start  = event.timestamp;
       this._stack  = [];
 
       this.puts('');
