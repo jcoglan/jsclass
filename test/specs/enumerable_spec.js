@@ -1,5 +1,5 @@
-PKG.require('JS.Comparable', 'JS.Enumerable', 'JS.Hash', 'JS.Range',
-function(Comparable, Enumerable, Hash, Range) {
+PKG.require('JS.Comparable', 'JS.Enumerable', 'JS.Enumerator', 'JS.Hash', 'JS.Range',
+function(Comparable, Enumerable, Enumerator, Hash, Range) {
 
 JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
   include(JS.Test.Helpers)
@@ -29,8 +29,8 @@ JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
 
   define("assertEnumFor", function(object, method, args, actual) {
     this.__wrapAssertion__(function() {
-      this.assertKindOf( Enumerable.Enumerator, actual )
-      var enumerator = new Enumerable.Enumerator(object, method, args)
+      this.assertKindOf( Enumerator, actual )
+      var enumerator = new Enumerator(object, method, args)
       this.assertEqual( enumerator, actual )
     })
   })
@@ -816,7 +816,7 @@ JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
     }})
   }})
 
-  describe(Enumerable.Enumerator, function() { with(this) {
+  describe(Enumerator, function() { with(this) {
     if (!List.prototype.klass) throw (List.toString());
 
     extend({
@@ -845,7 +845,7 @@ JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
 
     describe("with no method name", function() { with(this) {
       before(function() { with(this) {
-        this.iterator = new Enumerable.Enumerator(dictionary)
+        this.iterator = new Enumerator(dictionary)
       }})
 
       it("is enumerable", function() { with(this) {
@@ -860,7 +860,7 @@ JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
 
     describe("with no modifier arguments", function() { with(this) {
       before(function() { with(this) {
-        this.iterator = new Enumerable.Enumerator(dictionary, "eachWord")
+        this.iterator = new Enumerator(dictionary, "eachWord")
       }})
 
       it("is enumerable", function() { with(this) {
@@ -875,7 +875,7 @@ JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
 
     describe("with a modifier argument", function() { with(this) {
       before(function() { with(this) {
-        this.iterator = new Enumerable.Enumerator(dictionary, "eachWordLongerThan", [4])
+        this.iterator = new Enumerator(dictionary, "eachWordLongerThan", [4])
       }})
 
       it("is enumerable", function() { with(this) {
