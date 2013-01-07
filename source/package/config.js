@@ -71,10 +71,14 @@ P.packages(function() { with(this) {
     module('forwardable')   .provides('JS.Forwardable')
                             .requires('JS.Module');
 
-    module('enumerable')    .provides('JS.Enumerable',
-                                      'JS.Enumerator')
+    module('enumerable')    .provides('JS.Enumerable')
                             .requires('JS.Module',
                                       'JS.Class');
+
+    module('enumerator')    .provides('JS.Enumerator')
+                            .requires('JS.Module',
+                                      'JS.Class',
+                                      'JS.Enumerable');
 
     module('deferrable')    .provides('JS.Deferrable')
                             .requires('JS.Module');

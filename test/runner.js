@@ -38,6 +38,7 @@ PKG.require('JS', 'JS.Test', function(JS, Test) {
                 'ConstantScopeSpec',
                 'DecoratorSpec',
                 'EnumerableSpec',
+                'EnumeratorSpec',
                 'ForwardableSpec',
                 'HashSpec',
                 'LinkedListSpec',

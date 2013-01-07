@@ -140,6 +140,7 @@ packages:
   comparable:       comparable
   constant_scope:   constant_scope
   enumerable:       enumerable
+  enumerator:       enumerator
   deferrable:       deferrable
   observable:       observable
   forwardable:      forwardable
