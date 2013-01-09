@@ -35,8 +35,6 @@ var fs      = require('fs'),
     include = params.argv.remain.slice(),
     dir     = new RegExp('^' + path.resolve(params.directory || process.cwd()) + '/')
 
-JSCLASS_PATH = path.resolve(__dirname, '/../src')
-
 var C = require('../src/console').Console,
     P = require('../index')
 
@@ -174,7 +172,7 @@ if (params.output === 'paths') {
 }
 
 if (params.packages !== false)
-  source.push(fs.readFileSync(JSCLASS_PATH + '/package-browser.js'))
+  source.push(fs.readFileSync(__dirname + '/../src/package-browser.js'))
 
 var readLocal = function(file, callback) {
   fs.readFile(file, function(error, content) {
@@ -255,7 +253,6 @@ var expandCSS = function(file, css, callback) {
 
     if (/^data:/.test(url)) return fill(snippet)
 
-    console.error('read', pth)
     read(pth, function(buffer) {
       if (type === 'css')
         expandCSS(pth, buffer.toString('utf8'), function(css) {
