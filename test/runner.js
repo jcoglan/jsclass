@@ -1,6 +1,6 @@
 JS.ENV.CWD = (typeof CWD === 'undefined') ? '.' : CWD
 
-JS.cacheBust = true
+JS.cache = false
 if (JS.ENV.JS_DEBUG) JS.debug = true
 
 JS.packages(function() { with(this) {

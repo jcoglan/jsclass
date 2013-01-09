@@ -22,7 +22,7 @@ Package.DomLoader = {
 
   fetch: function(path) {
     var originalPath = path;
-    if (exports.cacheBust) path = this.cacheBust(path);
+    if (exports.cache === false) path = this.cacheBust(path);
 
     this.HOST = this.HOST || this.HOST_REGEX.exec(window.location.href);
     var host = this.HOST_REGEX.exec(path);
@@ -48,7 +48,7 @@ Package.DomLoader = {
   },
 
   loadFile: function(path, fireCallbacks, source) {
-    if (exports.cacheBust && !source) path = this.cacheBust(path);
+    if (!source && exports.cache === false) path = this.cacheBust(path);
 
     var self   = this,
         head   = document.getElementsByTagName('head')[0],
