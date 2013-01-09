@@ -118,6 +118,7 @@
 }
 
 .test-result-container .specs .runner {
+  background:   url(bullet_go.png) center center no-repeat;
   cursor:       pointer;
   display:      block;
   float:        left;

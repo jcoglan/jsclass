@@ -123,7 +123,6 @@ Test.Reporters.Browser.extend({
           self._toggle = li.p({className: self._type + '-name'}, name);
           if (self._type === 'spec') {
             self._runner = DOM.span({className: 'runner'}, 'Run');
-            self._runner.style.background = 'url("' + JSCLASS_PATH + 'assets/bullet_go.png") center center no-repeat';
             self._toggle.insertBefore(self._runner, self._toggle.firstChild);
           }
         }

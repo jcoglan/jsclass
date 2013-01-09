@@ -8,18 +8,20 @@ var fs      = require('fs'),
 
     nopt    = require('nopt'),
 
-    options = { manifest:   path,
-                root:       path,
-                external:   Boolean,
-                packages:   Boolean,
-                bundles:    path,
-                output:     String,
-                directory:  path
+    options = { manifest:     path,
+                root:         path,
+                external:     Boolean,
+                stylesheets:  Boolean,
+                packages:     Boolean,
+                bundles:      path,
+                output:       String,
+                directory:    path
               },
 
     shorts  = { 'm': '--manifest',
                 'r': '--root',
                 'e': '--external',
+                's': '--stylesheets',
                 'p': '--packages',
                 'P': '--no-packages',
                 'b': '--bundles',
@@ -31,9 +33,9 @@ var fs      = require('fs'),
 
     params  = nopt(options, shorts),
     include = params.argv.remain.slice(),
-    dir     = new RegExp('^' + path.resolve(params.directory || '.') + '/')
+    dir     = new RegExp('^' + path.resolve(params.directory || process.cwd()) + '/')
 
-JSCLASS_PATH = path.dirname(__filename) + '/../src';
+JSCLASS_PATH = path.resolve(__dirname, '/../src')
 
 var C = require('../src/console').Console,
     P = require('../index')
@@ -44,7 +46,7 @@ var die = function(message) {
   C.reset()
   C.puts(' ' + message)
   process.exit(1)
-};
+}
 
 if (params.output && outputs.indexOf(params.output) < 0)
   die('--output must be one of: ' + outputs.join(', '))
@@ -57,6 +59,7 @@ if (include.length === 0) {
   C.puts('\nOptions:  --manifest,    -m : path to JS.Packages manifest script')
   C.puts('          --root,        -r : directory containing your JavaScripts')
   C.puts('          --external,    -e : include external scripts from the web')
+  C.puts('          --stylesheets, -s : embed required CSS stylesheets in JS')
   C.puts('          --no-packages, -P : don\'t include JS.Package system in build')
   C.puts('          --bundles,     -b : path to bundle definitions file')
   C.puts('          --output,      -o : select output type: \'code\' or \'paths\'')
@@ -67,11 +70,24 @@ if (include.length === 0) {
   process.exit()
 }
 
-HTTP_REGEX = /^https?:\/\//
+var HTTP_REGEX = /^https?:/i,
+    CSS_REGEX  = /\.css$/i
+
+var resolve = function(file, ref) {
+  if (HTTP_REGEX.test(ref)) return ref
+  if (HTTP_REGEX.test(file)) {
+    var uri = url.parse(file),
+        pth = path.resolve(path.dirname(uri.pathname), ref)
+    return uri.protocol + '//' + uri.host + pth
+  } else {
+    var root = /^\//.test(ref) ? (params.root || process.cwd()) : path.dirname(file)
+    return path.resolve(root, ref.replace(/^\/*/, ''))
+  }
+}
 
 P.DSL.file = function(filename) {
   if (!HTTP_REGEX.test(filename))
-    filename = path.join(params.root || '.', filename)
+    filename = path.resolve('', '/' + filename)
 
   return P.Package._getByPath(filename)
 }
@@ -123,11 +139,16 @@ var packageFiles = function(packages) {
     if (!(paths instanceof Array))
       die('Cannot bundle ' + pkg + ': no path specified in your manifest')
 
-    files = files.concat(paths.map(function(loader) {
-      return HTTP_REGEX.test(loader)
-           ? loader
-           : path.resolve(loader)
-    }))
+    if (params.stylesheets)
+      paths = paths.concat(pkg._styles.list)
+
+    paths.forEach(function(loader) {
+      if (HTTP_REGEX.test(loader)) {
+        if (params.external) files.push(loader)
+      } else {
+        files.push(path.resolve(loader))
+      }
+    })
   })
   return files
 }
@@ -155,52 +176,127 @@ if (params.output === 'paths') {
 if (params.packages !== false)
   source.push(fs.readFileSync(JSCLASS_PATH + '/package-browser.js'))
 
-var bundle = function(i) {
-  if (i >= files.length) return output()
-  var file = files[i]
-
-  if (HTTP_REGEX.test(file))
-    bundleRemote(file, i)
-  else
-    bundleLocal(file, i)
-}
-
-var bundleLocal = function(file, i) {
+var readLocal = function(file, callback) {
   fs.readFile(file, function(error, content) {
     if (error)
       die('Cannot find file ' + file + ', please check your --root setting')
 
-    source.push(content.toString())
-    bundle(i + 1)
+    callback(content)
   })
 }
 
-var bundleRemote = function(file, i) {
-  if (!params.external) {
-    console.error('Warning: skipping ' + file + ', pass --external to include it')
-    return bundle(i + 1)
-  }
-
+var readRemote = function(file, callback) {
   var uri     = url.parse(file),
       client  = (uri.protocol === 'https:') ? https : http,
       port    = uri.port || (client === https ? '443' : '80'),
       options = {host: uri.hostname, port: port, path: uri.pathname},
-      body    = ''
+      chunks  = [],
+      length  = 0
 
-  var end = function() {
-    source.push(body)
-    bundle(i + 1)
-  }
   client.get(options, function(response) {
     if (response.statusCode < 200 || response.statusCode >= 300)
       die('Request unsuccessful: ' + file)
 
-    response.addListener('data', function(c) { body += c.toString('utf8', 0, c.length) })
-    response.addListener('close', end)
-    response.addListener('end', end)
+    response.addListener('data', function(chunk) {
+      chunks.push(chunk)
+      length += chunk.length
+    })
+    response.addListener('end', function() {
+      var offset = 0,
+          body   = new Buffer(length)
+
+      chunks.forEach(function(chunk) {
+        chunk.copy(body, offset)
+        offset += chunk.length
+      })
+      callback(body)
+    })
   })
   .on('error', function() {
     die('Request unsuccessful: ' + file)
+  })
+}
+
+var read = function(file, callback) {
+  var readFile = HTTP_REGEX.test(file) ? readRemote : readLocal
+  readFile(file, callback)
+}
+
+var expandCSS = function(file, css, callback) {
+  var assets   = css.match(/\burl\s*\(("(\\.|[^"])*"|'(\\.|[^'])*'|[^\)]*)\)/g) || [],
+      length   = assets.length,
+      inline   = [],
+      complete = 0
+
+  if (length === 0) return callback(css)
+
+  var rewrite = function() {
+    inline.forEach(function(pair) {
+      css = css.replace(pair[0], pair[1])
+    })
+    callback(css)
+  }
+
+  assets.forEach(function(snippet, i) {
+    var url  = snippet.replace(/^url\s*\(('|"|)/, '').replace(/('|"|)\)$/, ''),
+        pth  = resolve(file, url),
+        type = url.split('.').pop()
+
+    var fill = function(buffer) {
+      var mime   = (type === 'css') ? 'text/css' : 'image/' + type,
+          base64 = (typeof buffer === 'string')
+                 ? buffer
+                 : 'url(data:' + mime + ';base64,' + buffer.toString('base64') + ')'
+
+      inline[i] = [snippet, base64]
+      complete += 1
+      if (complete === length) rewrite()
+    }
+
+    if (/^data:/.test(url)) return fill(snippet)
+
+    console.error('read', pth)
+    read(pth, function(buffer) {
+      if (type === 'css')
+        expandCSS(pth, buffer.toString('utf8'), function(css) {
+          fill(new Buffer(css, 'utf8'))
+        })
+      else
+        fill(buffer)
+    })
+  })
+}
+
+var embedCSS = function(file, css, callback) {
+  expandCSS(file, css, function(css) {
+    var base64 = new Buffer(css, 'utf8').toString('base64')
+    css = "(function() {\n" +
+          "  if (typeof document === 'undefined') return;\n" +
+          "  var head  = document.getElementsByTagName('head')[0],\n" +
+          "      style = document.createElement('style');\n" +
+          "  style.type = 'text/css';\n" +
+          "  style.innerHTML = '@import url(data:text/css;base64," + base64 + ")';\n" +
+          "  head.appendChild(style);\n" +
+          "})();"
+
+    callback(css)
+  })
+}
+
+var bundle = function(i) {
+  if (i >= files.length) return output()
+  var file = files[i]
+
+  var next = function(code) {
+    source.push(code.toString('utf8'))
+    bundle(i + 1)
+  }
+
+  read(file, function(code) {
+    if (CSS_REGEX.test(file))
+      embedCSS(file, code.toString('utf8'), next)
+    else
+      next(code)
   })
 }
 
