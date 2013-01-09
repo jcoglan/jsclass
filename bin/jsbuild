@@ -38,6 +38,8 @@ var fs      = require('fs'),
 var C = require('../src/console').Console,
     P = require('../index')
 
+P.ENV.JS = P
+
 var die = function(message) {
   C.consoleFormat('white', 'bgred')
   C.print('ERROR')
@@ -63,7 +65,7 @@ if (include.length === 0) {
   C.puts('          --output,      -o : select output type: \'code\' or \'paths\'')
   C.puts('          --directory,   -d : directory for paths to print relative to')
 
-  C.puts('\ne.g. jsbuild -m path/to/js/manifest.js -r path/to/js/ -eP jQuery JS.Set\n')
+  C.puts('\ne.g. jsbuild -m path/to/js/manifest.js -r path/to/js/ -Pe jQuery JS.Set\n')
 
   process.exit()
 }
@@ -72,22 +74,15 @@ var HTTP_REGEX = /^https?:/i,
     CSS_REGEX  = /\.css$/i
 
 var resolve = function(file, ref) {
-  if (HTTP_REGEX.test(ref)) return ref
-  if (HTTP_REGEX.test(file)) {
-    var uri = url.parse(file),
-        pth = path.resolve(path.dirname(uri.pathname), ref)
-    return uri.protocol + '//' + uri.host + pth
+  if (HTTP_REGEX.test(ref)) {
+    return ref
+  } else if (HTTP_REGEX.test(file)) {
+    var uri = url.parse(file)
+    return uri.protocol + '//' + uri.host + resolve(uri.pathname, ref)
   } else {
-    var root = /^\//.test(ref) ? (params.root || process.cwd()) : path.dirname(file)
-    return path.resolve(root, ref.replace(/^\/*/, ''))
+    var root = file ? path.dirname(file) : (params.root || process.cwd())
+    return path.resolve(root, ref)
   }
-}
-
-P.DSL.file = function(filename) {
-  if (!HTTP_REGEX.test(filename))
-    filename = path.resolve('', '/' + filename)
-
-  return P.Package._getByPath(filename)
 }
 
 if (params.manifest) require(params.manifest)
@@ -140,15 +135,12 @@ var packageFiles = function(packages) {
     if (params.stylesheets)
       paths = paths.concat(pkg._styles.list)
 
-    paths.forEach(function(loader) {
-      if (HTTP_REGEX.test(loader)) {
-        if (params.external) files.push(loader)
-      } else {
-        files.push(path.resolve(loader))
-      }
-    })
+    if (!params.external)
+      paths = paths.filter(function(p) { return !HTTP_REGEX.test(p) })
+
+    paths.forEach(function(loader) { files.push(loader) })
   })
-  return files
+  return files.map(function(f) { return resolve('', f) })
 }
 
 include.forEach(function(inc) {
