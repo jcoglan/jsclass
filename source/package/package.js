@@ -20,6 +20,13 @@ Package.log = function(message) {
   if (global.console && console.info) console.info(message);
 };
 
+var resolve = function(filename) {
+  if (/^https?:/.test(filename)) return filename;
+  var root = exports.WEB_ROOT;
+  if (root) filename = (root + '/' + filename).replace(/\/+/g, '/');
+  return filename;
+};
+
 //================================================================
 // Ordered list of unique elements, for storing dependencies
 
@@ -81,8 +88,7 @@ Package._throw = function(message) {
 var instance = Package.prototype,
 
     methods = [['requires', '_deps'],
-               ['uses',     '_uses'],
-               ['styling',  '_styles']],
+               ['uses',     '_uses']],
 
     i = methods.length;
 
@@ -103,6 +109,11 @@ instance.provides = function() {
     Package._getFromCache(arguments[i]).pkg = this;
   }
   return this;
+};
+
+instance.styling = function() {
+  for (var i = 0, n = arguments.length; i < n; i++)
+    this._styles.push(resolve(arguments[i]));
 };
 
 instance.setup = function(block) {

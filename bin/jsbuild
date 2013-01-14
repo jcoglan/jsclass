@@ -38,6 +38,7 @@ var fs      = require('fs'),
 var C = require('../src/console').Console,
     P = require('../index')
 
+P.WEB_ROOT = path.resolve(params.root || process.cwd())
 P.ENV.JS = P
 
 var die = function(message) {
@@ -74,14 +75,16 @@ var HTTP_REGEX = /^https?:/i,
     CSS_REGEX  = /\.css$/i
 
 var resolve = function(file, ref) {
+  var root = P.WEB_ROOT
+
   if (HTTP_REGEX.test(ref)) {
     return ref
   } else if (HTTP_REGEX.test(file)) {
     var uri = url.parse(file)
-    return uri.protocol + '//' + uri.host + resolve(uri.pathname, ref)
+    return uri.protocol + '//' + uri.host + path.resolve(path.dirname(uri.pathname), ref)
   } else {
-    var root = file ? path.dirname(file) : (params.root || process.cwd())
-    return path.resolve(root, ref)
+    if (root && /^\//.test(ref)) ref = (root + '/' + ref).replace(/\/+/g, '/')
+    return path.resolve(path.dirname(file), ref)
   }
 }
 
@@ -140,7 +143,7 @@ var packageFiles = function(packages) {
 
     paths.forEach(function(loader) { files.push(loader) })
   })
-  return files.map(function(f) { return resolve('', f) })
+  return files
 }
 
 include.forEach(function(inc) {
@@ -208,6 +211,7 @@ var readRemote = function(file, callback) {
 }
 
 var read = function(file, callback) {
+  console.error('[READ] ' + file)
   var readFile = HTTP_REGEX.test(file) ? readRemote : readLocal
   readFile(file, callback)
 }

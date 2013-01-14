@@ -11,8 +11,8 @@ var DSL = {
     return pkg;
   },
 
-  file: function() {
-    return Package._getByPath.apply(Package, arguments);
+  file: function(filename) {
+    return Package._getByPath(resolve(filename));
   },
 
   load: function(path, fireCallbacks) {
