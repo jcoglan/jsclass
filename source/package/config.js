@@ -44,6 +44,7 @@ P.packages(function() { with(this) {
                                       'JS.Enumerable',
                                       'JS.SortedSet',
                                       'JS.Range',
+                                      'JS.Hash',
                                       'JS.MethodChain',
                                       'JS.Comparable',
                                       'JS.StackTrace')

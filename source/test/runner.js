@@ -39,7 +39,6 @@ Test.extend({
         testResult.removeListener(TR.CHANGED, resultListener);
         testResult.removeListener(TR.FAULT, faultListener);
 
-        // TODO output reports
         var result = testResult.metadata();
         this._reporter.endSuite(this.klass.timestamp(result));
       };

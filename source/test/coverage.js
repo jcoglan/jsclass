@@ -2,7 +2,7 @@ Test.extend({
   Coverage: new JS.Class({
     initialize: function(module) {
       this._module = module;
-      this._methods = new JS.Hash([]);
+      this._methods = new Hash([]);
 
       var storeMethods = function(module) {
         var methods = module.instanceMethods(false),
@@ -15,14 +15,14 @@ Test.extend({
 
     attach: function() {
       var module = this._module;
-      JS.StackTrace.addObserver(this);
+      StackTrace.addObserver(this);
       JS.Method.trace([module, module.__eigen__()]);
     },
 
     detach: function() {
       var module = this._module;
       JS.Method.untrace([module, module.__eigen__()]);
-      JS.StackTrace.removeObserver(this);
+      StackTrace.removeObserver(this);
     },
 
     update: function(event, frame) {

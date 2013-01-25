@@ -94,6 +94,7 @@ packages:
       - reporters/testacular
       - reporters/testem
       - reporters/test_swarm
+      - reporters/coverage
       - reporters/composite
 
       - context/context

@@ -30,6 +30,7 @@ Test.UI.extend({
           R = Test.Reporters;
 
       var Printer = R.get(options.format) || R.Dot;
+      reporters.push(new R.Coverage(options));
       reporters.push(new Printer(options));
       reporters.push(new R.ExitStatus(options));
 

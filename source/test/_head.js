@@ -7,12 +7,13 @@
       Enumerable  = js.Enumerable  || require('./enumerable').Enumerable,
       SortedSet   = js.SortedSet   || require('./set').SortedSet,
       Range       = js.Range       || require('./range').Range,
+      Hash        = js.Hash        || require('./hash').Hash,
       MethodChain = js.MethodChain || require('./method_chain').MethodChain,
       Comparable  = js.Comparable  || require('./comparable').Comparable,
       StackTrace  = js.StackTrace  || require('./stack_trace').StackTrace;
 
   if (E) exports.JS = exports;
-  factory(js, Console, DOM, Enumerable, SortedSet, Range, MethodChain, Comparable, StackTrace, E ? exports : js);
+  factory(js, Console, DOM, Enumerable, SortedSet, Range, Hash, MethodChain, Comparable, StackTrace, E ? exports : js);
 
-})(function(JS, Console, DOM, Enumerable, SortedSet, Range, MethodChain, Comparable, StackTrace, exports) {
+})(function(JS, Console, DOM, Enumerable, SortedSet, Range, Hash, MethodChain, Comparable, StackTrace, exports) {
 
