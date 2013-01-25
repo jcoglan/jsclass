@@ -1,18 +1,5 @@
 Test.UI.extend({
   Browser: new JS.Class({
-    prepare: function(callback, context) {
-      var hash = (location.hash || '').replace(/^#/, ''),
-          self = this;
-
-      if (hash === 'testem') {
-        JS.load('/testem.js', function() {
-          callback.call(context || null, self);
-        });
-      } else {
-        callback.call(context || null, self);
-      }
-    },
-
     getOptions: function() {
       var qs      = (location.search || '').replace(/^\?/, ''),
           pairs   = qs.split('&'),

@@ -1,6 +1,19 @@
 Test.Reporters.extend({
   Testem: new JS.Class({
     extend: {
+      SCRIPT_URL: '/testem.js',
+
+      prepare: function(callback, context) {
+        if (!JS.ENV.location) return callback.call(context || null);
+
+        var hash = (location.hash || '').replace(/^#/, '');
+        if (hash !== 'testem') return callback.call(context || null);
+
+        JS.load(this.SCRIPT_URL, function() {
+          callback.call(context || null);
+        });
+      },
+
       create: function(options) {
         if (JS.ENV.Testem) return new this(options);
       }

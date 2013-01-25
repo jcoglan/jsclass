@@ -8,9 +8,26 @@ Test.extend({
 
     run: function(callback, context) {
       var ui = this.klass.getUI(this._settings);
-      ui.prepare(function() {
+      this.prepare(function() {
         this.start(ui, callback, context);
       }, this);
+    },
+
+    prepare: function(callback, context) {
+      var R    = Test.Reporters,
+          n    = 0,
+          done = false;
+
+      for (var name in R) {
+        if (!R[name] || !R[name].prepare) continue;
+        n += 1;
+        R[name].prepare(function() {
+          n -= 1;
+          if (n === 0 && done) callback.call(context || null);
+        });
+      }
+      done = true;
+      if (n === 0) callback.call(context || null);
     },
 
     start: function(ui, callback, context) {

@@ -3,10 +3,6 @@ Test.UI.extend({
     OPTIONS: {format: String, test: Array},
     SHORTS:  {'f': '--format', 't': '--test'},
 
-    prepare: function(callback, context) {
-      callback.call(context || null, this);
-    },
-
     getOptions: function() {
       var options = {},
           format  = Console.envvar('FORMAT'),
