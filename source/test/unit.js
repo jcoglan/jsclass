@@ -18,7 +18,7 @@ var Test = new JS.Module('Test', {
           this._registry[name] = klass;
         },
 
-        find: function(name) {
+        get: function(name) {
           if (!name) return null;
           return this._registry[name] || null;
         }

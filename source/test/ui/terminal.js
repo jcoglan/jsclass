@@ -29,7 +29,7 @@ Test.UI.extend({
       var reporters = [],
           R = Test.Reporters;
 
-      var Printer = R.find(options.format) || R.Dot;
+      var Printer = R.get(options.format) || R.Dot;
       reporters.push(new Printer(options));
       reporters.push(new R.ExitStatus(options));
 

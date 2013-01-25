@@ -11,7 +11,7 @@ var JS = require('../../' + JSCLASS_PATH + '/loader')
 JS.require('JS.Test', function(Test) {
   var options  = require('nopt')({format: String}),
       R        = Test.Reporters,
-      Printer  = R.find(options.format),
+      Printer  = R.get(options.format),
       reporter = new R.Composite(),
       reader   = new R.JSON.Reader(reporter)
 
