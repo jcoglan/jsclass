@@ -16,13 +16,14 @@ Package.DomLoader = {
   },
 
   cacheBust: function(path) {
+    if (exports.cache !== false) return path;
     var token = new Date().getTime();
     return path + (/\?/.test(path) ? '&' : '?') + token;
   },
 
   fetch: function(path) {
     var originalPath = path;
-    if (exports.cache === false) path = this.cacheBust(path);
+    path = this.cacheBust(path);
 
     this.HOST = this.HOST || this.HOST_REGEX.exec(window.location.href);
     var host = this.HOST_REGEX.exec(path);
@@ -48,7 +49,7 @@ Package.DomLoader = {
   },
 
   loadFile: function(path, fireCallbacks, source) {
-    if (!source && exports.cache === false) path = this.cacheBust(path);
+    if (!source) path = this.cacheBust(path);
 
     var self   = this,
         head   = document.getElementsByTagName('head')[0],
@@ -83,7 +84,7 @@ Package.DomLoader = {
     var link  = document.createElement('link');
     link.rel  = 'stylesheet';
     link.type = 'text/css';
-    link.href = path;
+    link.href = this.cacheBust(path);
 
     document.getElementsByTagName('head')[0].appendChild(link);
   },
