@@ -13,6 +13,12 @@ Test.Reporters.extend({
         - uncaughtException
     */
 
+    extend: {
+      create: function(options) {
+        if (JS.ENV.buster) return new this(options);
+      }
+    },
+
     startSuite: function(event) {
       this._contexts = 0;
       this._stack = [];

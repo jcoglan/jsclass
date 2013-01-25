@@ -44,17 +44,15 @@ Test.UI.extend({
     getReporters: function(options) {
       var reporters = [],
           R         = Test.Reporters,
-          browser   = new R.Browser(options);
+          browser   = new R.Browser(options),
+          reporter;
 
       reporters.push(browser);
 
-      if (JS.ENV.buster)          reporters.push(new R.Buster(options));
-      if (JS.ENV.__testacular__)  reporters.push(new R.Testacular(options));
-      if (JS.ENV.Testem)          reporters.push(new R.Testem(options));
-      if (JS.ENV.TestSwarm)       reporters.push(new R.TestSwarm(options, browser));
-
-      if (/\bPhantomJS\b/.test(navigator.userAgent))
-        reporters.push(new R.JSON());
+      for (var name in R) {
+        reporter = R[name] && R[name].create && R[name].create(options, browser);
+        if (reporter) reporters.push(reporter);
+      }
 
       return reporters;
     }

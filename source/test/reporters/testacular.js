@@ -1,5 +1,11 @@
 Test.Reporters.extend({
   Testacular: new JS.Class({
+    extend: {
+      create: function(options) {
+        if (JS.ENV.__testacular__) return new this(options);
+      }
+    },
+
     initialize: function(options) {
       this._tc = JS.ENV.__testacular__;
       this._testId = 0;

@@ -1,5 +1,11 @@
 Test.Reporters.extend({
   Testem: new JS.Class({
+    extend: {
+      create: function(options) {
+        if (JS.ENV.Testem) return new this(options);
+      }
+    },
+
     initialize: function() {
       var self = this;
       Testem.useCustomAdapter(function(socket) { self._socket = socket });

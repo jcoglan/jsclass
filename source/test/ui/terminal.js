@@ -26,15 +26,14 @@ Test.UI.extend({
     },
 
     getReporters: function(options) {
-      var reporters = [],
-          R = Test.Reporters;
+      var R = Test.Reporters,
+          Printer = R.get(options.format) || R.Dot;
 
-      var Printer = R.get(options.format) || R.Dot;
-      reporters.push(new R.Coverage(options));
-      reporters.push(new Printer(options));
-      reporters.push(new R.ExitStatus(options));
-
-      return reporters;
+      return [
+        new R.Coverage(options),
+        new Printer(options),
+        new R.ExitStatus(options)
+      ];
     }
   })
 });

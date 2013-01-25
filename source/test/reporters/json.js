@@ -8,6 +8,10 @@ Test.Reporters.extend({
     },
 
     extend: {
+      create: function() {
+        if (/\bPhantomJS\b/.test(navigator.userAgent)) return new this();
+      },
+
       Reader: new JS.Class({
         initialize: function(reporter) {
           this._reporter = reporter;
