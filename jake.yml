@@ -33,7 +33,7 @@ packages:
     files:
       - _head
       - package
-      - loaders/dom
+      - loaders/browser
       - browser
       - dsl
       - _tail
@@ -49,7 +49,7 @@ packages:
       - _head
       - package
       - loaders/commonjs
-      - loaders/dom
+      - loaders/browser
       - loaders/rhino
       - loaders/server
       - loaders/wsh

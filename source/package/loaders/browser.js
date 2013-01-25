@@ -1,4 +1,4 @@
-Package.DomLoader = {
+Package.BrowserLoader = {
   HOST_REGEX: /^https?\:\/\/[^\/]+/i,
 
   usable: function() {

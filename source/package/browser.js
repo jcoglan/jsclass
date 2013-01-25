@@ -1,2 +1,2 @@
-Package.loader = Package.DomLoader;
+Package.loader = Package.BrowserLoader;
 
