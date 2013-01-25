@@ -42,7 +42,10 @@ Console.extend({
     },
 
     getDimensions: function() {
-      return [Console.DEFAULT_WIDTH, Console.DEFAULT_HEIGHT];
+      var width  = this.envvar('COLUMNS') || Console.DEFAULT_WIDTH,
+          height = this.envvar('ROWS')    || Console.DEFAULT_HEIGHT;
+
+      return [parseInt(width, 10), parseInt(height, 10)];
     },
 
     output: function(string, followon) {
