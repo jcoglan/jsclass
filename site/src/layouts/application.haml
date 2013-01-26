@@ -1,14 +1,13 @@
 !!!
 %html
   %head
-    %meta{'http-equiv' => 'content-type', :content => 'text/html; charset=utf-8'}
+    %meta{'http-equiv' => 'Content-Type', :content => 'text/html; charset=utf-8'}
     %title JS.Class v3.0
     =stylesheets 'application', 'prettify'
-    :plain
-      <script type="text/javascript" src="http://use.typekit.com/iqy6orq.js"></script>
-      <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-      <script type="text/javascript">JSCLASS_PATH = '/javascripts/js.class/';</script>
     =javascripts 'prettify', 'js.class/loader-browser'
+    :plain
+      <script type="text/javascript">JSCLASS_PATH = '/javascripts/js.class/';</script>
+      <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic|Crete+Round|Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
   %body{:onload => 'prettyPrint()'}
     #sidebar
       %h1
@@ -119,7 +118,7 @@
       #footer
         .sub
           :textile
-            _JS.Class_, &copy; 2007&ndash;2012 "James Coglan":http://jcoglan.com.
+            _JS.Class_, &copy; 2007&ndash;2013 "James Coglan":http://jcoglan.com.
             Released under the MIT license.
 
     %div.clear
