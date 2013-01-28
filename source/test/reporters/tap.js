@@ -21,7 +21,7 @@ Test.Reporters.extend({
 
     endTest: function(event) {
       var line = this._testPassed ? 'ok' : 'not ok';
-      line += ' ' + ++this._testId + ' ' + event.fullName;
+      line += ' ' + ++this._testId + ' ' + this._format(event.fullName);
       this.puts(line);
 
       var fault, message, parts, j, m;
@@ -39,7 +39,11 @@ Test.Reporters.extend({
 
     update: function(event) {},
 
-    endSuite: function(event) {}
+    endSuite: function(event) {},
+
+    _format: function(string) {
+      return string.replace(/[\s\t\r\n]+/g, ' ');
+    }
   })
 });
 
