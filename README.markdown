@@ -32,7 +32,7 @@ Some interpreters will skip the tests that use asynchronous APIs.
 
 Using Node.js, check that all the output formats work:
 
-    $ FMT=(error dot spec tap json)
+    $ FMT=(dot error json progress spec tap xml)
     $ for fmt in "${FMT[@]}" ; do node test/console.js -f $fmt ; done
 
 Check the tests work in the PhantomJS browser. All the output formats should
@@ -85,5 +85,5 @@ process.
 ## License
 
 Distributed under the MIT license.
-Copyright (c) 2007-2012 James Coglan
+Copyright (c) 2007-2013 James Coglan
 
