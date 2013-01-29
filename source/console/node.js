@@ -31,11 +31,11 @@ Console.extend({
     },
 
     print: function(string) {
-      process.stdout.write(this.flushFormat() + string);
+      require('sys').print(this.flushFormat() + string);
     },
 
     puts: function(string) {
-      process.stdout.write(this.flushFormat() + string + '\n');
+      require('sys').puts(this.flushFormat() + string);
     }
   })
 });
