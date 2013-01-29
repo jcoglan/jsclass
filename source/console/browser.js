@@ -5,7 +5,7 @@ Console.extend({
     },
 
     coloring: function() {
-      return !window.runtime;
+      return Console.AIR || Console.PHANTOM;
     },
 
     envvar: function(name) {
@@ -16,7 +16,7 @@ Console.extend({
     },
 
     getDimensions: function() {
-      if (Console.PHANTOM) return this.callSuper();
+      if (Console.AIR || Console.PHANTOM) return this.callSuper();
       return [1024, 1];
     },
 

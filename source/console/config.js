@@ -1,6 +1,7 @@
 Console.BROWSER = (typeof window !== 'undefined');
 Console.NODE    = (typeof process === 'object');
 Console.PHANTOM = (typeof phantom !== 'undefined');
+Console.AIR     = (Console.BROWSER && typeof runtime !== 'undefined');
 Console.RHINO   = (typeof java !== 'undefined' && typeof java.lang !== 'undefined');
 Console.WSH     = (typeof WScript !== 'undefined');
 
