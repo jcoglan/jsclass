@@ -4,12 +4,12 @@ Console.extend({
       return false;
     },
 
-    exit: function(status) {
-      WScript.Quit(status);
+    echo: function(string) {
+      WScript.Echo(string);
     },
 
-    println: function(string) {
-      WScript.Echo(string);
+    exit: function(status) {
+      WScript.Quit(status);
     }
   })
 });

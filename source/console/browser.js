@@ -9,6 +9,12 @@ Console.extend({
       return Console.AIR || Console.PHANTOM;
     },
 
+    echo: function(string) {
+      if (window.runtime) return window.runtime.trace(string);
+      if (window.console) return console.log(string);
+      alert(string);
+    },
+
     envvar: function(name) {
       if (Console.PHANTOM)
         return require('system').env[name] || null;
@@ -19,12 +25,6 @@ Console.extend({
     getDimensions: function() {
       if (Console.AIR || Console.PHANTOM) return this.callSuper();
       return [1024, 1];
-    },
-
-    println: function(string) {
-      if (window.runtime) return window.runtime.trace(string);
-      if (window.console) return console.log(string);
-      alert(string);
     }
   })
 });

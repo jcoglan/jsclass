@@ -14,6 +14,11 @@ Console.extend({
     coloring: function() {
       return true;
     },
+    
+    echo: function(string) {
+      if (typeof console !== 'undefined') return console.log(string);
+      if (typeof print === 'function')    return print(string);
+    },
 
     envvar: function(name) {
       return null;
@@ -48,19 +53,11 @@ Console.extend({
       return [parseInt(width, 10), parseInt(height, 10)];
     },
 
-    output: function(string, followon) {
+    print: function(string) {
       var coloring = this.coloring(),
           width    = this.getDimensions()[0],
           esc      = Console.escape,
           length, prefix, line;
-
-      if (!followon) {
-        length = this.__buffer__.length;
-        prefix = (length > 0 && coloring) ? esc('1F') + esc((length + 1) + 'G') : this.__buffer__;
-        this.println(prefix + this.flushFormat() + string);
-        this.__buffer__ = '';
-        return;
-      }
 
       while (string.length > 0) {
         length = this.__buffer__.length;
@@ -69,27 +66,24 @@ Console.extend({
 
         this.__buffer__ += line;
 
-        if (coloring) this.println(prefix + this.flushFormat() + line);
+        if (coloring) this.echo(prefix + this.flushFormat() + line);
 
         if (this.__buffer__.length === width) {
-          if (!coloring) this.println(this.__buffer__);
+          if (!coloring) this.echo(this.__buffer__);
           this.__buffer__ = '';
         }
         string = string.substr(width - length);
       }
     },
 
-    println: function(string) {
-      if (typeof console !== 'undefined') return console.log(string);
-      if (typeof print === 'function')    return print(string);
-    },
-
-    print: function(string) {
-      this.output(string, true);
-    },
-
     puts: function(string) {
-      this.output(string, false);
+      var coloring = this.coloring(),
+          esc      = Console.escape,
+          length   = this.__buffer__.length,
+          prefix   = (length > 0 && coloring) ? esc('1F') + esc((length + 1) + 'G') : this.__buffer__;
+
+      this.echo(prefix + this.flushFormat() + string);
+      this.__buffer__ = '';
     }
   })
 });
