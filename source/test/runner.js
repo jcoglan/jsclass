@@ -68,6 +68,7 @@ Test.extend({
         else if (channel === TS.FINISHED) this._reporter.endContext(event);
       };
 
+      this.klass.reportEventId = 0;
       this._reporter.startSuite(this.klass.timestamp(suite.metadata()));
 
       suite.run(testResult, reportResult, reportEvent, this);
@@ -98,6 +99,7 @@ Test.extend({
       Date: Date,
 
       timestamp: function(event) {
+        event.eventId = this.reportEventId++;
         event.timestamp = new this.Date().getTime();
         return event;
       },
