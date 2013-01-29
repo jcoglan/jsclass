@@ -5,6 +5,7 @@ Console.extend({
     },
 
     coloring: function() {
+      if (Console.envvar(Console.NO_COLOR)) return false;
       return Console.AIR || Console.PHANTOM;
     },
 

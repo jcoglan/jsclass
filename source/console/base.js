@@ -49,35 +49,33 @@ Console.extend({
     },
 
     output: function(string, followon) {
-      var coloring = this.coloring();
+      var coloring = this.coloring(),
+          width    = this.getDimensions()[0],
+          esc      = Console.escape,
+          length, prefix, line;
+
+      if (!followon) {
+        length = this.__buffer__.length;
+        prefix = (length > 0 && coloring) ? esc('1F') + esc((length + 1) + 'G') : this.__buffer__;
+        this.println(prefix + this.flushFormat() + string);
+        this.__buffer__ = '';
+        return;
+      }
 
       while (string.length > 0) {
-        var length  = this.__buffer__.length,
-            max     = this.getDimensions()[0],
-            movable = (length > 0 && coloring),
-            escape  = movable ? Console.escape('1F') + Console.escape((length + 1) + 'G') : '',
-            line    = string.substr(0, max - length);
+        length = this.__buffer__.length;
+        prefix = (length > 0 && coloring) ? esc('1F') + esc((length + 1) + 'G') : '';
+        line   = string.substr(0, width - length);
 
         this.__buffer__ += line;
 
-        if (coloring)
-          this.println(escape + this.flushFormat() + line);
-        else if (this.__buffer__.length === max)
-          this.println(this.__buffer__);
+        if (coloring) this.println(prefix + this.flushFormat() + line);
 
-        if (this.__buffer__.length === max)
+        if (this.__buffer__.length === width) {
+          if (!coloring) this.println(this.__buffer__);
           this.__buffer__ = '';
-
-        string = string.substr(max - length);
-      }
-      if (!followon) {
-        if (string === '' && !this.__buffer__)
-          this.println(this.flushFormat() + '');
-
-        if (!coloring && this.__buffer__)
-          this.println(this.__buffer__);
-
-        this.__buffer__ = '';
+        }
+        string = string.substr(width - length);
       }
     },
 

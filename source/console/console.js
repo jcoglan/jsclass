@@ -105,6 +105,7 @@ var Console = new JS.Module('Console', {
     DEFAULT_WIDTH:  78,
     DEFAULT_HEIGHT: 24,
     MAX_DEPTH:      4,
+    NO_COLOR:       'NO_COLOR',
 
     ESCAPE_CODES: {
       cursorUp:           '%1A',
@@ -150,7 +151,7 @@ var Console = new JS.Module('Console', {
     },
 
     escape: function(string) {
-      return this.ANSI_CSI + string;
+      return Console.ANSI_CSI + string;
     },
 
     exit: function(status) {

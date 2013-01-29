@@ -4,6 +4,10 @@ Console.extend({
       return new RegExp(java.lang.System.getProperty('user.dir') + '/', 'g');
     },
 
+    coloring: function() {
+      return !this.envvar(Console.NO_COLOR);
+    },
+
     envvar: function(name) {
       var env = java.lang.System.getenv();
       return env.get(name) || null;
