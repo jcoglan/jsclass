@@ -1,5 +1,5 @@
 Package.BrowserLoader = {
-  HOST_REGEX: /^https?\:\/\/[^\/]+/i,
+  HOST_REGEX: /^(https?\:)?\/\/[^\/]+/i,
 
   usable: function() {
     return !!Package._getObject('window.document.getElementsByTagName');
