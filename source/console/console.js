@@ -101,7 +101,7 @@ var Console = new JS.Module('Console', {
            : stack;
     },
 
-    ANSI_CSI:       String.fromCharCode(0x1B) + '[',
+    ANSI_CSI:       '\u001B[',
     DEFAULT_WIDTH:  78,
     DEFAULT_HEIGHT: 24,
     MAX_DEPTH:      4,

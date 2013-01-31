@@ -52,7 +52,7 @@ var Benchmark = new JS.Module('Benchmark', {
   format: function(average) {
     var error = (average.value === 0) ? 0 : 100 * average.error / average.value;
     return Math.round(average.value) +
-           'ms +/- ' + Math.round(error) + '%';
+           'ms \u00B1 ' + Math.round(error) + '%';
   },
 
   average: function(list) {
