@@ -21,7 +21,7 @@ Test.Reporters.extend({
 
     endTest: function(event) {
       var line = this._testPassed ? 'ok' : 'not ok';
-      line += ' ' + ++this._testId + ' ' + this._format(event.fullName);
+      line += ' ' + ++this._testId + ' - ' + this._format(event.fullName);
       this.puts(line);
 
       var fault, message, parts, j, m;
