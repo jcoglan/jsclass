@@ -22,6 +22,10 @@ Console.extend({
         return window[name] || null;
     },
 
+    exit: function(status) {
+      if (Console.PHANTOM) phantom.exit(status);
+    },
+
     getDimensions: function() {
       if (Console.AIR || Console.PHANTOM) return this.callSuper();
       return [1024, 1];

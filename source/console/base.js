@@ -25,7 +25,6 @@ Console.extend({
     },
 
     exit: function(status) {
-      if (typeof phantom === 'object')               phantom.exit(status);
       if (typeof system === 'object' && system.exit) system.exit(status);
       if (typeof quit === 'function')                quit(status);
     },
