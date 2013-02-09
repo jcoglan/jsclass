@@ -6,6 +6,7 @@
   factory(js, E ? exports : js);
 
 })(function(JS, exports) {
+'use strict';
 
 var MethodChain = function(base) {
   var queue      = [],

@@ -8,6 +8,7 @@
   factory(js, Console, E ? exports : js);
 
 })(function(JS, Console, exports) {
+'use strict';
 
 var Benchmark = new JS.Module('Benchmark', {
   include: Console,

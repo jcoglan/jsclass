@@ -9,6 +9,7 @@
   factory(js, Enumerable, Observable, E ? exports : js);
 
 })(function(JS, Enumerable, Observable, exports) {
+'use strict';
 
 var Command = new JS.Class('Command', {
   initialize: function(functions) {

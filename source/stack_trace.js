@@ -10,6 +10,7 @@
   factory(js, Observable, Enumerable, Console, E ? exports : js);
 
 })(function(JS, Observable, Enumerable, Console, exports) {
+'use strict';
 
 var StackTrace = new JS.Module('StackTrace', {
   extend: {

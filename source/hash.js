@@ -9,6 +9,7 @@
   factory(js, Enumerable, Comparable, E ? exports : js);
 
 })(function(JS, Enumerable, Comparable, exports) {
+'use strict';
 
 var Hash = new JS.Class('Hash', {
   include: Enumerable || {},

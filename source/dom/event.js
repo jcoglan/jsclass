@@ -2,6 +2,8 @@ DOM.Event = {
   _registry: [],
 
   on: function(element, eventName, callback, context) {
+    if (element === undefined) return;
+
     if (element !== DOM.ENV &&
         element.nodeType !== DOM.ELEMENT_NODE &&
         element.nodeType !== DOM.DOCUMENT_NODE)

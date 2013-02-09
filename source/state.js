@@ -6,6 +6,7 @@
   factory(js, E ? exports : js);
 
 })(function(JS, exports) {
+'use strict';
 
 var State = new JS.Module('State', {
   __getState__: function(state) {

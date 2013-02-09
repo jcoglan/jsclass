@@ -6,6 +6,7 @@
   factory(js, E ? exports : js);
 
 })(function(JS, exports) {
+'use strict';
 
 var Deferrable = new JS.Module('Deferrable', {
   extend: {

@@ -46,7 +46,7 @@ Test.Unit.extend({
             children    = [],
             child, i, n;
 
-            tests = methodNames.select(function(name) {
+        var tests = methodNames.select(function(name) {
               return /^test./.test(name) && this.filter(fullName + ' ' + name, filter);
             }, this).sort();
 

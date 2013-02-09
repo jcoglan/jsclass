@@ -15,4 +15,5 @@ var JS = (typeof this.JS === 'undefined') ? {} : this.JS;
   factory($, JS);
 
 })(function(global, exports) {
+'use strict';
 

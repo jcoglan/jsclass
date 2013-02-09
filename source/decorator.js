@@ -6,6 +6,7 @@
   factory(js, E ? exports : js);
 
 })(function(JS, exports) {
+'use strict';
 
 var Decorator = new JS.Class('Decorator', {
   initialize: function(decoree, methods) {

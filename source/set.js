@@ -9,6 +9,7 @@
   factory(js, Enumerable, hash, E ? exports : js);
 
 })(function(JS, Enumerable, hash, exports) {
+'use strict';
 
 var Set = new JS.Class('Set', {
   extend: {

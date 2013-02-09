@@ -6,4 +6,5 @@
   factory(js, E ? exports : js);
 
 })(function(JS, exports) {
+'use strict';
 

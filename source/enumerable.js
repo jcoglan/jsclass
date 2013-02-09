@@ -6,6 +6,7 @@
   factory(js, E ? exports : js);
 
 })(function(JS, exports) {
+'use strict';
 
 var Enumerable = new JS.Module('Enumerable', {
   extend: {
@@ -80,7 +81,7 @@ var Enumerable = new JS.Module('Enumerable', {
     Collection: new JS.Class({
       initialize: function(array) {
         this.length = 0;
-        Enumerable.forEach.call(array, this.push, this);
+        if (array) Enumerable.forEach.call(array, this.push, this);
       },
 
       push: function(item) {

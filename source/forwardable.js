@@ -6,6 +6,7 @@
   factory(js, E ? exports : js);
 
 })(function(JS, exports) {
+'use strict';
 
 var Forwardable = new JS.Module('Forwardable', {
   defineDelegator: function(subject, method, alias, resolve) {

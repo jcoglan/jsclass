@@ -8,6 +8,7 @@
   factory(js, Enumerable, E ? exports : js);
 
 })(function(JS, Enumerable, exports) {
+'use strict';
 
 var LinkedList = new JS.Class('LinkedList', {
   include: Enumerable || {},

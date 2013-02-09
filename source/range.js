@@ -9,6 +9,7 @@
   factory(js, Enumerable, Hash, E ? exports : js);
 
 })(function(JS, Enumerable, Hash, exports) {
+'use strict';
 
 var Range = new JS.Class('Range', {
   include: Enumerable || {},

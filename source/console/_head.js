@@ -8,4 +8,5 @@
   factory(js, Enumerable, E ? exports : js);
 
 })(function(JS, Enumerable, exports) {
+'use strict';
 

@@ -8,6 +8,7 @@
   factory(js, Hash, E ? exports : js);
 
 })(function(JS, Hash, exports) {
+'use strict';
 
 var TSort = new JS.Module('TSort', {
   extend: {
