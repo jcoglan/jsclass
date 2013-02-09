@@ -60,7 +60,8 @@ Package.BrowserLoader = {
     if (source)
       return source.callback(function(code) {
         Package.log('Executing ' + path);
-        eval(code);
+        var execute = new Function('code', 'eval(code)');
+        execute(code);
         fireCallbacks();
       });
 
