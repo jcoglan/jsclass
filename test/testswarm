@@ -21,6 +21,7 @@ job = TestSwarm::Job.create(
   :directory  => File.join(root, "changeset", project.name),
   :diff       => ["source", "test"],
   :build      => [
+                   "mkdir -p vendor",
                    "ln -s #{bundle} vendor/bundle",
                    "bundle install --path vendor/bundle",
                    "rm -rf build",
