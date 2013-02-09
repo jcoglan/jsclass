@@ -6,7 +6,7 @@ Package.BrowserLoader = {
   },
 
   __FILE__: function() {
-    var scripts = document.getElementsByTagName('script');
+    var scripts = document.getElementsByTagName('script'),
         src     = scripts[scripts.length - 1].src,
         url     = window.location.href;
 
