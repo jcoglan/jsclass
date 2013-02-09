@@ -1,10 +1,16 @@
-#!/usr/bin/ruby1.8
+#!/usr/bin/env ruby
 
-require 'rubygems'
-require 'testswarm/client'
+require "rubygems"
+require "bundler/setup"
+require "testswarm/client"
 
-client  = TestSwarm::Client.new('http://swarm.jcoglan.com')
-project = client.project('jsclass', :auth => 'c986c98e2f75fed91a158a2591545d7a33a3e210')
+server  = ENV["TESTSWARM_SERVER"]
+key     = ENV["TESTSWARM_KEY"]
+root    = ENV["TESTSWARM_ROOT"]
+bundle  = ENV["BUNDLE_DIRECTORY"]
+
+client  = TestSwarm::Client.new(server)
+project = client.project("jsclass", :auth => key)
 
 job = TestSwarm::Job.create(
   :rcs        => {
@@ -12,19 +18,24 @@ job = TestSwarm::Job.create(
     :url      => "git://github.com/jcoglan/js.class.git",
     :branch   => "master"
   },
-  :directory  => "/home/jcoglan/www/swarm.jcoglan.com/app/changeset/#{project.name}",
+  :directory  => File.join(root, "changeset", project.name),
   :diff       => ["source", "test"],
-  :build      => ["rm -rf build", "jake"],
+  :build      => [
+                   "ln -s #{bundle} vendor/bundle",
+                   "bundle install --deployment",
+                   "rm -rf build",
+                   "bundle exec jake"
+                 ],
   :inject     => "test/browser.html"
 )
 
 exit unless job.new?
 
-runner = File.read(File.dirname(__FILE__) + '/runner.js')
+runner = File.read(File.expand_path("../runner.js", __FILE__))
 path   = "#{client.url}/changeset/#{project.name}/#{job.revision}"
 
 runner.scan(/\b[A-Za-z.]+Spec\b/).uniq.sort.each do |spec|
-  name = spec.gsub(/Spec$/, '')
+  name = spec.gsub(/Spec$/, "")
   job.add_suite name, "#{path}/test/browser.html?test=#{name}"
 end
 
