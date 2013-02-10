@@ -168,7 +168,7 @@ instance._isLoaded = function(withExceptions) {
 
 instance._load = function() {
   if (!this._fire('request')) return;
-  this._prefetch();
+  if (!this._isLoaded()) this._prefetch();
 
   var allDeps = this._deps.list.concat(this._uses.list),
       source  = this._source || [],
