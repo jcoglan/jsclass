@@ -1,4 +1,4 @@
-var Test = require('../build/src/test').Test
+var Test = require('./test').Test
 
 Test.describe("a thing", function() { with(this) {
   it("works", function() { with(this) {
