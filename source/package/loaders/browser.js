@@ -2,7 +2,8 @@ Package.BrowserLoader = {
   HOST_REGEX: /^(https?\:)?\/\/[^\/]+/i,
 
   usable: function() {
-    return !!Package._getObject('window.document.getElementsByTagName');
+    return !!Package._getObject('window.document.getElementsByTagName') &&
+           typeof phantom === 'undefined';
   },
 
   __FILE__: function() {
