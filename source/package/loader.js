@@ -1,7 +1,7 @@
 var candidates = [  Package.XULRunnerLoader,
                     Package.RhinoLoader,
-                    Package.CommonJSLoader,
                     Package.BrowserLoader,
+                    Package.CommonJSLoader,
                     Package.ServerLoader,
                     Package.WshLoader ],
 

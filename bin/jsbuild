@@ -167,7 +167,7 @@ if (params.output === 'paths') {
 }
 
 if (params.packages !== false)
-  source.push(fs.readFileSync(__dirname + '/../src/package-browser.js'))
+  source.push(fs.readFileSync(__dirname + '/../src/package.js'))
 
 var readLocal = function(file, callback) {
   fs.readFile(file, function(error, content) {

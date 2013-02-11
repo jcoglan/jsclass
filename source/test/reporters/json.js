@@ -9,6 +9,7 @@ Test.Reporters.extend({
 
     extend: {
       create: function() {
+        if (!JS.ENV.navigator) return;
         if (/\bPhantomJS\b/.test(navigator.userAgent)) return new this();
       },
 
