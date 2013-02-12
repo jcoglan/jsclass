@@ -20,7 +20,7 @@ Package.XULRunnerLoader = {
   },
 
   loadFile: function(path, fireCallbacks) {
-    Package.log('Loading ' + path);
+    Package.log('[LOAD] ' + path);
 
     this.ssl.loadSubScript(path);
     fireCallbacks();

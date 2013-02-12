@@ -30,7 +30,7 @@ Package.BrowserLoader = {
     var host = this.HOST_REGEX.exec(path);
 
     if (!this.HOST || (host && host[0] !== this.HOST[0])) return null;
-    Package.log('Loading ' + path);
+    Package.log('[FETCH] ' + path);
 
     var source = new Package.Deferred(),
         self   = this,
@@ -60,13 +60,13 @@ Package.BrowserLoader = {
 
     if (source)
       return source.callback(function(code) {
-        Package.log('Executing ' + path);
+        Package.log('[EXEC]  ' + path);
         var execute = new Function('code', 'eval(code)');
         execute(code);
         fireCallbacks();
       });
 
-    Package.log('Loading and executing ' + path);
+    Package.log('[LOAD] ' + path);
     script.src = path;
 
     script.onload = script.onreadystatechange = function() {
