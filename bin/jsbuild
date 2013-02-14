@@ -267,9 +267,11 @@ var embedCSS = function(file, css, callback) {
           "  if (typeof document === 'undefined') return;\n" +
           "  var head  = document.getElementsByTagName('head')[0],\n" +
           "      style = document.createElement('style');\n" +
-          "  style.type = 'text/css';\n" +
-          "  style.innerHTML = '@import url(data:text/css;base64," + base64 + ")';\n" +
-          "  head.appendChild(style);\n" +
+          "  try {\n" +
+          "    style.type = 'text/css';\n" +
+          "    style.innerHTML = '@import url(data:text/css;base64," + base64 + ")';\n" +
+          "    head.appendChild(style);\n" +
+          "  } catch (e) {}\n" +
           "})();"
 
     callback(css)
