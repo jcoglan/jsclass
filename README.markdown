@@ -25,7 +25,7 @@ This will build the project and create files in the `build` directory.
 To run the tests, you need to run several tasks. Make sure all the target server
 platforms work:
 
-    $ JS=(v8 node phantomjs spidermonkey rhino narwhal ringo)
+    $ JS=(v8 node phantomjs spidermonkey rhino narwhal ringo mongo)
     $ for js in "${JS[@]}"; do echo "$js" ; $js test/console.js ; echo $? ; done
 
 Some interpreters will skip the tests that use asynchronous APIs.
