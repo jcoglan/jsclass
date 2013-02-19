@@ -31,22 +31,36 @@ var packages = function(declaration) {
   declaration.call(DSL);
 };
 
+var parseLoadArgs = function(args) {
+ var files = [], i = 0;
+
+  while (typeof args[i] === 'string'){
+    files.push(args[i]);
+    i += 1;
+  }
+
+  return {files: files, callback: args[i], context: args[i+1]};
+};
+
 exports.load = function(path, callback) {
-  return Package.loader.loadFile(path, callback || function() {});
+  var args = parseLoadArgs(arguments),
+      n    = args.files.length;
+
+  var loadNext = function(index) {
+    if (index === n) return args.callback.call(args.context || null);
+    Package.loader.loadFile(args.files[index], function() {
+      loadNext(index + 1);
+    });
+  };
+  loadNext(0);
 };
 
 exports.require = function() {
-  var requirements = [], i = 0;
+  var args = parseLoadArgs(arguments);
 
-  while (typeof arguments[i] === 'string'){
-    requirements.push(arguments[i]);
-    i += 1;
-  }
-  var callback = arguments[i], context = arguments[i+1];
-
-  Package.when({complete: requirements}, function(objects) {
-    if (!callback) return;
-    callback.apply(context || null, objects && objects.complete);
+  Package.when({complete: args.files}, function(objects) {
+    if (!args.callback) return;
+    args.callback.apply(args.context || null, objects && objects.complete);
   });
 
   return this;
