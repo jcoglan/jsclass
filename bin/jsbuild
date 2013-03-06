@@ -161,7 +161,7 @@ excludedFiles.forEach(function(exclude) {
 })
 
 if (params.output === 'paths') {
-  var formatPath = function(s) { return s.replace(dir, '') }
+  var formatPath = function(s) { return path.resolve(s).replace(dir, '') }
   console.log(files.map(formatPath).join('\n'))
   process.exit()
 }
