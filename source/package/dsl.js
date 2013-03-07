@@ -12,7 +12,9 @@ var DSL = {
   },
 
   file: function(filename) {
-    return Package._getByPath(resolve(filename));
+    var files = [], i = arguments.length;
+    while (i--) files[i] = resolve(arguments[i]);
+    return Package._getByPath.apply(Package, files);
   },
 
   load: function(path, fireCallbacks) {
