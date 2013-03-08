@@ -50,9 +50,9 @@ For desktop application platforms, run it in XULRunner and AIR:
     $ adl test/airenv/app.xml
 
 Finally, JS.Class supports several distributed test environments, including
-Buster.JS, Testem and TestSwarm. Here's how to test on each platform; some of
-these require running commands in multiple terminals and I've numbered the
-prompts to indicate this.
+Buster.JS, Testacular, Testem, Testling CI and TestSwarm. Here's how to test on
+each platform; some of these require running commands in multiple terminals and
+I've numbered the prompts to indicate this.
 
 #### Buster.JS
 
