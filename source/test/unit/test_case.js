@@ -47,7 +47,7 @@ Test.Unit.extend({
             child, i, n;
 
         var tests = methodNames.select(function(name) {
-              return /^test./.test(name) && this.filter(fullName + ' ' + name, filter);
+              return /^test./.test(name) && this.filter(fullName + ' ' + name.replace(/^test:\s*/, ''), filter);
             }, this).sort();
 
         for (i = 0, n = tests.length; i < n; i++) {
@@ -72,6 +72,7 @@ Test.Unit.extend({
       },
 
       filter: function(name, filter) {
+        console.log(name, filter);
         if (!filter || filter.length === 0) return true;
 
         var n = filter.length;
