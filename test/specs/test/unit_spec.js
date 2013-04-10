@@ -1185,7 +1185,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
           assertTestResult( 1, 0, 0, 1 )
           assertMessage( 1, "Error:\n" +
                             "testAsync(TestedSuite):\n" +
-                            "Error: Timed out after waiting 10 seconds for test to resume" )
+                            "Error: Timed out after waiting 5 seconds for test to resume" )
         })})
         clock.tick(15000)
       }})

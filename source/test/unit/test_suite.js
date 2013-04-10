@@ -12,7 +12,7 @@ Test.Unit.extend({
             n          = tests.length,
             i          = -1,
             breakTime  = new Date().getTime(),
-            setTimeout = this.setTimeout;
+            setTimeout = Test.FakeClock.REAL.setTimeout;
 
         var ping = function() {
           pinged = true;
@@ -41,14 +41,7 @@ Test.Unit.extend({
         };
 
         ping();
-      },
-
-      // Fun fact: in IE, typeof setTimeout === 'object'
-      setTimeout: (function() {
-        return (typeof setTimeout === 'undefined')
-               ? undefined
-               : setTimeout;
-      })()
+      }
     },
 
     initialize: function(metadata, tests) {

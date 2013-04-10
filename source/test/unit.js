@@ -1,6 +1,6 @@
 var Test = new JS.Module('Test', {
   extend: {
-    asyncTimeout: 10,
+    asyncTimeout: 5,
 
     filter: function(objects, suffix) {
       return Test.Runner.filter(objects, suffix);

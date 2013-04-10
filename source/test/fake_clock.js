@@ -2,9 +2,11 @@ Test.extend({
   FakeClock: new JS.Module({
     extend: {
       API: new JS.Singleton({
+        METHODS: ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+
         stub: function() {
           var mocking = Test.Mocking,
-              methods = ['Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
+              methods = this.METHODS,
               i       = methods.length;
 
           Test.FakeClock.reset();
@@ -12,7 +14,7 @@ Test.extend({
           while (i--)
             mocking.stub(methods[i], Test.FakeClock.method(methods[i]));
 
-          Date.now = function() { return new Date() };
+          Date.now = Test.FakeClock.REAL.Date.now;
         },
 
         reset: function() {
@@ -24,7 +26,7 @@ Test.extend({
         }
       }),
 
-      JSDate: Date,
+      REAL: {},
 
       Schedule: new JS.Class(SortedSet, {
         nextScheduledAt: function(time) {
@@ -86,7 +88,7 @@ Test.extend({
       },
 
       Date: function() {
-        var date = new this.JSDate();
+        var date = new Test.FakeClock.REAL.Date();
         date.setTime(this._callTime);
         return date;
       },
@@ -113,4 +115,11 @@ Test.extend({
 Test.FakeClock.include({
   clock: Test.FakeClock.API
 });
+
+(function() {
+  var methods = Test.FakeClock.API.METHODS,
+      i       = methods.length;
+
+  while (i--) Test.FakeClock.REAL[methods[i]] = JS.ENV[methods[i]];
+})();
 
