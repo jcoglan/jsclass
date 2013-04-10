@@ -1,6 +1,7 @@
 <%= license %>
 
 var JS = (typeof this.JS === 'undefined') ? {} : this.JS;
+JS.Date = Date;
 
 (function(factory) {
   var $ = (typeof this.global === 'object') ? this.global : this,
