@@ -87,6 +87,7 @@ packages:
       - reporters/xml
       - reporters/json
       - reporters/tap
+      - reporters/tapyj
       - reporters/exit_status
       - reporters/phantomjs
       - reporters/browser
