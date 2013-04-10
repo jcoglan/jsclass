@@ -111,11 +111,11 @@ JS.Kernel.include({
     var chain = new MethodChain(), self = this;
 
     if (typeof time === 'number')
-      setTimeout(function() { chain.__exec__(self) }, time * 1000);
+      JS.ENV.setTimeout(function() { chain.__exec__(self) }, time * 1000);
 
     if (this.forEach && typeof time === 'function')
       this.forEach(function(item) {
-        setTimeout(function() { chain.__exec__(item) }, time.apply(this, arguments) * 1000);
+        JS.ENV.setTimeout(function() { chain.__exec__(item) }, time.apply(this, arguments) * 1000);
       });
 
     return chain;

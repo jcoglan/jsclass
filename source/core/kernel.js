@@ -59,7 +59,7 @@ JS.Kernel = new JS.Module('Kernel', {
 
   JS.Kernel.hashFor = function(object) {
     if (object.__hash__ !== undefined) return object.__hash__;
-    object.__hash__ = (Date.now() + id).toString(16);
+    object.__hash__ = (new JS.Date().getTime() + id).toString(16);
     id += 1;
     return object.__hash__;
   };

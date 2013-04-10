@@ -29,9 +29,9 @@ var Benchmark = new JS.Module('Benchmark', {
     var n = Benchmark.N, start, end;
     while (n--) {
       i = runs;
-      start = Date.now();
+      start = new JS.Date().getTime();
       while (i--) block.call(envs.pop());
-      end = Date.now();
+      end = new JS.Date().getTime();
       times.push(end - start);
     }
     this.printResult(name, times);

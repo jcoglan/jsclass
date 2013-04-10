@@ -98,7 +98,7 @@ Test.extend({
     extend: {
       timestamp: function(event) {
         event.eventId = this.reportEventId++;
-        event.timestamp = Date.now();
+        event.timestamp = new JS.Date().getTime();
         return event;
       },
 

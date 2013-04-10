@@ -14,6 +14,8 @@ JS.bind = function(method, object) {
   };
 };
 
+JS.Date = JS.ENV.Date;
+
 JS.extend = function(destination, source, overwrite) {
   if (!destination || !source) return destination;
   for (var field in source) {

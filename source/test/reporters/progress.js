@@ -106,11 +106,11 @@ Test.Reporters.extend({
     },
 
     _getWidth: function() {
-      var time = Date.now();
+      var time = new JS.Date().getTime();
       if (this._width && time < this._cacheTime + this.klass.CACHE_TIME)
         return this._width;
 
-      this._cacheTime = Date.now();
+      this._cacheTime = new JS.Date().getTime();
       return this._width = Console.getDimensions()[0] - 8;
     }
   })
