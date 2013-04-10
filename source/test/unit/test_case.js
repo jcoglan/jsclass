@@ -47,7 +47,9 @@ Test.Unit.extend({
             child, i, n;
 
         var tests = methodNames.select(function(name) {
-              return /^test./.test(name) && this.filter(fullName + ' ' + name.replace(/^test:\s*/, ''), filter);
+              if (!/^test./.test(name)) return false;
+              name = name.replace(/^test:\W*/ig, '');
+              return this.filter(fullName + ' ' + name, filter);
             }, this).sort();
 
         for (i = 0, n = tests.length; i < n; i++) {
@@ -72,7 +74,6 @@ Test.Unit.extend({
       },
 
       filter: function(name, filter) {
-        console.log(name, filter);
         if (!filter || filter.length === 0) return true;
 
         var n = filter.length;
@@ -241,13 +242,12 @@ Test.Unit.extend({
 
     metadata: function() {
       var klassData = this.klass.metadata(),
-          context   = klassData.context.concat(klassData.shortName),
           shortName = this._methodName.replace(/^test:\W*/ig, '');
 
       return {
-        fullName:   context.concat(shortName).join(' '),
+        fullName:   klassData.fullName + ' ' + shortName,
         shortName:  shortName,
-        context:    context,
+        context:    klassData.context.concat(klassData.shortName),
         size:       this.size()
       };
     }
