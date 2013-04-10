@@ -11,12 +11,12 @@ Test.Unit.extend({
             pinged     = false,
             n          = tests.length,
             i          = -1,
-            breakTime  = new Date().getTime(),
+            breakTime  = Date.now(),
             setTimeout = Test.FakeClock.REAL.setTimeout;
 
         var ping = function() {
           pinged = true;
-          var time = new Date().getTime();
+          var time = Date.now();
 
           if (Console.BROWSER && (time - breakTime) > 1000) {
             breakTime = time;

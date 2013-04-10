@@ -18,7 +18,7 @@ Package.BrowserLoader = {
 
   cacheBust: function(path) {
     if (exports.cache !== false) return path;
-    var token = new Date().getTime();
+    var token = Date.now();
     return path + (/\?/.test(path) ? '&' : '?') + token;
   },
 
