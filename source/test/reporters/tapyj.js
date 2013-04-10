@@ -71,8 +71,7 @@ Test.Reporters.extend({
     },
 
     _ellapsedTime: function(timestamp) {
-      var diff = (timestamp - this._start) / 1000;
-      return diff.toString().replace(/(\.\d{3}).*$/, '$1');
+      return (timestamp - this._start) / 1000;
     },
 
     _write: function(object) {
