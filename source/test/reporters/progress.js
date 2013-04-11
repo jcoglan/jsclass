@@ -12,11 +12,15 @@ Test.Reporters.extend({
       this._faults = [];
       this._start  = event.timestamp;
       this._size   = event.size;
+      this._pipe   = '|';
       this._space  = ' ';
       this._lines  = [''];
 
       var n = 10;
-      while (n--) this._space = this._space + this._space;
+      while (n--) {
+        this._space = this._space + this._space;
+        this._pipe = this._pipe + this._pipe;
+      }
  
       this.puts('\n\n\n');
       this.cursorHide();
@@ -74,15 +78,14 @@ Test.Reporters.extend({
       this.print('  ');
 
       if (this._faults.length > 0)
-        this.bgred();
+        this.red();
       else if (this._passed)
-        this.bggreen();
+        this.green();
       else
-        this.bgyellow();
+        this.cyan();
 
-      this.print(this._space.substr(0, blocks));
-      this.bgblack();
-      this.puts(this._space.substr(0, cols - blocks));
+      this.bold();
+      this.puts(this._pipe.substr(0, blocks));
       this.reset();
 
       if (this._passed !== undefined) {
