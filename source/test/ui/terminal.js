@@ -6,15 +6,16 @@ Test.UI.extend({
     getOptions: function() {
       var options = {},
           format  = Console.envvar('FORMAT'),
-          test    = Console.envvar('TEST');
+          test    = Console.envvar('TEST'),
+          nopt;
 
       if (Console.envvar('TAP')) options.format = 'tap';
 
       if (format) options.format = format;
       if (test)   options.test   = [test];
 
-      if (Console.NODE)
-        JS.extend(options, require('nopt')(this.OPTIONS, this.SHORTS));
+      try { nopt = require('nopt') } catch (e) {}
+      if (nopt) JS.extend(options, nopt(this.OPTIONS, this.SHORTS));
 
       delete options.argv;
       options.test = options.test || [];
