@@ -50,7 +50,7 @@ For desktop application platforms, run it in XULRunner and AIR:
     $ adl test/airenv/app.xml
 
 Finally, JS.Class supports several distributed test environments, including
-Buster.JS, Testacular, Testem, Testling CI and TestSwarm. Here's how to test on
+Buster.JS, Karma, Testem, Testling CI and TestSwarm. Here's how to test on
 each platform; some of these require running commands in multiple terminals and
 I've numbered the prompts to indicate this.
 
@@ -61,7 +61,7 @@ I've numbered the prompts to indicate this.
     3 $ open http://localhost:1111
     4 $ ./node_modules/.bin/buster-test
 
-#### Testacular
+#### Karma
 
     1 $ python -m SimpleHTTPServer 8000
     2 $ ./node_modules/.bin/testacular start test/testacular.js

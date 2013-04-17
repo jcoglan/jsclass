@@ -1,20 +1,20 @@
 // https://github.com/karma-runner/karma
 
 Test.Reporters.extend({
-  Testacular: new JS.Class({
+  Karma: new JS.Class({
     extend: {
       create: function(options) {
-        if (JS.ENV.__testacular__) return new this(options);
+        if (JS.ENV.__karma__) return new this(options);
       }
     },
 
     initialize: function(options) {
-      this._tc = JS.ENV.__testacular__;
+      this._karma  = JS.ENV.__karma__;
       this._testId = 0;
     },
 
     startSuite: function(event) {
-      this._tc.info({total: event.size});
+      this._karma.info({total: event.size});
     },
 
     startContext: function(event) {},
@@ -31,7 +31,7 @@ Test.Reporters.extend({
     },
 
     endTest: function(event) {
-      this._tc.result({
+      this._karma.result({
         id:          ++this._testId,
         description: event.shortName,
         suite:       event.context,
@@ -47,7 +47,7 @@ Test.Reporters.extend({
     update: function(event) {},
 
     endSuite: function(event) {
-      this._tc.complete();
+      this._karma.complete();
     }
   })
 });

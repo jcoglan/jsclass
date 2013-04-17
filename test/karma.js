@@ -3,7 +3,7 @@ JSCLASS_PATH = CWD + '/build/min'
 
 if (typeof window === 'undefined') {
   basePath        = '..'
-  files           = ['test/testacular.js', JSCLASS_PATH + '/loader-browser.js', 'test/runner.js']
+  files           = ['test/karma.js', JSCLASS_PATH + '/loader-browser.js', 'test/runner.js']
   reporters       = ['progress']
   port            = 8080
   runnerPort      = 9100
@@ -13,6 +13,6 @@ if (typeof window === 'undefined') {
   captureTimeout  = 5000
   singleRun       = false
 } else {
-  __testacular__.start = function() {}
+  __karma__.start = function() {}
 }
 

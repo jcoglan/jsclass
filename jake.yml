@@ -92,8 +92,8 @@ packages:
       - reporters/phantomjs
       - reporters/browser
       - reporters/buster
+      - reporters/karma
       - reporters/teabag
-      - reporters/testacular
       - reporters/testem
       - reporters/test_swarm
       - reporters/coverage
