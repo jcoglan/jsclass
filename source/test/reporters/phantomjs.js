@@ -1,3 +1,5 @@
+// http://phantomjs.org/
+
 Test.Reporters.extend({
   PhantomJS: new JS.Class({
     initialize: function(options, page) {

@@ -1,3 +1,5 @@
+// https://github.com/airportyh/testem
+
 Test.Reporters.extend({
   Testem: new JS.Class({
     extend: {

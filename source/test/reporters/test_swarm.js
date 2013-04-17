@@ -1,3 +1,5 @@
+// https://github.com/jquery/testswarm
+
 Test.Reporters.extend({
   TestSwarm: new JS.Class({
     extend: {

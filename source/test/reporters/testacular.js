@@ -1,3 +1,5 @@
+// https://github.com/karma-runner/karma
+
 Test.Reporters.extend({
   Testacular: new JS.Class({
     extend: {

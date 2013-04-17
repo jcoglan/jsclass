@@ -1,3 +1,5 @@
+// https://github.com/modeset/teabag
+
 Test.Reporters.extend({
   Teabag: new JS.Class({
     extend: {

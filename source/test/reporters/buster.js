@@ -1,3 +1,5 @@
+// http://busterjs.org/
+
 Test.Reporters.extend({
   Buster: new JS.Class({
 
