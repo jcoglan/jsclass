@@ -34,7 +34,7 @@ Test.Reporters.extend({
         result: function() {
           var status = 'passed';
           if (this._spec.faults.length > 0) status = 'failed';
-          return {status: status, skipped: false, wtf:'hi'};
+          return {status: status, skipped: false};
         }
       }),
 
