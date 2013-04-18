@@ -133,6 +133,7 @@ packages:
       - console
       - base
       - browser
+      - browser_color
       - node
       - rhino
       - windows

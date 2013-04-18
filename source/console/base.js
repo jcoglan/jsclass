@@ -29,9 +29,9 @@ Console.extend({
       if (typeof quit === 'function')                quit(status);
     },
 
-    format: function(name, args) {
+    format: function(type, name, args) {
       if (!this.coloring()) return;
-      var escape = Console.ESCAPE_CODES[name];
+      var escape = Console.ESCAPE_CODES[type][name];
 
       for (var i = 0, n = args.length; i < n; i++)
         escape = escape.replace('%' + (i+1), args[i]);

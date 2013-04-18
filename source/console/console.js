@@ -108,38 +108,71 @@ var Console = new JS.Module('Console', {
     NO_COLOR:       'NO_COLOR',
 
     ESCAPE_CODES: {
-      cursorUp:           '%1A',
-      cursorDown:         '%1B',
-      cursorForward:      '%1C',
-      cursorBack:         '%1D',
-      cursorNextLine:     '%1E',
-      cursorPrevLine:     '%1F',
-      cursorColumn:       '%1G',
-      cursorPosition:     '%1;%2H',
-      cursorHide:         '?25l',
-      cursorShow:         '?25h',
+      cursor: {
+        cursorUp:           '%1A',
+        cursorDown:         '%1B',
+        cursorForward:      '%1C',
+        cursorBack:         '%1D',
+        cursorNextLine:     '%1E',
+        cursorPrevLine:     '%1F',
+        cursorColumn:       '%1G',
+        cursorPosition:     '%1;%2H',
+        cursorHide:         '?25l',
+        cursorShow:         '?25h'
+      },
 
-      eraseScreenForward: '0J',
-      eraseScreenBack:    '1J',
-      eraseScreen:        '2J',
-      eraseLineForward:   '0K',
-      eraseLineBack:      '1K',
-      eraseLine:          '2K',
+      screen: {
+        eraseScreenForward: '0J',
+        eraseScreenBack:    '1J',
+        eraseScreen:        '2J',
+        eraseLineForward:   '0K',
+        eraseLineBack:      '1K',
+        eraseLine:          '2K'
+      },
 
-      reset:      '0m',
-      bold:       '1m',   normal:     '22m',
-      underline:  '4m',   noline:     '24m',
-      blink:      '5m',   noblink:    '25m',
+      reset: {
+        reset:      '0m'
+      },
 
-      black:      '30m',  bgblack:    '40m',
-      red:        '31m',  bgred:      '41m',
-      green:      '32m',  bggreen:    '42m',
-      yellow:     '33m',  bgyellow:   '43m',
-      blue:       '34m',  bgblue:     '44m',
-      magenta:    '35m',  bgmagenta:  '45m',
-      cyan:       '36m',  bgcyan:     '46m',
-      white:      '37m',  bgwhite:    '47m',
-      nocolor:    '39m',  bgnocolor:  '49m'
+      weight: {
+        bold:       '1m',   normal:     '22m'
+      },
+
+      style: {
+        italic:     '',     noitalic:   ''
+      },
+
+      underline: {
+        underline:  '4m',   noline:     '24m'
+      },
+
+      blink: {
+        blink:      '5m',   noblink:    '25m'
+      },
+
+      color: {
+        black:      '30m',
+        red:        '31m',
+        green:      '32m',
+        yellow:     '33m',
+        blue:       '34m',
+        magenta:    '35m',
+        cyan:       '36m',
+        white:      '37m',
+        nocolor:    '39m'
+      },
+
+      background: {
+        bgblack:    '40m',
+        bgred:      '41m',
+        bggreen:    '42m',
+        bgyellow:   '43m',
+        bgblue:     '44m',
+        bgmagenta:  '45m',
+        bgcyan:     '46m',
+        bgwhite:    '47m',
+        bgnocolor:  '49m'
+      }
     },
 
     coloring: function() {
