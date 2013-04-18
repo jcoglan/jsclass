@@ -14,8 +14,10 @@ Test.UI.extend({
       if (format) options.format = format;
       if (test)   options.test   = [test];
 
-      try { nopt = require('nopt') } catch (e) {}
-      if (nopt) JS.extend(options, nopt(this.OPTIONS, this.SHORTS));
+      if (Console.NODE) {
+        try { nopt = require('nopt') } catch (e) {}
+        if (nopt) JS.extend(options, nopt(this.OPTIONS, this.SHORTS));
+      }
 
       delete options.argv;
       options.test = options.test || [];
