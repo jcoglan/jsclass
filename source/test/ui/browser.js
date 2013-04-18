@@ -34,6 +34,7 @@ Test.UI.extend({
           browser   = new R.Browser(options),
           reporter;
 
+      reporters.push(new R.Coverage());
       reporters.push(browser);
 
       for (var name in R) {
