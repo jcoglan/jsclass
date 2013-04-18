@@ -12,7 +12,8 @@ if (Console.BROWSER) {
     useColor = true;
 }
 
-if (useColor)             Console.adapter = new Console.BrowserColor();
+if (Console.PHANTOM)      Console.adapter = new Console.Phantom();
+else if (useColor)        Console.adapter = new Console.BrowserColor();
 else if (Console.BROWSER) Console.adapter = new Console.Browser();
 else if (Console.NODE)    Console.adapter = new Console.Node();
 else if (Console.RHINO)   Console.adapter = new Console.Rhino();

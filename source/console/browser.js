@@ -5,8 +5,8 @@ Console.extend({
     },
 
     coloring: function() {
-      if (Console.envvar(Console.NO_COLOR)) return false;
-      return Console.AIR || Console.PHANTOM;
+      if (this.envvar(Console.NO_COLOR)) return false;
+      return Console.AIR;
     },
 
     echo: function(string) {
@@ -16,18 +16,11 @@ Console.extend({
     },
 
     envvar: function(name) {
-      if (Console.PHANTOM)
-        return require('system').env[name] || null;
-      else
-        return window[name] || null;
-    },
-
-    exit: function(status) {
-      if (Console.PHANTOM) phantom.exit(status);
+      return window[name] || null;
     },
 
     getDimensions: function() {
-      if (Console.AIR || Console.PHANTOM) return this.callSuper();
+      if (Console.AIR) return this.callSuper();
       return [1024, 1];
     }
   })

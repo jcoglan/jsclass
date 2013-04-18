@@ -5,7 +5,7 @@ Console.extend({
     },
 
     coloring: function() {
-      return !process.env[Console.NO_COLOR] && require('tty').isatty(1);
+      return !this.envvar(Console.NO_COLOR) && require('tty').isatty(1);
     },
 
     envvar: function(name) {

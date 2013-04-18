@@ -12,7 +12,7 @@ Console.extend({
     },
 
     coloring: function() {
-      return true;
+      return !this.envvar(Console.NO_COLOR);
     },
     
     echo: function(string) {

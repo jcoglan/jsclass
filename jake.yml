@@ -135,6 +135,7 @@ packages:
       - browser
       - browser_color
       - node
+      - phantom
       - rhino
       - windows
       - config
