@@ -3,6 +3,7 @@
 , "homepage"        : "http://jsclass.jcoglan.com"
 , "author"          : "James Coglan <jcoglan@gmail.com> (http://jcoglan.com/)"
 , "keywords"        : ["oop", "class", "data-structures", "testing"]
+, "license"         : "MIT"
 
 , "version"         : "3.1.0"
 , "engines"         : {"node": ">=0.4.0"}
@@ -13,16 +14,158 @@
 
 , "scripts"         : {"test": "TAP=1 node test/console.js"}
 
+, "repository"      : { "type"  : "git"
+                      , "url"   : "git://github.com/jcoglan/js.class.git"
+                      }
+
 , "bugs"            : "http://github.com/jcoglan/js.class/issues"
 
-, "licenses"        : [ { "type"  : "MIT"
-                        , "url"   : "http://www.opensource.org/licenses/mit-license.php"
-                        }
-                      ]
+, "ugly" : {
+    "sourceDirectory":      "source",
+    "buildDirectory":       "build",
+    "layout":               "apart",
+    "builds": {
+      "src":                {"minify": false},
+      "min":                {"minify": true, "sourceMap": "src"}
+    },
+    "packages": {
+      "core": {             "directory": "core",
+                            "files": [
+                              "_head",
+                              "utils",
+                              "method",
+                              "module",
+                              "kernel",
+                              "class",
+                              "bootstrap",
+                              "keywords",
+                              "interface",
+                              "singleton",
+                              "_tail"
+      ]},
+      "package-browser": {  "directory": "package",
+                            "files": [
+                              "_head",
+                              "package",
+                              "loaders/browser",
+                              "browser",
+                              "dsl",
+                              "_tail"
+      ]},
+      "loader-browser": {   "extends": "package-browser",
+                            "files":   ["config"]
+      },
+      "package": {          "directory": "package",
+                            "files": [
+                              "_head",
+                              "package",
+                              "loaders/commonjs",
+                              "loaders/browser",
+                              "loaders/rhino",
+                              "loaders/server",
+                              "loaders/wsh",
+                              "loaders/xulrunner",
+                              "loader",
+                              "dsl",
+                              "_tail"
+      ]},
+      "loader": {           "extends": "package",
+                            "files":   ["config"]
+      },
+      "test": {             "directory": "test",
+                            "files": [
+                              "_head",
 
-, "repositories"    : [ { "type"  : "git"
-                        , "url"   : "git://github.com/jcoglan/js.class.git"
-                        }
-                      ]
+                              "unit",
+                              "unit/observable",
+                              "unit/assertions",
+                              "unit/assertion_message",
+                              "unit/failure",
+                              "unit/error",
+                              "unit/test_result",
+                              "unit/test_suite",
+                              "unit/test_case",
+                              "ui/terminal",
+                              "ui/browser",
+
+                              "reporters/error",
+                              "reporters/dot",
+                              "reporters/progress",
+                              "reporters/spec",
+                              "reporters/xml",
+                              "reporters/json",
+                              "reporters/tap",
+                              "reporters/tapyj",
+                              "reporters/exit_status",
+                              "reporters/phantomjs",
+                              "reporters/browser",
+                              "reporters/buster",
+                              "reporters/karma",
+                              "reporters/teabag",
+                              "reporters/testem",
+                              "reporters/test_swarm",
+                              "reporters/coverage",
+                              "reporters/composite",
+
+                              "context/context",
+                              "context/life_cycle",
+                              "context/shared_behavior",
+                              "context/test",
+                              "context/suite",
+
+                              "mocking/stub",
+                              "mocking/parameters",
+                              "mocking/matchers",
+                              "mocking/dsl",
+
+                              "async_steps",
+                              "fake_clock",
+                              "coverage",
+                              "helpers",
+                              "runner",
+                              "_tail"
+      ]},
+      "dom": {              "directory": "dom",
+                            "files": [
+                              "_head",
+                              "dom",
+                              "builder",
+                              "event",
+                              "_tail"
+      ]},
+      "console": {          "directory": "console",
+                            "files": [
+                              "_head",
+                              "console",
+                              "base",
+                              "browser",
+                              "browser_color",
+                              "node",
+                              "phantom",
+                              "rhino",
+                              "windows",
+                              "config",
+                              "_tail"
+      ]},
+      "benchmark":          "benchmark",
+      "comparable":         "comparable",
+      "constant_scope":     "constant_scope",
+      "enumerable":         "enumerable",
+      "deferrable":         "deferrable",
+      "observable":         "observable",
+      "forwardable":        "forwardable",
+      "method_chain":       "method_chain",
+      "decorator":          "decorator",
+      "proxy":              "proxy",
+      "command":            "command",
+      "state":              "state",
+      "linked_list":        "linked_list",
+      "hash":               "hash",
+      "range":              "range",
+      "set":                "set",
+      "stack_trace":        "stack_trace",
+      "tsort":              "tsort"
+    }
+  }
 }
 
