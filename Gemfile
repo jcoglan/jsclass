@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'jake'
 gem 'tapout'
 gem 'testswarm-client'
 gem 'staticmatic'
