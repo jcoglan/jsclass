@@ -10,9 +10,10 @@
 , "main"            : "./index"
 , "devDependencies" : {"wake": ""}
 
-, "scripts"         : { "build": "./node_modules/.bin/wake"
-                      , "clean": "rm -rf build"
-                      , "test": "TAP=1 node test/console.js"
+, "scripts"         : { "build"   : "./node_modules/.bin/wake"
+                      , "clean"   : "rm -rf build"
+                      , "pretest" : "npm run-script build"
+                      , "test"    : "node test/console.js"
                       }
 
 , "repository"      : { "type"  : "git"
