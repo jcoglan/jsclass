@@ -18,9 +18,9 @@ Test.Unit.extend({
         this.testCases.push(klass);
       },
 
-      addErrorCatcher: function(handler, push) {
+      pushErrorCathcer: function(handler, push) {
         if (!handler) return;
-        this.removeErrorCatcher(false);
+        this.popErrorCathcer(false);
 
         if (Console.NODE)
           process.addListener('uncaughtException', handler);
@@ -31,7 +31,7 @@ Test.Unit.extend({
         return handler;
       },
 
-      removeErrorCatcher: function(pop) {
+      popErrorCathcer: function(pop) {
         var handlers = this.handlers,
             handler  = handlers[handlers.length - 1];
 
@@ -44,7 +44,7 @@ Test.Unit.extend({
 
         if (pop !== false) {
           handlers.pop();
-          this.addErrorCatcher(handlers[handlers.length - 1], false);
+          this.pushErrorCathcer(handlers[handlers.length - 1], false);
         }
       },
 
@@ -187,16 +187,16 @@ Test.Unit.extend({
 
       var onUncaughtError = function(error) {
         failed = true;
-        self.klass.removeErrorCatcher();
+        self.klass.popErrorCathcer();
         if (timeout) JS.ENV.clearTimeout(timeout);
         onError.call(self, error);
       };
-      this.klass.addErrorCatcher(onUncaughtError);
+      this.klass.pushErrorCathcer(onUncaughtError);
 
       this.klass.runWithExceptionHandlers(this, function() {
         callable.call(this, function(asyncResult) {
           resumed = true;
-          self.klass.removeErrorCatcher();
+          self.klass.popErrorCathcer();
           if (timeout) JS.ENV.clearTimeout(timeout);
           if (failed) return;
 
@@ -215,7 +215,7 @@ Test.Unit.extend({
 
       timeout = JS.ENV.setTimeout(function() {
         failed = true;
-        self.klass.removeErrorCatcher();
+        self.klass.popErrorCathcer();
         var message = 'Timed out after waiting ' + Test.asyncTimeout + ' seconds for test to resume';
         onError.call(self, new Error(message));
       }, Test.asyncTimeout * 1000);
