@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'tapout'
 gem 'testswarm-client'
 gem 'staticmatic'
 gem 'haml', '~> 3.1.0'

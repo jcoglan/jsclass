@@ -71,19 +71,3 @@
   });</pre>
 
   !/images/tracing.png!
-
-  h3. Coverage analysis
-
-  The other built-in tracing tool that JS.Class comes with is a code coverage
-  reporter that you can use while testing. You can tell the "testing framework":/testing.html
-  to 'cover' a class, and it will print a report at the end showing how many
-  times each method was used during the test, highlighting ones that weren't used
-  at all.
-
-  <pre class="prettyprint">JS.ENV.RangeSpec = JS.Test.describe('Range', function() { with(this) {
-      cover(JS.Range)
-
-      // tests etc.
-  }});</pre>
-
-  !/images/coverage.png!
