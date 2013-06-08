@@ -63,7 +63,8 @@ Test.extend({
           this.exec(block, function() {}, this.method('__endSteps__'));
         },
 
-        __endSteps__: function() {
+        __endSteps__: function(error) {
+          Test.Unit.TestCase.processError(this, error);
           this.__stepQueue__ = [];
           this.__runNextStep__();
         },

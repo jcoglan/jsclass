@@ -18,6 +18,55 @@ Test.Unit.extend({
         this.testCases.push(klass);
       },
 
+      addErrorCatcher: function(handler, push) {
+        if (!handler) return;
+        this.removeErrorCatcher(false);
+
+        if (Console.NODE)
+          process.addListener('uncaughtException', handler);
+        else if (Console.BROWSER)
+          window.onerror = handler;
+
+        if (push !== false) this.handlers.push(handler);
+        return handler;
+      },
+
+      removeErrorCatcher: function(pop) {
+        var handlers = this.handlers,
+            handler  = handlers[handlers.length - 1];
+
+        if (!handler) return;
+
+        if (Console.NODE)
+          process.removeListener('uncaughtException', handler);
+        else if (Console.BROWSER)
+          window.onerror = null;
+
+        if (pop !== false) {
+          handlers.pop();
+          this.addErrorCatcher(handlers[handlers.length - 1], false);
+        }
+      },
+
+      processError: function(testCase, error) {
+        if (!error) return;
+
+        if (JS.isType(error, Test.Unit.AssertionFailedError))
+          testCase.addFailure(error.message);
+        else
+          testCase.addError(error);
+      },
+
+      runWithExceptionHandlers: function(testCase, _try, _catch, _finally) {
+        try {
+          _try.call(testCase);
+        } catch (e) {
+          if (_catch) _catch.call(testCase, e);
+        } finally {
+          if (_finally) _finally.call(testCase);
+        }
+      },
+
       metadata: function() {
         var shortName = this.displayName,
             context   = [],
@@ -94,9 +143,15 @@ Test.Unit.extend({
       callback.call(context || null, this.klass.STARTED, this);
       this._result = result;
 
-      var teardown = function() {
-        this.exec('teardown', function() {
-          this.exec(function() { Test.Unit.mocking.verify() }, function() {
+      var teardown = function(error) {
+        this.klass.processError(this, error);
+
+        this.exec('teardown', function(error) {
+          this.klass.processError(this, error);
+
+          this.exec(function() { Test.Unit.mocking.verify() }, function(error) {
+            this.klass.processError(this, error);
+
             result.addRun();
             callback.call(context || null, this.klass.FINISHED, this);
             continuation();
@@ -125,94 +180,50 @@ Test.Unit.extend({
           self     = this;
 
       if (arity === 0)
-        return this._runWithExceptionHandlers(function() {
+        return this.klass.runWithExceptionHandlers(this, function() {
           callable.call(this);
           onSuccess.call(this);
-        }, this._processError(onError));
+        }, onError);
 
       var onUncaughtError = function(error) {
-        self.exec(function() {
-          failed = true;
-          this._removeErrorCatcher();
-          if (timeout) JS.ENV.clearTimeout(timeout);
-          throw error;
-        }, onSuccess, onError);
+        failed = true;
+        self.klass.removeErrorCatcher();
+        if (timeout) JS.ENV.clearTimeout(timeout);
+        onError.call(self, error);
       };
-      this._addErrorCatcher(onUncaughtError);
+      this.klass.addErrorCatcher(onUncaughtError);
 
-      this._runWithExceptionHandlers(function() {
-        callable.call(this, function(asyncBlock) {
+      this.klass.runWithExceptionHandlers(this, function() {
+        callable.call(this, function(asyncResult) {
           resumed = true;
-          self._removeErrorCatcher();
+          self.klass.removeErrorCatcher();
           if (timeout) JS.ENV.clearTimeout(timeout);
-          if (!failed) self.exec(asyncBlock, onSuccess, onError);
+          if (failed) return;
+
+          if (typeof asyncResult === 'string') asyncResult = new Error(asyncResult);
+
+          if (typeof asyncResult === 'object')
+            onUncaughtError(asyncResult);
+          else if (typeof asyncResult === 'function')
+            self.exec(asyncResult, onSuccess, onError);
+          else
+            self.exec(null, onSuccess, onError);
         });
-      }, this._processError(onError));
+      }, onError);
 
-      if (!resumed && JS.ENV.setTimeout)
-        timeout = JS.ENV.setTimeout(function() {
-          self.exec(function() {
-            failed = true;
-            this._removeErrorCatcher();
-            throw new Error('Timed out after waiting ' + Test.asyncTimeout + ' seconds for test to resume');
-          }, onSuccess, onError);
-        }, Test.asyncTimeout * 1000);
+      if (resumed || !JS.ENV.setTimeout) return;
+
+      timeout = JS.ENV.setTimeout(function() {
+        failed = true;
+        self.klass.removeErrorCatcher();
+        var message = 'Timed out after waiting ' + Test.asyncTimeout + ' seconds for test to resume';
+        onError.call(self, new Error(message));
+      }, Test.asyncTimeout * 1000);
     },
 
-    _addErrorCatcher: function(handler, push) {
-      if (!handler) return;
-      this._removeErrorCatcher(false);
+    setup: function() {},
 
-      if (Console.NODE)
-        process.addListener('uncaughtException', handler);
-      else if (Console.BROWSER)
-        window.onerror = handler;
-
-      if (push !== false) this.klass.handlers.push(handler);
-      return handler;
-    },
-
-    _removeErrorCatcher: function(pop) {
-      var handlers = this.klass.handlers,
-          handler  = handlers[handlers.length - 1];
-
-      if (!handler) return;
-
-      if (Console.NODE)
-        process.removeListener('uncaughtException', handler);
-      else if (Console.BROWSER)
-        window.onerror = null;
-
-      if (pop !== false) {
-        handlers.pop();
-        this._addErrorCatcher(handlers[handlers.length - 1], false);
-      }
-    },
-
-    _processError: function(doNext) {
-      return function(e) {
-        if (JS.isType(e, Test.Unit.AssertionFailedError))
-          this.addFailure(e.message);
-        else
-          this.addError(e);
-
-        if (doNext) doNext.call(this);
-      };
-    },
-
-    _runWithExceptionHandlers: function(_try, _catch, _finally) {
-      try {
-        _try.call(this);
-      } catch (e) {
-        if (_catch) _catch.call(this, e);
-      } finally {
-        if (_finally) _finally.call(this);
-      }
-    },
-
-    setup: function(resume) { resume() },
-
-    teardown: function(resume) { resume() },
+    teardown: function() {},
 
     defaultTest: function() {
       return this.flunk('No tests were specified');

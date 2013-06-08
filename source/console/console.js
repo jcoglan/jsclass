@@ -93,7 +93,7 @@ var Console = new JS.Module('Console', {
 
     filterBacktrace: function(stack) {
       if (!stack) return stack;
-      stack = stack.replace(/^\S.*\n/gm, '');
+      stack = stack.replace(/^\S.*\n?/gm, '');
       var filter = this.adapter.backtraceFilter();
 
       return filter

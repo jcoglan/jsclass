@@ -136,7 +136,7 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
       MathTest.suite().run(result, function() {
         resume(function() {
           assertEqual( 4, result.runCount() )
-          assertEqual( 7, result.assertionCount() )
+          assertEqual( 6, result.assertionCount() )
           assertEqual( 1, result.failureCount() )
           assertEqual( 1, result.errorCount() )
         })

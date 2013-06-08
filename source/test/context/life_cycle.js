@@ -55,28 +55,21 @@ Test.Context.LifeCycle = new JS.Module({
   },
 
   setup: function(resume) {
-    var self = this;
-    this.callSuper(function() {
-      if (self.klass.before_should_callbacks[self._methodName])
-        self.klass.before_should_callbacks[self._methodName].call(self);
+    if (this.klass.before_should_callbacks[this._methodName])
+      this.klass.before_should_callbacks[this._methodName].call(this);
 
-      self.runCallbacks('before', 'each', resume);
-    });
+    this.runCallbacks('before', 'each', resume);
   },
 
   teardown: function(resume) {
-    var self = this;
-    this.callSuper(function() {
-      self.runCallbacks('after', 'each', resume);
-    });
+    this.runCallbacks('after', 'each', resume);
   },
 
   runCallbacks: function(callbackType, period, continuation) {
     var callbacks = this.klass.gatherCallbacks(callbackType, period);
 
     Test.Unit.TestSuite.forEach(callbacks, function(callback, resume) {
-      this.exec(callback, resume);
-
+      this.exec(callback, resume, continuation);
     }, continuation, this);
   },
 
