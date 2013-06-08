@@ -1,5 +1,5 @@
 Test.Context.Test = new JS.Module({
-  test: function(name, opts, block) {
+  it: function(name, opts, block) {
     var testName = 'test: ' + name;
 
     if (JS.indexOf(this.instanceMethods(false), testName) >= 0)
@@ -17,16 +17,16 @@ Test.Context.Test = new JS.Module({
     this.define(testName, block, {_resolve: false});
   },
 
+  should: function() { return this.it.apply(this, arguments) },
+  test:   function() { return this.it.apply(this, arguments) },
+  tests:  function() { return this.it.apply(this, arguments) },
+
   beforeTest: function(name, block) {
-    this.test(name, {before: block}, function() {});
+    this.it(name, {before: block}, function() {});
   }
 });
 
 Test.Context.Test.alias({
-  it:     'test',
-  should: 'test',
-  tests:  'test',
-
   beforeIt:     'beforeTest',
   beforeShould: 'beforeTest',
   beforeTests:  'beforeTest'

@@ -11,17 +11,16 @@ Test.extend({
       klass.include(Test.AsyncSteps.Sync);
       if (!klass.includes(Test.Context)) return;
 
-      klass.after(function(resume) { this.sync(resume) });
-
       klass.extend({
-        after: function(period, block) {
-          if ((typeof period === 'function') || !block) {
-            block  = period;
-            period = 'each';
+        it: function(name, opts, block) {
+          if (typeof opts === 'function') {
+            block = opts;
+            opts  = {};
           }
-          this.callSuper(function(resume) {
-            this.sync(function() {
-              this.exec(block, resume);
+          this.callSuper(name, opts, function(resume) {
+            this.exec(block, function(error) {
+              Test.Unit.TestCase.processError(this, error);
+              this.sync(resume);
             });
           });
         }
