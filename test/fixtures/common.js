@@ -1,5 +1,5 @@
-Common = {name: 'CommonJS module'};
-HTTP = {name: 'CommonJS HTTP lib'};
+var Common = {name: 'CommonJS module'};
+var HTTP = {name: 'CommonJS HTTP lib'};
 
 if (typeof exports === 'object') {
   exports.Common = Common;

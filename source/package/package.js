@@ -22,7 +22,7 @@ Package.log = function(message) {
 
 var resolve = function(filename) {
   if (/^https?:/.test(filename)) return filename;
-  var root = exports.WEB_ROOT;
+  var root = exports.ROOT;
   if (root) filename = (root + '/' + filename).replace(/\/+/g, '/');
   return filename;
 };
@@ -264,10 +264,12 @@ Package.when = function(eventTable, block, context) {
 //================================================================
 // Indexes for fast lookup by path and name, and assigning IDs
 
-Package._autoIncrement = 1;
-Package._indexByPath   = {};
-Package._indexByName   = {};
-Package._autoloaders   = [];
+var globalPackage = (global.JS || {}).Package || {};
+
+Package._autoIncrement = globalPackage._autoIncrement || 1;
+Package._indexByPath   = globalPackage._indexByPath   || {};
+Package._indexByName   = globalPackage._indexByName   || {};
+Package._autoloaders   = globalPackage._autoloaders   || [];
 
 Package._index = function(pkg) {
   pkg.id = this._autoIncrement;
