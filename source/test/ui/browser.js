@@ -31,14 +31,15 @@ Test.UI.extend({
     getReporters: function(options) {
       var reporters = [],
           R         = Test.Reporters,
+          reg       = R._registry,
           browser   = new R.Browser(options),
           reporter;
 
       reporters.push(new R.Coverage());
       reporters.push(browser);
 
-      for (var name in R) {
-        reporter = R[name] && R[name].create && R[name].create(options, browser);
+      for (var name in reg) {
+        reporter = reg[name] && reg[name].create && reg[name].create(options, browser);
         if (reporter) reporters.push(reporter);
       }
 

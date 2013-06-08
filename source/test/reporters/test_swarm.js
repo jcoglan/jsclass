@@ -42,3 +42,5 @@ Test.Reporters.extend({
   })
 });
 
+Test.Reporters.register('testswarm', Test.Reporters.TestSwarm);
+

@@ -14,7 +14,7 @@ Test.extend({
     },
 
     prepare: function(callback, context) {
-      var R    = Test.Reporters,
+      var R    = Test.Reporters._registry,
           n    = 0,
           done = false;
 
