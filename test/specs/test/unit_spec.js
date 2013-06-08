@@ -282,11 +282,11 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
       it("fails when given unequal dates", function(resume) { with(this) {
         runTests({
           test1: function() { with(this) {
-            assertEqual( new Date(1986,6,5), new Date(1984,1,25) )
+            assertEqual( new Date(1986,2,5), new Date(1984,1,25) )
           }},
 
           test2: function() { with(this) {
-            assertNotEqual( new Date(1986,6,5), new Date(1986,6,5) )
+            assertNotEqual( new Date(1986,2,5), new Date(1986,2,5) )
           }}
         }, function() { resume(function() {
           assertTestResult( 2, 2, 2, 0 )
@@ -296,13 +296,13 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
 
           assertMessage( 1, "Failure:\n" +
                             "test1(TestedSuite):\n" +
-                            "<Fri, " + oh + "4 Jul 1986 23:00:00 " + tz + "> expected but was\n" +
+                            "<Wed, " + oh + "5 Mar 1986 00:00:00 " + tz + "> expected but was\n" +
                             "<Sat, 25 Feb 1984 00:00:00 " + tz + ">" )
 
           assertMessage( 2, "Failure:\n" +
                             "test2(TestedSuite):\n" +
-                            "<Fri, " + oh + "4 Jul 1986 23:00:00 " + tz + "> expected not to be equal to\n" +
-                            "<Fri, " + oh + "4 Jul 1986 23:00:00 " + tz + ">" )
+                            "<Wed, " + oh + "5 Mar 1986 00:00:00 " + tz + "> expected not to be equal to\n" +
+                            "<Wed, " + oh + "5 Mar 1986 00:00:00 " + tz + ">" )
         })})
       }})
     }})
