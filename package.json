@@ -94,6 +94,7 @@
                                 "reporters/error",
                                 "reporters/dot",
                                 "reporters/json",
+                                "reporters/tap",
                                 "reporters/exit_status",
                                 "reporters/phantomjs",
                                 "reporters/browser",
