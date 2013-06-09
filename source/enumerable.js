@@ -15,7 +15,7 @@ var Enumerable = new JS.Module('Enumerable', {
     forEach: function(block, context) {
       if (!block) return new Enumerator(this, 'forEach');
       for (var i = 0; i < this.length; i++)
-        block.call(context || null, this[i]);
+        block.call(context, this[i]);
       return this;
     },
 
@@ -100,7 +100,7 @@ var Enumerable = new JS.Module('Enumerable', {
     block = Enumerable.toFn(block);
     var truth = true;
     this.forEach(function(item) {
-      truth = truth && (block ? block.apply(context || null, arguments) : item);
+      truth = truth && (block ? block.apply(context, arguments) : item);
     });
     return !!truth;
   },
@@ -109,7 +109,7 @@ var Enumerable = new JS.Module('Enumerable', {
     block = Enumerable.toFn(block);
     var truth = false;
     this.forEach(function(item) {
-      truth = truth || (block ? block.apply(context || null, arguments) : item);
+      truth = truth || (block ? block.apply(context, arguments) : item);
     });
     return !!truth;
   },
@@ -122,7 +122,7 @@ var Enumerable = new JS.Module('Enumerable', {
       block = function(x) { return Enumerable.areEqual(x, object) };
 
     this.forEach(function() {
-      if (!block || block.apply(context || null, arguments))
+      if (!block || block.apply(context, arguments))
         count += 1;
     });
     return count;
@@ -150,7 +150,7 @@ var Enumerable = new JS.Module('Enumerable', {
         drop    = true;
 
     this.forEach(function(item) {
-      if (drop) drop = drop && block.apply(context || null, arguments);
+      if (drop) drop = drop && block.apply(context, arguments);
       if (!drop) entries.push(item);
     });
     return entries;
@@ -166,7 +166,7 @@ var Enumerable = new JS.Module('Enumerable', {
         i;
 
     for (i = 0; i <= limit; i++)
-      block.call(context || null, entries.slice(i, i+n));
+      block.call(context, entries.slice(i, i+n));
 
     return this;
   },
@@ -181,7 +181,7 @@ var Enumerable = new JS.Module('Enumerable', {
         i;
 
     for (i = 0; i < m; i++)
-      block.call(context || null, entries.slice(i*n, (i+1)*n));
+      block.call(context, entries.slice(i*n, (i+1)*n));
 
     return this;
   },
@@ -198,7 +198,7 @@ var Enumerable = new JS.Module('Enumerable', {
     block = Enumerable.toFn(block);
 
     return this.forEach(function(item) {
-      var result = block.call(context || null, item, offset);
+      var result = block.call(context, item, offset);
       offset += 1;
       return result;
     });
@@ -210,7 +210,7 @@ var Enumerable = new JS.Module('Enumerable', {
 
     this.forEach(function() {
       var args = [object].concat(JS.array(arguments));
-      block.apply(context || null, args);
+      block.apply(context, args);
     });
     return object;
   },
@@ -222,7 +222,7 @@ var Enumerable = new JS.Module('Enumerable', {
     var needle = {}, K = needle;
     this.forEach(function(item) {
       if (needle !== K) return;
-      needle = block.apply(context || null, arguments) ? item : needle;
+      needle = block.apply(context, arguments) ? item : needle;
     });
     return needle === K ? null : needle;
   },
@@ -235,7 +235,7 @@ var Enumerable = new JS.Module('Enumerable', {
 
     this.forEachWithIndex(function(item, i) {
       if (index !== null) return;
-      if (Enumerable.areEqual(needle, item) || (block && needle.apply(context || null, arguments)))
+      if (Enumerable.areEqual(needle, item) || (block && needle.apply(context, arguments)))
         index = i;
     });
     return index;
@@ -255,7 +255,7 @@ var Enumerable = new JS.Module('Enumerable', {
                 : JS.isType(item, pattern);
 
       if (!match) return;
-      if (block) item = block.apply(context || null, arguments);
+      if (block) item = block.apply(context, arguments);
       results.push(item);
     });
     return results;
@@ -269,7 +269,7 @@ var Enumerable = new JS.Module('Enumerable', {
         hash = new Hash();
 
     this.forEach(function(item) {
-      var value = block.apply(context || null, arguments);
+      var value = block.apply(context, arguments);
       if (!hash.hasKey(value)) hash.store(value, []);
       hash.get(value).push(item);
     });
@@ -297,7 +297,7 @@ var Enumerable = new JS.Module('Enumerable', {
     this.forEach(function(item) {
       if (!counter++ && memo === K) return memo = item;
       var args = [memo].concat(JS.array(arguments));
-      memo = block.apply(context || null, args);
+      memo = block.apply(context, args);
     });
     return memo;
   },
@@ -308,7 +308,7 @@ var Enumerable = new JS.Module('Enumerable', {
 
     var map = [];
     this.forEach(function() {
-      map.push(block.apply(context || null, arguments));
+      map.push(block.apply(context, arguments));
     });
     return map;
   },
@@ -354,7 +354,7 @@ var Enumerable = new JS.Module('Enumerable', {
     block = Enumerable.toFn(block);
     var count = 0;
     this.forEach(function(item) {
-      if (block ? block.apply(context || null, arguments) : item) count += 1;
+      if (block ? block.apply(context, arguments) : item) count += 1;
     });
     return count === 1;
   },
@@ -365,7 +365,7 @@ var Enumerable = new JS.Module('Enumerable', {
 
     var ayes = [], noes = [];
     this.forEach(function(item) {
-      (block.apply(context || null, arguments) ? ayes : noes).push(item);
+      (block.apply(context, arguments) ? ayes : noes).push(item);
     });
     return [ayes, noes];
   },
@@ -376,7 +376,7 @@ var Enumerable = new JS.Module('Enumerable', {
 
     var map = [];
     this.forEach(function(item) {
-      if (!block.apply(context || null, arguments)) map.push(item);
+      if (!block.apply(context, arguments)) map.push(item);
     });
     return map;
   },
@@ -388,7 +388,7 @@ var Enumerable = new JS.Module('Enumerable', {
     var entries = this.toArray(),
         n       = entries.length;
 
-    while (n--) block.call(context || null, entries[n]);
+    while (n--) block.call(context, entries[n]);
     return this;
   },
 
@@ -398,7 +398,7 @@ var Enumerable = new JS.Module('Enumerable', {
 
     var map = [];
     this.forEach(function(item) {
-      if (block.apply(context || null, arguments)) map.push(item);
+      if (block.apply(context, arguments)) map.push(item);
     });
     return map;
   },
@@ -411,7 +411,7 @@ var Enumerable = new JS.Module('Enumerable', {
         ? function(a,b) { return a.compareTo(b); }
         : null);
     return block
-        ? entries.sort(function(a,b) { return block.call(context || null, a, b); })
+        ? entries.sort(function(a,b) { return block.call(context, a, b); })
         : entries.sort();
   },
 
@@ -444,7 +444,7 @@ var Enumerable = new JS.Module('Enumerable', {
     var entries = [],
         take    = true;
     this.forEach(function(item) {
-      if (take) take = take && block.apply(context || null, arguments);
+      if (take) take = take && block.apply(context, arguments);
       if (take) entries.push(item);
     });
     return entries;

@@ -140,7 +140,7 @@ Test.Unit.extend({
     },
 
     run: function(result, continuation, callback, context) {
-      callback.call(context || null, this.klass.STARTED, this);
+      callback.call(context, this.klass.STARTED, this);
       this._result = result;
 
       var teardown = function(error) {
@@ -153,7 +153,7 @@ Test.Unit.extend({
             this.klass.processError(this, error);
 
             result.addRun();
-            callback.call(context || null, this.klass.FINISHED, this);
+            callback.call(context, this.klass.FINISHED, this);
             continuation();
           });
         });

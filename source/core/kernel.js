@@ -43,7 +43,7 @@ JS.Kernel = new JS.Module('Kernel', {
   },
 
   tap: function(block, context) {
-    block.call(context || null, this);
+    block.call(context, this);
     return this;
   },
 

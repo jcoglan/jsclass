@@ -15,24 +15,24 @@ var Deferrable = new JS.Module('Deferrable', {
 
   callback: function(block, context) {
     if (this.__deferredStatus__ === 'success')
-      return block.apply(context || null, this.__deferredValue__);
+      return block.apply(context, this.__deferredValue__);
 
     if (this.__deferredStatus__ === 'failure')
       return;
 
     this.__callbacks__ = this.__callbacks__ || [];
-    this.__callbacks__.push([block, context || null]);
+    this.__callbacks__.push([block, context]);
   },
 
   errback: function(block, context) {
     if (this.__deferredStatus__ === 'failure')
-      return block.apply(context || null, this.__deferredValue__);
+      return block.apply(context, this.__deferredValue__);
 
     if (this.__deferredStatus__ === 'success')
       return;
 
     this.__errbacks__ = this.__errbacks__ || [];
-    this.__errbacks__.push([block, context || null]);
+    this.__errbacks__.push([block, context]);
   },
 
   timeout: function(milliseconds) {

@@ -49,7 +49,7 @@ exports.load = function(path, callback) {
       n    = args.files.length;
 
   var loadNext = function(index) {
-    if (index === n) return args.callback.call(args.context || null);
+    if (index === n) return args.callback.call(args.context);
     Package.loader.loadFile(args.files[index], function() {
       loadNext(index + 1);
     });
@@ -62,7 +62,7 @@ exports.require = function() {
 
   Package.when({complete: args.files}, function(objects) {
     if (!args.callback) return;
-    args.callback.apply(args.context || null, objects && objects.complete);
+    args.callback.apply(args.context, objects && objects.complete);
   });
 
   return this;

@@ -78,7 +78,7 @@ var Range = new JS.Class('Range', {
         : function(a,b) { return a !== b };
 
     while (check(needle, this._last)) {
-      block.call(context || null, needle);
+      block.call(context, needle);
       needle = this.klass.succ(needle);
       if (JS.isType(needle, 'string') && needle.length > this._last.length) {
         exclude = true;
@@ -89,7 +89,7 @@ var Range = new JS.Class('Range', {
     if (this.klass.compare(needle, this._last) > 0)
       return;
 
-    if (!exclude) block.call(context || null, needle);
+    if (!exclude) block.call(context, needle);
   },
 
   equals: function(other) {
@@ -125,7 +125,7 @@ var Range = new JS.Class('Range', {
 
     var i = 0;
     this.forEach(function(member) {
-      if (i % n === 0) block.call(context || null, member);
+      if (i % n === 0) block.call(context, member);
       i += 1;
     });
   },

@@ -47,7 +47,7 @@ var Command = new JS.Class('Command', {
 
         for (var i = 0, n = this._stack.length; i < n; i++) {
           if (this._stack[i] !== undefined)
-            block.call(context || null, this._stack[i], i);
+            block.call(context, this._stack[i], i);
         }
         return this;
       },

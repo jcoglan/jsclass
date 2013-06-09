@@ -18,7 +18,7 @@ var Set = new JS.Class('Set', {
       if (list.forEach) return list.forEach(block, context);
       for (var i = 0, n = list.length; i < n; i++) {
         if (list[i] !== undefined)
-          block.call(context || null, list[i], i);
+          block.call(context, list[i], i);
       }
     }
   },
@@ -28,7 +28,7 @@ var Set = new JS.Class('Set', {
   initialize: function(list, block, context) {
     this.clear();
     if (block) this.klass.forEach(list, function(item) {
-      this.add(block.call(context || null, item));
+      this.add(block.call(context, item));
     }, this);
     else this.merge(list);
   },
@@ -54,7 +54,7 @@ var Set = new JS.Class('Set', {
 
     var classes = new hash.Hash();
     this.forEach(function(item) {
-      var value = block.call(context || null, item);
+      var value = block.call(context, item);
       if (!classes.hasKey(value)) classes.store(value, new this.klass);
       classes.get(value).add(item);
     }, this);
@@ -191,7 +191,7 @@ var Set = new JS.Class('Set', {
     block = Enumerable.toFn(block);
 
     this._members.removeIf(function(pair) {
-      return block.call(context || null, pair.key);
+      return block.call(context, pair.key);
     });
     this.length = this.size = this._members.length;
     return this;
@@ -309,7 +309,7 @@ var SortedSet = new JS.Class('SortedSet', Set, {
         i       = members.length;
 
     while (i--) {
-      if (block.call(context || null, members[i]))
+      if (block.call(context, members[i]))
         this.remove(members[i]);
     }
     return this;

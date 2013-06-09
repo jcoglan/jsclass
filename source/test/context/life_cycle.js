@@ -83,7 +83,7 @@ Test.Context.LifeCycle = new JS.Module({
         return hash;
       }, this);
 
-      if (continuation) continuation.call(context || null, ivars);
+      if (continuation) continuation.call(context, ivars);
     });
   },
 

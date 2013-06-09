@@ -14,12 +14,12 @@ var Observable = new JS.Module('Observable', {
   },
 
   addObserver: function(observer, context) {
-    (this.__observers__ = this.__observers__ || []).push({_block: observer, _context: context || null});
+    (this.__observers__ = this.__observers__ || []).push({_block: observer, _context: context});
   },
 
   removeObserver: function(observer, context) {
     this.__observers__ = this.__observers__ || [];
-    context = context || null;
+    context = context;
     var i = this.countObservers();
     while (i--) {
       if (this.__observers__[i]._block === observer && this.__observers__[i]._context === context) {
@@ -44,7 +44,7 @@ var Observable = new JS.Module('Observable', {
       observer = this.__observers__[i];
       block    = observer._block;
       context  = observer._context;
-      if (typeof block === 'function') block.apply(context || null, arguments);
+      if (typeof block === 'function') block.apply(context, arguments);
       else block[context || Observable.DEFAULT_METHOD].apply(block, arguments);
     }
   },

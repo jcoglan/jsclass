@@ -13,7 +13,7 @@
 Test.Unit.TestSuite.include({
   run: function(result, continuation, callback, context) {
     if (this._metadata.fullName)
-      callback.call(context || null, this.klass.STARTED, this);
+      callback.call(context, this.klass.STARTED, this);
 
     var withIvars = function(ivarsFromCallback) {
       this.forEach(function(test, resume) {
@@ -25,9 +25,9 @@ Test.Unit.TestSuite.include({
       }, function() {
         var afterCallbacks = function() {
           if (this._metadata.fullName)
-            callback.call(context || null, this.klass.FINISHED, this);
+            callback.call(context, this.klass.FINISHED, this);
 
-          continuation.call(context || null);
+          continuation.call(context);
         };
         if (ivarsFromCallback && first.runAllCallbacks)
           first.runAllCallbacks('after', afterCallbacks, this);

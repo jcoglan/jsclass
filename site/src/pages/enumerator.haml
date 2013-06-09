@@ -39,7 +39,7 @@
           if (!block) return this.enumFor('forEach');
 
           for (var i = 0, n = this._list.length; i < n; i++)
-              block.call(context || null, this._list[i]);
+              block.call(context, this._list[i]);
 
           return this;
       }

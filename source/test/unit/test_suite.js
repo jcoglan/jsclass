@@ -33,10 +33,10 @@ Test.Unit.extend({
           i += 1;
           if (i === n) {
             looping = false;
-            return continuation && continuation.call(context || null);
+            return continuation && continuation.call(context);
           }
           pinged = false;
-          block.call(context || null, tests[i], ping);
+          block.call(context, tests[i], ping);
           if (!pinged) looping = false;
         };
 
@@ -55,16 +55,16 @@ Test.Unit.extend({
 
     run: function(result, continuation, callback, context) {
       if (this._metadata.fullName)
-        callback.call(context || null, this.klass.STARTED, this);
+        callback.call(context, this.klass.STARTED, this);
 
       this.forEach(function(test, resume) {
         test.run(result, resume, callback, context)
 
       }, function() {
         if (this._metadata.fullName)
-          callback.call(context || null, this.klass.FINISHED, this);
+          callback.call(context, this.klass.FINISHED, this);
 
-        continuation.call(context || null);
+        continuation.call(context);
 
       }, this);
     },

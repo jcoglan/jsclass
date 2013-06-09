@@ -74,7 +74,7 @@ var Hash = new JS.Class('Hash', {
       if (!this._buckets.hasOwnProperty(hash)) continue;
       bucket = this._buckets[hash];
       i = bucket.length;
-      while (i--) block.call(context || null, bucket[i]);
+      while (i--) block.call(context, bucket[i]);
     }
     return this;
   },
@@ -170,7 +170,7 @@ var Hash = new JS.Class('Hash', {
     if (pair) return pair.value;
 
     if (defaultValue === undefined) throw new Error('key not found');
-    if (typeof defaultValue === 'function') return defaultValue.call(context || null, key);
+    if (typeof defaultValue === 'function') return defaultValue.call(context, key);
     return defaultValue;
   },
 
@@ -179,7 +179,7 @@ var Hash = new JS.Class('Hash', {
     block = Enumerable.toFn(block);
 
     this.forEach(function(pair) {
-      block.call(context || null, pair.key);
+      block.call(context, pair.key);
     });
     return this;
   },
@@ -189,7 +189,7 @@ var Hash = new JS.Class('Hash', {
     block = Enumerable.toFn(block);
 
     this.forEach(function(pair) {
-      block.call(context || null, pair.key, pair.value);
+      block.call(context, pair.key, pair.value);
     });
     return this;
   },
@@ -199,7 +199,7 @@ var Hash = new JS.Class('Hash', {
     block = Enumerable.toFn(block);
 
     this.forEach(function(pair) {
-      block.call(context || null, pair.value);
+      block.call(context, pair.value);
     });
     return this;
   },
@@ -304,7 +304,7 @@ var Hash = new JS.Class('Hash', {
     var toRemove = [];
 
     this.forEach(function(pair) {
-      if (block.call(context || null, pair))
+      if (block.call(context, pair))
         toRemove.push(pair.key);
     }, this);
 
@@ -343,7 +343,7 @@ var Hash = new JS.Class('Hash', {
     hash.forEach(function(pair) {
       var key = pair.key, value = pair.value;
       if (givenBlock && this.hasKey(key))
-        value = block.call(context || null, key, this.get(key), value);
+        value = block.call(context, key, this.get(key), value);
       this.store(key, value);
     }, this);
   },
@@ -409,7 +409,7 @@ var OrderedHash = new JS.Class('OrderedHash', Hash, {
 
     var pair = this._first;
     while (pair) {
-      block.call(context || null, pair);
+      block.call(context, pair);
       pair = pair._next;
     }
   },

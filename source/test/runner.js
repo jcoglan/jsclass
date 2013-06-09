@@ -23,11 +23,11 @@ Test.extend({
         n += 1;
         R[name].prepare(function() {
           n -= 1;
-          if (n === 0 && done) callback.call(context || null);
+          if (n === 0 && done) callback.call(context);
         });
       }
       done = true;
-      if (n === 0) callback.call(context || null);
+      if (n === 0) callback.call(context);
     },
 
     start: function(ui, callback, context) {
@@ -36,7 +36,7 @@ Test.extend({
           suite     = this.getSuite(options);
 
       this.setReporter(new Test.Reporters.Composite(reporters));
-      if (callback) callback.call(context || null, this);
+      if (callback) callback.call(context, this);
 
       var testResult = new Test.Unit.TestResult(),
           TR         = Test.Unit.TestResult,

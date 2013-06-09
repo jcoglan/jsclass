@@ -10,7 +10,7 @@ Test.extend({
 
     forEach: function(list, block, context) {
       for (var i = 0, n = list.length; i < n; i++) {
-        block.call(context || null, list[i], i);
+        block.call(context, list[i], i);
       }
     },
 

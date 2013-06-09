@@ -13,7 +13,7 @@ Test.Unit.extend({
         message = null;
       }
       this.__wrapAssertion__(function() {
-        if (!block.call(context || null)) {
+        if (!block.call(context)) {
           message = this.buildMessage(message || 'assertBlock failed');
           throw new Test.Unit.AssertionFailedError(message);
         }

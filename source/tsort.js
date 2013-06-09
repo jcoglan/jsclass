@@ -24,7 +24,7 @@ var TSort = new JS.Module('TSort', {
   tsortEach: function(block, context) {
     this.eachStronglyConnectedComponent(function(component) {
       if (component.length === 1)
-        block.call(context || null, component[0]);
+        block.call(context, component[0]);
       else
         throw new TSort.Cyclic('topological sort failed: ' + component.toString());
     });
@@ -43,7 +43,7 @@ var TSort = new JS.Module('TSort', {
     this.tsortEachNode(function(node) {
       if (idMap.hasKey(node)) return;
       this.eachStronglyConnectedComponentFrom(node, idMap, stack, function(child) {
-        block.call(context || null, child);
+        block.call(context, child);
       });
     }, this);
   },
@@ -71,7 +71,7 @@ var TSort = new JS.Module('TSort', {
       component = stack.splice(stackLength, stack.length - stackLength);
       i = component.length;
       while (i--) idMap.store(component[i], undefined);
-      block.call(context || null, component);
+      block.call(context, component);
     }
 
     return minimumId;
