@@ -10,7 +10,7 @@
 , "main"            : "./index"
 , "devDependencies" : {"wake": ""}
 
-, "scripts"         : { "build"   : "./node_modules/.bin/wake"
+, "scripts"         : { "build"   : "wake"
                       , "clean"   : "rm -rf build"
                       , "pretest" : "npm run-script build"
                       , "test"    : "node test/console.js"
