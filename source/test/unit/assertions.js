@@ -31,6 +31,13 @@ Test.Unit.extend({
       });
     },
 
+    assertNot: function(bool, message) {
+      this.__wrapAssertion__(function() {
+        this.assertBlock(this.buildMessage(message, '<?> is not false', bool),
+                         function() { return !bool });
+      });
+    },
+
     assertEqual: function(expected, actual, message) {
       var fullMessage = this.buildMessage(message, '<?> expected but was\n<?>', expected, actual);
       this.assertBlock(fullMessage, function() {
