@@ -82,6 +82,7 @@ JS.ENV.PackageSpec = JS.Test.describe(JS.Package, function() { with(this) {
       JS.packages(function() { with(this) {
         file(CWD + "/test/fixtures/common.js").provides("Common", "HTTP")
       }})
+      stub(JS.Package.loader, "fetch", undefined)
     }})
     after(function() { JS.Package.remove("Common") })
 
