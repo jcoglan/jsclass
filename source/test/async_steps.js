@@ -39,7 +39,9 @@ Test.extend({
           setTimeout(this.method('__runNextStep__'), 1);
         },
 
-        __runNextStep__: function() {
+        __runNextStep__: function(error) {
+          if (error !== undefined) return this.addError(error);
+
           var step = this.__stepQueue__.shift(), n;
 
           if (!step) {

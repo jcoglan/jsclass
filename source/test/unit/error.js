@@ -1,6 +1,9 @@
 Test.Unit.extend({
   Error: new JS.Class({
     initialize: function(testCase, exception) {
+      if (typeof exception === 'string')
+        exception = new Error(exception);
+
       this._testCase  = testCase;
       this._exception = exception;
     },

@@ -39,6 +39,11 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
           throw new Error("async error")
           callback()
         }, 10)
+      }},
+      callbackError: function(callback) { with(this) {
+        JS.ENV.setTimeout(function() {
+          callback(new Error("webscale error"))
+        }, 10)
       }}
     })
     this.steps = new JS.Singleton(StepModule)
@@ -125,6 +130,9 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
         it("catches async errors", function() { with(this) {
           throwError()
         }})
+        it("cathces callback errors", function() { with(this) {
+          callbackError()
+        }})
       }})
       MathTest.resolve()
       this.result = new JS.Test.Unit.TestResult()
@@ -135,10 +143,10 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
     it("hides all the async stuff", function(resume) { with(this) {
       MathTest.suite().run(result, function() {
         resume(function() {
-          assertEqual( 4, result.runCount() )
-          assertEqual( 7, result.assertionCount() )
+          assertEqual( 5, result.runCount() )
+          assertEqual( 8, result.assertionCount() )
           assertEqual( 1, result.failureCount() )
-          assertEqual( 1, result.errorCount() )
+          assertEqual( 2, result.errorCount() )
         })
       }, function() {})
     }})
