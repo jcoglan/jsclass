@@ -69,7 +69,7 @@ Test.extend({
       };
 
       this.klass.reportEventId = 0;
-      this._reporter.startSuite(this.klass.timestamp(suite.metadata()));
+      this._reporter.startSuite(this.klass.timestamp(suite.metadata(true)));
 
       suite.run(testResult, reportResult, reportEvent, this);
     },

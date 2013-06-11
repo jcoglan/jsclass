@@ -258,8 +258,7 @@ Test.Unit.extend({
       return {
         fullName:   klassData.fullName + ' ' + shortName,
         shortName:  shortName,
-        context:    klassData.context.concat(klassData.shortName),
-        size:       this.size()
+        context:    klassData.context.concat(klassData.shortName)
       };
     }
   })

@@ -70,19 +70,24 @@ Test.Unit.extend({
     },
 
     size: function() {
+      if (this._size !== undefined) return this._size;
       var totalSize = 0, i = this._tests.length;
-      while (i--) {
-        totalSize += this._tests[i].size();
-      }
-      return totalSize;
+      while (i--) totalSize += this._tests[i].size();
+      return this._size = totalSize;
     },
 
     empty: function() {
       return this._tests.length === 0;
     },
 
-    metadata: function() {
-      return JS.extend({size: this.size()}, this._metadata);
+    metadata: function(root) {
+      var data = JS.extend({size: this.size()}, this._metadata);
+      if (root) {
+        delete data.fullName;
+        delete data.shortName;
+        delete data.context;
+      }
+      return data;
     }
   })
 });
