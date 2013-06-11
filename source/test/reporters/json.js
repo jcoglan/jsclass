@@ -15,7 +15,7 @@ Test.Reporters.extend({
 
       Reader: new JS.Class({
         initialize: function(reporter) {
-          this._reporter = reporter;
+          this._reporter = new Test.Reporters.Composite([reporter]);
         },
 
         read: function(message) {
