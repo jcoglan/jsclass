@@ -121,10 +121,8 @@ Test.Reporters.Browser.extend({
         });
         if (name) {
           self._toggle = li.p({className: self._type + '-name'}, name);
-          if (self._type === 'spec') {
-            self._runner = DOM.span({className: 'runner'}, 'Run');
-            self._toggle.insertBefore(self._runner, self._toggle.firstChild);
-          }
+          self._runner = DOM.span({className: 'runner'}, 'Run');
+          self._toggle.insertBefore(self._runner, self._toggle.firstChild);
         }
         self._ul = li.ul({className: 'children'});
       });

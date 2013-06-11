@@ -4,12 +4,13 @@ Test.extend({
       this._settings = (typeof settings === 'string')
                      ? {format: settings}
                      : (settings || {});
+
+      this._ui = this.klass.getUI(this._settings);
     },
 
     run: function(callback, context) {
-      var ui = this.klass.getUI(this._settings);
       this.prepare(function() {
-        this.start(ui, callback, context);
+        this.start(callback, context);
       }, this);
     },
 
@@ -30,9 +31,9 @@ Test.extend({
       if (n === 0) callback.call(context);
     },
 
-    start: function(ui, callback, context) {
-      var options   = JS.extend(ui.getOptions(), this._settings),
-          reporters = ui.getReporters(options),
+    start: function(callback, context) {
+      var options   = this.getOptions(),
+          reporters = this._ui.getReporters(options),
           suite     = this.getSuite(options);
 
       this.setReporter(new Test.Reporters.Composite(reporters));
@@ -85,6 +86,10 @@ Test.extend({
 
     setReporter: function(reporter) {
       this._reporter = reporter;
+    },
+
+    getOptions: function() {
+      return JS.extend(this._ui.getOptions(), this._settings);
     },
 
     getSuite: function(options) {
