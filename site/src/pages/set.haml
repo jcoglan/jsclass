@@ -30,7 +30,7 @@
   the object, the @===@ operator is used instead. An example class might look
   like:
 
-  <pre class="prettyprint">Widget = new JS.Class({
+  <pre>Widget = new JS.Class({
       initialize: function(name) {
           this.name = name;
       },
@@ -55,7 +55,7 @@
   Creating a set is simple: simply pass an array (or some other enumerable
   object) with the data to put in the set:
 
-  <pre class="prettyprint">var evensUnderTen = new JS.Set([2,4,6,8]);</pre>
+  <pre>var evensUnderTen = new JS.Set([2,4,6,8]);</pre>
 
   @Set@ and @SortedSet@ include the "@Enumerable@":/enumerable.html module. The
   iteration order for @Set@ is arbitrary and is not guaranteed, whereas for
@@ -72,7 +72,7 @@
   comparison to other set members (see above). Returns a boolean to indicate
   whether or not the item was added.
 
-  <pre class="prettyprint">var evensUnderTen = new JS.Set([2,4,6,8]);
+  <pre>var evensUnderTen = new JS.Set([2,4,6,8]);
   evensUnderTen.add(6)    // -> false
   evensUnderTen.add(0)    // -> true</pre>
 
@@ -82,7 +82,7 @@
   member, returning a "@Hash@":/hash.html whose keys are the distinct return
   values.
 
-  <pre class="prettyprint">// Classify by remainder when divided by 3
+  <pre>// Classify by remainder when divided by 3
 
   var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
   var c = s.classify(function(x) { return x % 3 });
@@ -109,7 +109,7 @@
   Returns a new set containing all the members of the receiver that are not in
   the set @other@.
 
-  <pre class="prettyprint">var a = new JS.Set([1,2,3,4,5,6,7,8,9]);
+  <pre>var a = new JS.Set([1,2,3,4,5,6,7,8,9]);
   var b = new JS.Set([2,4,6,8]);
 
   a.difference(b)
@@ -120,7 +120,7 @@
   Similar to @classify(block, context)@ except that the result is given as a set
   of sets, rather than as key/value pairs.
 
-  <pre class="prettyprint">// Classify by remainder when divided by 3
+  <pre>// Classify by remainder when divided by 3
 
   var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
   var c = s.divide(function(x) {
@@ -139,7 +139,7 @@
   Flattens the set in place, such that any sets nested within the receiver are
   merged and their members become the receiver's members.
 
-  <pre class="prettyprint">var s = new JS.Set([ new JS.Set([3,9,4]),
+  <pre>var s = new JS.Set([ new JS.Set([3,9,4]),
       new JS.Set([1,7,3,5]), 3, 7 ]);
 
   // s == Set{ Set{3,9,4}, Set{1,7,3,5}, 3, 7}
@@ -187,7 +187,7 @@
   Returns a new (always non-sorted) set of all possible ordered pairs whose
   first member is in the receiver and whose second member is in @set@.
 
-  <pre class="prettyprint">var a = new JS.Set([1,2]), b = new JS.Set([3,4]);
+  <pre>var a = new JS.Set([1,2]), b = new JS.Set([3,4]);
   var prod = a.product(b);
 
   // prod == Set{ [1,3], [1,4], [2,3], [2,4] }</pre>
@@ -208,7 +208,7 @@
 
   Removes all the members of the set for which @predicate@ returns @true@.
 
-  <pre class="prettyprint">var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
+  <pre>var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
 
   // Remove multiples of 3
   s.removeIf(function(x) { return x % 3 == 0 });
@@ -235,6 +235,6 @@
   Returns a new set containing members that are either in @other@ or in the
   receiver, but not in both. This is equivalent to:
 
-  <pre class="prettyprint">// a.xor(b) ->
+  <pre>// a.xor(b) ->
   (a.union(b)).difference(a.intersection(b))</pre>
 

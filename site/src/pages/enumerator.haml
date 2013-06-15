@@ -10,7 +10,7 @@
   are generated using the @Kernel#enumFor@ method, for example here are a couple
   of generators that appear in the @Enumerable@ API:
 
-  <pre class="prettyprint">map: function(block, context) {
+  <pre>map: function(block, context) {
       if (!block) return this.enumFor('map');
       // map code
   }
@@ -26,7 +26,7 @@
   we have this basic class that wraps an array and allows us to iterate over it
   using @forEach@:
 
-  <pre class="prettyprint">var Collection = new JS.Class({
+  <pre>var Collection = new JS.Class({
       include: JS.Enumerable,
 
       initialize: function() {
@@ -50,14 +50,14 @@
   values? Enumerators make this possible; since @Enumerable#map@ returns an
   @Enumerator@, we can combine it with @forEachWithIndex@ to get what we want:
 
-  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  <pre>var list = new Collection(3,7,4,8,2);
 
   list.map().forEachWithIndex(function(x,i) { return x + i })
   // -> [3, 8, 6, 11, 6]</pre>
 
   These can be switched around, so you can do various things using indexes:
 
-  <pre class="prettyprint">list.forEachWithIndex().map(function(x,i) { return x + i })
+  <pre>list.forEachWithIndex().map(function(x,i) { return x + i })
   // -> [3, 8, 6, 11, 6]
 
   list.forEachWithIndex().select(function(x,i) { return x < i })
@@ -73,13 +73,13 @@
 
   These help to clarify chains, for example we can rewrite the last expression as:
 
-  <pre class="prettyprint">list.select().withIndex(function(x,i) { return x < i })
+  <pre>list.select().withIndex(function(x,i) { return x < i })
   // -> [2]</pre>
 
   We'll end with a few more examples to show how iterations can be composed
   using the @Enumerator@ class:
 
-  <pre class="prettyprint">list.forEachCons(3).forEach(function() {
+  <pre>list.forEachCons(3).forEach(function() {
       console.log(arguments);
   });
   // output:

@@ -11,7 +11,7 @@
   method to the class/module. If you're modifying a class, the method instantly
   becomes available in instances of the class, and in its subclasses.
 
-  <pre class="prettyprint">Animal.define('sleep', function() {
+  <pre>Animal.define('sleep', function() {
       return this.name + ' is sleeping';
   });
 
@@ -26,7 +26,7 @@
   method. The new alias goes on the left-hand-side, the existing method name on
   the right.
 
-  <pre class="prettyprint">Animal.alias({
+  <pre>Animal.alias({
       talk:   'speak',
       rest:   'sleep'
   });</pre>
@@ -37,7 +37,7 @@
   other type of object, the methods from the object are copied into the class
   itself, overwriting any pre-existing methods with similar names.
 
-  <pre class="prettyprint">// Replace Dog's speak method  (#1)
+  <pre>// Replace Dog's speak method  (#1)
   Dog.include({
       speak: function(stuff) {
           return this.callSuper('lots of ' + stuff) + '!';

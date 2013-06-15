@@ -10,7 +10,7 @@
 
   Here's your basic 'Hello world' command:
 
-  <pre class="prettyprint">var helloWorld = new JS.Command({
+  <pre>var helloWorld = new JS.Command({
       execute: function() {
           alert('Hello world!');
       }
@@ -22,7 +22,7 @@
   If your action can be reversed and you want to implement an 'undo' function in
   your code, you need to tell the command how to reverse itself:
 
-  <pre class="prettyprint">var incrementCounter = new JS.Command({
+  <pre>var incrementCounter = new JS.Command({
       execute: function() {
           someCounter += 1;
       },
@@ -44,7 +44,7 @@
   command. For example, you might want to create a type of command that drew a
   circle at random on a @canvas@ element:
 
-  <pre class="prettyprint">var DrawCircleCommand = new JS.Class(JS.Command, {
+  <pre>var DrawCircleCommand = new JS.Class(JS.Command, {
       initialize: function(ctx) {
 
           var x = Math.random() * 400,
@@ -81,7 +81,7 @@
   not be modified. Always use @callSuper()@ as shown above to set up your
   commands. Do not do this:
 
-  <pre class="prettyprint">var BrokenCommand = new JS.Class(JS.Command, {
+  <pre>var BrokenCommand = new JS.Class(JS.Command, {
       execute: function() {
           doSomething();
       },
@@ -99,12 +99,12 @@
   history so you can step back and forth through it later, we have a class
   called @JS.Command.Stack@. To use it, just create one and give it a name:
 
-  <pre class="prettyprint">var counterStack = new JS.Command.Stack();</pre>
+  <pre>var counterStack = new JS.Command.Stack();</pre>
 
   You can then create commands that will automatically add themselves to this
   stack whenever they are executed, using the @stack@ option:
 
-  <pre class="prettyprint">var incrementCounter = new JS.Command({
+  <pre>var incrementCounter = new JS.Command({
       execute: function() {
           someCounter += 1;
       },
@@ -118,7 +118,7 @@
   @counterStack@. You can use the stack's @undo()@ and @redo()@ methods to step
   back and forth through the command history:
 
-  <pre class="prettyprint">var someCounter = 0;
+  <pre>var someCounter = 0;
 
   incrementCounter.execute();   // someCounter == 1
   incrementCounter.execute();   // someCounter == 2
@@ -145,7 +145,7 @@
   point in the stack you happen to be, and any previously undone commands after
   this point are discarded. For example:
 
-  <pre class="prettyprint">someCounter = 0;
+  <pre>someCounter = 0;
   counterStack.clear();         // 0 commands in stack
 
   incrementCounter.execute();   // 1 command
@@ -177,7 +177,7 @@
   As an example, here's a program that allows you to draw random squares on a
   canvas. Hooking this up to a GUI is trivial with this code in place:
 
-  <pre class="prettyprint">// Canvas information
+  <pre>// Canvas information
   var canvas = document.getElementById('canvas'),
       ctx    = canvas.getContext('2d'),
       W      = 400,
@@ -219,7 +219,7 @@
   line @stack: drawingStack@ to make sure it is remembered by the stack. To draw
   a square at random, you'd just do this:
 
-  <pre class="prettyprint">new DrawSquareCommand(ctx).execute();</pre>
+  <pre>new DrawSquareCommand(ctx).execute();</pre>
 
   That could easily be hooked up to an interface button, as could a snippet of
   code for calling @drawingStack.undo()@.
@@ -241,7 +241,7 @@
   length. What does change is the stack's @pointer@ - this number tells you what
   point in the stack the most recently executed command is. For example:
 
-  <pre class="prettyprint">var stack = new JS.Command.Stack();
+  <pre>var stack = new JS.Command.Stack();
   var command = new JS.Command({
       execute: function() { ... }
   });
@@ -274,7 +274,7 @@
   modules. This means you can implement a Photoshop-style action history with
   barely any code at all by observing the stack:
 
-  <pre class="prettyprint"><ul id="drawHistory"></ul>
+  <pre><ul id="drawHistory"></ul>
 
   <script type="text/javascript">
   drawingStack.subscribe(function(stack) {

@@ -10,7 +10,7 @@
   class to represent to-do list items. These can be ordered according to their
   priority.
 
-  <pre class="prettyprint">var TodoItem = new JS.Class({
+  <pre>var TodoItem = new JS.Class({
       include: JS.Comparable,
 
       initialize: function(task, priority) {
@@ -42,7 +42,7 @@
 
   Let's create some items and see how they behave:
 
-  <pre class="prettyprint">var items = [
+  <pre>var items = [
       new TodoItem('Go to work', 5),
       new TodoItem('Buy milk', 3),
       new TodoItem('Pay the rent', 2),

@@ -24,7 +24,7 @@
 
   To use a linked list, you create it as follows and add objects to it:
 
-  <pre class="prettyprint">var list = new JS.LinkedList.Doubly.Circular();
+  <pre>var list = new JS.LinkedList.Doubly.Circular();
   var foo = {}, bar = {}, baz = {};
   list.push(foo);
   list.push(bar);
@@ -62,7 +62,7 @@
   multiple @prev@/@next@ pointers. If you want to add an object to several lists,
   you can wrap it in a node object before adding it to each list:
 
-  <pre class="prettyprint">var listA = new JS.LinkedList.Doubly.Circular();
+  <pre>var listA = new JS.LinkedList.Doubly.Circular();
   var listB = new JS.LinkedList.Doubly.Circular();
 
   var obj = {name: 'Jimmy'};
@@ -84,7 +84,7 @@
   code, then you can treat linked lists as enumerable objects. You can loop over
   their nodes like so:
 
-  <pre class="prettyprint">list.forEach(function(node, i) {
+  <pre>list.forEach(function(node, i) {
       // do stuff with node
       // i is the position in the list
   }, context);</pre>

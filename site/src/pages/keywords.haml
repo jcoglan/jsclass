@@ -5,7 +5,7 @@
   source code. For example you might have a @BlogPost@ class that has a
   @publish()@ method, that you define by listing the method in the class body:
 
-  <pre class="prettyprint">BlogPost = new JS.Class({
+  <pre>BlogPost = new JS.Class({
       publish: function() { /* ... */ }
   });</pre>
 
@@ -22,7 +22,7 @@
   @callSuper()@ automatically passes all the arguments to the current method up
   to the parent method, unless you override them.
 
-  <pre class="prettyprint">Parent = new JS.Class({
+  <pre>Parent = new JS.Class({
       say: function(something) {
           JS.Console.puts(something);
       }
@@ -46,7 +46,7 @@
   Returns @true@ if the current method was called with a callback function after
   the explicit arguments to the method.
 
-  <pre class="prettyprint">Foo = new JS.Class({
+  <pre>Foo = new JS.Class({
       say: function(a,b) {
           return this.blockGiven();
       }
@@ -66,7 +66,7 @@
   @yieldWith()@ will use the argument after the callback (if one is given) as
   the @this@ context for the callback.
 
-  <pre class="prettyprint">Foo = new JS.Class({
+  <pre>Foo = new JS.Class({
       say: function(a,b) {
           this.yieldWith(a + b);
       }
@@ -90,7 +90,7 @@
   number of arguments passed to the current method. Implementing this goes as
   follows.
 
-  <pre class="prettyprint">JS.Method.keyword('numArgs', function(method, env, receiver, args) {
+  <pre>JS.Method.keyword('numArgs', function(method, env, receiver, args) {
       return function() {
           return args.length;
       };
@@ -98,7 +98,7 @@
 
   This keyword is then available inside all your methods:
 
-  <pre class="prettyprint">Foo = new JS.Class({
+  <pre>Foo = new JS.Class({
       say: function(a,b) {
           return this.numArgs();
       }
@@ -125,7 +125,7 @@
   of useful things with the current method call. As a more complex example, here
   is the JS.Class implementation of @callSuper@:
 
-  <pre class="prettyprint">JS.Method.keyword('callSuper', function(method, env, receiver, args) {
+  <pre>JS.Method.keyword('callSuper', function(method, env, receiver, args) {
       var methods    = env.lookup(method.name),
           stackIndex = methods.length - 1,
           params     = Array.prototype.slice.call(args);

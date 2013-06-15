@@ -14,7 +14,7 @@
   and are specified using the first argument to the @Class@ and @Module@
   constructors. For example:
 
-  <pre class="prettyprint">Foo = new JS.Module('Foo', {
+  <pre>Foo = new JS.Module('Foo', {
       sleep: function() { /* ... */ },
 
       extend: {
@@ -33,7 +33,7 @@
   Given the above definition, we now find @displayName@ set on the methods and
   the inner class:
 
-  <pre class="prettyprint">Foo.instanceMethod('sleep').displayName
+  <pre>Foo.instanceMethod('sleep').displayName
   // -> "Foo#sleep"
 
   Foo.eatFood.displayName

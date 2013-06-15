@@ -48,7 +48,7 @@
 
   Multiple formatting instructions can be combined using this method:
 
-  <pre class="prettyprint">JS.Console.consoleFormat('bold', 'red');</pre>
+  <pre>JS.Console.consoleFormat('bold', 'red');</pre>
 
   The @consoleFormat()@ method takes a list of formatting instructions as input.
   It calls @reset()@ and then applies the given formats.
@@ -56,7 +56,7 @@
   Finally note that @JS.Console@ can be used as a mixin so all the above methods
   appear in the current class:
 
-  <pre class="prettyprint">Logger = new JS.Class({
+  <pre>Logger = new JS.Class({
       include: JS.Console,
 
       info: function(message) {

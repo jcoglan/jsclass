@@ -6,7 +6,7 @@
   refers to the method from the object's class definition. JS.Class allows the
   same behaviour. Recall our @Animal@ class:
 
-  <pre class="prettyprint">var Animal = new JS.Class({
+  <pre>var Animal = new JS.Class({
       initialize: function(name) {
           this.name = name;
       },
@@ -18,7 +18,7 @@
   We can create a new animal and @extend@ it with singleton methods. All
   @JS.Class@-derived objects have an @extend()@ method for doing this:
 
-  <pre class="prettyprint">var cow = new Animal('Daisy');
+  <pre>var cow = new Animal('Daisy');
 
   cow.extend({
       speak: function(stuff) {
@@ -40,7 +40,7 @@
   modules. The receiving object will then gain all the methods of the module. If
   we extend using "@Observable@":/observable.html, for example:
 
-  <pre class="prettyprint">cow.extend(JS.Observable);
+  <pre>cow.extend(JS.Observable);
 
   cow.addObserver(function() {
       alert('This cow is observable!');
@@ -58,7 +58,7 @@
   duplicate every observer added to an object. @callSuper()@ calls out to the
   module we used to extend the object.
 
-  <pre class="prettyprint">cow.extend({
+  <pre>cow.extend({
       notifyObservers: function() {
           this.callSuper();
           this.callSuper();

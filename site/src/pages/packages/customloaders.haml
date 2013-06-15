@@ -9,7 +9,7 @@
   in question is done loading. For example, here's how you'd incorporate Google
   Maps into your library:
 
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
+  <pre>JS.Packages(function() { with(this) {
       file('http://www.google.com/jsapi?key=MY_GOOGLE_KEY')
           .provides('google.load');
 
@@ -29,7 +29,7 @@
   library, then using YUI's own loader functions to load further modules. Some
   sample code:
 
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
+  <pre>JS.Packages(function() { with(this) {
       file('http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js')
           .setup(function() { window.yui3 = YUI() })
           .provides('YUI', 'yui3');
@@ -43,7 +43,7 @@
   expensive to create without necessarily loading code from external files. Just
   remember to call @cb@ yourself when the generated object is ready:
 
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
+  <pre>JS.Packages(function() { with(this) {
       loader(function(cb) {
           window.ChocolateFactory = new WonkaVenture();
           // Perform other expensive setup operations

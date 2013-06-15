@@ -12,7 +12,7 @@
   @JS.Class@ have a @klass@ property that points to the class the object belongs
   to:
 
-  <pre class="prettyprint">var Foo = new JS.Class();
+  <pre>var Foo = new JS.Class();
   var obj = new Foo();
 
   obj.klass === Foo
@@ -35,7 +35,7 @@
   inheritance tree, to inspect the method lookup process and to extract
   individual methods. Let's set up a few modules to work with:
 
-  <pre class="prettyprint">var ModA = new JS.Module({
+  <pre>var ModA = new JS.Module({
       speak: function() {
           return "speak() in ModA";
       }
@@ -65,7 +65,7 @@
   module inherits from, with more 'distant' ancestors at the start of the list.
   @JS.Class@ searches this list in reverse order when doing method lookups.
 
-  <pre class="prettyprint">Foo.ancestors()
+  <pre>Foo.ancestors()
   // -> [JS.Kernel, ModA, ModB, ModC, Foo]</pre>
 
   Finally, you can extract a single named method from a module using
@@ -74,7 +74,7 @@
   from _only_ that class/module, ignoring iherited methods. To get all the
   methods defined on a single object, use @methods()@.
 
-  <pre class="prettyprint">ModC.instanceMethod('speak')
+  <pre>ModC.instanceMethod('speak')
   // -> #<Method>
 
   Foo.instanceMethods()
@@ -108,7 +108,7 @@
   So, for example you can get a method out of a class and find out if it actually
   came from another method by calling:
 
-  <pre class="prettyprint">klass.instanceMethod('foo').module</pre>
+  <pre>klass.instanceMethod('foo').module</pre>
 
   Like JavaScript functions, @Method@ objects respond to @call()@ and @apply()@,
   so you can actually pass them to methods that expect callbacks to be passed in.
@@ -123,6 +123,6 @@
   method. For example, you could inspect the call order of an inherited method
   using the eigenclass:
 
-  <pre class="prettyprint">var obj = new Foo();
+  <pre>var obj = new Foo();
   obj.__eigen__().lookup('speak')
   // -> [#<Method>, #<Method>, #<Method>, #<Method>]</pre>

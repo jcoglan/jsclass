@@ -10,7 +10,7 @@
   To make a class, you just ask for a @new JS.Class()@, and list the names of
   the methods the class has as regular JavaScript functions.
 
-  <pre class="prettyprint">var Animal = new JS.Class({
+  <pre>var Animal = new JS.Class({
       initialize: function(name) {
           this.name = name;
       },
@@ -25,7 +25,7 @@
   method is called when you make an instance of the class, and is passed the
   parameters used to instantiate the new object.
 
-  <pre class="prettyprint">var nemo = new Animal('Nemo');    // nemo.name == "Nemo"
+  <pre>var nemo = new Animal('Nemo');    // nemo.name == "Nemo"
 
   nemo.speak('swimming')
   // -> "My name is Nemo and I like swimming"</pre>
@@ -35,7 +35,7 @@
   Let's say we want to model a more specific kind of animal. We can create a
   class @Dog@ as follows:
 
-  <pre class="prettyprint">var Dog = new JS.Class(Animal, {
+  <pre>var Dog = new JS.Class(Animal, {
       speak: function(stuff) {
           return this.callSuper().toUpperCase() + '!';
       },
@@ -56,19 +56,19 @@
   arguments given to the current method are automatically passed by @callSuper()@
   up to the parent method.
 
-  <pre class="prettyprint">var rex = new Dog('Rex');
+  <pre>var rex = new Dog('Rex');
   rex.speak('barking')
   // -> "MY NAME IS REX AND I LIKE BARKING!"</pre>
 
   @callSuper()@ is not accessible from outside the object:
 
-  <pre class="prettyprint">rex.callSuper();
+  <pre>rex.callSuper();
   // -> rex.callSuper is not a function</pre>
 
   You can pass arguments to @callSuper()@ to override the ones passed in
   automatically, e.g.:
 
-  <pre class="prettyprint">var Dog = new JS.Class(Animal, {
+  <pre>var Dog = new JS.Class(Animal, {
       speak: function(stuff) {
           stuff = stuff.replace(/[aeiou]/ig, '_');
           return this.callSuper(stuff).toUpperCase() + '!';
@@ -84,11 +84,11 @@
   if you have a method that takes arguments @A@, @B@, @C@, @D@, and @E@ and
   inside that method you call
 
-  <pre class="prettyprint">this.callSuper('one', 'two')</pre>
+  <pre>this.callSuper('one', 'two')</pre>
 
   then the code that actually runs is
 
-  <pre class="prettyprint">this.callSuper('one', 'two', C, D, E)</pre>
+  <pre>this.callSuper('one', 'two', C, D, E)</pre>
 
   Ruby's inheritance system is more powerful than simply calling methods in
   parent classes. For more information on how it works, refer to the

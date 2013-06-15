@@ -7,7 +7,7 @@
   and @JS.Class@ is also a class that happens to inherit from @JS.Module@. That
   is:
 
-  <pre class="prettyprint">JS.Class.superclass === JS.Module</pre>
+  <pre>JS.Class.superclass === JS.Module</pre>
 
   I like to think of classes as modules that can be instantiated to create
   objects. But enough theory, the important thing is: modules store methods, and
@@ -19,7 +19,7 @@
   "@Comparable@":/comparable.html module, so you don't have to write you own.) A
   module for achieving this might look like:
 
-  <pre class="prettyprint">var Comparable = new JS.Module({
+  <pre>var Comparable = new JS.Module({
       lt: function(object) {
           return this.compareTo(object) == -1;
       },
@@ -42,7 +42,7 @@
   gain the methods stored in the module. This module will work with any class
   with a @compareTo()@ method:
 
-  <pre class="prettyprint">var User = new JS.Class({
+  <pre>var User = new JS.Class({
       include: Comparable,
 
       initialize: function(name) {
@@ -61,7 +61,7 @@
 
   We now have users with comparison methods:
 
-  <pre class="prettyprint">var jack = new User('Jack'), jill = new User('Jill');
+  <pre>var jack = new User('Jack'), jill = new User('Jill');
   jack.lt(jill)   // -> true
   jack.gt(jill)   // -> false
   jill.gt(jack)   // -> true</pre>
@@ -73,7 +73,7 @@
   If you want to mix several modules into your class, you need to specify them
   as an array, in the order you want them to be included, for example:
 
-  <pre class="prettyprint">var Foo = new JS.Class({
+  <pre>var Foo = new JS.Class({
       include: [ModA, ModB, ModC],
 
       initialize: function() {
@@ -84,7 +84,7 @@
   Alternatively, you could create the class first, then mix the modules in
   afterward:
 
-  <pre class="prettyprint">var Foo = new JS.Class({
+  <pre>var Foo = new JS.Class({
       initialize: function() {
           // ...
       }
@@ -100,7 +100,7 @@
   they override any methods inherited from the module. For example, let's
   override @Comparable#eq()@ to log its results:
 
-  <pre class="prettyprint">User.define('eq', function(user) {
+  <pre>User.define('eq', function(user) {
       var areEqual = this.callSuper();
       if (areEqual) console.log("Found two equal objects!");
       return areEqual;

@@ -11,7 +11,7 @@
   A range is constructed using a start and end value, and an optional flag that
   indicates whether the end value is included when iterating.
 
-  <pre class="prettyprint">new JS.Range(1,5)           // -> 1,2,3,4,5
+  <pre>new JS.Range(1,5)           // -> 1,2,3,4,5
   new JS.Range(4,8,true)      // -> 4,5,6,7
 
   new JS.Range('a','d')       // -> 'a','b','c','d'
@@ -24,7 +24,7 @@
   "@compareTo()@":/comparable.html to allow a @Range@ to determine whether a
   given object is within the range:
 
-  <pre class="prettyprint">var NumberWrapper = new JS.Class({
+  <pre>var NumberWrapper = new JS.Class({
       initialize: function(value) {
           this._value = value;
       },
@@ -46,7 +46,7 @@
   We can use this class in a @Range@ and iterating will generate the
   intermediate objects:
 
-  <pre class="prettyprint">var nums = new JS.Range(new NumberWrapper(16),
+  <pre>var nums = new JS.Range(new NumberWrapper(16),
                           new NumberWrapper(24),
                           true);
 
@@ -75,7 +75,7 @@
   Calls @block@ with each item in the @Range@ in turn. @context@ is optional and
   specifies the binding of @this@ within the @block@ function.
 
-  <pre class="prettyprint">// Calls the function with
+  <pre>// Calls the function with
   // arguments 1,2,3,4
   new JS.Range(1,4).forEach(function(number) {
       // ...
@@ -104,14 +104,14 @@
   Returns @true@ iff @item@ is contained in the @Range@, that is if it is between
   the start and end values of the range.
 
-  <pre class="prettyprint">new JS.Range(1,4).includes(3)         // -> true
+  <pre>new JS.Range(1,4).includes(3)         // -> true
   new JS.Range(2,6,true).includes(6)    // -> false</pre>
 
   Note that an object may be considered to be included in a range even though it
   does not appear during iteration and may even lie outside the iteration range.
   For example the following expression is @true@ as 8.5 is less than 9:
 
-  <pre class="prettyprint">new JS.Range(6,9,true).includes(8.5)   // -> true</pre>
+  <pre>new JS.Range(6,9,true).includes(8.5)   // -> true</pre>
 
   Aliased as @covers()@, @member()@ and @match()@, so a @Range@ may be used as
   the argument to @Enumerable#grep@.
@@ -125,6 +125,6 @@
   Iterates over every nth item in the @Range@, calling @block@ with each. Returns
   an "@Enumerator@":/enumerator.html if called with no block.
 
-  <pre class="prettyprint">new JS.Range('G','V').step(5).entries()
+  <pre>new JS.Range('G','V').step(5).entries()
       // -> ["G", "L", "Q", "V"]</pre>
 

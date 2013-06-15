@@ -36,7 +36,7 @@
   can call methods from @Parent@ using @callSuper()@. @Child@ inherits all the
   methods of @Parent@ and can override them if necessary:
 
-  <pre class="prettyprint">var Parent = new JS.Class({
+  <pre>var Parent = new JS.Class({
       speak: function() {
           return "I'm an object";
       },
@@ -75,7 +75,7 @@
   includes other modules, these are searched before moving on. An example should
   clarify things:
 
-  <pre class="prettyprint">var ModA = new JS.Module({
+  <pre>var ModA = new JS.Module({
       speak: function() {
           return "speak() in ModA";
       }
@@ -106,7 +106,7 @@
   in @Foo@, then @ModC@, then @ModB@, then @ModA@. At each stage, @callSuper()@
   forces the search to continue along the inheritance chain.
 
-  <pre class="prettyprint">(new Foo).speak()
+  <pre>(new Foo).speak()
   // -> "speak() in ModA, speak() in ModB, and in ModC, and in class Foo"</pre>
 
   This nicely demonstrates the late binding of @callSuper@. @ModB@ does not
@@ -122,7 +122,7 @@
   The inheritance chain of a class can be modified at any time by mixing more
   modules into it. Consider this extension of the above example:
 
-  <pre class="prettyprint">var ModD = new JS.Module({
+  <pre>var ModD = new JS.Module({
       speak: function() {
           return 'ModD speaks';
       }
@@ -134,7 +134,7 @@
   @speak()@ in @ModD@ does not @callSuper()@, so methods in @ModC@ upwards are
   no longer called.
 
-  <pre class="prettyprint">(new Foo).speak()
+  <pre>(new Foo).speak()
   // -> "ModD speaks, and in class Foo"</pre>
 
   h3. Singleton methods
@@ -142,7 +142,7 @@
   When you create an object from a class, the object does not have any custom
   methods of its own. It only has methods inherited from its class.
 
-  <pre class="prettyprint">var Machine = new JS.Class({
+  <pre>var Machine = new JS.Class({
       run: function() {
           return 'Machine is running';
       }
@@ -158,7 +158,7 @@
   as they're defined on a single object. This class is the first place
   JS.Class looks when you call a method on an object.
 
-  <pre class="prettyprint">obj.extend({
+  <pre>obj.extend({
       run: function() {
           return this.callSuper() + ', and obj is running';
       }
@@ -168,7 +168,7 @@
   look in the class the object belongs to, which in this case is the @Machine@
   class. So we get:
 
-  <pre class="prettyprint">obj.run()
+  <pre>obj.run()
       // -> "Machine is running, and obj is running"</pre>
 
   But remember that we always search the modules included by a class before
@@ -176,7 +176,7 @@
   module gets included into the object's eigenclass and comes between the object
   and its class:
 
-  <pre class="prettyprint">var MachineExtension = new JS.Module({
+  <pre>var MachineExtension = new JS.Module({
       run: function() {
           return this.callSuper().toUpperCase();
       }
@@ -190,7 +190,7 @@
   @MachineExtension@ depends on the context you use it in. You should think of
   that last line as being equivalent to:
 
-  <pre class="prettyprint">obj.__eigen__().include(MachineExtension);</pre>
+  <pre>obj.__eigen__().include(MachineExtension);</pre>
 
   So @obj@'s eigenclass includes @MachineExtension@, making it part of the
   inheritance tree. When we call @obj.run()@ now, the call stack will find
@@ -198,7 +198,7 @@
   @Machine#run@ returns @"Machine is running"@, @MachineExtension#run@ turns
   that to uppercase, and @obj.run@ appends @", and obj is running"@.
 
-  <pre class="prettyprint">obj.run()
+  <pre>obj.run()
   // -> "MACHINE IS RUNNING, and obj is running"</pre>
 
   So it couldn't be simpler! This is fairly advanced Ruby functionality, but it

@@ -8,7 +8,7 @@
   If a class has a class method called @inherited()@ it will be called whenever
   you create a subclass of it:
 
-  <pre class="prettyprint">var ChildDetector = new JS.Class({
+  <pre>var ChildDetector = new JS.Class({
       extend: {
           inherited: function(klass) {
               // Do stuff with child class
@@ -28,7 +28,7 @@
   The @extended()@ hook works in much the same way as @included()@, except that
   it will be called when the module is used to @extend()@ an object.
 
-  <pre class="prettyprint">// This will call MyMod.extended(obj)
+  <pre>// This will call MyMod.extended(obj)
   obj.extend(MyMod);</pre>
 
   Again, you can use this to redefine how @extend()@ works with individual

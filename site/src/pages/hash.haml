@@ -19,7 +19,7 @@
   operations. Note how @hash()@ uses the same data as @equals()@ ensuring
   correct behaviour:
 
-  <pre class="prettyprint">State = new JS.Class({
+  <pre>State = new JS.Class({
       initialize: function(name, code) {
           this.name = name;
           this.code = code;
@@ -48,7 +48,7 @@
 
   And we'll instantiate a few pieces of data to put in a @Hash@:
 
-  <pre class="prettyprint">var NY = new State('New York', 'NY'),
+  <pre>var NY = new State('New York', 'NY'),
       CA = new State('California', 'CA'),
       IL = new State('Illinois', 'IL'),
       TX = new State('Texas', 'TX'),
@@ -66,7 +66,7 @@
   key-value pairs as an array. Retrieving a key will then return the
   corresponding value:
 
-  <pre class="prettyprint">var senators = new JS.Hash([
+  <pre>var senators = new JS.Hash([
       NY,   gillibrand,
       CA,   feinstein,
       IL,   burris,
@@ -80,20 +80,20 @@
   the key. States are compared using their @code@, so we could create another
   object to represent Texas to get its senator:
 
-  <pre class="prettyprint">senators.get(new State('Lone Star State', 'TX'))
+  <pre>senators.get(new State('Lone Star State', 'TX'))
   // -> #<Senator name="Kay Bailey Hutchison"></pre>
 
   The second way is to instantiate the @Hash@ using a single default value; this
   value will then be returned when you ask for a key the hash doesn't have:
 
-  <pre class="prettyprint">var senators = new JS.Hash(hancock);
+  <pre>var senators = new JS.Hash(hancock);
   senators.get(NY).name   // -> "John Hancock"</pre>
 
   The third and final way is to instantiate using a function, which will be
   called when a nonexistent key is accessed. The function is passed the hash and
   the requested key, so you can store the result in the hash if required:
 
-  <pre class="prettyprint">var senators = new JS.Hash(function(hash, key) {
+  <pre>var senators = new JS.Hash(function(hash, key) {
       var result = new Senator('The senator for ' + key.name
                                                   + ' (' + key.code + ')');
       hash.store(key, result);
@@ -112,7 +112,7 @@
   implementations you may find insertion order is preserved. *Do not rely on
   order when using a @Hash@.* For example:
 
-  <pre class="prettyprint">var senators = new JS.Hash([
+  <pre>var senators = new JS.Hash([
       NY,   gillibrand,
       CA,   feinstein,
       IL,   burris,
@@ -139,7 +139,7 @@
   Returns the @Hash.Pair@ object corresponding to the given @key@, or @null@ if
   so such key is found.
 
-  <pre class="prettyprint">senators.assoc(NY).key.code     // -> "NY"
+  <pre>senators.assoc(NY).key.code     // -> "NY"
   senators.assoc(IL).value.name   // -> "Roland Burris"
   senators.assoc(VA)              // -> null</pre>
 
@@ -148,7 +148,7 @@
   Returns the first matching @Hash.Pair@ object for to the given @value@, or
   @null@ if so such value is found.
 
-  <pre class="prettyprint">senators.rassoc(feinstein).key.code   // -> "CA"
+  <pre>senators.rassoc(feinstein).key.code   // -> "CA"
   senators.rassoc(burris).value.name    // -> "Roland Burris"
   senators.rassoc(hancock)              // -> null</pre>
 
@@ -156,7 +156,7 @@
 
   Removes all the key-value pairs from the hash.
 
-  <pre class="prettyprint">senators.clear();
+  <pre>senators.clear();
   senators.size       // -> 0
   senators.get(TX)    // -> null</pre>
 
@@ -178,7 +178,7 @@
   @shift()@. The value may be a function, in which case it is called with the
   hash and the accessed key and the resulting value is returned.
 
-  <pre class="prettyprint">senators.get('foo');    // -> null
+  <pre>senators.get('foo');    // -> null
 
   senators.setDefault(hancock);
   senators.get('foo')     // -> #<Senator name="John Hancock">
@@ -205,7 +205,7 @@
   with only the key as an argument. The the key is not found and no
   @defaultValue@ is given, an error is thrown.
 
-  <pre class="prettyprint">// Assume no default value
+  <pre>// Assume no default value
 
   senators.fetch(CA)        // -> #<Senator name="Dianne Feinstein">
   senators.fetch('foo')     // -> Error: key not found
@@ -222,7 +222,7 @@
   Iterates over the keys in the hash, yielding the key each time. The optional
   parameter @context@ sets the binding of @this@ within the block.
 
-  <pre class="prettyprint">senators.forEachKey(function(key) {
+  <pre>senators.forEachKey(function(key) {
       // key is a State
   });</pre>
 
@@ -231,7 +231,7 @@
   Iterates over the pair in the hash, yielding the key and value each time. The
   optional parameter @context@ sets the binding of @this@ within the block.
 
-  <pre class="prettyprint">senators.forEachPair(function(key, value) {
+  <pre>senators.forEachPair(function(key, value) {
       // key is a State, value is a Senator
   });</pre>
 
@@ -240,7 +240,7 @@
   Iterates over the values in the hash, yielding the value each time. The
   optional parameter @context@ sets the binding of @this@ within the block.
 
-  <pre class="prettyprint">senators.forEachValue(function(value) {
+  <pre>senators.forEachValue(function(value) {
       // value is a Senator
   });</pre>
 
@@ -280,7 +280,7 @@
   Returns the first key from the hash whose corresponding value is @value@.
   Aliased as @index()@.
 
-  <pre class="prettyprint">senators.key(gillibrand);
+  <pre>senators.key(gillibrand);
   // -> #<State code="NY" name="New York"></pre>
 
   h3. @keys()@
@@ -310,7 +310,7 @@
   the key is not found and the optional function @block@ is passed, the result
   of calling @block@ with the key is returned.
 
-  <pre class="prettyprint">var h = new JS.Hash([ 'a',100, 'b',200 ]);
+  <pre>var h = new JS.Hash([ 'a',100, 'b',200 ]);
   h.remove('a')   // -> 100
   h.remove('z')   // -> null
 
@@ -322,7 +322,7 @@
   Deletes all the pairs that satisfy the @predicate@ from the hash. @context@
   sets the binding of @this@ within the predicate function. For example:
 
-  <pre class="prettyprint">// Remove pairs for California and Illinois
+  <pre>// Remove pairs for California and Illinois
   senators.removeIf(function(pair) { return pair.key.code < 'M' });
 
   // senators is now:
@@ -338,7 +338,7 @@
   Removes a single key-value pair from the hash and returns it, or returns the
   hash's default value if it is already empty.
 
-  <pre class="prettyprint">var h = new JS.Hash(50);
+  <pre>var h = new JS.Hash(50);
   h.store('a', 100);
   h.store('b', 200);
 
@@ -360,7 +360,7 @@
   keys. The optional @context@ parameter sets the binding of @this@ within
   @block@.
 
-  <pre class="prettyprint">var h = new JS.Hash([ 'a',1, 'b',2, 'c',3 ]),
+  <pre>var h = new JS.Hash([ 'a',1, 'b',2, 'c',3 ]),
       g = new JS.Hash([ 'a',5, 'b',0 ]);
 
   h.update(g, function(key, oldVal, newVal) {

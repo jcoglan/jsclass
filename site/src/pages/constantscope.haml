@@ -18,7 +18,7 @@
   code parser, which means it can't support the same constant semantics as Ruby.
   Let's take a concrete example:
 
-  <pre class="prettyprint">class Outer
+  <pre>class Outer
     CONST = 45
 
     class Item          # (1)
@@ -55,7 +55,7 @@
   To write this in JS.Class, we need to make the constants properties of the
   classes that contain them by @extend@-ing the classes:
 
-  <pre class="prettyprint">Outer = new JS.Class({
+  <pre>Outer = new JS.Class({
       extend: {
           CONST: 45,
 
@@ -93,7 +93,7 @@
   using the syntax @this.X@. The value of such a reference will follow the same
   lexical rules as exist in Ruby, so that we can rewrite the above code as:
 
-  <pre class="prettyprint">Outer = new JS.Class({
+  <pre>Outer = new JS.Class({
       include: JS.ConstantScope,
 
       CONST: 45,
@@ -122,7 +122,7 @@
   This also means that the syntax for referring to a constant is the same in
   both class and instance methods:
 
-  <pre class="prettyprint">SomeClass = new JS.Class({
+  <pre>SomeClass = new JS.Class({
       include: JS.ConstantScope,
 
       MY_CONST:   'cheese',
@@ -161,7 +161,7 @@
   sure you reassign constants by @extend@-ing their containing class. Taking the
   above example:
 
-  <pre class="prettyprint">// This will not propagate as expected
+  <pre>// This will not propagate as expected
   SomeClass.MY_CONST = 'cake';
 
   // Do this instead

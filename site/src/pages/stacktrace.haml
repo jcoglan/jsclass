@@ -8,13 +8,13 @@
   The @StackTrace@ module supports the "@Observable@":/observable.html interface
   for monitoring what the stack is doing:
 
-  <pre class="prettyprint">JS.StackTrace.addObserver(monitor);</pre>
+  <pre>JS.StackTrace.addObserver(monitor);</pre>
 
   @monitor@ should be an object that responds to the @update()@ method. This
   method takes two arguments: an event name, and an event object. So, the
   object should look something like this:
 
-  <pre class="prettyprint">monitor = {
+  <pre>monitor = {
       update: function(event, data) {
           if (event === 'call') // ...
       }
@@ -56,7 +56,7 @@
   modules you want to trace to @Method.trace()@, and use @Method.untrace()@ to
   stop tracing them.
 
-  <pre class="prettyprint">JS.Method.trace([JS.Hash, JS.Range]);</pre>
+  <pre>JS.Method.trace([JS.Hash, JS.Range]);</pre>
 
   h3. Call stack logging
 
@@ -65,7 +65,7 @@
   This enables tracing for the given modules, runs the function, then disables
   tracing again.
 
-  <pre class="prettyprint">JS.Method.tracing([JS.Hash], function() {
+  <pre>JS.Method.tracing([JS.Hash], function() {
       var hash = new JS.OrderedHash(['foo', 4, 'bar', 5]);
       hash.hasKey('foo');
   });</pre>

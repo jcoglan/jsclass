@@ -15,12 +15,12 @@
   use, and copy it into your project. You can then load JS.Class into your pages
   as follows.
 
-  <pre class="prettyprint"><script type="text/javascript">JSCLASS_PATH = '/path/to/jsclass/min'</script>
+  <pre><script type="text/javascript">JSCLASS_PATH = '/path/to/jsclass/min'</script>
   <script type="text/javascript" src="/path/to/jsclass/min/loader-browser.js"></script></pre>
 
   On server-side platforms, you load the library like this:
 
-  <pre class="prettyprint">(function() {
+  <pre>(function() {
       var $ = (typeof global === 'object') ? global : this;
       $.JSCLASS_PATH = 'path/to/jsclass/src';
   })();
@@ -45,7 +45,7 @@
   @JS.require()@ function, passing in the name of the object(s) you want to use
   and a callback to run once they're ready.
 
-  <pre class="prettyprint">JS.require('JS.Hash', 'JS.Observable', function() {
+  <pre>JS.require('JS.Hash', 'JS.Observable', function() {
       // ...
   });</pre>
 

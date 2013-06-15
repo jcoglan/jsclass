@@ -16,7 +16,7 @@
   to register callbacks, and our code just needs to call @this.succeed()@ with
   the result of the request when it completes.
 
-  <pre class="prettyprint">var AjaxRequest = new JS.Class({
+  <pre>var AjaxRequest = new JS.Class({
       include: JS.Deferrable,
 
       initialize: function(url) {
@@ -31,7 +31,7 @@
   callbacks. The callbacks will be executed when the class calls its @succeed()@
   method.
 
-  <pre class="prettyprint">var request = new AjaxRequest('/index.html');
+  <pre>var request = new AjaxRequest('/index.html');
   request.callback(function(response) {
       // handle response
   });</pre>

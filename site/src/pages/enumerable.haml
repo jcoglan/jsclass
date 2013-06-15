@@ -16,7 +16,7 @@
   of the @forEach@ method is to hide the storage mechanism from the users of the
   class.
 
-  <pre class="prettyprint">var Collection = new JS.Class({
+  <pre>var Collection = new JS.Class({
       include: JS.Enumerable,
 
       initialize: function() {
@@ -37,7 +37,7 @@
 
   Let's create an instance and see what it does:
 
-  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  <pre>var list = new Collection(3,7,4,8,2);
   list.forEach(function(x) {
       console.log(x);
   });
@@ -52,7 +52,7 @@
   "@Symbol#to_proc@":http://ruby-doc.org/core-1.9/classes/Symbol.html#M002518
   functionality. Some examples:
 
-  <pre class="prettyprint">var strings = new Collection('iguana', 'labrador', 'albatross');
+  <pre>var strings = new Collection('iguana', 'labrador', 'albatross');
 
   strings.map('length')
   // -> [6, 8, 9]
@@ -65,7 +65,7 @@
   first argument, passing the remaining arguments as parameters to the call. In
   other words:
 
-  <pre class="prettyprint">strings.map('toUpperCase')
+  <pre>strings.map('toUpperCase')
   // is converted to:
 
   strings.map(function(a, b, ...) { return a.toUpperCase(b, ...) })</pre>
@@ -73,7 +73,7 @@
   Most of JavaScript's binary operators are supported, so you can use them with
   between items in @inject@ loops, for example:
 
-  <pre class="prettyprint">new Collection(1,2,3,4).inject('+')
+  <pre>new Collection(1,2,3,4).inject('+')
   // -> 10
 
   var tree = {A: {B: {C: 87}}};
@@ -86,7 +86,7 @@
   If called without a block, returns @true@ iff all the members of the
   collection have truthy values. Aliased as @every()@.
 
-  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  <pre>var list = new Collection(3,7,4,8,2);
 
   list.all(function(x) { return x > 5 });
   // -> false
@@ -103,7 +103,7 @@
   collection. If called without a block, returns @true@ iff one or more members
   has a truthy value. Aliased as @some()@.
 
-  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  <pre>var list = new Collection(3,7,4,8,2);
 
   list.any(function(x) { return x > 5 });
   // -> true
@@ -128,7 +128,7 @@
   @needle@ using the @===@ operator, or for which @needle@ returns @true@ if
   @needle@ is a function.
 
-  <pre class="prettyprint">new Collection(3,7,4,8,2).count();
+  <pre>new Collection(3,7,4,8,2).count();
   // -> 5
 
   new Collection(3,7,4,8,2).count(2);
@@ -172,7 +172,7 @@
   Returns the first member of the collection for which @block@ returns @true@.
   Aliased as @detect()@.
 
-  <pre class="prettyprint">new Collection(3,7,4,8,2).find(function(x) { return x > 5 });
+  <pre>new Collection(3,7,4,8,2).find(function(x) { return x > 5 });
   // -> 7</pre>
 
   h3. @findAll(block, context)@
@@ -194,7 +194,7 @@
 
   Calls @block@ with every set of @n@ consecutive members of the collection.
 
-  <pre class="prettyprint">new Collection(3,7,4,8,2).forEachCons(3, function(list) {
+  <pre>new Collection(3,7,4,8,2).forEachCons(3, function(list) {
       console.log(list);
   });
 
@@ -208,7 +208,7 @@
   Splits the collection up into pieces of length @n@, and call @block@ with each
   piece in turn.
 
-  <pre class="prettyprint">new Collection(3,7,4,8,2).forEachSlice(2, function(list) {
+  <pre>new Collection(3,7,4,8,2).forEachSlice(2, function(list) {
       console.log(list);
   });
 
@@ -222,7 +222,7 @@
   Calls the @block@ with each member of the collection in turn, passing the
   member and its index to the @block@.
 
-  <pre class="prettyprint">new Collection(3,7,4,8,2).forEachWithIndex(function(x,i) {
+  <pre>new Collection(3,7,4,8,2).forEachWithIndex(function(x,i) {
       console.log(x, i);
   });
   // prints
@@ -237,7 +237,7 @@
   Calls @block@ with each member of the collection, passing @object@ and the
   current member with each call, and returns the current object.
 
-  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  <pre>var list = new Collection(3,7,4,8,2);
 
   list.forEachWithObject([], function(ary, item) {
       ary.unshift(item * item);
@@ -252,7 +252,7 @@
   returns @true@ or @false@. If @block@ is given, each match is transformed by
   passing it to @block@.
 
-  <pre class="prettyprint">var strings = new Collection('iguana', 'labrador', 'albatross');
+  <pre>var strings = new Collection('iguana', 'labrador', 'albatross');
 
   strings.grep(/[aeiou]a/);
   // -> ["iguana"]
@@ -266,7 +266,7 @@
   returns a "@Hash@":/hash.html, where in each pair the key is a return value
   for @block@ and the value is an @Array@ of items that produced that value.
 
-  <pre class="prettyprint">var list   = new Collection(1,2,3,4,5,6);
+  <pre>var list   = new Collection(1,2,3,4,5,6);
   var groups = list.groupBy(function(x) { return x % 3 });
 
   groups.keys()   // -> [1, 2, 0]
@@ -282,7 +282,7 @@
   value of @memo@ you specified. The return value of @block@ becomes the next
   value of @memo@.
 
-  <pre class="prettyprint">// sum the values
+  <pre>// sum the values
   new Collection(3,7,4,8,2).inject(0, function(memo, x) { return memo + x });
   // -> 24</pre>
 
@@ -291,7 +291,7 @@
   Returns an @Array@ formed by calling @block@ on each member of the collection.
   Aliased as @collect()@.
 
-  <pre class="prettyprint">// square the numbers
+  <pre>// square the numbers
   new Collection(3,7,4,8,2).map(function(x) { return x * x });
   // -> [9, 49, 16, 64, 4]</pre>
 
@@ -302,7 +302,7 @@
   comparison operators. If a block is passed, it is used to sort the members. If
   no block is passed, a sensible default sort method is used.
 
-  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  <pre>var list = new Collection(3,7,4,8,2);
 
   list.max()   // -> 8
 
@@ -320,7 +320,7 @@
   Items are checked for identity (@===@), or using the @equals()@ method if the
   objects implement it.
 
-  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  <pre>var list = new Collection(3,7,4,8,2);
   list.member('7')   // -> false
   list.member(7)     // -> true</pre>
 
@@ -355,7 +355,7 @@
   Returns two arrays, one containing members for which @block@ returns @true@,
   the other containing those for which it returns @false@.
 
-  <pre class="prettyprint">new Collection(3,7,4,8,2).partition(function(x) { return x > 5 });
+  <pre>new Collection(3,7,4,8,2).partition(function(x) { return x > 5 });
   // -> [ [7, 8], [3, 4, 2] ]</pre>
 
   h3. @reverseForEach(block, context)@
@@ -368,7 +368,7 @@
   Returns a new @Array@ containing the members of the collection for which
   @block@ returns @false@.
 
-  <pre class="prettyprint">new Collection(3,7,4,8,2).reject(function(x) { return x > 5 });
+  <pre>new Collection(3,7,4,8,2).reject(function(x) { return x > 5 });
   // -> [3, 4, 2]</pre>
 
   h3. @select(block, context)@
@@ -376,7 +376,7 @@
   Returns a new @Array@ containing the members of the collection for which
   @block@ returns @true@. Aliased as @filter()@ and @findAll()@.
 
-  <pre class="prettyprint">new Collection(3,7,4,8,2).select(function(x) { return x > 5 });
+  <pre>new Collection(3,7,4,8,2).select(function(x) { return x > 5 });
   // -> [7, 8]</pre>
 
   h3. @some(block, context)@
@@ -391,7 +391,7 @@
   sensible default sort method is used, otherwise the block itself is used to
   perform sorting.
 
-  <pre class="prettyprint">var list = new Collection(3,7,4,8,2);
+  <pre>var list = new Collection(3,7,4,8,2);
 
   list.sort()
   // -> [2, 3, 4, 7, 8]
@@ -405,7 +405,7 @@
   Returns a new @Array@ containing the members of the collection sorted
   according to the value that @block@ returns for them.
 
-  <pre class="prettyprint">// sort values modulo 7
+  <pre>// sort values modulo 7
   new Collection(3,7,4,8,2).sortBy(function(x) { return x % 7 });
   // -> [7, 8, 2, 3, 4]</pre>
 
@@ -437,7 +437,7 @@
 
   What this translates to in practise:
 
-  <pre class="prettyprint">new Collection(3,7,4,8,2).zip([1,9,3,6,4], [6,3,3]);
+  <pre>new Collection(3,7,4,8,2).zip([1,9,3,6,4], [6,3,3]);
   // -> [ [3,1,6], [7,9,3], [4,3,3],
   //        [8,6,null], [2,4,null] ]
 

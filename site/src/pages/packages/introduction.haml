@@ -21,7 +21,7 @@
   which objects it depends on. For example, here are a few modules from the
   JS.Class library:
 
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
+  <pre>JS.Packages(function() { with(this) {
       file(JSCLASS_PATH + '/core.js')
           .provides('JS.Module',
                     'JS.Class',
@@ -70,7 +70,7 @@
   For example, to load the "Fancybox":http://fancybox.net/ library, you could do
   this:
 
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
+  <pre>JS.Packages(function() { with(this) {
       file( 'fancybox/lib/jquery-1.7.1.min.js',
             'fancybox/source/jquery.fancybox.pack.js',
             'fancybox/source/helpers/jquery.fancybox-buttons.js',
@@ -86,7 +86,7 @@
   and this must be loaded before @Set@ is defined. And, @Hash@ is itself based
   on @Enumerable@. So the package config for this looks like:
 
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
+  <pre>JS.Packages(function() { with(this) {
       file(JSCLASS_PATH + '/enumerable.js')
           .provides('JS.Enumerable');
 

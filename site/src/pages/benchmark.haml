@@ -6,7 +6,7 @@
   measurement, the number of times to run it, and the function you want to
   execute:
 
-  <pre class="prettyprint">JS.Benchmark.measure('String#join', 20, {
+  <pre>JS.Benchmark.measure('String#join', 20, {
       test: function() {
           ['a', 'list', 'of', 'strings'].join(' ');
       }
@@ -21,7 +21,7 @@
   right thing, you can place any setup code in its own function. State can be
   shared between the @setup@ and @test@ functions by assigning values to @this@:
 
-  <pre class="prettyprint">JS.Benchmark.measure('Module#ancestors', 10, {
+  <pre>JS.Benchmark.measure('Module#ancestors', 10, {
       setup: function() {
           this.module = new JS.Module({ include: [JS.Comparable, JS.Enumerable] });
       },

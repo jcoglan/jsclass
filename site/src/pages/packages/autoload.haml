@@ -5,7 +5,7 @@
   repetitive. For example, you may have a set of test scripts that mirror the
   set of classes in your application:
 
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
+  <pre>JS.Packages(function() { with(this) {
 
       file('tests/widget_spec.js')
           .provides('WidgetSpec')
@@ -24,7 +24,7 @@
   packages for objects whose name matches a certain pattern. For example you
   could compress the above configuration like this:
 
-  <pre class="prettyprint">JS.Packages(function() { with(this) {
+  <pre>JS.Packages(function() { with(this) {
       autoload(/^(.*)Spec$/, {from: 'tests', require: 'MyApp.$1'});
   });</pre>
 

@@ -21,7 +21,7 @@
   Each one represents the behaviour of a set of methods in a given state, and
   each state should implement the same methods.
 
-  <pre class="prettyprint">var Tools = {
+  <pre>var Tools = {
       Pen: {
           mouseDown: function() {
               return 'Starting to draw';
@@ -45,7 +45,7 @@
   or @mouseDown()@ itself - this is left up to @JS.State@. It should define an
   initial state for itself when initialized.
 
-  <pre class="prettyprint">var DrawingController = new JS.Class({
+  <pre>var DrawingController = new JS.Class({
       include: JS.State,
 
       initialize: function() {
@@ -58,7 +58,7 @@
   given state, and sets the state of the object. @inState()@ takes one or more
   state objects, and returns @true@ iff the object is in any one of them.
 
-  <pre class="prettyprint">var d = new DrawingController();
+  <pre>var d = new DrawingController();
   d.inState(Tools.Pen)                    // -> true
   d.inState(Tools.Selection)              // -> false
   d.inState(Tools.Selection, Tools.Pen)   // -> true</pre>
@@ -66,7 +66,7 @@
   As @setState()@ has added the required methods for us, we can call
   state-dependent methods on the object, change its state, and see what happens.
 
-  <pre class="prettyprint">d.mouseDown();
+  <pre>d.mouseDown();
       // -> "Starting to draw"
   d.mouseUp();
       // -> "Finished drawing"
@@ -86,7 +86,7 @@
   class itself also allows you to refer to them by name rather than as objects,
   so we could rewrite the above as:
 
-  <pre class="prettyprint">var DrawingController = new JS.Class({
+  <pre>var DrawingController = new JS.Class({
       include: JS.State,
 
       initialize: function() {
@@ -130,7 +130,7 @@
   same methods. If one state has a missing method, a method is added to it that
   simply returns the object. For example:
 
-  <pre class="prettyprint">var Twiddle = new JS.Class({
+  <pre>var Twiddle = new JS.Class({
       include: JS.State,
 
       initialize: function() {
@@ -174,7 +174,7 @@
   only need to specify the ways in which it differs from its parent. Let's take
   an example implementation of @ChildController@.
 
-  <pre class="prettyprint">var ChildController = new JS.Class(DrawingController);
+  <pre>var ChildController = new JS.Class(DrawingController);
   ChildController.states({
       Selection: {
           mouseDown: function() {
@@ -196,7 +196,7 @@
   @Selection.mouseDown@ method calls the super method from the
   @DrawingController@ class during its execution. Let's test out our new class:
 
-  <pre class="prettyprint">c = new ChildController();
+  <pre>c = new ChildController();
   c.inState('Pen')      // -> true
   c.mouseDown()         // -> "Starting to draw"
   c.mouseMove() === c   // -> true
