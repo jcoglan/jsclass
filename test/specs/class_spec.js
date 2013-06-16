@@ -239,6 +239,25 @@ JS.ENV.ClassSpec = JS.Test.describe(JS.Class, function() { with(this) {
       }})
     }})
 
+    describe("checking whether super is callable", function() { with(this) {
+      before(function() { with(this) {
+        this.Checker = new JS.Class({
+          foo: function() {
+            return this.callSuper ? this.callSuper() : "stop"
+          }
+        })
+        this.Child = new JS.Class(Checker, {
+          foo: function() {
+            return this.callSuper() + ", hammertime"
+          }
+        })
+      }})
+
+      it("stops super calls that cannot be dispatched", function() { with(this) {
+        assertEqual( "stop, hammertime", (new Child).foo() )
+      }})
+    }})
+
     describe("calling methods from mixins", function() { with(this) {
       before(function() { with(this) {
         this.modA = new JS.Module({ aMethod: function() { return "A" } })

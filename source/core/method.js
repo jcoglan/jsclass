@@ -64,7 +64,7 @@ JS.extend(JS.Method.prototype, {
           _own:   this.hasOwnProperty(keyword.name)
         };
         kwd = keyword.filter(method, environment, this, arguments);
-        kwd.__kwd__ = true;
+        if (kwd) kwd.__kwd__ = true;
         this[keyword.name] = kwd;
       }
       var returnValue = callable.apply(this, arguments),
