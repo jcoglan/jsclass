@@ -1,60 +1,67 @@
 :textile
-  h2. Getting started with JS.Class
+  h2. Getting started with @jsclass@
 
-  You can use JS.Class on any of the "supported platforms":/platforms.html without
-  any custom configuration. To start using JS.Class in your project, you'll need
-  to download it using the link on the left.
+  You can use @jsclass@ on any of the "supported platforms":/platforms.html
+  without any custom configuration. To start using @jsclass@ in your project,
+  you'll need to download it using the link on the left.
 
-  If you're using JS.Class on Node and do not need to support other environments,
-  you can "install it with @npm@":/platforms/node.html and avoid a lot of the
-  boilerplate shown below.
+  If you're using @jsclass@ on Node and do not need to support other
+  environments, you can "install it with @npm@":/platforms/node.html and avoid a
+  lot of the boilerplate shown below.
 
   The download contains two directories, @src@ and @min@. Both contain the same
-  files; @src@ contains the JS.Class source code, and @min@ contains a minified
+  files; @src@ contains the @jsclass@ source code, and @min@ contains a minified
   version suitable for production use on the web. Pick which version you want to
-  use, and copy it into your project. You can then load JS.Class into your pages
-  as follows.
+  use, and copy it into your project. You can then load @jsclass@ into your
+  pages as follows.
 
   <pre><script type="text/javascript">JSCLASS_PATH = '/path/to/jsclass/min'</script>
   <script type="text/javascript" src="/path/to/jsclass/min/loader-browser.js"></script></pre>
 
-  On server-side platforms, you load the library like this:
+  On server-side platforms, you need to set the global variable @JSCLASS_PATH@
+  like this:
 
   <pre>(function() {
       var $ = (typeof global === 'object') ? global : this;
       $.JSCLASS_PATH = 'path/to/jsclass/src';
-  })();
+  })();</pre>
 
-  if (typeof require === 'function')
-      require('./' + JSCLASS_PATH + '/loader');
-  else if (typeof load === 'function')
-      load(JSCLASS_PATH + '/loader.js');</pre>
+  Then use the platform's module loading API to load the @jsclass@ package
+  loader:
 
-  @JSCLASS_PATH@ tells the @loader@ script where you're storing the JS.Class
+  <pre>// On CommonJS:
+  var JS = require('./' + JSCLASS_PATH + '/loader');
+
+  // On other platforms, this creates JS as a global:
+  load(JSCLASS_PATH + '/loader.js');</pre>
+
+  @JSCLASS_PATH@ tells the @loader@ script where you're storing the @jsclass@
   library, and will be interpreted relative to the current working directory.
-  @loader.js@ is a script that knows how to load packages on any platform,
-  while @loader-browser.js@ only contains code for loading packages in the
-  browser, and is thus a little smaller.
+  @loader.js@ is a script that knows how to load packages on any platform, while
+  @loader-browser.js@ only contains code for loading packages in the browser,
+  and is thus a little smaller.
 
   This may look like quite a lot of boilerplate, but once you've done this you
-  can use a single mechanism to load JS.Class components (and any other
+  can use a single mechanism to load @jsclass@ components (and any other
   components you make) on any platform your code needs to run on. That mechanism
   is the @JS.require()@ function.
 
-  All components that are part of the JS.Class library can be loaded using the
+  All components that are part of the @jsclass@ library can be loaded using the
   @JS.require()@ function, passing in the name of the object(s) you want to use
   and a callback to run once they're ready.
 
-  <pre>JS.require('JS.Hash', 'JS.Observable', function() {
+  <pre>JS.require('JS.Hash', 'JS.Observable', function(Hash, Observable) {
       // ...
   });</pre>
 
   The @JS.require()@ function is aware of dependencies and will load everything
   you need to use the objects you want. One some platforms, package loading is
   asynchronous, and you should be aware of that when structuring your code. If
-  an object you want to use is already loaded, @JS.require()@ will not reload it.
+  an object you want to use is already loaded, @JS.require()@ will not reload
+  it.
 
-  You're now ready to start using JS.Class. Dive into the reference documentation
-  linked on the left of this page, and find out how you can "use the JS.Class
-  package system":/packages.html to manage dependencies in your own projects.
+  You're now ready to start using @jsclass@. Dive into the reference
+  documentation linked on the left of this page, and find out how you can "use
+  the @jsclass@ package system":/packages.html to manage dependencies in your
+  own projects.
 

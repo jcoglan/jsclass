@@ -3,10 +3,10 @@
 
   In Ruby, singleton methods are methods attached to a single object rather than
   defined in a class. If you add a singleton method to a Ruby object, @super@
-  refers to the method from the object's class definition. JS.Class allows the
+  refers to the method from the object's class definition. @jsclass@ allows the
   same behaviour. Recall our @Animal@ class:
 
-  <pre>var Animal = new JS.Class({
+  <pre>var Animal = new Class({
       initialize: function(name) {
           this.name = name;
       },
@@ -16,7 +16,7 @@
   });</pre>
 
   We can create a new animal and @extend@ it with singleton methods. All
-  @JS.Class@-derived objects have an @extend()@ method for doing this:
+  @Class@-derived objects have an @extend()@ method for doing this:
 
   <pre>var cow = new Animal('Daisy');
 
@@ -40,7 +40,7 @@
   modules. The receiving object will then gain all the methods of the module. If
   we extend using "@Observable@":/observable.html, for example:
 
-  <pre>cow.extend(JS.Observable);
+  <pre>cow.extend(Observable);
 
   cow.addObserver(function() {
       alert('This cow is observable!');

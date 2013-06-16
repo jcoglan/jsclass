@@ -1,20 +1,20 @@
 :textile
   h2. Package management
 
-  JS.Class comes with a package manager that makes it really easy to load
-  libraries into your application on demand on all JS.Class's "supported platforms":/platforms.html.
-  You can tell it which file each module in your application lives in, and what
-  other modules it depends on, and it takes care of resolving dependencies and
-  loading your code for you. This means your application code only needs to
-  specify which objects it needs, rather than which scripts to download in order
-  to run.
+  @jsclass@ comes with a package manager that makes it really easy to load
+  libraries into your application on demand on all @jsclass@'s "supported
+  platforms":/platforms.html.  You can tell it which file each module in your
+  application lives in, and what other modules it depends on, and it takes care
+  of resolving dependencies and loading your code for you. This means your
+  application code only needs to specify which objects it needs, rather than
+  which scripts to download in order to run.
 
   For example, say I want to do something with the "@Console@":/console.html
   module. I just need to @require@ it, and supply a function to run once all the
   requisite code has loaded:
 
-  <pre>JS.require('JS.Console', function() {
-      JS.Console.puts('Hello, world!');
+  <pre>JS.require('JS.Console', function(Console) {
+      Console.puts('Hello, world!');
   });</pre>
 
   The package system only loads what is needed to get the objects you want, and
@@ -23,11 +23,13 @@
   interdependent scripts run in the right order.
 
   It is designed to be able to load any code from any domain, including from
-  libraries that have their own package systems. While CommonJS is in some ways
-  a better solution, it requires source code to follow certain conventions.
-  @JS.Packages@ lets you use a uniform interface to load any code you need,
-  without requiring modifications to the source. This is particularly important
-  on the web where you frequently use code you don't have editing access to.
+  libraries that have their own package systems. It does not require the files
+  it loads to follow any particular package format, but it can load files that
+  export global variables or a CommonJS module. It expects the arguments to
+  @JS.require()@ to either be the names of global objects, or exported
+  properties of a CommonJS module. Whichever format the loaded files use,
+  @JS.require()@ will yield the referenced objects as parameters to the callback
+  function.
 
   * "Basic usage examples":/packages/introduction.html
   * "Pattern-based loading with @autoload@":/packages/autoload.html

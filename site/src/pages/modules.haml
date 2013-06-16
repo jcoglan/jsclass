@@ -1,25 +1,30 @@
 :textile
-  h2. Using Modules
+  h2. Using modules
 
-  In Ruby, a module is simply an object that stores methods. In JS.Class, they
+  In Ruby, a module is simply an object that stores methods. In @jsclass@, they
   are right at the core of the library, being responsible for handling
-  inheritance rules, looking up methods and the like. @JS.Module@ is a class,
-  and @JS.Class@ is also a class that happens to inherit from @JS.Module@. That
-  is:
+  inheritance rules, looking up methods and the like. @Module@ is a class, and
+  @Class@ is also a class that happens to inherit from @Module@. That is:
 
-  <pre>JS.Class.superclass === JS.Module</pre>
+  <pre>Class.superclass === Module</pre>
 
   I like to think of classes as modules that can be instantiated to create
   objects. But enough theory, the important thing is: modules store methods, and
   can be used to group related methods together so you can mix behaviour into
   classes.
 
+  <pre>// In the browser:
+  JS.require('JS.Module', function(Module) { ... });
+
+  // In CommonJS:
+  var Module = require('jsclass/src/core').Module;</pre>
+
   For example, suppose you want to encapsulate the idea of being able to compare
-  objects to each other so they can be sorted. (JS.Class comes with a
+  objects to each other so they can be sorted. (@jsclass@ comes with a
   "@Comparable@":/comparable.html module, so you don't have to write you own.) A
   module for achieving this might look like:
 
-  <pre>var Comparable = new JS.Module({
+  <pre>var Comparable = new Module({
       lt: function(object) {
           return this.compareTo(object) == -1;
       },
@@ -42,7 +47,7 @@
   gain the methods stored in the module. This module will work with any class
   with a @compareTo()@ method:
 
-  <pre>var User = new JS.Class({
+  <pre>var User = new Class({
       include: Comparable,
 
       initialize: function(name) {
@@ -73,7 +78,7 @@
   If you want to mix several modules into your class, you need to specify them
   as an array, in the order you want them to be included, for example:
 
-  <pre>var Foo = new JS.Class({
+  <pre>var Foo = new Class({
       include: [ModA, ModB, ModC],
 
       initialize: function() {
@@ -84,7 +89,7 @@
   Alternatively, you could create the class first, then mix the modules in
   afterward:
 
-  <pre>var Foo = new JS.Class({
+  <pre>var Foo = new Class({
       initialize: function() {
           // ...
       }

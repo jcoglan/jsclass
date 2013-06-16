@@ -1,15 +1,15 @@
 :textile
   h2. Custom loader functions
 
-  Some libraries, such as the "Google Ajax APIs":http://code.google.com/apis/ajax/,
-  have their own systems for loading code on demand that involve more than
-  simply knowing the path to a script file. Our package system allows you to
-  specify packages that use a loader function rather than a path to load
-  themselves; the function should take a callback and call it when the library
-  in question is done loading. For example, here's how you'd incorporate Google
-  Maps into your library:
+  Some libraries, such as the "Google Ajax
+  APIs":http://code.google.com/apis/ajax/, have their own systems for loading
+  code on demand that involve more than simply knowing the path to a script
+  file. Our package system allows you to specify packages that use a loader
+  function rather than a path to load themselves; the function should take a
+  callback and call it when the library in question is done loading. For
+  example, here's how you'd incorporate Google Maps into your library:
 
-  <pre>JS.Packages(function() { with(this) {
+  <pre>JS.packages(function() { with(this) {
       file('http://www.google.com/jsapi?key=MY_GOOGLE_KEY')
           .provides('google.load');
 
@@ -23,13 +23,13 @@
   its work. If you don't call @cb@ (or pass it to a function that will call it
   for you as above), code that depends on this library will not run.
 
-  @JS.Packages@ also provides post-load setup hooks that let you run some code
-  after a file loads. For example, a strategy for loading "YUI3":http://developer.yahoo.com/yui/3/
-  might involve loading the seed file, creating a new global instance of the
-  library, then using YUI's own loader functions to load further modules. Some
-  sample code:
+  @JS.packages@ also provides post-load setup hooks that let you run some code
+  after a file loads. For example, a strategy for loading
+  "YUI3":http://developer.yahoo.com/yui/3/ might involve loading the seed file,
+  creating a new global instance of the library, then using YUI's own loader
+  functions to load further modules. Some sample code:
 
-  <pre>JS.Packages(function() { with(this) {
+  <pre>JS.packages(function() { with(this) {
       file('http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-min.js')
           .setup(function() { window.yui3 = YUI() })
           .provides('YUI', 'yui3');
@@ -43,7 +43,7 @@
   expensive to create without necessarily loading code from external files. Just
   remember to call @cb@ yourself when the generated object is ready:
 
-  <pre>JS.Packages(function() { with(this) {
+  <pre>JS.packages(function() { with(this) {
       loader(function(cb) {
           window.ChocolateFactory = new WonkaVenture();
           // Perform other expensive setup operations

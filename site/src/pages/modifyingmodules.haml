@@ -3,7 +3,7 @@
 
   Just like in Ruby, classes and modules are open for modification at any time,
   so you can add and change methods in existing classes. All classes and modules
-  in JS.Class have some special methods for modifying the methods they contain.
+  in @jsclass@ have some special methods for modifying the methods they contain.
   The following is written to apply to modifying classes, but it applies equally
   to modifying modules -- classes are just modules that can be instantiated.
 
@@ -49,7 +49,7 @@
 
   // Mix in a module, altering the class's ancestry
   // callSuper() in Dog#speak will now call this method
-  var Speaker = new JS.Module({
+  var Speaker = new Module({
       speak: function(stuff) {
           return 'I can talk about ' + stuff + '!';
       }
