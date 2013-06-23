@@ -159,7 +159,8 @@ var Console = new JS.Module('Console', {
         magenta:    '35m',
         cyan:       '36m',
         white:      '37m',
-        nocolor:    '39m'
+        nocolor:    '39m',
+        grey:       '90m'
       },
 
       background: {

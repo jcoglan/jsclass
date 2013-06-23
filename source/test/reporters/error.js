@@ -41,7 +41,10 @@ Test.Reporters.extend({
       this.puts(index + ') ' + this.NAMES[fault.error.type] + ': ' + fault.test.fullName);
       this.reset();
       this.puts(fault.error.message);
-      if (fault.error.backtrace) this.puts(fault.error.backtrace);
+      if (fault.error.backtrace) {
+        this.grey();
+        this.puts(fault.error.backtrace);
+      }
       this.reset();
       this.puts('');
     },
