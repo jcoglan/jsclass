@@ -9,14 +9,11 @@ Package.CommonJSLoader = {
   },
 
   loadFile: function(path, fireCallbacks) {
-    var file;
+    var file, module;
 
     if (typeof process !== 'undefined') {
-      var cwd    = process.cwd(),
-          module = path.replace(/\.[^\.]+$/g, ''),
-          path   = require('path');
-
-      file = path.resolve(module);
+      module = path.replace(/\.[^\.]+$/g, '');
+      file   = require('path').resolve(module);
     }
     else if (typeof phantom !== 'undefined') {
       file = phantom.libraryPath.replace(/\/$/, '') + '/' +
