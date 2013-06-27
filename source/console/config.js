@@ -8,7 +8,7 @@ Console.WSH     = (typeof WScript !== 'undefined');
 var useColor = false, ua;
 if (Console.BROWSER) {
   ua = navigator.userAgent;
-  if (window.console && (/Firefox/.test(ua) || /Chrome/.test(ua)))
+  if (window.console && /Chrome/.test(ua))
     useColor = true;
 }
 
