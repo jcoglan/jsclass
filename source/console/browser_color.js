@@ -5,17 +5,17 @@ Console.extend({
     },
 
     __queue__: [],
-    __state__: {},
+    __state__: null,
 
     format: function(type, name) {
       name = name.replace(/^bg/, '');
 
-      var state = JS.extend({}, this.__state__),
+      var state = JS.extend({}, this.__state__ || {}),
           color = this.COLORS[name] || name,
           no    = /^no/.test(name);
 
       if (type === 'reset')
-        state = {};
+        state = null;
       else if (no)
         delete state[type];
       else if (type === 'weight')
@@ -29,9 +29,9 @@ Console.extend({
       else if (type === 'background')
         state.background = 'background-color: ' + color;
       else
-        state = null;
+        state = undefined;
 
-      if (state) {
+      if (state !== undefined) {
         this.__state__ = state;
         this.__queue__.push(state);
       }
@@ -44,10 +44,14 @@ Console.extend({
     puts: function(string) {
       this.print(string);
       var buffer = '', formats = [], item;
-      while (item = this.__queue__.shift()) {
+      while ((item = this.__queue__.shift()) !== undefined) {
         if (typeof item === 'string') {
-          buffer += '%c' + item;
-          formats.push(this._serialize(this.__state__));
+          if (this.__state__) {
+            buffer += '%c' + item;
+            formats.push(this._serialize(this.__state__));
+          } else {
+            buffer += item;
+          }
         } else {
           this.__state__ = item;
         }
