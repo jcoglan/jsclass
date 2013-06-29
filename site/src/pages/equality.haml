@@ -2,7 +2,7 @@
   h2. Equality methods and hashcodes
 
   There are several different ways in which two objects can be equal to each
-  other, and JS.Class provides equality methods with different semantics. It's
+  other, and @jsclass@ provides equality methods with different semantics. It's
   important to know the difference as there are parts of the framework that
   expect certain equality methods to be used to make integration as painless as
   possible.
@@ -54,7 +54,7 @@
   * "@Set@":/set.html uses @equals()@ to make sure elements are unique, falling
     back to @===@ if the elements do not implement @equals()@.
 
-  @JS.Class@ does not modify built-in JavaScript classes, but the above classes
+  @jsclass@ does not modify built-in JavaScript classes, but the above classes
   do contain methods for comparing @Array@ and @Object@ instances. Two arrays
   are considered equal if their elements are all equal, and two objects with no
   @equals()@ method are considered equal if they have the same set of keys-value
@@ -73,7 +73,7 @@
 
   You must also override @hash()@ such that if @x.equals(y)@ is true, then
   @x.hash() === y.hash()@ is also true. Otherwise, your objects will not work as
-  a key in a "@Hash@":/hash.html.
+  a key in a "@Hash@":/hash.html or as a member of a "@Set@":/set.html.
 
   h3. Hash equality: @object.hash()@
 

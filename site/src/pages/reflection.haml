@@ -3,22 +3,22 @@
 
   Reflection is the process of inspecting the structure of a program at runtime,
   and potentially modifying that structure dynamically. Ruby has some very
-  useful reflection features and JS.Class incorporates a few of them.
+  useful reflection features and @jsclass@ incorporates a few of them.
 
   h3. Object properties
 
   You sometimes want to find out which class an object belongs to, either to do
   type checks or to call methods from that class. All objects created from
-  @JS.Class@ have a @klass@ property that points to the class the object belongs
+  @Class@ have a @klass@ property that points to the class the object belongs
   to:
 
-  <pre>var Foo = new JS.Class();
+  <pre>var Foo = new Class();
   var obj = new Foo();
 
   obj.klass === Foo
-  Foo.klass === JS.Class</pre>
+  Foo.klass === Class</pre>
 
-  All classes are instances of the class @JS.Class@, just like in Ruby. In
+  All classes are instances of the class @Class@, just like in Ruby. In
   addition, all objects have an @isA()@ method. @obj.isA(Foo)@ returns @true@ if
   any of the following are true:
 
@@ -26,7 +26,7 @@
   * @obj@ is an instance of a class that "includes":/modules.html the module @Foo@
   * @obj@ has been "extended":/singletonmethods.html using the module @Foo@
 
-  Remember that, as in Ruby, modules and classes are object too, so they have
+  Remember that, as in Ruby, modules and classes are objects too, so they have
   all the standard methods objects have.
 
   h3. Module and class reflection
@@ -35,26 +35,26 @@
   inheritance tree, to inspect the method lookup process and to extract
   individual methods. Let's set up a few modules to work with:
 
-  <pre>var ModA = new JS.Module({
+  <pre>var ModA = new Module({
       speak: function() {
           return "speak() in ModA";
       }
   });
 
-  var ModB = new JS.Module({
+  var ModB = new Module({
       speak: function() {
           return this.callSuper() + ", speak() in ModB";
       }
   });
 
-  var ModC = new JS.Module({
+  var ModC = new Module({
       include: ModB,
       speak: function() {
           return this.callSuper() + ", and in ModC";
       }
   });
 
-  var Foo = new JS.Class({
+  var Foo = new Class({
       include: [ModA, ModC],
       speak: function() {
           return this.callSuper() + ", and in class Foo";
@@ -63,16 +63,16 @@
 
   The @ancestors()@ method returns a list of all the classes and modules that a
   module inherits from, with more 'distant' ancestors at the start of the list.
-  @JS.Class@ searches this list in reverse order when doing method lookups.
+  @jsclass@ searches this list in reverse order when doing method lookups.
 
   <pre>Foo.ancestors()
-  // -> [JS.Kernel, ModA, ModB, ModC, Foo]</pre>
+  // -> [Kernel, ModA, ModB, ModC, Foo]</pre>
 
   Finally, you can extract a single named method from a module using
   @instanceMethod()@, and get a list of all the instance methods in a class
-  using @instanceMethods@. Calling @instanceMethods(false)@ returns the methods
-  from _only_ that class/module, ignoring iherited methods. To get all the
-  methods defined on a single object, use @methods()@.
+  using @instanceMethods()@. Calling @instanceMethods(false)@ returns the
+  methods from _only_ that class/module, ignoring iherited methods. To get all
+  the methods defined on a single object, use @methods()@.
 
   <pre>ModC.instanceMethod('speak')
   // -> #<Method>
@@ -94,7 +94,7 @@
   h3. Method objects
 
   The @Module#instanceMethod()@ method does not return a bare function; instead
-  it returns a @Method@ object. This is a class that JS.Class uses internally
+  it returns a @Method@ object. This is a class that @jsclass@ uses internally
   to represent methods stored in modules, and it provides a lot more contextual
   information about a method than a bare function would.
 
@@ -117,7 +117,7 @@
 
   All objects, modules and classes have what's called an eigenclass to store
   their "singleton methods":/singletonmethods.html. In Ruby, the eigenclass is a
-  real class but in JS.Class it's implemented as a module. (This distinction
+  real class but in @jsclass@ it's implemented as a module. (This distinction
   doesn't really matter as you're unlikely to want to instantiate or subclass
   it.) You can access the eigenclass of any object by calling its @__eigen__()@
   method. For example, you could inspect the call order of an inherited method

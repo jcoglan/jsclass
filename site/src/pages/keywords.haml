@@ -1,37 +1,37 @@
 :textile
   h2. Keyword methods
 
-  Most methods you'll define using JS.Class are listed explicitly in your
+  Most methods you'll define using @jsclass@ are listed explicitly in your
   source code. For example you might have a @BlogPost@ class that has a
   @publish()@ method, that you define by listing the method in the class body:
 
-  <pre>BlogPost = new JS.Class({
+  <pre>BlogPost = new Class({
       publish: function() { /* ... */ }
   });</pre>
 
   Keyword methods are different: they are methods that are generated on the fly
-  and whose action depends on the context of the current method call. JS.Class
+  and whose action depends on the context of the current method call. @jsclass@
   provides a few built-in keywords that you can use in any method you write.
 
   h3. @callSuper()@
 
   This is used to invoke the current method in the next module up the inheritance
   stack. (See "Inheritance":/inheritance.html for more information on how methods
-  are looked up in JS.Class.)
+  are looked up in @jsclass@.)
 
   @callSuper()@ automatically passes all the arguments to the current method up
   to the parent method, unless you override them.
 
-  <pre>Parent = new JS.Class({
+  <pre>Parent = new Class({
       say: function(something) {
-          JS.Console.puts(something);
+          Console.puts(something);
       }
   });
 
   // Outputs "hello"
   new Parent().say('hello');
 
-  Child = new JS.Class(Parent, {
+  Child = new Class(Parent, {
       say: function(something) {
           // Outputs value of `something`
           this.callSuper();
@@ -46,7 +46,7 @@
   Returns @true@ if the current method was called with a callback function after
   the explicit arguments to the method.
 
-  <pre>Foo = new JS.Class({
+  <pre>Foo = new Class({
       say: function(a,b) {
           return this.blockGiven();
       }
@@ -66,7 +66,7 @@
   @yieldWith()@ will use the argument after the callback (if one is given) as
   the @this@ context for the callback.
 
-  <pre>Foo = new JS.Class({
+  <pre>Foo = new Class({
       say: function(a,b) {
           this.yieldWith(a + b);
       }
@@ -81,7 +81,13 @@
 
   h3. Writing your own keywords
 
-  You can use the same APIs that JS.Class uses to create its built-in keywords
+  <pre>// In the browser
+  JS.require('JS.Method', function(Method) {... });
+
+  // In CommonJS
+  var Method = require('jsclass/src/core').Method;</pre>
+
+  You can use the same APIs that @jsclass@ uses to create its built-in keywords
   to create your own. Remember, a keyword is a function that uses implicit
   contextual information from the current method call; if it looks like you can
   get the behaviour you want from a normal method, you should use one.
@@ -90,7 +96,7 @@
   number of arguments passed to the current method. Implementing this goes as
   follows.
 
-  <pre>JS.Method.keyword('numArgs', function(method, env, receiver, args) {
+  <pre>Method.keyword('numArgs', function(method, env, receiver, args) {
       return function() {
           return args.length;
       };
@@ -98,20 +104,20 @@
 
   This keyword is then available inside all your methods:
 
-  <pre>Foo = new JS.Class({
+  <pre>Foo = new Class({
       say: function(a,b) {
           return this.numArgs();
       }
   });
 
   var foo = new Foo();
-  fii.say('some')             // -> 1
+  foo.say('some')             // -> 1
   foo.say('some', 'words')    // -> 2</pre>
 
   Obviously this is a very basic example. The general pattern for using
-  @JS.Method.keyword()@ is that you should provide a name for the keyword, and
-  a generator function for it. This function should accept the following
-  arguments and return another function that implements the keyword:
+  @Method.keyword()@ is that you should provide a name for the keyword, and a
+  generator function for it. This function should accept the following arguments
+  and return another function that implements the keyword:
 
   * @method@ - the @Method@ object representing the method currently being called;
     see the "reflection":/reflection.html docs for more info
@@ -123,7 +129,7 @@
 
   Using this contextual information you can generate functions that do all sorts
   of useful things with the current method call. As a more complex example, here
-  is the JS.Class implementation of @callSuper@:
+  is the @jsclass@ implementation of @callSuper@:
 
   <pre>JS.Method.keyword('callSuper', function(method, env, receiver, args) {
       var methods    = env.lookup(method.name),

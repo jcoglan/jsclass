@@ -2,27 +2,33 @@
   h2. Interfaces
 
   Though not found in Ruby, I've decided to include @Interface@ support in
-  JS.Class. Interfaces are found in Java and can be very useful in JavaScript
+  @jsclass@. Interfaces are found in Java and can be very useful in JavaScript
   when used judiciously. The idea of an interface is that you create a set of
   method names with no implementations. You can then insist that objects/classes
   implement the named methods; if you require an object to have a certain set of
   methods, you can then throw an exception if it does not.
 
+  <pre>// In the browser
+  JS.require('JS.Interface', function(Interface) { ... });
+
+  // In CommonJS
+  var Interface = require('jsclass/src/core').Interface;</pre>
+
   To create an interface, just pass in an array of method names:
 
-  <pre>var IntComparable = new JS.Interface([
+  <pre>var IntComparable = new Interface([
       'compareTo', 'lt', 'lte', 'gt', 'gte', 'eq'
   ]);
 
-  var IntStateMachine = new JS.Interface([
+  var IntStateMachine = new Interface([
       'getInitialState', 'changeState'
   ]);</pre>
 
   You can then test any object to find out whether it implements the required
   interfaces:
 
-  <pre>JS.Interface.ensure(someObject, IntComparable, IntStateMachine);</pre>
+  <pre>Interface.ensure(someObject, IntComparable, IntStateMachine);</pre>
 
-  @JS.Interface.ensure@ tests its first argument against all the supplied
+  @Interface.ensure()@ tests its first argument against all the supplied
   interfaces. If it fails one of the tests, an error is thrown that tells you
   the name of the first method found to be missing from the object.

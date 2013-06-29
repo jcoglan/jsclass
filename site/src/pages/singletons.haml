@@ -4,11 +4,19 @@
   A singleton class is one which can only ever have one instance. The concept is
   more useful in Java, where you cannot create an object without first creating
   a class. JavaScript allows objects without classes (indeed, it has no classes,
-  only objects)  but using @JS.Singleton@ lets you create custom objects from
-  existing @JS.Class@ classes, allowing you to inherit methods, include modules
+  only objects)  but using @Singleton@ lets you create custom objects from
+  existing @jsclass@ classes, allowing you to inherit methods, include modules
   and use @method()@ et al.
 
-  <pre>var Camel = new JS.Singleton(Animal, {
+  <pre>// In the browser
+  JS.require('JS.Singleton', function(Singleton) { ... });
+
+  // In CommonJS
+  var Singleton = require('jsclass/src/core').Singleton;</pre>
+
+  To create a singleton:
+
+  <pre>var Camel = new Singleton(Animal, {
       fillHumpsWithWater: function() { ... }
   });
 
@@ -21,7 +29,7 @@
 
   Camel.klass.superclass    // -> Animal</pre>
 
-  @JS.Singleton@ just creates a class with the arguments you give it,
-  immediately instantiates this new class and returns the instance. You can
-  access the class through @Camel.klass@ as shown above.
+  @Singleton@ just creates a class with the arguments you give it, immediately
+  instantiates this new class and returns the instance. You can access the class
+  through @Camel.klass@ as shown above.
 

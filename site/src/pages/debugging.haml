@@ -1,7 +1,8 @@
 :textile
   h2. Debugging support
 
-  The 2.1 release introduced support for "WebKit's @displayName@":http://www.alertdebugging.com/2009/04/29/building-a-better-javascript-profiler-with-webkit/
+  The 2.1 release introduced support for "WebKit's
+  @displayName@":http://www.alertdebugging.com/2009/04/29/building-a-better-javascript-profiler-with-webkit/
   property for profiling and debugging JavaScript. Essentially, it is a
   workaround for the fact that JavaScript objects and functions do not have
   names directly attached to them, and can be referenced by any number of
@@ -9,25 +10,25 @@
 
   WebKit's profiler and debugger improves the situation by using the
   @displayName@ assigned to a @Function@ object if one has been assigned.
-  JS.Class generates display names for methods and inner classes, so long as you
-  specify a name for the outermost class. Class (and module) names are optional
-  and are specified using the first argument to the @Class@ and @Module@
-  constructors. For example:
+  @jsclass@ generates display names for methods and inner classes, so long as
+  you specify a name for the outermost class. Class (and module) names are
+  optional and are specified using the first argument to the @Class@ and
+  @Module@ constructors. For example:
 
-  <pre>Foo = new JS.Module('Foo', {
+  <pre>Foo = new Module('Foo', {
       sleep: function() { /* ... */ },
 
       extend: {
           eatFood: function() { /* ... */ },
 
-          InnerClass: new JS.Class({
+          InnerClass: new Class({
               haveVisions: function() { /* ... */ }
           })
       }
   });</pre>
 
-  The name does not have to be the same as the variable you assign the module to,
-  although it will probably be more helpful if the names _are_ the same. The
+  The name does not have to be the same as the variable you assign the module
+  to, although it will probably be more helpful if the names _are_ the same. The
   name given is not used for variable assignment, though.
 
   Given the above definition, we now find @displayName@ set on the methods and

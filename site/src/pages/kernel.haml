@@ -2,9 +2,9 @@
   h2. The Kernel module
 
   Ruby's @Kernel@ module defines the methods common to all objects. Similarly,
-  the @JS.Kernel@ module defines methods shared by all objects (including class
-  and module objects). Every object created using @JS.Class@ has these methods,
-  though they may be overridden depending on the object's type.
+  the @Kernel@ module in @jsclass@ defines methods shared by all objects
+  (including class and module objects). Every object created using @Class@ has
+  these methods, though they may be overridden depending on the object's type.
 
   h3. @object.__eigen__()@
 
@@ -38,10 +38,10 @@
   h3. @object.hash()@
 
   Returns a hashcode for the object, which is used by "@Hash@":/hash.html when
-  storing keys.The default implementation returns a unique hexadecimal number
+  storing keys. The default implementation returns a unique hexadecimal number
   for each object. If two objects are equal according to the @equals()@ method,
   they must both return the same hashcode otherwise they will not work correctly
-  as keys in a @Hash@.
+  as keys in a @Hash@ or as members of a "@Set@":/set.html.
 
   h3. @object.isA(type)@
 
