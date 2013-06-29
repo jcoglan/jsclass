@@ -170,9 +170,10 @@
         "min/assets/bullet_go.png":   "source/assets/bullet_go.png",
         "src/assets/testui.css":      "source/assets/testui.css",
         "min/assets/testui.css":      "source/assets/testui.css",
-        "CHANGELOG": "",
+        "CHANGELOG.md": "",
+        "CONTRIBUTING.md": "",
         "index.js": "",
-        "LICENSE": "",
+        "LICENSE.md": "",
         "package.json": "",
         "README.md": ""
       }
