@@ -10,7 +10,7 @@ Test.Reporters.extend({
     extend: {
       create: function() {
         if (!JS.ENV.navigator) return;
-        if (/\bPhantomJS\b/.test(navigator.userAgent)) return new this();
+        if (Test.Reporters.Headless.UA.test(navigator.userAgent)) return new this();
       },
 
       Reader: new JS.Class({

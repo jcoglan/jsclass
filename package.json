@@ -96,7 +96,7 @@
                                 "reporters/json",
                                 "reporters/tap",
                                 "reporters/exit_status",
-                                "reporters/phantomjs",
+                                "reporters/headless",
                                 "reporters/browser",
                                 "reporters/coverage",
                                 "reporters/composite",
