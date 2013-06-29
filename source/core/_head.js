@@ -1,5 +1,3 @@
-<%- wake.comment(wake.file('LICENSE')) %>
-
 var JS = (typeof this.JS === 'undefined') ? {} : this.JS;
 
 (function(factory) {
