@@ -59,10 +59,6 @@ P.packages(function() { with(this) {
                             .requires('JS.Module',
                                       'JS.Enumerable');
 
-    module('benchmark')     .provides('JS.Benchmark')
-                            .requires('JS.Module')
-                            .requires('JS.Console');
-
     module('comparable')    .provides('JS.Comparable')
                             .requires('JS.Module');
 
