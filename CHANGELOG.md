@@ -1,3 +1,24 @@
+### 4.0.0 / 2013-06-30
+
+* Turn all library components into CommonJS modules running in strict mode
+* Extract `JS.Test` into its own package, `jstest`, with expanded platform
+  support
+* Extract `jsbuild` into its own package
+* Remove `callSuper` from objects when there is no super method to dispatch to
+* Remove the `Benchmark` module, we recommend
+  [Benchmark.js](http://benchmarkjs.com/) instead
+* Refactor `Console` to make it easier to replace platform implementations
+* Add cursor movement, `exit()` and `envvar()` APIs to `Console`
+* Allow color output to be disabled using the `NO_COLOR=1` environment variable
+* Support color console output in Chrome and PhantomJS
+* Remote the `it()` and `its()` global functions from `MethodChain`
+* Rename `JS.Packages` to `JS.packages` (lowercase `p`) and replace
+  `JS.cacheBust = true` with `JS.cache = false`
+* Make sure that errors are correctly propagated and handled in async tests
+* Allow errors added to `Test.ASSERTION_ERRORS` to be treated as failures
+* Add pluggable test reporter API with many new built-in output formats and
+  adapters for many browser test runners
+
 ### 3.0.9 / 2012-08-09
 
 * Correct the name of `--directory` param to `jsbuild`
@@ -14,7 +35,7 @@
 ### 3.0.7 / 2012-02-22
 
 * Fix a race condition in the `AsyncSteps` scheduling code
-* Make `JS.Console` stringify DOM nodes successfully in Chrome
+* Make `Console` stringify DOM nodes successfully in Chrome
 
 ### 3.0.6 / 2012-02-20
 
@@ -44,18 +65,18 @@
 ### 3.0.3 / 2011-08-15
 
 * Allow constructors expected to be called with `new` to be mocked and stubbed
-  in `JS.Test`
+  in `Test`
 * Enhance browser UI with user agent and success indicator and provide controls
   for running individual groups of tests
 * Send entire test UI snapshot to TestSwarm rather than just a short status
   summary
 * Fix serialization of objects containing circular references in
-  `JS.Console.convert()`
+  `Console.convert()`
 * Improvements to `jsbuild` for managing bundles of scripts
 
 ### 3.0.2 / 2011-07-16
 
-* Exit with non-zero exit status from `JS.Test.autorun()` if there  are any test
+* Exit with non-zero exit status from `Test.autorun()` if there  are any test
   failures
 * Log test progress as JSON so we can pick up test results using
   [PhantomJS](http://www.phantomjs.org)
