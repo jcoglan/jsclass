@@ -318,26 +318,36 @@ Package._autoload = function(pattern, options) {
 Package._manufacture = function(name) {
   var autoloaders = this._autoloaders,
       n = autoloaders.length,
-      i, autoloader, path;
+      i, j, autoloader, path;
 
   for (i = 0; i < n; i++) {
     autoloader = autoloaders[i];
     if (!autoloader[0].test(name)) continue;
 
-    path = autoloader[1].from + '/' +
-           name.replace(/([a-z])([A-Z])/g, function(m,a,b) { return a + '_' + b })
-               .replace(/\./g, '/')
-               .toLowerCase() + '.js';
+    path = autoloader[1].from;
+    if (typeof path === 'string') path = this._convertNameToPath(path);
 
-    var pkg = new this([path]);
+    var pkg = new this([path(name)]);
     pkg.provides(name);
 
-    if (path = autoloader[1].require)
-      pkg.requires(name.replace(autoloader[0], path));
+    if (path = autoloader[1].require) {
+      path = [].concat(path);
+      j = path.length;
+      while (j--) pkg.requires(name.replace(autoloader[0], path[i]));
+    }
 
     return pkg;
   }
   return null;
+};
+
+Package._convertNameToPath = function(from) {
+  return function(name) {
+    return from.replace(/\/?$/, '/') +
+           name.replace(/([a-z])([A-Z])/g, function(m,a,b) { return a + '_' + b })
+               .replace(/\./g, '/')
+               .toLowerCase() + '.js';
+  };
 };
 
 //================================================================

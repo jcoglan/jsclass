@@ -4,7 +4,7 @@ JS.cache = false
 if (JS.ENV.JS_DEBUG) JS.debug = true
 
 JS.packages(function() { with(this) {
-  autoload(/^(.*)Spec$/, {from: CWD + '/test/specs', require: 'JS.$1'})
+  autoload(/^(.*)Spec$/, {from: CWD + '/test/specs', require: ['JS.$1']})
 
   pkg('Test.UnitSpec').requires('JS.Set', 'JS.Observable')
   pkg('ClassSpec').requires('ModuleSpec')

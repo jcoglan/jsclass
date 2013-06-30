@@ -28,17 +28,33 @@
       autoload(/^(.*)Spec$/, {from: 'tests', require: 'MyApp.$1'});
   });</pre>
 
-  @autoload()@ expects three parameters. The first is a regex that is used to
-  match package names. The @from@ option is a directory path where packages with
-  that name pattern live, for example this rule would make the package loader
-  look in @tests/users/profile_spec.js@ to find the @Users.ProfileSpec@ module.
-  The @require@ option lets you specify an object the package depends on, using
-  match results from the regex. The above rule would mean that
-  @Users.ProfileSpec@ has a dependency on @MyApp.Users.Profile@.
-
   If you @require()@ a package that doesn't have an explicit configuration, the
   autoloader will try to figure out where to load it from by matching its name
   against the set of patterns it knows about. A naming convention is adopted for
   converting object names to paths: dots convert to path separators, and
   camelcase names are converted to underscored style. Thus @Users.ProfileSpec@
   becomes @users/profile_spec.js@.
+
+  @autoload()@ expects three parameters. The first is a regex that is used to
+  match package names.
+
+  The @from@ option is a directory path where packages with that name pattern
+  live, for example this rule would make the package loader look in
+  @tests/users/profile_spec.js@ to find the @Users.ProfileSpec@ module. If you
+  don't like the convention used for turning object names into paths, you can
+  override it by passing a function as @from@. The function should take an
+  object name and return a path.
+
+  <pre>JS.packages(function() { with(this) {
+      autoload(/^(.*)Spec$/, {
+          from: function(name) { return '/modules/' + name + '.js' },
+          require: 'MyApp.$1'
+      });
+  });</pre>
+
+  The @require@ option lets you specify an object the package depends on, using
+  match results from the regex. The above rule would mean that
+  @Users.ProfileSpec@ has a dependency on @MyApp.Users.Profile@. You can also
+  pass an array as the @require@ option and each string within will be expaned
+  in this way.
+
