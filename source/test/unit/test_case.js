@@ -51,7 +51,7 @@ Test.Unit.extend({
       processError: function(testCase, error) {
         if (!error) return;
 
-        if (JS.isType(error, Test.Unit.AssertionFailedError))
+        if (Test.Unit.isFailure(error))
           testCase.addFailure(error.message);
         else
           testCase.addError(error);
