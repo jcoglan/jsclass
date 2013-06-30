@@ -1,18 +1,25 @@
 :textile
   h2. Decorator
 
-  The @JS.Decorator@ module gives you a means of implementing "the decorator pattern":http://en.wikipedia.org/wiki/Decorator_pattern
-  with minimal boilerplate and code duplication. When creating a decorator class,
-  you only need to define methods that differ in some way from the methods in
-  the decorated object (the _component_). This means you don't have to write
-  lots of forwarding methods by hand, which saves you time, filesize, and
-  reduces code duplication.
+  The @Decorator@ module gives you a means of implementing "the decorator
+  pattern":http://en.wikipedia.org/wiki/Decorator_pattern with minimal
+  boilerplate and code duplication. When creating a decorator class, you only
+  need to define methods that differ in some way from the methods in the
+  decorated object (the _component_). This means you don't have to write lots of
+  forwarding methods by hand, which saves you time, filesize, and reduces code
+  duplication.
+
+  <pre>// In the browser
+  JS.require('JS.Decorator', function(Decorator) { ... });
+
+  // In CommonJS
+  var Decorator = require('jsclass/src/decorator').Decorator;</pre>
 
   Let's take a quick example:
 
   <pre>// Basic Bike class. Bikes cost $10 per gear.
 
-  var Bike = new JS.Class({
+  var Bike = new Class({
       initialize: function(model, gears) {
           this.model = model;
           this.gears = gears;
@@ -28,10 +35,10 @@
       }
   });
 
-  // Disk brake decorator. Disk brakes add to the price,
-  // and make the bike's brakes more powerful.
+  // Disk brake decorator. Disk brakes add to the price, and make the bike's
+  // brakes more powerful.
 
-  var DiskBrakeDecorator = new JS.Decorator(Bike, {
+  var DiskBrakeDecorator = new Decorator(Bike, {
       getPrice: function() {
           return this.component.getPrice() + 50;
       },
@@ -62,7 +69,7 @@
   object. If a decorator defines new methods, they will be passed through by any
   other decorators you wrap an object with.
 
-  <pre>var HornDecorator = new JS.Decorator(Bike, {
+  <pre>var HornDecorator = new Decorator(Bike, {
       beepHorn: function(noise) {
           return noise.toUpperCase();
       }

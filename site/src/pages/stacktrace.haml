@@ -1,18 +1,24 @@
 :textile
   h2. StackTrace
 
-  @JS.StackTrace@ is a module you can use to inspect what an application is
-  doing internally while it runs. It provides an interface for monitoring method
+  @StackTrace@ is a module you can use to inspect what an application is doing
+  internally while it runs. It provides an interface for monitoring method
   calls, which you can use to build monitoring and debugging tools.
+
+  <pre>// In the browser
+  JS.require('JS.StackTrace', function(StackTrace) { ... });
+
+  // In CommonJS
+  var StackTrace = require('jsclass/src/stack_trace').StackTrace;</pre>
 
   The @StackTrace@ module supports the "@Observable@":/observable.html interface
   for monitoring what the stack is doing:
 
-  <pre>JS.StackTrace.addObserver(monitor);</pre>
+  <pre>StackTrace.addObserver(monitor);</pre>
 
   @monitor@ should be an object that responds to the @update()@ method. This
-  method takes two arguments: an event name, and an event object. So, the
-  object should look something like this:
+  method takes two arguments: an event name, and an event object. So, the object
+  should look something like this:
 
   <pre>monitor = {
       update: function(event, data) {
@@ -51,22 +57,22 @@
 
   h3. Enabling tracing
 
-  Since tracing incurs a performance cost, JS.Class does not trace anything
-  by default. When you want to trace a module or class, you pass a list of the
+  Since tracing incurs a performance cost, @jsclass@ does not trace anything by
+  default. When you want to trace a module or class, you pass a list of the
   modules you want to trace to @Method.trace()@, and use @Method.untrace()@ to
   stop tracing them.
 
-  <pre>JS.Method.trace([JS.Hash, JS.Range]);</pre>
+  <pre>Method.trace([Hash, Range]);</pre>
 
   h3. Call stack logging
 
-  There is a logger you can use to print the call stack to the "@Console@":/console.html.
-  To use it, just pass a list of modules to trace and a function to @JS.Method.tracing()@.
-  This enables tracing for the given modules, runs the function, then disables
-  tracing again.
+  There is a logger you can use to print the call stack to the
+  "@Console@":/console.html.  To use it, just pass a list of modules to trace
+  and a function to @Method.tracing()@.  This enables tracing for the given
+  modules, runs the function, then disables tracing again.
 
-  <pre>JS.Method.tracing([JS.Hash], function() {
-      var hash = new JS.OrderedHash(['foo', 4, 'bar', 5]);
+  <pre>Method.tracing([Hash], function() {
+      var hash = new OrderedHash(['foo', 4, 'bar', 5]);
       hash.hasKey('foo');
   });</pre>
 

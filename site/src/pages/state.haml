@@ -1,19 +1,26 @@
 :textile
   h2. State
 
-  @JS.State@ is an implementation of the "State pattern":http://en.wikipedia.org/wiki/State_pattern in JavaScript.
-  Simply put, the State pattern is a way of making the behaviour of an object
-  (i.e. what its methods do) dependent on its state - see the linked Wikipedia
-  article for a good example.
+  @State@ is an implementation of the "State
+  pattern":http://en.wikipedia.org/wiki/State_pattern in JavaScript.  Simply
+  put, the State pattern is a way of making the behaviour of an object (i.e.
+  what its methods do) dependent on its state - see the linked Wikipedia article
+  for a good example.
 
-  @JS.State@ does _not_ implement a finite state machine. That would require
+  <pre>// In the browser
+  JS.require('JS.State', function(State) { ... });
+
+  // In CommonJS
+  var State = require('jsclass/src/state').State;</pre>
+
+  @State@ does _not_ implement a finite state machine. That would require
   enforcing rules about which states can transition to which other states, which
   events trigger transitions and what occurs during said transitions. The State
   pattern simply says that you can say an object is in a certain state, and some
   of its behaviour changes accordingly. The responsibility of changing an
   object's state is left entirely up to the developer.
 
-  h3. Using the @JS.State@ pattern
+  h3. Using the @State@ pattern
 
   To borrow from the Wikipedia article on the subject, let's imagine you're
   building a drawing application. I'm just going to get the methods to return
@@ -42,18 +49,18 @@
   };</pre>
 
   Now let's define a class that uses the states. It must not define @mouseUp()@
-  or @mouseDown()@ itself - this is left up to @JS.State@. It should define an
+  or @mouseDown()@ itself - this is left up to @State@. It should define an
   initial state for itself when initialized.
 
-  <pre>var DrawingController = new JS.Class({
-      include: JS.State,
+  <pre>var DrawingController = new Class({
+      include: State,
 
       initialize: function() {
           this.setState(Tools.Pen);
       }
   });</pre>
 
-  @JS.State@ adds two methods to the class: @setState()@ and @inState()@. Calling
+  @State@ adds two methods to the class: @setState()@ and @inState()@. Calling
   @setState()@ makes sure that the instance has all the methods defined in the
   given state, and sets the state of the object. @inState()@ takes one or more
   state objects, and returns @true@ iff the object is in any one of them.
@@ -74,20 +81,20 @@
   d.mouseDown();
       // -> "Making selection"</pre>
 
-  Remember, @JS.State@ does not enforce state change rules so it's up to you to
+  Remember, @State@ does not enforce state change rules so it's up to you to
   make sure your code makes sense. It does however make it easy to manage the
   behaviour of a complex object without loads of @if@ and @switch@ statements,
   and to add new behaviours without modifying an object's code directly.
 
   h3. State definition shortcuts
 
-  @include@-ing @JS.State@ in a class allows you to use a shorthand in your
-  class definition for adding all the class' states. Including states in the
-  class itself also allows you to refer to them by name rather than as objects,
-  so we could rewrite the above as:
+  @include@-ing @State@ in a class allows you to use a shorthand in your class
+  definition for adding all the class' states. Including states in the class
+  itself also allows you to refer to them by name rather than as objects, so we
+  could rewrite the above as:
 
-  <pre>var DrawingController = new JS.Class({
-      include: JS.State,
+  <pre>var DrawingController = new Class({
+      include: State,
 
       initialize: function() {
           this.setState('Pen');
@@ -126,12 +133,12 @@
   d.mouseDown();
       // -> "Making selection"</pre>
 
-  Behind the scenes, @JS.State@ makes sure that all the states implement the
-  same methods. If one state has a missing method, a method is added to it that
+  Behind the scenes, @State@ makes sure that all the states implement the same
+  methods. If one state has a missing method, a method is added to it that
   simply returns the object. For example:
 
-  <pre>var Twiddle = new JS.Class({
-      include: JS.State,
+  <pre>var Twiddle = new Class({
+      include: State,
 
       initialize: function() {
           this.name = 'Twiddle';
@@ -159,7 +166,7 @@
 
   h3. State inheritance
 
-  @JS.State@ also supports inheritance using the following set of rules: Given a
+  @State@ also supports inheritance using the following set of rules: Given a
   class @Controller@ with states @Pen@ and @Selection@, and a subclass
   @ChildController@,
 
@@ -170,11 +177,11 @@
     @ChildController@, the method in @ChildController@ can use @this.callSuper()@
     to call @Pen.mouseDown()@ in the parent class.
 
-  These rules are enforced by @JS.State@ so that when you write a subclass, you
+  These rules are enforced by @State@ so that when you write a subclass, you
   only need to specify the ways in which it differs from its parent. Let's take
   an example implementation of @ChildController@.
 
-  <pre>var ChildController = new JS.Class(DrawingController);
+  <pre>var ChildController = new Class(DrawingController);
   ChildController.states({
       Selection: {
           mouseDown: function() {

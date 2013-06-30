@@ -1,21 +1,29 @@
 :textile
   h2. Range
 
-  The @JS.Range@ class is used to represent intervals - sequences with a start
-  and end value. It is directly based on Ruby's "@Range@":http://ruby-doc.org/core/classes/Range.html
-  class. A @Range@ may be constructed using integers, strings, or any type of
-  object that responds to the @succ()@ method. Ranges are a lightweight way to
-  represent sequences of objects, and as collections they respond to all the "@Enumerable@":/enumerable.html
-  methods.
+  The @Range@ class is used to represent intervals - sequences with a start and
+  end value. It is directly based on Ruby's
+  "@Range@":http://ruby-doc.org/core/classes/Range.html class.
+  
+  <pre>// In the browser
+  JS.require('JS.Range', function(Range) { ... });
+
+  // In CommonJS
+  var Range = require('jsclass/src/range').Range;</pre>
+  
+  A @Range@ may be constructed using integers, strings, or any type of object
+  that responds to the @succ()@ method. Ranges are a lightweight way to
+  represent sequences of objects, and as collections they respond to all the
+  "@Enumerable@":/enumerable.html methods.
 
   A range is constructed using a start and end value, and an optional flag that
   indicates whether the end value is included when iterating.
 
-  <pre>new JS.Range(1,5)           // -> 1,2,3,4,5
-  new JS.Range(4,8,true)      // -> 4,5,6,7
+  <pre>new Range(1,5)           // -> 1,2,3,4,5
+  new Range(4,8,true)      // -> 4,5,6,7
 
-  new JS.Range('a','d')       // -> 'a','b','c','d'
-  new JS.Range('B','G',true)  // -> 'B','C','D','E','F'</pre>
+  new Range('a','d')       // -> 'a','b','c','d'
+  new Range('B','G',true)  // -> 'B','C','D','E','F'</pre>
 
   The @Range@ object only stores the start and endpoints, not the intermediate
   values: these are generated using @succ()@ when iterating. For example, here's
@@ -24,7 +32,7 @@
   "@compareTo()@":/comparable.html to allow a @Range@ to determine whether a
   given object is within the range:
 
-  <pre>var NumberWrapper = new JS.Class({
+  <pre>var NumberWrapper = new Class({
       initialize: function(value) {
           this._value = value;
       },
@@ -46,9 +54,9 @@
   We can use this class in a @Range@ and iterating will generate the
   intermediate objects:
 
-  <pre>var nums = new JS.Range(new NumberWrapper(16),
-                          new NumberWrapper(24),
-                          true);
+  <pre>var nums = new Range(new NumberWrapper(16),
+                       new NumberWrapper(24),
+                       true);
 
   nums.forEach(function(number) {
       console.log(number.inspect());
@@ -77,7 +85,7 @@
 
   <pre>// Calls the function with
   // arguments 1,2,3,4
-  new JS.Range(1,4).forEach(function(number) {
+  new Range(1,4).forEach(function(number) {
       // ...
   });</pre>
 
@@ -88,8 +96,8 @@
   h3. @equals(other)@
 
   Returns @true@ iff @other@ is a @Range@ with the same start and end values and
-  the same value for @excludesEnd()@. Note that the ranges @new JS.Range(1,4)@
-  and @new JS.Range(1,5,true)@ are not equal.
+  the same value for @excludesEnd()@. Note that the ranges @new Range(1,4)@
+  and @new Range(1,5,true)@ are not equal.
 
   h3. @excludesEnd()@
 
@@ -104,14 +112,14 @@
   Returns @true@ iff @item@ is contained in the @Range@, that is if it is between
   the start and end values of the range.
 
-  <pre>new JS.Range(1,4).includes(3)         // -> true
-  new JS.Range(2,6,true).includes(6)    // -> false</pre>
+  <pre>new Range(1,4).includes(3)         // -> true
+  new Range(2,6,true).includes(6)    // -> false</pre>
 
   Note that an object may be considered to be included in a range even though it
   does not appear during iteration and may even lie outside the iteration range.
   For example the following expression is @true@ as 8.5 is less than 9:
 
-  <pre>new JS.Range(6,9,true).includes(8.5)   // -> true</pre>
+  <pre>new Range(6,9,true).includes(8.5)   // -> true</pre>
 
   Aliased as @covers()@, @member()@ and @match()@, so a @Range@ may be used as
   the argument to @Enumerable#grep@.
@@ -125,6 +133,6 @@
   Iterates over every nth item in the @Range@, calling @block@ with each. Returns
   an "@Enumerator@":/enumerator.html if called with no block.
 
-  <pre>new JS.Range('G','V').step(5).entries()
+  <pre>new Range('G','V').step(5).entries()
       // -> ["G", "L", "Q", "V"]</pre>
 

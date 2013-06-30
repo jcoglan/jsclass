@@ -9,22 +9,28 @@
   'general',  but the code has been constructed in such a way that you can build
   on part of this library to create singly-linked and linear lists.
 
-  h3. @JS.LinkedList.Doubly.Circular@
+  <pre>// In the browser
+  JS.require('JS.LinkedList', function(LinkedList) { ... });
+
+  var LinkedList = require('jsclass/src/linked_list').LinkedList;</pre>
+
+  h3. @LinkedList.Doubly.Circular@
 
   This is the only concrete list type fully implemented in this library. The class
   structure is as follows, should you wish to build other list types:
 
-  * @JS.LinkedList@ implements methods common to all linked lists
-  * @JS.LinkedList.Doubly@ implements methods common to linear and circular
+  * @LinkedList@ implements methods common to all linked lists
+  * @LinkedList.Doubly@ implements methods common to linear and circular
     doubly-linked lists
 
-  If you're curious, I recommend reading "the source code":http://github.com/jcoglan/js.class/blob/master/source/linked_list.js.
+  If you're curious, I recommend reading "the source
+  code":http://github.com/jcoglan/jsclass/blob/master/source/linked_list.js.
 
   h3. Using linked lists
 
   To use a linked list, you create it as follows and add objects to it:
 
-  <pre>var list = new JS.LinkedList.Doubly.Circular();
+  <pre>var list = new LinkedList.Doubly.Circular();
   var foo = {}, bar = {}, baz = {};
   list.push(foo);
   list.push(bar);
@@ -49,25 +55,25 @@
   * @at(n)@ - returns the object at index @n@ in the list.
   * @push(object)@ - appends @object@ to the list.
   * @pop()@ - removes the last item in the list and returns it.
-  * @shift()@ removed the first item in the list and returns it.
+  * @shift()@ - removes the first item in the list and returns it.
   * @unshift(object)@ - adds @object@ to the start of the list.
   * @insertAt(n, object)@ - inserts @object@ at position @n@ in the list.
   * @insertAfter(node, object)@ - inserts @object@ into the list after @node@.
   * @insertBefore(node, object)@ - inserts @object@ into the list before @node@.
   * @remove(object)@ - removes @object@ from the list.
 
-  h3. @JS.LinkedList.Node@
+  h3. @LinkedList.Node@
 
   Each node in a linked list can only belong to that list - it cannot have
   multiple @prev@/@next@ pointers. If you want to add an object to several lists,
   you can wrap it in a node object before adding it to each list:
 
-  <pre>var listA = new JS.LinkedList.Doubly.Circular();
-  var listB = new JS.LinkedList.Doubly.Circular();
+  <pre>var listA = new LinkedList.Doubly.Circular();
+  var listB = new LinkedList.Doubly.Circular();
 
   var obj = {name: 'Jimmy'};
-  listA.push(new JS.LinkedList.Node(obj));
-  listB.push(new JS.LinkedList.Node(obj));
+  listA.push(new LinkedList.Node(obj));
+  listB.push(new LinkedList.Node(obj));
 
   listA.first.data.name   // -> "Jimmy"
   listB.first.data.name   // -> "Jimmy"
@@ -90,5 +96,6 @@
   }, context);</pre>
 
   @context@ is optional, and specifies the meaning of the @this@ keyword inside
-  the function. All the usual @Enumerable@ methods are available on list objects
-  - see "the @Enumerable@ docs":/enumerable.html for more info.
+  the function. All the usual @Enumerable@ methods are available on list
+  objects - see "the @Enumerable@ docs":/enumerable.html for more info.
+

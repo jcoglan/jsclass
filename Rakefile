@@ -19,13 +19,13 @@ MDC_URLS = %w(Array Boolean Date EvalError Error Function Math
               String SyntaxError TypeError URIError).
               map(&method(:mdc_url))
 
-ELEMENT_URL = 'http://developer.mozilla.org/en/DOM/element'
-EVENT_URL   = 'http://developer.mozilla.org/en/DOM/event'
-STYLE_URL   = 'http://developer.mozilla.org/en/DOM/CSS'
+ELEMENT_URL = 'https://developer.mozilla.org/en-US/docs/Web/API/element'
+EVENT_URL   = 'https://developer.mozilla.org/en-US/docs/Web/API/Event'
+STYLE_URL   = 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference'
 
 class MethodSet < SortedSet
   def add_method(link)
-    name = link.text.strip.gsub(/^event\./, '')
+    name = link.text.strip.gsub(/^.*\.([^\.]+)$/, '\1')
     add(name) if name =~ /^[a-z][a-zA-Z0-9\_\$]*$/
   end
 
@@ -40,12 +40,7 @@ namespace :import do
 
     MDC_URLS.each { |url| methods.import(url, 'dt a') }
 
-    methods.import(ELEMENT_URL, 'td code a:first-child')
-
-    document(ELEMENT_URL).search('#pageText>p').last.search('a').map do |link|
-      methods.import(link[:href], 'td code a:first-child')
-    end
-
+    methods.import(ELEMENT_URL, 'td:first-child a:first-child')
     methods.import(EVENT_URL, 'dt a')
     methods.import(STYLE_URL, 'li a')
 

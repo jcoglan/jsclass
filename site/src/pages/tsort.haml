@@ -1,12 +1,20 @@
 :textile
   h2. TSort
 
-  @JS.TSort@ is a JavaScript version of Ruby's @TSort@ module, which provides
+  @TSort@ is a JavaScript version of Ruby's @TSort@ module, which provides
   "topological sort":http://en.wikipedia.org/wiki/Topological_sorting capability
-  to data structures. The canonical example of this is determining how a
-  set of dependent tasks should be sorted such that each task comes after those
-  it depends on in the list. One way to represent this information may be as
-  a task table:
+  to data structures.
+  
+  <pre>// In the browser
+  JS.require('JS.TSort', function(TSort) { ... });
+
+  // In CommonJS
+  var TSort = require('jsclass/src/tsort').TSort;</pre>
+  
+  The canonical example of this is determining how a set of
+  dependent tasks should be sorted such that each task comes after those it
+  depends on in the list. One way to represent this information may be as a task
+  table:
 
   <pre>var tasks = new Tasks({
       'eat breakfast': ['serve'],
@@ -17,7 +25,8 @@
   });</pre>
 
   (This example is borrowed from the excellent "Getting to know the Ruby
-  standard library":http://endofline.wordpress.com/2010/12/22/ruby-standard-library-tsort/
+  standard
+  library":http://endofline.wordpress.com/2010/12/22/ruby-standard-library-tsort/
   blog.)
 
   This table represents each task involved in serving breakfast. The tasks are
@@ -30,8 +39,8 @@
   the callback. @tsortEachChild@ must accept an individual task and yield each
   of its direct children. We can implement this simply:
 
-  <pre>var Tasks = new JS.Class({
-      include: JS.TSort,
+  <pre>var Tasks = new Class({
+      include: TSort,
 
       initialize: function(table) {
           this.table = table;
@@ -61,6 +70,5 @@
   knowing that each task will have all its dependencies run before it in the
   list.
 
-  Note that @TSort@ sorts based on the how objects are related to each other
-  in a graph, not by how they compare using "comparison":/comparable.html
-  methods.
+  Note that @TSort@ sorts based on the how objects are related to each other in
+  a graph, not by how they compare using "comparison":/comparable.html methods.

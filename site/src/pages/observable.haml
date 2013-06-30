@@ -1,8 +1,17 @@
 :textile
   h2. Observable
 
-  @JS.Observable@ is a JavaScript implementation of the "observer pattern":http://en.wikipedia.org/wiki/Observer_pattern
-  (also known as 'publish/subscribe'), modelled on Ruby's "@Observable@ module":http://ruby-doc.org/core/classes/Observable.html.
+  @Observable@ is a JavaScript implementation of the "observer
+  pattern":http://en.wikipedia.org/wiki/Observer_pattern (also known as
+  'publish/subscribe'), modelled on Ruby's "@Observable@
+  module":http://ruby-doc.org/core/classes/Observable.html.
+  
+  <pre>// In the browser
+  JS.require('JS.Observable', function(Observable) { ... });
+
+  // In CommonJS
+  var Observable = require('jsclass/src/observable').Observable;</pre>
+  
   In JavaScript, this pattern can be made more flexible due to the fact that
   functions are first-class objects, and are easier to work with than lambdas
   and procs in Ruby. In this implementation, the listeners/observers are
@@ -20,8 +29,8 @@
   listen for such announcements and respond however they see fit. Let's imagine
   we're running a magazine:
 
-  <pre>var Magazine = new JS.Class({
-      include: JS.Observable,
+  <pre>var Magazine = new Class({
+      include: Observable,
 
       initialize: function(name) {
           this.name = name;
@@ -35,7 +44,7 @@
       }
   });
 
-  var Issue = new JS.Class({
+  var Issue = new Class({
       initialize: function(publisher) {
           this.publisher = publisher;
       }
@@ -63,7 +72,7 @@
   complex example could involve objects attaching their methods to observe an
   object:
 
-  <pre>var Reader = new JS.Class({
+  <pre>var Reader = new Class({
       receiveIssue: function(issue) {
           if (this.likes(issue.publisher))
               this.read(issue);
@@ -87,8 +96,8 @@
 
   <pre>mag.addObserver(person.receiveIssue, person);</pre>
 
-  Observers can be removed, so long as you specify _the exact same function and
-  context_ used to set up the observer:
+  Observers can be removed, so long as you specify _the exact same function and context_
+  used to set up the observer:
 
   <pre>// Works...
   mag.addObserver(person.method('receiveIssue'));

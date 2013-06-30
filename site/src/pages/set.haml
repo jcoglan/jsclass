@@ -1,42 +1,51 @@
 :textile
   h2. Set
 
-  The @JS.Set@ class can be used to model collections of unique objects. A set
+  The @Set@ class can be used to model collections of unique objects. A set
   makes sure that there are no duplicates among its members, and it allows you
   to use custom equality methods for comparison as well as JavaScript's @===@
   operator.
 
+  <pre>// In the browser
+  JS.require('JS.Set', function(Set) { ... });
+
+  // In CommonJS
+  var Set = require('jsclass/src/set').Set;</pre>
+
   There are actuall three set classes available; all have the same API but have
   different storage mechanisms. They are:
 
-  * *@JS.Set@* - This is the base class; other set classes inherit most of their
+  * *@Set@* - This is the base class; other set classes inherit most of their
     methods from here. Uses a "@Hash@":/hash.html to store its members, so
     search performance is constant time assuming a good hash distribution. No
     particular iteration order is specified for this class.
-  * *@JS.OrderedSet@*  - This class uses an "@OrderedHash@":/hash.html to store
+  * *@OrderedSet@*  - This class uses an "@OrderedHash@":/hash.html to store
     its members, and iterates over them in insertion order. Search time is
     constant, though insertion time may be slower because of the higher overhead
     of keeping the hash ordered correctly.
-  * *@JS.SortedSet@* - This class keeps all its members in sort order as long as
+  * *@SortedSet@* - This class keeps all its members in sort order as long as
     they are mutually comparable, either using JavaScript's @<@, @<=@, @==@, @>@,
     @>=@ operators or using the "@Comparable@":/comparable.html module. Iteration
     visits the elements in sort order, and search performance is logarithmic
     with the number of elements.
 
-  If you try to add an object that has an "@equals()@ method":/equality.html to
-  a set, that method will be used to compare the object to the set's members.
-  @equals()@ should accept one argument and return a boolean to indicate whether
-  the two objects are to be considered equal. If no @equals()@ method exists on
-  the object, the @===@ operator is used instead. An example class might look
-  like:
+  If you try to add an object that has "@equals()@ and @hash()@
+  methods":/equality.html to a set, those methods will be used to compare the
+  object to the set's members.  @equals()@ should accept one argument and return
+  a boolean to indicate whether the two objects are to be considered equal. If
+  no @equals()@ method exists on the object, the @===@ operator is used instead.
+  An example class might look like:
 
-  <pre>Widget = new JS.Class({
+  <pre>Widget = new Class({
       initialize: function(name) {
           this.name = name;
       },
       equals: function(object) {
           return (object instanceof this.klass)
               && object.name == this.name;
+      },
+      hash: function() {
+          return this.name;
       }
   });</pre>
 
@@ -55,7 +64,7 @@
   Creating a set is simple: simply pass an array (or some other enumerable
   object) with the data to put in the set:
 
-  <pre>var evensUnderTen = new JS.Set([2,4,6,8]);</pre>
+  <pre>var evensUnderTen = new Set([2,4,6,8]);</pre>
 
   @Set@ and @SortedSet@ include the "@Enumerable@":/enumerable.html module. The
   iteration order for @Set@ is arbitrary and is not guaranteed, whereas for
@@ -72,7 +81,7 @@
   comparison to other set members (see above). Returns a boolean to indicate
   whether or not the item was added.
 
-  <pre>var evensUnderTen = new JS.Set([2,4,6,8]);
+  <pre>var evensUnderTen = new Set([2,4,6,8]);
   evensUnderTen.add(6)    // -> false
   evensUnderTen.add(0)    // -> true</pre>
 
@@ -84,7 +93,7 @@
 
   <pre>// Classify by remainder when divided by 3
 
-  var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
+  var s = new Set([1,2,3,4,5,6,7,8,9]);
   var c = s.classify(function(x) { return x % 3 });
 
   // c.get(0) == Set{3,6,9}
@@ -109,8 +118,8 @@
   Returns a new set containing all the members of the receiver that are not in
   the set @other@.
 
-  <pre>var a = new JS.Set([1,2,3,4,5,6,7,8,9]);
-  var b = new JS.Set([2,4,6,8]);
+  <pre>var a = new Set([1,2,3,4,5,6,7,8,9]);
+  var b = new Set([2,4,6,8]);
 
   a.difference(b)
   // -> Set{1,3,5,7,9}</pre>
@@ -122,10 +131,8 @@
 
   <pre>// Classify by remainder when divided by 3
 
-  var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
-  var c = s.divide(function(x) {
-    return x % 3;
-  });
+  var s = new Set([1,2,3,4,5,6,7,8,9]);
+  var c = s.divide(function(x) { return x % 3 });
 
   // c == Set { Set{3,6,9}, Set{1,4,7}, Set{2,5,8} }</pre>
 
@@ -139,8 +146,7 @@
   Flattens the set in place, such that any sets nested within the receiver are
   merged and their members become the receiver's members.
 
-  <pre>var s = new JS.Set([ new JS.Set([3,9,4]),
-      new JS.Set([1,7,3,5]), 3, 7 ]);
+  <pre>var s = new Set([ new Set([3,9,4]), new Set([1,7,3,5]), 3, 7 ]);
 
   // s == Set{ Set{3,9,4}, Set{1,7,3,5}, 3, 7}
 
@@ -187,7 +193,7 @@
   Returns a new (always non-sorted) set of all possible ordered pairs whose
   first member is in the receiver and whose second member is in @set@.
 
-  <pre>var a = new JS.Set([1,2]), b = new JS.Set([3,4]);
+  <pre>var a = new Set([1,2]), b = new Set([3,4]);
   var prod = a.product(b);
 
   // prod == Set{ [1,3], [1,4], [2,3], [2,4] }</pre>
@@ -208,7 +214,7 @@
 
   Removes all the members of the set for which @predicate@ returns @true@.
 
-  <pre>var s = new JS.Set([1,2,3,4,5,6,7,8,9]);
+  <pre>var s = new Set([1,2,3,4,5,6,7,8,9]);
 
   // Remove multiples of 3
   s.removeIf(function(x) { return x % 3 == 0 });

@@ -3,12 +3,20 @@
 
   The @Enumerator@ class, part of the "@Enumerable@":/enumerable.html module,
   encapsulates instances of iterative processes, allowing them to be reused and
-  composed in useful ways. Most methods in the @Enumerable@ API that take an
-  iteration function will return an @Enumerator@ if called without said function.
-  The @Enumerator@ encapsulates the object being iterated over, the iteration
-  method used and any arguments appearing before the iterator block. Enumerators
-  are generated using the @Kernel#enumFor@ method, for example here are a couple
-  of generators that appear in the @Enumerable@ API:
+  composed in useful ways.
+
+  <pre>// In the browser
+  JS.require('JS.Enumerator', function(Enumerator) { ... });
+
+  // In CommonJS
+  var Enumerator = require('jsclass/src/enumerable').Enumerator;</pre>
+  
+  Most methods in the @Enumerable@ API that take an iteration function will
+  return an @Enumerator@ if called without said function.  The @Enumerator@
+  encapsulates the object being iterated over, the iteration method used and any
+  arguments appearing before the iterator block. Enumerators are generated using
+  the @Kernel#enumFor@ method, for example here are a couple of generators that
+  appear in the @Enumerable@ API:
 
   <pre>map: function(block, context) {
       if (!block) return this.enumFor('map');
@@ -26,8 +34,8 @@
   we have this basic class that wraps an array and allows us to iterate over it
   using @forEach@:
 
-  <pre>var Collection = new JS.Class({
-      include: JS.Enumerable,
+  <pre>var Collection = new Class({
+      include: Enumerable,
 
       initialize: function() {
           this._list = [];

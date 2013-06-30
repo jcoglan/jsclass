@@ -1,21 +1,29 @@
 :textile
   h2. ConstantScope
 
-  @JS.ConstantScope@ is a metaprogramming mixin that alters the way constants are
-  stored inside modules and classes. It does not add any methods to the including
-  class, but it changes its internals in certain useful ways. In JavaScript,
-  there is no such thing as a constant but convention dictates that any variable
-  name that begins with a capital letter is to be treated as such. The same
-  convention exists in Ruby, with the added bonus that the interpreter will warn
-  you when a constant is redefined. To understant what this module does, we need
-  first to examine some differences in constant lookup between Ruby and JS.Class.
+  @ConstantScope@ is a metaprogramming mixin that alters the way constants are
+  stored inside modules and classes. It does not add any methods to the
+  including class, but it changes its internals in certain useful ways.
 
-  While JS.Class makes every attempt to support Ruby's object inheritance
+  <pre>// In the browser
+  JS.require('JS.ConstantScope', function(ConstantScope) { ... });
+
+  // In CommonJS
+  var ConstantScope = require('jsclass/src/constant_scope').ConstantScope;</pre>
+
+  In JavaScript, there is no such thing as a constant but convention dictates
+  that any variable name that begins with a capital letter is to be treated as
+  such.  The same convention exists in Ruby, with the added bonus that the
+  interpreter will warn you when a constant is redefined. To understant what
+  this module does, we need first to examine some differences in constant lookup
+  between Ruby and @jsclass@.
+
+  While @jsclass@ makes every attempt to support Ruby's object inheritance
   system, such that method lookup works the same in both systems, the same
   cannot be said of constant lookup. This is because Ruby's constant lookup
   system makes use of the lexical scope of constant names, which you really need
-  a language parser for if you want it to work properly. JS.Class is not a
-  code parser, which means it can't support the same constant semantics as Ruby.
+  a language parser for if you want it to work properly. @jsclass@ is not a code
+  parser, which means it can't support the same constant semantics as Ruby.
   Let's take a concrete example:
 
   <pre>class Outer
@@ -41,29 +49,29 @@
     end
   end </pre>
 
-  In Ruby, any name beginning with a capital letter is considered a constant: the
-  class @Outer@ contains three constants: @CONST@, @Item@ and @Inner@. They are
-  referred to externally as @Outer::CONST@, @Outer::Item@ and @Outer::Inner@.
-  Likewise, @Outer::Inner@ contains a single constant, @Outer::Inner::Item@.
-  When you refer to a constant, Ruby looks up that name in the lexical scope of
-  the reference, i.e. it looks in the enclosing class, then the class enclosing
-  _that_, and so on until it reaches the global scope. So, the line marked @(4)@
-  refers to @Outer::Inner::Item@ (defined on line @(2)@) and line @(5)@ refers
-  to @Outer::Item@, defined on line @(1)@. Line @(3)@ has to go back out to
-  @Outer@ to find the constant @CONST@.
+  In Ruby, any name beginning with a capital letter is considered a constant:
+  the class @Outer@ contains three constants: @CONST@, @Item@ and @Inner@. They
+  are referred to externally as @Outer::CONST@, @Outer::Item@ and
+  @Outer::Inner@.  Likewise, @Outer::Inner@ contains a single constant,
+  @Outer::Inner::Item@.  When you refer to a constant, Ruby looks up that name
+  in the lexical scope of the reference, i.e. it looks in the enclosing class,
+  then the class enclosing _that_, and so on until it reaches the global scope.
+  So, the line marked @(4)@ refers to @Outer::Inner::Item@ (defined on line
+  @(2)@) and line @(5)@ refers to @Outer::Item@, defined on line @(1)@. Line
+  @(3)@ has to go back out to @Outer@ to find the constant @CONST@.
 
-  To write this in JS.Class, we need to make the constants properties of the
+  To write this in @jsclass@, we need to make the constants properties of the
   classes that contain them by @extend@-ing the classes:
 
-  <pre>Outer = new JS.Class({
+  <pre>Outer = new Class({
       extend: {
           CONST: 45,
 
-          Item: new JS.Class(),
+          Item: new Class(),
 
-          Inner: new JS.Class({
+          Inner: new Class({
               extend: {
-                  Item: new JS.Class({
+                  Item: new Class({
                       initialize: function() {
                           alert(Outer.CONST);
                       }
@@ -87,21 +95,21 @@
   funny-looking @this.klass.X@ references where instance methods need to refer
   to constants stored in their class.
 
-  @JS.ConstantScope@ is a module that allows classes and any classes nested
-  inside them to support Ruby's constant lookup system, in that any reference to
-  a 'constant' (a property beginning with a capital letter) can be made simply
+  @ConstantScope@ is a module that allows classes and any classes nested inside
+  them to support Ruby's constant lookup system, in that any reference to a
+  'constant' (a property beginning with a capital letter) can be made simply
   using the syntax @this.X@. The value of such a reference will follow the same
   lexical rules as exist in Ruby, so that we can rewrite the above code as:
 
-  <pre>Outer = new JS.Class({
-      include: JS.ConstantScope,
+  <pre>Outer = new Class({
+      include: ConstantScope,
 
       CONST: 45,
 
-      Item: new JS.Class(),
+      Item: new Class(),
 
-      Inner: new JS.Class({
-          Item: new JS.Class({
+      Inner: new Class({
+          Item: new Class({
               initialize: function() {
                   alert(this.CONST);
               }
@@ -122,10 +130,10 @@
   This also means that the syntax for referring to a constant is the same in
   both class and instance methods:
 
-  <pre>SomeClass = new JS.Class({
-      include: JS.ConstantScope,
+  <pre>SomeClass = new Class({
+      include: ConstantScope,
 
-      MY_CONST:   'cheese',
+      MY_CONST: 'cheese',
 
       fetch: function() {
           return this.MY_CONST;

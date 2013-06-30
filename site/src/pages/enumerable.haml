@@ -1,14 +1,21 @@
 :textile
   h2. Enumerable
 
-  @JS.Enumerable@ is essentially a straight port of Ruby's "@Enumerable@":http://ruby-doc.org/core/classes/Enumerable.html
-  module to JavaScript. Some of the methods have slightly different names in
-  keeping with JavaScript conventions, but the underlying idea is this: the
-  module provides methods usable by any class that represents collections or
-  lists of things. The only stipulation is that your class must have a @forEach@
-  method that calls a given function with each member of the collection in turn.
-  The @forEach@  method should return an "@Enumerator@":/enumerator.html if
-  called without an iterator function - see the example below.
+  @Enumerable@ is essentially a straight port of Ruby's
+  "@Enumerable@":http://ruby-doc.org/core/classes/Enumerable.html module to
+  JavaScript. Some of the methods have slightly different names in keeping with
+  JavaScript conventions, but the underlying idea is this: the module provides
+  methods usable by any class that represents collections or lists of things.
+  The only stipulation is that your class must have a @forEach@ method that
+  calls a given function with each member of the collection in turn.  The
+  @forEach@  method should return an "@Enumerator@":/enumerator.html if called
+  without an iterator function - see the example below.
+
+  <pre>// In the browser
+  JS.require('JS.Enumerable', function(Enumerable) { ... });
+
+  // In CommonJS
+  var Enumerable = require('jsclass/src/enumerable').Enumerable;</pre>
 
   As a basic example, here's a simple class that stores some of its instance
   data in a list.  A class may store collections in any way it chooses, and does
@@ -16,8 +23,8 @@
   of the @forEach@ method is to hide the storage mechanism from the users of the
   class.
 
-  <pre>var Collection = new JS.Class({
-      include: JS.Enumerable,
+  <pre>var Collection = new Class({
+      include: Enumerable,
 
       initialize: function() {
           this._list = [];
@@ -125,8 +132,8 @@
 
   If called without arguments, returns the number of items in the collection. If
   called with arguments, returns the number of members that are equal to
-  @needle@ using the @===@ operator, or for which @needle@ returns @true@ if
-  @needle@ is a function.
+  @needle@ using "equality":/equality.html semantics, or for which @needle@
+  returns @true@ if @needle@ is a function.
 
   <pre>new Collection(3,7,4,8,2).count();
   // -> 5
@@ -438,8 +445,13 @@
   What this translates to in practise:
 
   <pre>new Collection(3,7,4,8,2).zip([1,9,3,6,4], [6,3,3]);
-  // -> [ [3,1,6], [7,9,3], [4,3,3],
-  //        [8,6,null], [2,4,null] ]
+  // -> [
+  //        [3, 1, 6],
+  //        [7, 9, 3],
+  //        [4, 3, 3],
+  //        [8, 6, null],
+  //        [2, 4, null]
+  //    ]
 
   new Collection(3,7,4,8,2).zip([1,9,3,6,4], function(list) {
       console.log(list)

@@ -1,25 +1,32 @@
 :textile
   h2. Comparable
 
-  @JS.Comparable@ is a module that helps you manipulate objects that can be
-  ordered relative to each other. It is designed to work exactly like
-  "@Comparable@":http://ruby-doc.org/core/classes/Comparable.html
-  in Ruby, only without the nice method names like @"<="@ that Ruby allows. To
-  use it, your class must define an instance method called @compareTo@, that
+  @Comparable@ is a module that helps you manipulate objects that can be ordered
+  relative to each other. It is designed to work exactly like
+  "@Comparable@":http://ruby-doc.org/core/classes/Comparable.html in Ruby, only
+  without the nice method names like @"<="@ that Ruby allows.
+
+  <pre>// In the browser
+  JS.require('JS.Comparable', function(Comparable) { ... });
+
+  // In CommonJS
+  var Comparable = require('jsclass/src/comparable').Comparable;</pre>
+
+  To use it, your class must define an instance method called @compareTo@, that
   tells it how to compare itself to other objects. As an example, let's create a
   class to represent to-do list items. These can be ordered according to their
   priority.
 
-  <pre>var TodoItem = new JS.Class({
-      include: JS.Comparable,
+  <pre>var TodoItem = new Class({
+      include: Comparable,
 
       initialize: function(task, priority) {
           this.task = task;
           this.priority = priority;
       },
 
-      // Must return -1 if this object is 'less than' other,
-      // +1 if it is 'greater than' other, or 0 if they are equal
+      // Must return -1 if this object is 'less than' other, +1 if it is
+      // 'greater than' other, or 0 if they are equal
       compareTo: function(other) {
           if (this.priority < other.priority) return -1;
           if (this.priority > other.priority) return 1;
@@ -30,7 +37,7 @@
   @TodoItem@ now has the following instance methods:
 
   * @lt(other)@ - returns @true@ iff the receiver is less than @other@
-  * @lte(other)@ - returns @true@ iff the receiver is less than or equal to@other@
+  * @lte(other)@ - returns @true@ iff the receiver is less than or equal to @other@
   * @gt(other)@ - returns @true@ iff the receiver is greater than @other@
   * @gte(other)@ - returns @true@ iff the receiver is greater than or equal to @other@
   * @eq(other)@ - returns @true@ iff the receiver is equal to @other@
@@ -56,11 +63,11 @@
   items[1].between(items[3], items[4])  // -> true
 
   items.sort(TodoItem.compare)
-      // -> [
-      //        {task: 'Write code', ...},
-      //        {task: 'Pay the rent', ...},
-      //        {task: 'Buy milk', ...},
-      //        {task: 'Head down the pub', ...},
-      //        {task: 'Go to work', ...}
-      //    ]</pre>
+  // -> [
+  //        {task: 'Write code', ...},
+  //        {task: 'Pay the rent', ...},
+  //        {task: 'Buy milk', ...},
+  //        {task: 'Head down the pub', ...},
+  //        {task: 'Go to work', ...}
+  //    ]</pre>
 

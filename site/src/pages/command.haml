@@ -1,16 +1,23 @@
 :textile
   h2. Command
 
-  @JS.Command@ is an implementation of the "command pattern":http://en.wikipedia.org/wiki/Command_pattern,
-  in which objects are used to represent actions. A command object typically has
-  an @execute()@ method that runs its action, and sometimes will have an
-  @undo()@ method if it can be reversed.
+  @Command@ is an implementation of the "command
+  pattern":http://en.wikipedia.org/wiki/Command_pattern, in which objects are
+  used to represent actions. A command object typically has an @execute()@
+  method that runs its action, and sometimes will have an @undo()@ method if it
+  can be reversed.
+
+  <pre>// In the browser
+  JS.require('JS.Command', function(Command) { ... });
+
+  // In CommonJS
+  var Command = require('jsclass/src/command').Command;</pre>
 
   h3. Creating commands
 
   Here's your basic 'Hello world' command:
 
-  <pre>var helloWorld = new JS.Command({
+  <pre>var helloWorld = new Command({
       execute: function() {
           alert('Hello world!');
       }
@@ -22,7 +29,7 @@
   If your action can be reversed and you want to implement an 'undo' function in
   your code, you need to tell the command how to reverse itself:
 
-  <pre>var incrementCounter = new JS.Command({
+  <pre>var incrementCounter = new Command({
       execute: function() {
           someCounter += 1;
       },
@@ -40,11 +47,11 @@
 
   h3. Creating your own command classes
 
-  You'll often want to subclass @JS.Command@ to provide your own types of
-  command. For example, you might want to create a type of command that drew a
-  circle at random on a @canvas@ element:
+  You'll often want to subclass @Command@ to provide your own types of command.
+  For example, you might want to create a type of command that drew a circle at
+  random on a @canvas@ element:
 
-  <pre>var DrawCircleCommand = new JS.Class(JS.Command, {
+  <pre>var DrawCircleCommand = new Class(Command, {
       initialize: function(ctx) {
 
           var x = Math.random() * 400,
@@ -67,10 +74,10 @@
 
   randomCircle.execute();</pre>
 
-  Note the general pattern here: we create a subclass of @JS.Command@. This new
+  Note the general pattern here: we create a subclass of @Command@. This new
   subclass accepts a drawing context to instantiate it (@ctx@), chooses some
   random drawing points, then uses @this.callSuper@ to pass some command
-  properties up to the @JS.Command@ @initialize()@ method. Note that the random
+  properties up to the @Command@ @initialize()@ method. Note that the random
   numbers are generated once, rather than every time the command is executed:
   each @new DrawCircleCommand@ does something different, but an individual
   @DrawCircleCommand@ instance ought to do the same thing every time it is
@@ -81,7 +88,7 @@
   not be modified. Always use @callSuper()@ as shown above to set up your
   commands. Do not do this:
 
-  <pre>var BrokenCommand = new JS.Class(JS.Command, {
+  <pre>var BrokenCommand = new Class(Command, {
       execute: function() {
           doSomething();
       },
@@ -93,18 +100,18 @@
   This command will not work properly if you try to hook it up to a command
   stack as described below.
 
-  h3. @JS.Command.Stack@
+  h3. @Command.Stack@
 
   If you have actions that can be undone and you want to store the command
   history so you can step back and forth through it later, we have a class
-  called @JS.Command.Stack@. To use it, just create one and give it a name:
+  called @Command.Stack@. To use it, just create one and give it a name:
 
-  <pre>var counterStack = new JS.Command.Stack();</pre>
+  <pre>var counterStack = new Command.Stack();</pre>
 
   You can then create commands that will automatically add themselves to this
   stack whenever they are executed, using the @stack@ option:
 
-  <pre>var incrementCounter = new JS.Command({
+  <pre>var incrementCounter = new Command({
       execute: function() {
           someCounter += 1;
       },
@@ -140,10 +147,10 @@
   sequentially from @1@ upwards.
 
   @push()@ lets you push a command onto the stack yourself -- this is the method
-  @JS.Command@ uses internally if you tell a command to associate itself with
-  a stack. When you push a command onto the stack, it is added at whichever
-  point in the stack you happen to be, and any previously undone commands after
-  this point are discarded. For example:
+  @Command@ uses internally if you tell a command to associate itself with a
+  stack. When you push a command onto the stack, it is added at whichever point
+  in the stack you happen to be, and any previously undone commands after this
+  point are discarded. For example:
 
   <pre>someCounter = 0;
   counterStack.clear();         // 0 commands in stack
@@ -184,7 +191,7 @@
       H      = 300;
 
   // Command for clearing the drawing area
-  var clearCanvas = new JS.Command({
+  var clearCanvas = new Command({
       execute: function() {
           ctx.fillStyle = 'rgb(255,255,255)';
           ctx.fillRect(0, 0, W, H);
@@ -192,15 +199,15 @@
   });
 
   // A redo-from-start stack
-  var drawingStack = new JS.Command.Stack({redo: clearCanvas});
+  var drawingStack = new Command.Stack({redo: clearCanvas});
 
   // Command for drawing a random square
-  var DrawSquareCommand = new JS.Class(JS.Command, {
+  var DrawSquareCommand = new Class(Command, {
       initialize: function(ctx) {
 
           var x = Math.random() * W,
-                  y = Math.random() * H,
-                  r = Math.random() * 30;
+              y = Math.random() * H,
+              r = Math.random() * 30;
 
           this.callSuper({
               execute: function() {
@@ -229,9 +236,9 @@
   mechanism for undoing them - you just get all your commands to notify a single
   command stack and use that stack to revert changes.
 
-  Notice how the command gives itself a @name@ property inside its @initialize()@
-  method - this will allow us to represent the command in the GUI in the next
-  example.
+  Notice how the command gives itself a @name@ property inside its
+  @initialize()@ method - this will allow us to represent the command in the GUI
+  in the next example.
 
   h3. @length@ and @pointer@
 
@@ -241,8 +248,8 @@
   length. What does change is the stack's @pointer@ - this number tells you what
   point in the stack the most recently executed command is. For example:
 
-  <pre>var stack = new JS.Command.Stack();
-  var command = new JS.Command({
+  <pre>var stack = new Command.Stack();
+  var command = new Command({
       execute: function() { ... }
   });
 
@@ -270,21 +277,22 @@
 
   h3. They're @Observable@ and @Enumerable@
 
-  @JS.Command.Stack@ mixes in the "@Observable@":/observable.html and "@Enumerable@":/enumerable.html
-  modules. This means you can implement a Photoshop-style action history with
-  barely any code at all by observing the stack:
+  @Command.Stack@ mixes in the "@Observable@":/observable.html and
+  "@Enumerable@":/enumerable.html modules. This means you can implement a
+  Photoshop-style action history with barely any code at all by observing the
+  stack:
 
   <pre><ul id="drawHistory"></ul>
 
   <script type="text/javascript">
-  drawingStack.subscribe(function(stack) {
-      var list = document.getElementById('drawHistory'), str = '';
-      stack.forEach(function(command, i) {
-          var color = (i >= stack.pointer) ? '#999' : '#000';
-          str += '<li style="color: ' + color + ';">' + command.name + '</li>';
+      drawingStack.subscribe(function(stack) {
+          var list = document.getElementById('drawHistory'), str = '';
+          stack.forEach(function(command, i) {
+              var color = (i >= stack.pointer) ? '#999' : '#000';
+              str += '<li style="color: ' + color + ';">' + command.name + '</li>';
+          });
+          list.innerHTML = str;
       });
-      list.innerHTML = str;
-  });
   </script></pre>
 
   This creates a list that updates itself in response to stack changes. Your
