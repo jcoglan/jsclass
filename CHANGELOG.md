@@ -14,6 +14,8 @@
 * Remote the `it()` and `its()` global functions from `MethodChain`
 * Rename `JS.Packages` to `JS.packages` (lowercase `p`) and replace
   `JS.cacheBust = true` with `JS.cache = false`
+* Allow package autoloaders to supply their own function for converting an
+  object name into a path
 * Make sure that errors are correctly propagated and handled in async tests
 * Allow errors added to `Test.ASSERTION_ERRORS` to be treated as failures
 * Add pluggable test reporter API with many new built-in output formats and
