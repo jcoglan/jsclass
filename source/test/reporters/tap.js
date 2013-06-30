@@ -9,7 +9,7 @@ Test.Reporters.extend({
         if (JS.indexOf(parts, this.HOSTNAME) >= 0) return new this(options);
       }
     },
- 
+
     include: Console,
 
     startSuite: function(event) {

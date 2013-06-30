@@ -4,13 +4,13 @@
   @TSort@ is a JavaScript version of Ruby's @TSort@ module, which provides
   "topological sort":http://en.wikipedia.org/wiki/Topological_sorting capability
   to data structures.
-  
+
   <pre>// In the browser
   JS.require('JS.TSort', function(TSort) { ... });
 
   // In CommonJS
   var TSort = require('jsclass/src/tsort').TSort;</pre>
-  
+
   The canonical example of this is determining how a set of
   dependent tasks should be sorted such that each task comes after those it
   depends on in the list. One way to represent this information may be as a task

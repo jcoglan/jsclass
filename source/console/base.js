@@ -14,7 +14,7 @@ Console.extend({
     coloring: function() {
       return !this.envvar(Console.NO_COLOR);
     },
-    
+
     echo: function(string) {
       if (typeof console !== 'undefined') return console.log(string);
       if (typeof print === 'function')    return print(string);

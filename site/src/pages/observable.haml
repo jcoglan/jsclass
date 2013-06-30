@@ -5,13 +5,13 @@
   pattern":http://en.wikipedia.org/wiki/Observer_pattern (also known as
   'publish/subscribe'), modelled on Ruby's "@Observable@
   module":http://ruby-doc.org/core/classes/Observable.html.
-  
+
   <pre>// In the browser
   JS.require('JS.Observable', function(Observable) { ... });
 
   // In CommonJS
   var Observable = require('jsclass/src/observable').Observable;</pre>
-  
+
   In JavaScript, this pattern can be made more flexible due to the fact that
   functions are first-class objects, and are easier to work with than lambdas
   and procs in Ruby. In this implementation, the listeners/observers are
