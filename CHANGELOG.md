@@ -83,7 +83,6 @@
 
 * All components now run on a much wider array of
   [platforms](http://jsclass.jcoglan.com/platforms.html)
-
 * JS.Class is now tested using its own test framework,
   [JS.Test](http://jsclass.jcoglan.com/testing.html)
 * New libraries: `Benchmark`, `Console`, `Deferrable`, `OrderedHash`, `Range`,
