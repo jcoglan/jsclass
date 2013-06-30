@@ -281,6 +281,18 @@
 
   Returns @true@ iff the hash contains no data.
 
+  h3. @keepIf(predicate, context)@
+
+  Deletes all the pairs that do not satisfy the @predicate@ from the hash.
+  @context@ sets the binding of @this@ within the predicate function. For
+  example:
+
+  <pre>// Remove pairs for California and Illinois
+  senators.keepIf(function(pair) { return pair.key.code < 'M' });
+
+  // senators is now:
+  // { CA => feinstein, IL => burris }</pre>
+
   h3. @key(value)@
 
   Returns the first key from the hash whose corresponding value is @value@.

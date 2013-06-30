@@ -162,6 +162,12 @@ var Set = new JS.Class('Set', {
     return other.isSubset(this);
   },
 
+  keepIf: function(block, context) {
+    return this.removeIf(function() {
+      return !block.apply(context, arguments);
+    });
+  },
+
   merge: function(list) {
     this.klass.forEach(list, function(item) { this.add(item) }, this);
   },

@@ -184,6 +184,17 @@
   Returns @true@ iff the receiver is a superset of the set @other@, that is if
   all the members of @other@ are also members of the receiver.
 
+  h3. @keepIf(predicate, context)@
+
+  Removes all the members of the set for which @predicate@ returns @false@.
+
+  <pre>var s = new Set([1,2,3,4,5,6,7,8,9]);
+
+  // Keep multiples of 3
+  s.keepIf(function(x) { return x % 3 == 0 });
+
+  // s == Set{3,6,9}</pre>
+
   h3. @merge(set)@
 
   Adds all the members of @set@ to the receiver.

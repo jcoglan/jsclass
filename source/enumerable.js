@@ -114,6 +114,29 @@ var Enumerable = new JS.Module('Enumerable', {
     return !!truth;
   },
 
+  chunk: function(block, context) {
+    if (!block) return this.enumFor('chunk');
+
+    var result  = [],
+        value   = null,
+        started = false;
+
+    this.forEach(function(item) {
+      var v = block.apply(context, arguments);
+      if (started) {
+        if (Enumerable.areEqual(value, v))
+          result[result.length - 1][1].push(item);
+        else
+          result.push([v, [item]]);
+      } else {
+        result.push([v, [item]]);
+        started = true;
+      }
+      value = v;
+    });
+    return result;
+  },
+
   count: function(block, context) {
     if (typeof this.size === 'function') return this.size();
     var count = 0, object = block;
@@ -494,6 +517,7 @@ Enumerable.alias({
   every:      'all',
   findAll:    'select',
   filter:     'select',
+  reduce:     'inject',
   some:       'any'
 });
 
@@ -548,8 +572,8 @@ Enumerable.extend({
       this._args   = (args || []).slice();
     },
 
-    // this is largely here to support testing
-    // since I don't want to make the ivars public
+    // this is largely here to support testing since I don't want to make the
+    // ivars public
     equals: function(enumerator) {
       return JS.isType(enumerator, this.klass) &&
              this._object === enumerator._object &&

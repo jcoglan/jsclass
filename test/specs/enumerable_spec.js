@@ -124,6 +124,17 @@ JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
     }})
   }})
 
+  describe("#chunk", function() { with(this) {
+    before(function() { with(this) {
+      this.items = list(3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5)
+    }})
+
+    it("groups the collection based on changes in the block's return value", function() { with(this) {
+      assertEqual( [ [false, [3,1]], [true, [4]], [false, [1,5,9,]], [true, [2,6]], [false, [5,3,5]] ],
+                   items.chunk(function(n) { return n % 2 === 0 }) )
+    }})
+  }})
+
   describe("#count", function() { with(this) {
     before(function() { with(this) {
       this.items = list(4,8,2,4,7)

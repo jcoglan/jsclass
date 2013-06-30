@@ -239,6 +239,12 @@ var Hash = new JS.Class('Hash', {
     return true;
   },
 
+  keepIf: function(block, context) {
+    return this.removeIf(function() {
+      return !block.apply(context, arguments);
+    });
+  },
+
   key: function(value) {
     var result = null;
     this.forEach(function(pair) {
