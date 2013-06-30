@@ -130,7 +130,7 @@ JS.ENV.EnumerableSpec = JS.Test.describe(Enumerable, function() { with(this) {
     }})
 
     it("groups the collection based on changes in the block's return value", function() { with(this) {
-      assertEqual( [ [false, [3,1]], [true, [4]], [false, [1,5,9,]], [true, [2,6]], [false, [5,3,5]] ],
+      assertEqual( [ [false, [3,1]], [true, [4]], [false, [1,5,9]], [true, [2,6]], [false, [5,3,5]] ],
                    items.chunk(function(n) { return n % 2 === 0 }) )
     }})
   }})
