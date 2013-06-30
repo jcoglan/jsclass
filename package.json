@@ -2,7 +2,7 @@
 , "description"     : "Portable class library for JavaScript"
 , "homepage"        : "http://jsclass.jcoglan.com"
 , "author"          : "James Coglan <jcoglan@gmail.com> (http://jcoglan.com/)"
-, "keywords"        : ["oop", "class", "data-structures", "testing"]
+, "keywords"        : ["oop", "class", "data-structures"]
 , "license"         : "MIT"
 
 , "version"         : "4.0.0"
@@ -17,10 +17,10 @@
                       }
 
 , "repository"      : { "type"  : "git"
-                      , "url"   : "git://github.com/jcoglan/js.class.git"
+                      , "url"   : "git://github.com/jcoglan/jsclass.git"
                       }
 
-, "bugs"            : "http://github.com/jcoglan/js.class/issues"
+, "bugs"            : "http://github.com/jcoglan/jsclass/issues"
 
 , "wake": {
     "javascript": {
@@ -175,8 +175,5 @@
         "LICENSE.md": "",
         "package.json": "",
         "README.md": ""
-      }
-    }
-  }
-}
+} } } }
 
