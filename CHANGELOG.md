@@ -1,3 +1,7 @@
+### 4.0.1 / 2013-07-01
+
+* Fix indexing bug in dynamic generation of autoload.require lists
+
 ### 4.0.0 / 2013-06-30
 
 * Turn all library components into CommonJS modules running in strict mode

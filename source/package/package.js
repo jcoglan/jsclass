@@ -333,7 +333,7 @@ Package._manufacture = function(name) {
     if (path = autoloader[1].require) {
       path = [].concat(path);
       j = path.length;
-      while (j--) pkg.requires(name.replace(autoloader[0], path[i]));
+      while (j--) pkg.requires(name.replace(autoloader[0], path[j]));
     }
 
     return pkg;
