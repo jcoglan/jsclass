@@ -1,3 +1,8 @@
+### 4.0.2 / 2013-07-06
+
+* Change `AsyncSteps` so it wraps all calls to `before()`, `it()` and `after()`
+  so that each block waits for all the steps it queues to complete
+
 ### 4.0.1 / 2013-07-01
 
 * Fix indexing bug in dynamic generation of autoload.require lists
