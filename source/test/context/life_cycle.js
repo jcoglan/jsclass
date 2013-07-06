@@ -22,22 +22,26 @@ Test.Context.LifeCycle = new JS.Module({
     },
 
     ClassMethods: new JS.Module({
+      blockTransform: function(block) {
+        return block;
+      },
+
       before: function(period, block) {
-        if ((typeof period === 'function') || !block) {
+        if (block === undefined) {
           block  = period;
           period = 'each';
         }
 
-        this['before_' + (period + '_') + 'callbacks'].push(block);
+        this['before_' + (period + '_') + 'callbacks'].push(this.blockTransform(block));
       },
 
       after: function(period, block) {
-        if ((typeof period === 'function') || !block) {
+        if (block === undefined) {
           block  = period;
           period = 'each';
         }
 
-        this['after_' + (period + '_') + 'callbacks'].push(block);
+        this['after_' + (period + '_') + 'callbacks'].push(this.blockTransform(block));
       },
 
       gatherCallbacks: function(callbackType, period) {

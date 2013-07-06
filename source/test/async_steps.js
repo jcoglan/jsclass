@@ -9,20 +9,15 @@ Test.extend({
 
     included: function(klass) {
       klass.include(Test.AsyncSteps.Sync);
-      if (!klass.includes(Test.Context)) return;
+      if (!klass.blockTransform) return;
 
       klass.extend({
-        it: function(name, opts, block) {
-          if (typeof opts === 'function') {
-            block = opts;
-            opts  = {};
-          }
-          this.callSuper(name, opts, function(resume) {
+        blockTransform: function(block) {
+          return function(resume) {
             this.exec(block, function(error) {
-              Test.Unit.TestCase.processError(this, error);
-              this.sync(resume);
+              this.sync(function() { resume(error) });
             });
-          });
+          };
         }
       });
     },
