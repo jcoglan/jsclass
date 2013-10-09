@@ -163,6 +163,9 @@
     "binary": {
       "sourceDirectory":              ".",
       "targetDirectory":              "build",
+      "builds": {
+        "src": {"digest": false}
+      },
       "targets": {
         "src/assets/bullet_go.png":   "source/assets/bullet_go.png",
         "min/assets/bullet_go.png":   "source/assets/bullet_go.png",
