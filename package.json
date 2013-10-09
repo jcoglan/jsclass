@@ -26,10 +26,9 @@
     "javascript": {
       "sourceDirectory":      "source",
       "targetDirectory":      "build",
-      "layout":               "apart",
       "builds": {
-        "src":                {"minify": false},
-        "min":                {"minify": true, "sourceMap": "src"}
+        "src":                {"digest": false, "minify": false, "tag": "directory"},
+        "min":                {"digest": false, "minify": true, "sourceMap": "src", "tag": "directory"}
       },
       "targets": {
         "core": {             "directory": "core",
@@ -79,7 +78,7 @@
                               "files": [
                                 "_head",
 
-                                "unit",
+                                "unit.js",
                                 "unit/observable",
                                 "unit/assertions",
                                 "unit/assertion_message",

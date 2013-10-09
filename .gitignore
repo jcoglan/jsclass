@@ -3,4 +3,5 @@ build
 node_modules
 site/site/stylesheets/screen.css
 site/site/*.html
+.wake.json
 
