@@ -202,7 +202,7 @@ Test.Unit.extend({
 
           if (typeof asyncResult === 'string') asyncResult = new Error(asyncResult);
 
-          if (typeof asyncResult === 'object')
+          if (typeof asyncResult === 'object' && asyncResult !== null)
             onUncaughtError(asyncResult);
           else if (typeof asyncResult === 'function')
             self.exec(asyncResult, onSuccess, onError);

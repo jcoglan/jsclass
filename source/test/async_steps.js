@@ -35,7 +35,7 @@ Test.extend({
         },
 
         __runNextStep__: function(error) {
-          if (typeof error === 'object') return this.addError(error);
+          if (typeof error === 'object' && error !== null) return this.addError(error);
 
           var step = this.__stepQueue__.shift(), n;
 
