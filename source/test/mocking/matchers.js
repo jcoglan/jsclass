@@ -29,7 +29,7 @@ Test.Mocking.extend({
     },
 
     toString: function() {
-      var name = Console.convert(this._elements);
+      var name = Console.convert(this._elements).replace(/^\[/, '').replace(/\]$/, '');
       return 'arrayIncluding(' + name + ')';
     }
   }),
