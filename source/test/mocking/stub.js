@@ -12,7 +12,7 @@ Test.extend({
       __activeStubs__: [],
 
       stub: function(object, methodName, implementation) {
-        var constructor = false;
+        var constructor = false, stub;
 
         if (object === 'new') {
           object         = methodName;
@@ -30,13 +30,15 @@ Test.extend({
             i     = stubs.length;
 
         while (i--) {
-          if (stubs[i]._object === object && stubs[i]._methodName === methodName)
-            return stubs[i].defaultMatcher(implementation);
+          if (stubs[i]._object === object && stubs[i]._methodName === methodName) {
+            stub = stubs[i];
+            break;
+          }
         }
 
-        var stub = new Test.Mocking.Stub(object, methodName, constructor);
+        if (!stub) stub = new Test.Mocking.Stub(object, methodName, constructor);
         stubs.push(stub);
-        return stub.defaultMatcher(implementation);
+        return stub.createMatcher(implementation);
       },
 
       removeStubs: function() {
@@ -63,34 +65,29 @@ Test.extend({
           this._methodName  = methodName;
           this._constructor = constructor;
           this._original    = object[methodName];
+          this._matchers    = [];
 
           this._ownProperty = object.hasOwnProperty
                             ? object.hasOwnProperty(methodName)
                             : (typeof this._original !== 'undefined');
 
-          var mocking = Test.Mocking;
-
-          this._argMatchers = [];
-          this._anyArgs     = new mocking.Parameters([new mocking.AnyArgs()]);
-          this._expected    = false;
-
-          this.apply();
+          this.activate();
         },
 
-        defaultMatcher: function(implementation) {
+        createMatcher: function(implementation) {
           if (implementation !== undefined && typeof implementation !== 'function') {
             this._object[this._methodName] = implementation;
-            return this;
+            return null;
           }
 
-          this._activateLastMatcher();
-          this._currentMatcher = this._anyArgs;
-          if (typeof implementation === 'function')
-            this._currentMatcher._fake = implementation;
-          return this;
+          var mocking = JS.Test.Mocking,
+              matcher = new mocking.Parameters([new mocking.AnyArgs()], implementation);
+
+          this._matchers.push(matcher);
+          return matcher;
         },
 
-        apply: function() {
+        activate: function() {
           var object = this._object, methodName = this._methodName;
           if (object[methodName] !== this._original) return;
 
@@ -100,25 +97,19 @@ Test.extend({
         },
 
         revoke: function() {
-          if (this._ownProperty)
+          if (this._ownProperty) {
             this._object[this._methodName] = this._original;
-          else
-            try { delete this._object[this._methodName] }
-            catch (e) { this._object[this._methodName] = undefined }
-        },
-
-        expected: function() {
-          this._expected = true;
-          this._anyArgs._expected = true;
-        },
-
-        _activateLastMatcher: function() {
-          if (this._currentMatcher) this._currentMatcher._active = true;
+          } else {
+            try {
+              delete this._object[this._methodName];
+            } catch (e) {
+              this._object[this._methodName] = undefined;
+            }
+          }
         },
 
         _dispatch: function(receiver, args) {
-          this._activateLastMatcher();
-          var matchers = this._argMatchers.concat(this._anyArgs),
+          var matchers = this._matchers,
               matcher, result, message;
 
           if (this._constructor && !(receiver instanceof this._shim)) {
@@ -129,14 +120,12 @@ Test.extend({
             throw new Test.Mocking.UnexpectedCallError(message);
           }
 
-          this._anyArgs.ping();
-
           for (var i = 0, n = matchers.length; i < n; i++) {
             matcher = matchers[i];
             result  = matcher.match(args);
 
             if (!result) continue;
-            if (matcher !== this._anyArgs) matcher.ping();
+            matcher.ping();
 
             if (result.fake)
               return result.fake.apply(receiver, args);
@@ -165,12 +154,8 @@ Test.extend({
         },
 
         _verify: function() {
-          if (!this._expected) return;
-
-          for (var i = 0, n = this._argMatchers.length; i < n; i++)
-            this._verifyParameters(this._argMatchers[i]);
-
-          this._verifyParameters(this._anyArgs);
+          for (var i = 0, n = this._matchers.length; i < n; i++)
+            this._verifyParameters(this._matchers[i]);
         },
 
         _verifyParameters: function(parameters) {

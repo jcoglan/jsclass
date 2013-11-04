@@ -80,11 +80,8 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
     }})
 
     describe("with a fake implementation", function() { with(this) {
-      before(function() { with(this) {
-        stub(object, "getName", function() { return "hello" })
-      }})
-
       it("uses the fake implementation when calling the method", function() { with(this) {
+        stub(object, "getName", function() { return "hello" })
         assertEqual( "hello", object.getName() )
       }})
 
@@ -97,16 +94,17 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
         it("uses the fake implementation when calling the method", function() { with(this) {
           assertEqual( 6, object.getName(3) )
         }})
+      }})
 
-        describe("when there are parameter matchers", function() { with(this) {
-          before(function() { with(this) {
-            stub(object, "getName").given(5).returns("fail")
-          }})
+      describe("when there are parameter matchers", function() { with(this) {
+        before(function() { with(this) {
+          stub(object, "getName").given(5).returns("fail")
+          stub(object, "getName", function() { return "hello" })
+        }})
 
-          it("only uses the fake if no patterns match", function() { with(this) {
-            assertEqual( "fail", object.getName(5) )
-            assertEqual( 12,     object.getName(6) )
-          }})
+        it("only uses the fake if no patterns match", function() { with(this) {
+          assertEqual( "fail",  object.getName(5) )
+          assertEqual( "hello", object.getName(6) )
         }})
       }})
     }})

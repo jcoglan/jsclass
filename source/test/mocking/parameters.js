@@ -1,60 +1,58 @@
 Test.Mocking.extend({
   Parameters: new JS.Class({
-    initialize: function(params, expected) {
+    initialize: function(params, implementation) {
       this._params    = JS.array(params);
-      this._expected  = expected;
-      this._active    = false;
+      this._fake      = implementation;
+      this._expected  = false;
       this._callsMade = 0;
     },
 
-    toArray: function() {
-      var array = this._params.slice();
-      if (this._yieldArgs) array.push(new Test.Mocking.InstanceOf(Function));
-      return array;
+    given: function() {
+      this._params = JS.array(arguments);
+      return this;
     },
 
-    returns: function(returnValues) {
-      this._returnIndex = 0;
-      this._returnValues = returnValues;
+    returns: function() {
+      this._returnIndex  = 0;
+      this._returnValues = arguments;
+      return this;
     },
 
-    nextReturnValue: function() {
-      if (!this._returnValues) return undefined;
-      var value = this._returnValues[this._returnIndex];
-      this._returnIndex = (this._returnIndex + 1) % this._returnValues.length;
-      return value;
-    },
-
-    yields: function(yieldValues) {
+    yields: function() {
       this._yieldIndex = 0;
-      this._yieldArgs = yieldValues;
+      this._yieldArgs  = arguments;
+      return this;
     },
 
-    nextYieldArgs: function() {
-      if (!this._yieldArgs) return undefined;
-      var value = this._yieldArgs[this._yieldIndex];
-      this._yieldIndex = (this._yieldIndex + 1) % this._yieldArgs.length;
-      return value;
+    raises: function(exception) {
+      this._exception = exception;
+      return this;
     },
 
-    setMinimum: function(n) {
+    expected: function() {
+      this._expected = true;
+      return this;
+    },
+
+    atLeast: function(n) {
       this._expected = true;
       this._minimumCalls = n;
+      return this;
     },
 
-    setMaximum: function(n) {
+    atMost: function(n) {
       this._expected = true;
       this._maximumCalls = n;
+      return this;
     },
 
-    setExpected: function(n) {
+    exactly: function(n) {
       this._expected = true;
       this._expectedCalls = n;
+      return this;
     },
 
     match: function(args) {
-      if (!this._active) return false;
-
       var argsCopy = JS.array(args), callback, context;
 
       if (this._yieldArgs) {
@@ -78,8 +76,28 @@ Test.Mocking.extend({
       return result;
     },
 
+    nextReturnValue: function() {
+      if (!this._returnValues) return undefined;
+      var value = this._returnValues[this._returnIndex];
+      this._returnIndex = (this._returnIndex + 1) % this._returnValues.length;
+      return value;
+    },
+
+    nextYieldArgs: function() {
+      if (!this._yieldArgs) return undefined;
+      var value = this._yieldArgs[this._yieldIndex];
+      this._yieldIndex = (this._yieldIndex + 1) % this._yieldArgs.length;
+      return value;
+    },
+
     ping: function() {
       this._callsMade += 1;
+    },
+
+    toArray: function() {
+      var array = this._params.slice();
+      if (this._yieldArgs) array.push(new Test.Mocking.InstanceOf(Function));
+      return array;
     },
 
     verify: function(object, methodName, constructor) {
@@ -129,5 +147,11 @@ Test.Mocking.extend({
       return type + ' ' + copy[type] + ' times\n' + report;
     }
   })
+});
+
+Test.Mocking.Parameters.alias({
+  raising:    'raises',
+  returning:  'returns',
+  yielding:   'yields'
 });
 
