@@ -561,6 +561,25 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                             "( [ 3, 4 ] )" )
         })})
       }})
+
+      it("fails if a non-constructor is called with 'new'", function(resume) { with(this) {
+        runTests({
+          testExpectWithArgs: function() { with(this) {
+            expect(sets, "Set").given([3,4])
+            new sets.Set([3,4])
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 1 )
+          assertMessage( 1, "Error:\n" +
+                            "testExpectWithArgs(TestedSuite):\n" +
+                            "Error: <Set> expected not to be a constructor but called with `new`" )
+          assertMessage( 2, "Failure:\n" +
+                            "testExpectWithArgs(TestedSuite):\n" +
+                            "Mock expectation not met\n" +
+                            '<{ "Set": #function, "SortedSet": SortedSet }> expected to receive call\n' +
+                            "Set( [ 3, 4 ] )" )
+        })})
+      }})
     }})
 
     describe("with yielding", function() { with(this) {

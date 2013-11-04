@@ -119,6 +119,13 @@ Test.extend({
 
             throw new Test.Mocking.UnexpectedCallError(message);
           }
+          if (!this._constructor && (receiver instanceof this._shim)) {
+            message = new Test.Unit.AssertionMessage('',
+                          '<?> expected not to be a constructor but called with `new`',
+                          [this._original]);
+
+            throw new Test.Mocking.UnexpectedCallError(message);
+          }
 
           for (var i = 0, n = matchers.length; i < n; i++) {
             matcher = matchers[i];

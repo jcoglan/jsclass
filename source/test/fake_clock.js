@@ -11,8 +11,12 @@ Test.extend({
 
           Test.FakeClock.reset();
 
-          while (i--)
-            mocking.stub(methods[i], Test.FakeClock.method(methods[i]));
+          while (i--) {
+            if (methods[i] === 'Date')
+              mocking.stub('new', methods[i], Test.FakeClock.method(methods[i]));
+            else
+              mocking.stub(methods[i], Test.FakeClock.method(methods[i]));
+          }
 
           Date.now = Test.FakeClock.REAL.Date.now;
         },
@@ -35,7 +39,7 @@ Test.extend({
       }),
 
       Timeout: new JS.Class({
-        include: JS.Comparable,
+        include: Comparable,
 
         initialize: function(callback, interval, repeat) {
           this.callback = callback;
