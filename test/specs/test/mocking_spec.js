@@ -284,7 +284,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                           "testExpectMethod(TestedSuite):\n" +
                           "Mock expectation not met\n" +
                           "<[OBJECT]> expected to receive call\n" +
-                          "getName( *arguments )" )
+                          "getName( anyArgs() )" )
       })})
     }})
 
@@ -315,7 +315,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                             "testExpectMethod(TestedSuite):\n" +
                             "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( *arguments )\n" +
+                            "getName( anyArgs() )\n" +
                             "at least 3 times\n" +
                             "but 2 calls were made" )
         })})
@@ -332,7 +332,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                             "testExpectMethod(TestedSuite):\n" +
                             "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( *arguments )" )
+                            "getName( anyArgs() )" )
         })})
       }})
     }})
@@ -366,7 +366,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                             "testExpectMethod(TestedSuite):\n" +
                             "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( *arguments )\n" +
+                            "getName( anyArgs() )\n" +
                             "at most 3 times\n" +
                             "but 4 calls were made" )
         })})
@@ -418,7 +418,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                             "testExpectMethod(TestedSuite):\n" +
                             "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( *arguments )\n" +
+                            "getName( anyArgs() )\n" +
                             "exactly 0 times\n" +
                             "but 1 call was made" )
         })})
@@ -438,7 +438,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                             "testExpectMethod(TestedSuite):\n" +
                             "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( *arguments )\n" +
+                            "getName( anyArgs() )\n" +
                             "exactly 2 times\n" +
                             "but 3 calls were made" )
         })})
@@ -456,7 +456,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                             "testExpectMethod(TestedSuite):\n" +
                             "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( *arguments )\n" +
+                            "getName( anyArgs() )\n" +
                             "exactly 2 times\n" +
                             "but 1 call was made" )
         })})
@@ -620,7 +620,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                             "testExpectWithYields(TestedSuite):\n" +
                             "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
-                            "getName( *arguments, a(Function) )" )
+                            "getName( anyArgs(), instanceOf(Function) )" )
         })})
       }})
 
@@ -654,7 +654,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                               "testExpectWithYields(TestedSuite):\n" +
                               "Mock expectation not met\n" +
                               "<[OBJECT]> expected to receive call\n" +
-                              "getName( 5, 6, a(Function) )" )
+                              "getName( 5, 6, instanceOf(Function) )" )
           })})
         }})
       }})

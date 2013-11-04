@@ -1,12 +1,12 @@
 Test.Mocking.extend({
   Anything: new JS.Class({
     equals: function() { return true },
-    toString: function() { return 'anything' }
+    toString: function() { return 'anything()' }
   }),
 
   AnyArgs: new JS.Class({
     equals: function() { return Enumerable.ALL_EQUAL },
-    toString: function() { return '*arguments' }
+    toString: function() { return 'anyArgs()' }
   }),
 
   ArrayIncluding: new JS.Class({
@@ -64,9 +64,8 @@ Test.Mocking.extend({
     },
 
     toString: function() {
-      var name = Console.convert(this._type),
-          an   = /^[aeiou]/i.test(name) ? 'an' : 'a';
-      return an + '(' + name + ')';
+      var name = Console.convert(this._type);
+      return 'instanceOf(' + name + ')';
     }
   }),
 
@@ -81,7 +80,7 @@ Test.Mocking.extend({
 
     toString: function() {
       var name = Console.convert(this._type);
-      return 'matching(' + name + ')';
+      return 'match(' + name + ')';
     }
   })
 });
