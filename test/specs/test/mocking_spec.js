@@ -702,14 +702,14 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
         var testCase = this
         runTests({
           testCallback: function() { with(this) {
-            expect(this, "callback").on(receiver).given("hello")
+            expect(this, "callback").given("hello")
           }}
         }, function() { resume(function() {
           assertTestResult( 1, 1, 1, 0)
           assertMessage( 1, "Failure:\n" +
                             "testCallback(TestedSuite):\n" +
                             "Mock expectation not met\n" +
-                            "<{}> expected to receive call\n" +
+                            "<TestCase{TestedSuite testCallback}> expected to receive call\n" +
                             'callback( "hello" )' )
         })})
       }})

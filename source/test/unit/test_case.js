@@ -260,6 +260,10 @@ Test.Unit.extend({
         shortName:  shortName,
         context:    klassData.context.concat(klassData.shortName)
       };
+    },
+
+    toString: function() {
+      return 'TestCase{' + this.metadata().fullName + '}';
     }
   })
 });
