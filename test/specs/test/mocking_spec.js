@@ -79,6 +79,24 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
       }})
     }})
 
+    describe("with a target", function() { with(this) {
+      before(function() { with(this) {
+        stub(object, "getName").on(objectIncluding({hello: true})).returns("hi")
+        stub(object, "getName").on(objectIncluding({hello: false})).returns("bye")
+      }})
+
+      it("dispatches by matching the receiver against the target", function() { with(this) {
+        object.hello = true
+        assertEqual( "hi", object.getName() )
+        object.hello = false
+        assertEqual( "bye", object.getName() )
+      }})
+
+      it("throws an error if the receiver does not match", function() { with(this) {
+        assertThrows(JS.Test.Mocking.UnexpectedCallError, function() { object.getName() })
+      }})
+    }})
+
     describe("with a fake implementation", function() { with(this) {
       it("uses the fake implementation when calling the method", function() { with(this) {
         stub(object, "getName", function() { return "hello" })
@@ -659,6 +677,41 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                               "getName( 5, 6, instanceOf(Function) )" )
           })})
         }})
+      }})
+    }})
+
+    describe("with callbacks", function() { with(this) {
+      before(function() { with(this) {
+        this.receiver = {}
+        this.api = function(cb) { cb.call(receiver, "hello") }
+      }})
+
+      it("passes if the callback is called as required", function(resume) { with(this) {
+        var testCase = this
+        runTests({
+          testCallback: function() { with(this) {
+            expect(this, "callback").on(receiver).given("hello")
+            api(callback)
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 0, 0)
+        })})
+      }})
+
+      it("fails if the callback is not called as required", function(resume) { with(this) {
+        var testCase = this
+        runTests({
+          testCallback: function() { with(this) {
+            expect(this, "callback").on(receiver).given("hello")
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 1, 1, 0)
+          assertMessage( 1, "Failure:\n" +
+                            "testCallback(TestedSuite):\n" +
+                            "Mock expectation not met\n" +
+                            "<{}> expected to receive call\n" +
+                            'callback( "hello" )' )
+        })})
       }})
     }})
   }})

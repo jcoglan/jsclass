@@ -8,6 +8,16 @@ Test.Mocking.extend({
       this._callsMade   = 0;
     },
 
+    withNew: function() {
+      this._constructor = true;
+      return this;
+    },
+
+    on: function(target) {
+      this._target = target;
+      return this;
+    },
+
     given: function() {
       this._params = JS.array(arguments);
       return this;
@@ -68,7 +78,10 @@ Test.Mocking.extend({
         }
       }
 
-      if (!Enumerable.areEqual(this._params, argsCopy)) return false;
+      if (this._target !== undefined && !Enumerable.areEqual(this._target, receiver))
+        return false;
+      if (!Enumerable.areEqual(this._params, argsCopy))
+        return false;
 
       var result = {};
 
@@ -122,7 +135,7 @@ Test.Mocking.extend({
       }
       if (okay) return;
 
-      var message;
+      var target = this._target || object, message;
       if (this._constructor) {
         message = new Test.Unit.AssertionMessage('Mock expectation not met',
                       '<?> expected to be constructed with\n(?)' +
@@ -132,7 +145,7 @@ Test.Mocking.extend({
         message = new Test.Unit.AssertionMessage('Mock expectation not met',
                       '<?> expected to receive call\n' + methodName + '(?)' +
                       (extraMessage ? '\n' + extraMessage : ''),
-                      [object, this.toArray()]);
+                      [target, this.toArray()]);
       }
 
       throw new Test.Mocking.ExpectationError(message);
