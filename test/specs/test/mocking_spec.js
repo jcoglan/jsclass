@@ -485,7 +485,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
           assertTestResult( 1, 1, 1, 1 )
           assertMessage( 1, "Error:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
-                            "Error: <[OBJECT]> received call to getName() with unexpected arguments:\n" +
+                            "Error: <[OBJECT]> unexpectedly received call to getName() with arguments:\n" +
                             "( 3, 9 )" )
           assertMessage( 2, "Failure:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
@@ -533,7 +533,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
           assertTestResult( 1, 1, 1, 1 )
           assertMessage( 1, "Error:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
-                            "Error: <Set> constructed with unexpected arguments:\n" +
+                            "Error: <Set> unexpectedly constructed with arguments:\n" +
                             "( [ 3, 5 ] )" )
           assertMessage( 2, "Failure:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
@@ -553,7 +553,8 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
           assertTestResult( 1, 1, 1, 1 )
           assertMessage( 1, "Error:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
-                            "Error: <Set> expected to be a constructor but called without `new`" )
+                            'Error: <{ "Set": #function, "SortedSet": SortedSet }> unexpectedly received call to Set() with arguments:\n' +
+                            "( [ 3, 4 ] )" )
           assertMessage( 2, "Failure:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
                             "Mock expectation not met\n" +
@@ -572,7 +573,8 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
           assertTestResult( 1, 1, 1, 1 )
           assertMessage( 1, "Error:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
-                            "Error: <Set> expected not to be a constructor but called with `new`" )
+                            "Error: <Set> unexpectedly constructed with arguments:\n" +
+                            "( [ 3, 4 ] )" )
           assertMessage( 2, "Failure:\n" +
                             "testExpectWithArgs(TestedSuite):\n" +
                             "Mock expectation not met\n" +
@@ -648,7 +650,7 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
             assertTestResult( 1, 1, 1, 1 )
             assertMessage( 1, "Error:\n" +
                               "testExpectWithYields(TestedSuite):\n" +
-                              "Error: <[OBJECT]> received call to getName() with unexpected arguments:\n" +
+                              "Error: <[OBJECT]> unexpectedly received call to getName() with arguments:\n" +
                               "( 5, 8, #function )" )
             assertMessage( 2, "Failure:\n" +
                               "testExpectWithYields(TestedSuite):\n" +

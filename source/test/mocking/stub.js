@@ -36,9 +36,9 @@ Test.extend({
           }
         }
 
-        if (!stub) stub = new Test.Mocking.Stub(object, methodName, constructor);
+        if (!stub) stub = new Test.Mocking.Stub(object, methodName);
         stubs.push(stub);
-        return stub.createMatcher(implementation);
+        return stub.createMatcher(implementation, constructor);
       },
 
       removeStubs: function() {
@@ -60,12 +60,11 @@ Test.extend({
       },
 
       Stub: new JS.Class({
-        initialize: function(object, methodName, constructor) {
-          this._object      = object;
-          this._methodName  = methodName;
-          this._constructor = constructor;
-          this._original    = object[methodName];
-          this._matchers    = [];
+        initialize: function(object, methodName) {
+          this._object     = object;
+          this._methodName = methodName;
+          this._original   = object[methodName];
+          this._matchers   = [];
 
           this._ownProperty = object.hasOwnProperty
                             ? object.hasOwnProperty(methodName)
@@ -74,14 +73,14 @@ Test.extend({
           this.activate();
         },
 
-        createMatcher: function(implementation) {
+        createMatcher: function(implementation, constructor) {
           if (implementation !== undefined && typeof implementation !== 'function') {
             this._object[this._methodName] = implementation;
             return null;
           }
 
           var mocking = JS.Test.Mocking,
-              matcher = new mocking.Parameters([new mocking.AnyArgs()], implementation);
+              matcher = new mocking.Parameters([new mocking.AnyArgs()], constructor, implementation);
 
           this._matchers.push(matcher);
           return matcher;
@@ -92,8 +91,12 @@ Test.extend({
           if (object[methodName] !== this._original) return;
 
           var self = this;
-          this._shim = function() { return self._dispatch(this, arguments) };
-          object[methodName] = this._shim;
+
+          var shim = function() {
+            var isConstructor = (this instanceof shim);
+            return self._dispatch(this, arguments, isConstructor);
+          };
+          object[methodName] = shim;
         },
 
         revoke: function() {
@@ -108,28 +111,13 @@ Test.extend({
           }
         },
 
-        _dispatch: function(receiver, args) {
+        _dispatch: function(receiver, args, isConstructor) {
           var matchers = this._matchers,
-              matcher, result, message;
-
-          if (this._constructor && !(receiver instanceof this._shim)) {
-            message = new Test.Unit.AssertionMessage('',
-                          '<?> expected to be a constructor but called without `new`',
-                          [this._original]);
-
-            throw new Test.Mocking.UnexpectedCallError(message);
-          }
-          if (!this._constructor && (receiver instanceof this._shim)) {
-            message = new Test.Unit.AssertionMessage('',
-                          '<?> expected not to be a constructor but called with `new`',
-                          [this._original]);
-
-            throw new Test.Mocking.UnexpectedCallError(message);
-          }
+              matcher, result;
 
           for (var i = 0, n = matchers.length; i < n; i++) {
             matcher = matchers[i];
-            result  = matcher.match(args);
+            result  = matcher.match(receiver, args, isConstructor);
 
             if (!result) continue;
             matcher.ping();
@@ -147,13 +135,14 @@ Test.extend({
             if (result) return matcher.nextReturnValue();
           }
 
-          if (this._constructor) {
+          var message;
+          if (isConstructor) {
             message = new Test.Unit.AssertionMessage('',
-                          '<?> constructed with unexpected arguments:\n(?)',
+                          '<?> unexpectedly constructed with arguments:\n(?)',
                           [this._original, JS.array(args)]);
           } else {
             message = new Test.Unit.AssertionMessage('',
-                          '<?> received call to ' + this._methodName + '() with unexpected arguments:\n(?)',
+                          '<?> unexpectedly received call to ' + this._methodName + '() with arguments:\n(?)',
                           [receiver, JS.array(args)]);
           }
 
@@ -162,12 +151,7 @@ Test.extend({
 
         _verify: function() {
           for (var i = 0, n = this._matchers.length; i < n; i++)
-            this._verifyParameters(this._matchers[i]);
-        },
-
-        _verifyParameters: function(parameters) {
-          var object = this._constructor ? this._original : this._object;
-          parameters.verify(object, this._methodName, this._constructor);
+            this._matchers[i].verify(this._object, this._methodName, this._original);
         }
       })
     }

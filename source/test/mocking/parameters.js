@@ -1,10 +1,11 @@
 Test.Mocking.extend({
   Parameters: new JS.Class({
-    initialize: function(params, implementation) {
-      this._params    = JS.array(params);
-      this._fake      = implementation;
-      this._expected  = false;
-      this._callsMade = 0;
+    initialize: function(params, constructor, implementation) {
+      this._params      = JS.array(params);
+      this._constructor = constructor;
+      this._fake        = implementation;
+      this._expected    = false;
+      this._callsMade   = 0;
     },
 
     given: function() {
@@ -52,8 +53,10 @@ Test.Mocking.extend({
       return this;
     },
 
-    match: function(args) {
+    match: function(receiver, args, isConstructor) {
       var argsCopy = JS.array(args), callback, context;
+
+      if (this._constructor !== isConstructor) return false;
 
       if (this._yieldArgs) {
         if (typeof argsCopy[argsCopy.length - 2] === 'function') {
@@ -100,7 +103,7 @@ Test.Mocking.extend({
       return array;
     },
 
-    verify: function(object, methodName, constructor) {
+    verify: function(object, methodName, original) {
       if (!this._expected) return;
 
       var okay = true, extraMessage;
@@ -120,11 +123,11 @@ Test.Mocking.extend({
       if (okay) return;
 
       var message;
-      if (constructor) {
+      if (this._constructor) {
         message = new Test.Unit.AssertionMessage('Mock expectation not met',
                       '<?> expected to be constructed with\n(?)' +
                       (extraMessage ? '\n' + extraMessage : ''),
-                      [object, this.toArray()]);
+                      [original, this.toArray()]);
       } else {
         message = new Test.Unit.AssertionMessage('Mock expectation not met',
                       '<?> expected to receive call\n' + methodName + '(?)' +
