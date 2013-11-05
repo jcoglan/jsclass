@@ -9,7 +9,7 @@ Test.FakeClockSpec = JS.Test.describe(JS.Test.FakeClock, function() { with(this)
   describe("setTimeout", function() { with(this) {
     before(function() { with(this) {
       this.calls = 0
-      this.timer = JS.ENV.setTimeout(function() { calls += 1 }, 1000)
+      this.timer = setTimeout(function() { calls += 1 }, 1000)
     }})
 
     it("runs the timeout after clock has ticked enough", function() { with(this) {
@@ -74,12 +74,12 @@ Test.FakeClockSpec = JS.Test.describe(JS.Test.FakeClock, function() { with(this)
     before(function() { with(this) {
       this.calls = []
 
-      JS.ENV.setTimeout(function() {
-        JS.ENV.setTimeout(function() { calls.push("third") }, 100)
+      setTimeout(function() {
+        setTimeout(function() { calls.push("third") }, 100)
         calls.push("first")
       }, 50)
 
-      JS.ENV.setTimeout(function() { calls.push("second") }, 50)
+      setTimeout(function() { calls.push("second") }, 50)
 
       setInterval(function() { calls.push("ping") }, 40)
     }})
@@ -93,13 +93,13 @@ Test.FakeClockSpec = JS.Test.describe(JS.Test.FakeClock, function() { with(this)
   describe("cancelling and resetting a timeout", function() { with(this) {
     before(function() { with(this) {
       this.calls = []
-      this.timer = JS.ENV.setTimeout(function() { calls.push("done") }, 1000)
+      this.timer = setTimeout(function() { calls.push("done") }, 1000)
     }})
 
     it("prolongs the delay before the timeout", function() { with(this) {
       clock.tick(500)
-      JS.ENV.clearTimeout(timer)
-      JS.ENV.setTimeout(function() { calls.push("done") }, 1000)
+      clearTimeout(timer)
+      setTimeout(function() { calls.push("done") }, 1000)
       clock.tick(500)
       assertEqual( [], calls )
       clock.tick(500)
@@ -110,7 +110,7 @@ Test.FakeClockSpec = JS.Test.describe(JS.Test.FakeClock, function() { with(this)
   describe(Date, function() { with(this) {
     before(function() { with(this) {
       this.a = this.b = null
-      JS.ENV.setTimeout(function() { b = new Date().getTime() }, 100)
+      setTimeout(function() { b = new Date().getTime() }, 100)
       a = new Date().getTime()
     }})
 

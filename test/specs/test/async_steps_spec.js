@@ -7,21 +7,21 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
     this.StepModule = JS.Test.asyncSteps({
       multiply: function(x, y, callback) { with(this) {
         var self = this
-        JS.ENV.setTimeout(function() {
+        setTimeout(function() {
           self.result = x * y
           callback()
         }, 100)
       }},
       subtract: function(n, callback) { with(this) {
         var self = this
-        JS.ENV.setTimeout(function() {
+        setTimeout(function() {
           self.result -= n
           callback()
         }, 100)
       }},
       zero: function(callback) { with(this) {
         var self = this
-        JS.ENV.setTimeout(function() {
+        setTimeout(function() {
           self.result = FakeMath.zero()
           callback()
         }, 100)
@@ -35,13 +35,13 @@ Test.AsyncStepsSpec = JS.Test.describe(JS.Test.AsyncSteps, function() { with(thi
         callback()
       }},
       throwError: function(callback) { with(this) {
-        JS.ENV.setTimeout(function() {
+        setTimeout(function() {
           throw new Error("async error")
           callback()
         }, 10)
       }},
       callbackError: function(callback) { with(this) {
-        JS.ENV.setTimeout(function() {
+        setTimeout(function() {
           callback(new Error("webscale error"))
         }, 10)
       }}

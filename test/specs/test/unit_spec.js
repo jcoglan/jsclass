@@ -1156,7 +1156,7 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
     describe("when resume() is used asynchronously", function() { with(this) {
       before(function() { with(this) {
         this.asyncTest = function(resume) { with(this) {
-            JS.ENV.setTimeout(function() {
+            setTimeout(function() {
               resume(function() { assertEqual( 2, 3 ) })
             }, 1000)
 
