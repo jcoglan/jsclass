@@ -1,3 +1,11 @@
+### 4.0.3 / 2013-11-07
+
+* Don't treat `null` as an error when passed to async test callbacks
+* Be strict about whether stubbed functions are called with `new` or not
+* Add `withNew()` as a stub modifier to replace `stub('new', ...)`
+* Add `on(target)` as a stub matcher for checking the `this` binding of a call
+* Improve stub error messaging and argument matcher representations
+
 ### 4.0.2 / 2013-07-06
 
 * Change `AsyncSteps` so it wraps all calls to `before()`, `it()` and `after()`
