@@ -2,7 +2,7 @@ Test.Unit.extend({
   TestCase: new JS.Class({
     include: Test.Unit.Assertions,
 
-    extend: [Enumerable, {
+    extend: {
       STARTED:  'Test.Unit.TestCase.STARTED',
       FINISHED: 'Test.Unit.TestCase.FINISHED',
 
@@ -131,7 +131,7 @@ Test.Unit.extend({
         }
         return false;
       }
-    }],
+    },
 
     initialize: function(testMethodName) {
       if (typeof this[testMethodName] !== 'function') throw 'invalid_test';
