@@ -113,28 +113,37 @@ Test.extend({
 
         _dispatch: function(receiver, args, isConstructor) {
           var matchers = this._matchers,
+              eligible = [],
               matcher, result;
 
           for (var i = 0, n = matchers.length; i < n; i++) {
             matcher = matchers[i];
             result  = matcher.match(receiver, args, isConstructor);
-
             if (!result) continue;
             matcher.ping();
-
-            if (result.fake)
-              return result.fake.apply(receiver, args);
-
-            if (result.exception) throw result.exception;
-
-            if (result.hasOwnProperty('callback')) {
-              if (!result.callback) continue;
-              result.callback.apply(result.context, matcher.nextYieldArgs());
-            }
-
-            if (result) return matcher.nextReturnValue();
+            eligible.push([matcher, result]);
           }
 
+          if (eligible.length === 0)
+            this._throwUnexpectedCall(receiver, args, isConstructor);
+
+          eligible = eligible.pop();
+          matcher  = eligible[0];
+          result   = eligible[1];
+
+          if (result.fake) return result.fake.apply(receiver, args);
+
+          if (result.exception) throw result.exception;
+
+          if (result.hasOwnProperty('callback')) {
+            if (!result.callback) this._throwUnexpectedCall(receiver, args, isConstructor);
+            result.callback.apply(result.context, matcher.nextYieldArgs());
+          }
+
+          if (result) return matcher.nextReturnValue();
+        },
+
+        _throwUnexpectedCall: function(receiver, args, isConstructor) {
           var message;
           if (isConstructor) {
             message = new Test.Unit.AssertionMessage('',
@@ -145,7 +154,6 @@ Test.extend({
                           '<?> unexpectedly received call to ' + this._methodName + '() with arguments:\n(?)',
                           [receiver, JS.array(args)]);
           }
-
           throw new Test.Mocking.UnexpectedCallError(message);
         },
 

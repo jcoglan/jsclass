@@ -116,8 +116,8 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
 
       describe("when there are parameter matchers", function() { with(this) {
         before(function() { with(this) {
-          stub(object, "getName").given(5).returns("fail")
           stub(object, "getName", function() { return "hello" })
+          stub(object, "getName").given(5).returns("fail")
         }})
 
         it("only uses the fake if no patterns match", function() { with(this) {
@@ -185,8 +185,8 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
     describe("with a matcher argument", function() { with(this) {
       before(function() { with(this) {
         stub(object, "getName").given(arrayIncluding("foo")).returns(true)
-        stub(object, "getName").given(arrayIncluding("bar", "qux")).returns(true)
         stub(object, "getName").given(arrayIncluding("bar")).returns(false)
+        stub(object, "getName").given(arrayIncluding("bar", "qux")).returns(true)
       }})
 
       it("dispatches to the pattern that matches the input", function() { with(this) {
@@ -525,6 +525,18 @@ Test.MockingSpec = JS.Test.describe(JS.Test.Mocking, function() { with(this) {
                             "Mock expectation not met\n" +
                             "<[OBJECT]> expected to receive call\n" +
                             "getName( 3, 4 )" )
+        })})
+      }})
+
+      it("passes if the multiple argument matchers apply", function(resume) { with(this) {
+        runTests({
+          testExpectWithArgs: function() { with(this) {
+            expect(object, "getName").given(3,4).returning(7)
+            expect(object, "getName").given(instanceOf("number"), anything()).returning(8)
+            assertEqual( 8, object.getName(3,4) )
+          }}
+        }, function() { resume(function() {
+          assertTestResult( 1, 3, 0, 0 )
         })})
       }})
     }})

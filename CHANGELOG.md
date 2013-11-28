@@ -1,3 +1,11 @@
+### 4.0.4 / 2013-11-28
+
+* Remove `Enumerable` class methods from `Test.Unit.TestCase`
+* Log all mock argument matchers that match a method call, so a test will not
+  fail if two mocks match the same call
+* Use the last matching stub expression to pick the function's response rather
+  than the first since the last will usually be more specific
+
 ### 4.0.3 / 2013-11-07
 
 * Don't treat `null` as an error when passed to async test callbacks
