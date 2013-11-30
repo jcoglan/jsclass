@@ -1,4 +1,4 @@
-### 4.0.4 / 2013-11-28
+### 4.0.4 / 2013-11-30
 
 * Remove `Enumerable` class methods from `Test.Unit.TestCase`
 * Log all mock argument matchers that match a method call, so a test will not
