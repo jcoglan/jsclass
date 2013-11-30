@@ -1,15 +1,3 @@
-(function() {
-  var suite = Test.Unit.TestCase.suite;
-
-  Test.Unit.TestCase.extend({
-    // Tweaks to standard method so we don't get superclass methods and we don't
-    // get weird default tests
-    suite: function(filter) {
-      return suite.call(this, filter, false, false);
-    }
-  });
-})();
-
 Test.Unit.TestSuite.include({
   run: function(result, continuation, callback, context) {
     if (this._metadata.fullName)

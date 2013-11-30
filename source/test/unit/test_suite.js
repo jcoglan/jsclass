@@ -59,13 +59,11 @@ Test.Unit.extend({
 
       this.forEach(function(test, resume) {
         test.run(result, resume, callback, context)
-
       }, function() {
         if (this._metadata.fullName)
           callback.call(context, this.klass.FINISHED, this);
 
         continuation.call(context);
-
       }, this);
     },
 
