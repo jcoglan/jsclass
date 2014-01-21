@@ -55,26 +55,26 @@
   There are a few reserved methods on @MethodChain@ objects that you cannot use
   for chaining:
 
-  * @_()@ - one underscore - more on this in a second
+  * @__()@ - two underscores - more on this in a second
   * @____()@ - four underscores, used for storing method calls
   * @__exec__()@ - executes the stored chain against its argument
   * @toFunction()@ - returns a function that executes the chain when called
 
-  h3. Changing scope using @_()@
+  h3. Changing scope using @__()@
 
-  All chains have a method called @_()@ (that's one underscore) that you can use
-  to change the scope of the chain. By default, each method in the chain is
-  called on the return value of the previous method, but @_()@ lets you insert
+  All chains have a method called @__()@ (that's two underscores) that you can
+  use to change the scope of the chain. By default, each method in the chain is
+  called on the return value of the previous method, but @__()@ lets you insert
   objects into the chain so that subsequent methods get called on said object.
 
-  @_()@ also lets you insert anonymous functions into the chain. Within each
+  @__()@ also lets you insert anonymous functions into the chain. Within each
   function, @this@ refers to the return value of the previous method. Putting
   all this together, you could do:
 
   <pre>var chain = new MethodChain();
 
-  chain._(document).getElementsByTagName('p')
-       ._(function() { console.log(this) });</pre>
+  chain.__(document).getElementsByTagName('p')
+       .__(function() { console.log(this) });</pre>
 
   When we execute @chain@, the net effect is the same as:
 

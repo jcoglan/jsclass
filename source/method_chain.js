@@ -48,7 +48,7 @@ MethodChain.toString = function() {
 };
 
 MethodChain.prototype = {
-  _: function() {
+  __: function() {
     var base = arguments[0],
         args, i, n;
 
@@ -121,7 +121,7 @@ JS.Kernel.include({
     return chain;
   },
 
-  _: function() {
+  __: function() {
     var base = arguments[0],
         args = [],
         i, n;

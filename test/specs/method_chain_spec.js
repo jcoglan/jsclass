@@ -88,16 +88,16 @@ JS.ENV.MethodChainSpec = JS.Test.describe(MethodChain, function() { with(this) {
     }})
   }})
 
-  describe("#_", function() { with(this) {
+  describe("#__", function() { with(this) {
     describe("in MethodChain", function() { with(this) {
       describe("with an object", function() { with(this) {
         it("changes the base object for the rest of the chain", function() { with(this) {
-          chain._(["another", "list"]).sort()
+          chain.__(["another", "list"]).sort()
           assertEqual( ["another", "list"], chain.__exec__() )
         }})
 
         it("does not stop previous calls going to the old base object", function() { with(this) {
-          chain.call()._(["another", "list"]).sort()
+          chain.call().__(["another", "list"]).sort()
           assert( !list.called )
           chain.__exec__()
           assert( list.called )
@@ -106,17 +106,17 @@ JS.ENV.MethodChainSpec = JS.Test.describe(MethodChain, function() { with(this) {
 
       describe("with a function", function() { with(this) {
         it("adds a function to the chain", function() { with(this) {
-          chain._(function() { return this.slice(1) })
+          chain.__(function() { return this.slice(1) })
           assertEqual( ["bar"], chain.__exec__() )
         }})
 
         it("adds a function with arguments to the chain", function() { with(this) {
-          chain._(function(method, arg) { return this[method](arg) }, "slice", 1)
+          chain.__(function(method, arg) { return this[method](arg) }, "slice", 1)
           assertEqual( ["bar"], chain.__exec__() )
         }})
 
         it("uses the return value as the new base object", function() { with(this) {
-          chain._(function() { return "word" }).toUpperCase()
+          chain.__(function() { return "word" }).toUpperCase()
           assertEqual( "WORD", chain.__exec__() )
         }})
       }})
@@ -128,15 +128,15 @@ JS.ENV.MethodChainSpec = JS.Test.describe(MethodChain, function() { with(this) {
       }})
 
       it("returns the object given to it", function() { with(this) {
-        assertSame( list, widget._(list) )
+        assertSame( list, widget.__(list) )
       }})
 
       it("applies a function to the receiver", function() { with(this) {
-        assertEqual( "Nick", widget._(function() { return this.name }) )
+        assertEqual( "Nick", widget.__(function() { return this.name }) )
       }})
 
       it("applies a function with arguments to the receiver", function() { with(this) {
-        assertEqual( "Nick and David", widget._(function(name) { return this.name + " and " + name }, "David") )
+        assertEqual( "Nick and David", widget.__(function(name) { return this.name + " and " + name }, "David") )
       }})
     }})
   }})
