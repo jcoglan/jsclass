@@ -1,3 +1,8 @@
+### 4.0.5 / 2014-03-19
+
+* Rename `MethodChain#_()` to `MethodChain#__()` to avoid clobbering Underscore
+  in test suites
+
 ### 4.0.4 / 2013-12-01
 
 * Remove `Enumerable` class methods from `Test.Unit.TestCase`

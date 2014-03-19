@@ -24,6 +24,6 @@ You can find instructions for how to build the library and run the tests in
 
 ## License
 
-Copyright 2007-2013 James Coglan, distributed under the MIT license. See
+Copyright 2007-2014 James Coglan, distributed under the MIT license. See
 `LICENSE.md` for full details.
 
