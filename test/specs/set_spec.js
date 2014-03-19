@@ -13,8 +13,8 @@ JS.ENV.SetSpec = JS.Test.describe(sets.Set, function() { with(this) {
   define("assertSetEqual", function(expected, actual) {
     this.__wrapAssertion__(function() {
       this.assertKindOf( sets.Set, actual )
-      if (expected.entries) expected = expected.entries()
-      if (actual.entries)   actual   = actual.entries()
+      if (!(expected instanceof Array)) expected = expected.entries()
+      if (!(actual instanceof Array))   actual = actual.entries()
       this.assertEqual( expected.sort(), actual.sort() )
     })
   })
