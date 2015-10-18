@@ -169,11 +169,13 @@ Test.Unit.extend({
                 ? methodName.length
                 : this.__eigen__().instanceMethod(methodName).arity,
 
-          callable = (typeof methodName === 'function') ? methodName : this[methodName],
-          timeout  = null,
-          failed   = false,
-          resumed  = false,
-          self     = this;
+          callable     = (typeof methodName === 'function') ? methodName : this[methodName],
+          setTimeout   = Test.FakeClock.REAL.setTimeout,
+          clearTimeout = Test.FakeClock.REAL.clearTimeout,
+          timeout      = null,
+          failed       = false,
+          resumed      = false,
+          self         = this;
 
       if (arity === 0)
         return this.klass.runWithExceptionHandlers(this, function() {
@@ -184,7 +186,7 @@ Test.Unit.extend({
       var onUncaughtError = function(error) {
         failed = true;
         self.klass.popErrorCathcer();
-        if (timeout) JS.ENV.clearTimeout(timeout);
+        if (timeout) clearTimeout(timeout);
         onError.call(self, error);
       };
       this.klass.pushErrorCathcer(onUncaughtError);
@@ -193,7 +195,7 @@ Test.Unit.extend({
         callable.call(this, function(asyncResult) {
           resumed = true;
           self.klass.popErrorCathcer();
-          if (timeout) JS.ENV.clearTimeout(timeout);
+          if (timeout) clearTimeout(timeout);
           if (failed) return;
 
           if (typeof asyncResult === 'string') asyncResult = new Error(asyncResult);
@@ -208,7 +210,6 @@ Test.Unit.extend({
       }, onError);
 
       if (resumed || !JS.ENV.setTimeout) return;
-      var setTimeout = Test.FakeClock.REAL.setTimeout;
 
       timeout = setTimeout(function() {
         failed = true;
