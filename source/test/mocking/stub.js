@@ -79,7 +79,7 @@ Test.extend({
             return null;
           }
 
-          var mocking = JS.Test.Mocking,
+          var mocking = Test.Mocking,
               matcher = new mocking.Parameters([new mocking.AnyArgs()], constructor, implementation);
 
           this._matchers.push(matcher);

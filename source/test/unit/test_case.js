@@ -208,8 +208,9 @@ Test.Unit.extend({
       }, onError);
 
       if (resumed || !JS.ENV.setTimeout) return;
+      var setTimeout = Test.FakeClock.REAL.setTimeout;
 
-      timeout = JS.ENV.setTimeout(function() {
+      timeout = setTimeout(function() {
         failed = true;
         self.klass.popErrorCathcer();
         var message = 'Timed out after waiting ' + Test.asyncTimeout + ' seconds for test to resume';

@@ -1190,6 +1190,23 @@ Test.UnitSpec = JS.Test.describe(JS.Test.Unit, function() { with(this) {
         clock.tick(15000)
       }})
     }})
+
+    describe("when resume() is not called and setTimeout is stubbed", function() { with(this) {
+      before(function() { with(this) {
+        this.asyncTest = function(resume) {}
+        stub("setTimeout")
+      }})
+
+      it("causes a timeout error", function(resume) { with(this) {
+        runTests({testAsync: asyncTest}, function() { resume(function() {
+          assertTestResult( 1, 0, 0, 1 )
+          assertMessage( 1, "Error:\n" +
+                            "testAsync(TestedSuite):\n" +
+                            "Error: Timed out after waiting 5 seconds for test to resume" )
+        })})
+        clock.tick(15000)
+      }})
+    }})
   }})
 
   describe("uncaught errors", function() { with(this) {
